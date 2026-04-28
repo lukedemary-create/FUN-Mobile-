@@ -23,7 +23,7 @@ function writeCache(name, data) {
   try { fs.writeFileSync(cacheKey(name), JSON.stringify({ ts: Date.now(), data })); } catch {}
 }
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const YF_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 const YF_HEADERS = {
   'User-Agent': YF_UA,
@@ -2401,6 +2401,22 @@ Use the live data above to ground your analysis in current market reality. When 
     } catch (err) {
       return sendJSON(res, { error: err.message }, 500);
     }
+  }
+
+  // ── Static file serving (React frontend) ────────────────────────────────────
+  const __dirnameStatic = fileURLToPath(new URL('.', import.meta.url));
+  const distPath = path.join(__dirnameStatic, '../dist');
+  const urlPath = req.url.split('?')[0];
+  let filePath = path.join(distPath, urlPath);
+  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(distPath, 'index.html');
+  }
+  if (fs.existsSync(filePath)) {
+    const ext = path.extname(filePath);
+    const mimeTypes = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.json': 'application/json' };
+    const contentType = mimeTypes[ext] || 'application/octet-stream';
+    res.writeHead(200, { 'Content-Type': contentType });
+    return res.end(fs.readFileSync(filePath));
   }
 
   // ── 404 fallback ────────────────────────────────────────────────────────────
