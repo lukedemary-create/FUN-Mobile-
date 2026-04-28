@@ -1,0 +1,237 @@
+{
+  "meta": {
+    "name": "Planora Portfolio Archetypes",
+    "version": "1.0",
+    "totalArchetypes": 7
+  },
+  "archetypes": [
+    {
+      "id": "capital_preservation",
+      "name": "Capital Preservation",
+      "scoreRange": { "min": 0, "max": 20 },
+      "tagline": "Protect what you have. Every dollar matters.",
+      "description": "Designed for investors who cannot afford to lose principal — those near or in retirement, with immediate withdrawal needs, unstable income, or high emotional sensitivity to losses.",
+      "expectedAnnualReturn": "2.5–4.0%",
+      "expectedVolatility": "2–5%",
+      "maxHistoricalDrawdown": "~5%",
+      "riskLabel": "Very Low",
+      "colorCode": "#4CAF50",
+      "allocation": [
+        { "category": "Fixed Income & Cash", "name": "US Treasury Bills (3–6 month)", "percent": 15, "rationale": "Near-zero duration risk with full US government backing." },
+        { "category": "Fixed Income & Cash", "name": "Money market funds (VUSXX, SPAXX)", "percent": 10, "rationale": "Instant liquidity with government backing." },
+        { "category": "Fixed Income & Cash", "name": "TIPS 1–5 year", "percent": 15, "rationale": "Principal adjusts with CPI, preserving real value." },
+        { "category": "Fixed Income & Cash", "name": "Investment-grade corporate bonds (1–3 yr)", "percent": 10, "rationale": "Yield pickup with minimal credit risk." },
+        { "category": "Fixed Income & Cash", "name": "Brokered CDs — laddered", "percent": 10, "rationale": "FDIC-insured with higher yield via maturity laddering." },
+        { "category": "Equities (Defensive)", "name": "Dividend ETF (SCHD)", "percent": 15, "rationale": "High-quality dividend payers with strong balance sheets." },
+        { "category": "Equities (Defensive)", "name": "Utilities sector (XLU)", "percent": 4, "rationale": "Regulated businesses with predictable cash flows." },
+        { "category": "Equities (Defensive)", "name": "Consumer staples (XLP)", "percent": 3, "rationale": "Essential goods companies." },
+        { "category": "Alternatives", "name": "Gold ETF (GLD)", "percent": 10, "rationale": "Crisis hedge with negative correlation to equities." },
+        { "category": "Alternatives", "name": "Real Estate (VNQ)", "percent": 8, "rationale": "Predictable income with inflation pass-through." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-3%", "notes": "Minimal equity exposure avoided worst of tech selloff" },
+        "gfc2008": { "estimatedDrawdown": "-7%", "notes": "Gold and T-bills offset credit spread widening" },
+        "covid2020": { "estimatedDrawdown": "-4%", "notes": "Brief March 2020 dip recovered within weeks" },
+        "rateShock2022": { "estimatedDrawdown": "-8%", "notes": "TIPS and floaters offset bond losses" }
+      }
+    },
+    {
+      "id": "conservative_income",
+      "name": "Conservative Income",
+      "scoreRange": { "min": 21, "max": 35 },
+      "tagline": "Live on your investments — don't gamble with them.",
+      "description": "Built for investors who need reliable income but can tolerate small temporary losses. Typically early retirees or those 3–7 years from full retirement.",
+      "expectedAnnualReturn": "4–6%",
+      "expectedVolatility": "6–10%",
+      "maxHistoricalDrawdown": "~15%",
+      "riskLabel": "Low",
+      "colorCode": "#8BC34A",
+      "allocation": [
+        { "category": "Fixed Income", "name": "Intermediate US Treasuries (IEF)", "percent": 12, "rationale": "Core government bond exposure." },
+        { "category": "Fixed Income", "name": "Investment-grade corporate (LQD)", "percent": 12, "rationale": "Blue-chip corporate bonds." },
+        { "category": "Fixed Income", "name": "TIPS intermediate (SCHP)", "percent": 8, "rationale": "Real return protection." },
+        { "category": "Fixed Income", "name": "High-yield municipal (HYD)", "percent": 8, "rationale": "Tax-exempt income." },
+        { "category": "Fixed Income", "name": "Preferred stock (PFF)", "percent": 8, "rationale": "Fixed dividends typically yielding 5–7%." },
+        { "category": "Equities", "name": "Dividend growth (VIG)", "percent": 10, "rationale": "Companies with 10+ years of dividend growth." },
+        { "category": "Equities", "name": "International dividend (IDV)", "percent": 7, "rationale": "European and EM dividend payers." },
+        { "category": "Equities", "name": "Healthcare sector (VHT)", "percent": 7, "rationale": "Non-discretionary spending with aging demographics." },
+        { "category": "Equities", "name": "Low-volatility factor (USMV)", "percent": 6, "rationale": "Lowest-volatility stocks within US market." },
+        { "category": "Alternatives", "name": "Diversified REIT (VNQ)", "percent": 12, "rationale": "Must distribute 90% of taxable income." },
+        { "category": "Alternatives", "name": "Gold & precious metals (GLD)", "percent": 10, "rationale": "Crisis hedge." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-10%", "notes": "Bond allocation provided strong buffer" },
+        "gfc2008": { "estimatedDrawdown": "-20%", "notes": "Credit spreads widened; recovery by 2010" },
+        "covid2020": { "estimatedDrawdown": "-12%", "notes": "Sharp drop March 2020; recovered within 4 months" },
+        "rateShock2022": { "estimatedDrawdown": "-14%", "notes": "Intermediate bonds hurt; TIPS and gold partially offset" }
+      }
+    },
+    {
+      "id": "moderate_income",
+      "name": "Moderate Income",
+      "scoreRange": { "min": 36, "max": 50 },
+      "tagline": "Grow your wealth and collect income while you do it.",
+      "description": "A true all-weather portfolio for investors who want meaningful income today while growing assets for the future. Suitable for those 5–10 years from retirement.",
+      "expectedAnnualReturn": "5.5–7.5%",
+      "expectedVolatility": "9–14%",
+      "maxHistoricalDrawdown": "~25%",
+      "riskLabel": "Low-Moderate",
+      "colorCode": "#FFC107",
+      "allocation": [
+        { "category": "Fixed Income", "name": "Core bond index (BND or AGG)", "percent": 12, "rationale": "Broad US bond market." },
+        { "category": "Fixed Income", "name": "Emerging market bonds (EMB)", "percent": 7, "rationale": "EM sovereign bonds yielding 2–4% more than US Treasuries." },
+        { "category": "Fixed Income", "name": "Senior secured loans (SRLN)", "percent": 7, "rationale": "Floating rate eliminates duration risk." },
+        { "category": "Fixed Income", "name": "Intermediate TIPS (SCHP)", "percent": 7, "rationale": "Real rate of return protection." },
+        { "category": "Fixed Income", "name": "High-yield corporate (USHY)", "percent": 7, "rationale": "3–5% yield premium over investment grade." },
+        { "category": "Equities", "name": "US total market (VTI)", "percent": 12, "rationale": "Full US equity market exposure." },
+        { "category": "Equities", "name": "International developed (VXUS)", "percent": 8, "rationale": "Europe, Japan, Australia, Canada." },
+        { "category": "Equities", "name": "Quality factor (QUAL)", "percent": 8, "rationale": "High ROE, low debt, stable earnings." },
+        { "category": "Equities", "name": "Dividend growth (VIG)", "percent": 8, "rationale": "Dividend growth provides income and inflation protection." },
+        { "category": "Equities", "name": "Healthcare & biotech (VHT)", "percent": 5, "rationale": "Aging demographics create structural demand." },
+        { "category": "Alternatives", "name": "Diversified REIT (VNQ)", "percent": 9, "rationale": "Industrial REITs drive e-commerce demand." },
+        { "category": "Alternatives", "name": "Gold + Silver (IAU + SLV)", "percent": 5, "rationale": "Gold as crisis hedge; silver adds industrial metal exposure." },
+        { "category": "Alternatives", "name": "Commodity ETF (PDBC)", "percent": 5, "rationale": "Energy, agriculture, base metals — strong inflation hedge." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-18%", "notes": "Diversified equity reduced tech concentration losses" },
+        "gfc2008": { "estimatedDrawdown": "-30%", "notes": "EM bonds and high-yield spread widening; significant but recoverable" },
+        "covid2020": { "estimatedDrawdown": "-20%", "notes": "Rapid recovery; commodity exposure helped" },
+        "rateShock2022": { "estimatedDrawdown": "-16%", "notes": "Bond losses offset by TIPS and commodities" }
+      }
+    },
+    {
+      "id": "balanced_growth",
+      "name": "Balanced Growth",
+      "scoreRange": { "min": 51, "max": 65 },
+      "tagline": "Grow confidently. Protect intelligently.",
+      "description": "An evolved 60/40 portfolio for the modern investor. Incorporates alternatives, global diversification, and factor tilts to improve risk-adjusted returns.",
+      "expectedAnnualReturn": "6.5–8.5%",
+      "expectedVolatility": "12–17%",
+      "maxHistoricalDrawdown": "~35%",
+      "riskLabel": "Moderate",
+      "colorCode": "#FF9800",
+      "allocation": [
+        { "category": "Fixed Income", "name": "US Aggregate Bond (BND)", "percent": 8, "rationale": "Broad investment-grade anchor." },
+        { "category": "Fixed Income", "name": "Short-duration high-yield (SJNK)", "percent": 7, "rationale": "Short maturity reduces interest rate risk." },
+        { "category": "Fixed Income", "name": "EM local currency bonds (EMLC)", "percent": 6, "rationale": "Currency diversification and exposure to EM rate cycles." },
+        { "category": "Fixed Income", "name": "TIPS all-maturity (TIP)", "percent": 5, "rationale": "Full-curve TIPS provides comprehensive inflation protection." },
+        { "category": "Fixed Income", "name": "Convertible securities (ICVT)", "percent": 4, "rationale": "Participates in ~70% of equity gains while absorbing ~50% of losses." },
+        { "category": "Equities", "name": "US large-cap (VTI or SPY)", "percent": 15, "rationale": "Core US equity allocation." },
+        { "category": "Equities", "name": "International developed (VXUS)", "percent": 10, "rationale": "Valuation discount implies better prospective returns." },
+        { "category": "Equities", "name": "Emerging markets (VWO)", "percent": 7, "rationale": "3.5 billion consumers moving into middle class." },
+        { "category": "Equities", "name": "US small-cap value (IWN)", "percent": 6, "rationale": "Outperforms coming out of recessions." },
+        { "category": "Equities", "name": "Technology & innovation (QQQ)", "percent": 8, "rationale": "Productivity engine of the global economy." },
+        { "category": "Equities", "name": "Quality-dividend international (IDV)", "percent": 5, "rationale": "Foreign dividend payers yielding 3–5%." },
+        { "category": "Equities", "name": "Clean energy (ICLN)", "percent": 4, "rationale": "Multi-decade energy transition." },
+        { "category": "Alternatives", "name": "Commodities (PDBC)", "percent": 5, "rationale": "Energy, metals, agriculture." },
+        { "category": "Alternatives", "name": "Private REIT (VNQ)", "percent": 5, "rationale": "Commercial real estate without public market volatility." },
+        { "category": "Alternatives", "name": "Gold + Bitcoin (1–2%)", "percent": 3, "rationale": "Gold as crisis hedge; small Bitcoin allocation for asymmetric upside." },
+        { "category": "Alternatives", "name": "Market-neutral (MNA)", "percent": 2, "rationale": "Returns regardless of market direction." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-25%", "notes": "Tech overweight hurts but international cushioned losses" },
+        "gfc2008": { "estimatedDrawdown": "-38%", "notes": "Near-full market participation; recovered by 2010" },
+        "covid2020": { "estimatedDrawdown": "-28%", "notes": "Sharp drop with rapid recovery; clean energy surged" },
+        "rateShock2022": { "estimatedDrawdown": "-18%", "notes": "Commodities and alternatives were significant buffers" }
+      }
+    },
+    {
+      "id": "growth_oriented",
+      "name": "Growth Oriented",
+      "scoreRange": { "min": 66, "max": 78 },
+      "tagline": "Patience and discipline build real wealth.",
+      "description": "For investors with long time horizons, stable income, and the emotional fortitude to weather 30–40% drawdowns. Appropriate for investors 10+ years from retirement.",
+      "expectedAnnualReturn": "8–11%",
+      "expectedVolatility": "16–22%",
+      "maxHistoricalDrawdown": "~45%",
+      "riskLabel": "Moderate-High",
+      "colorCode": "#FF5722",
+      "allocation": [
+        { "category": "Fixed Income", "name": "Short TIPS (inflation insurance)", "percent": 6, "rationale": "Minimal fixed income serving purely as inflation insurance." },
+        { "category": "Fixed Income", "name": "EM high-yield (EMHY)", "percent": 5, "rationale": "Higher-yielding EM debt with equity-like risk/return." },
+        { "category": "Fixed Income", "name": "Convertible bonds (ICVT)", "percent": 4, "rationale": "Equity participation with bond floor." },
+        { "category": "Equities", "name": "US total market (VTI)", "percent": 18, "rationale": "Foundation of any US equity portfolio." },
+        { "category": "Equities", "name": "International developed (VEA)", "percent": 12, "rationale": "Quality businesses at attractive prices." },
+        { "category": "Equities", "name": "Emerging markets (VWO)", "percent": 10, "rationale": "Highest long-term return potential." },
+        { "category": "Equities", "name": "US small-cap growth (VBK)", "percent": 8, "rationale": "Companies innovating at the frontier." },
+        { "category": "Equities", "name": "Technology megacap (QQQ)", "percent": 10, "rationale": "World's most profitable businesses." },
+        { "category": "Equities", "name": "Healthcare innovation (ARKG)", "percent": 6, "rationale": "Genomics, biotech, precision medicine." },
+        { "category": "Equities", "name": "Global infrastructure (IFRA)", "percent": 5, "rationale": "Data centers, grid modernization, water systems." },
+        { "category": "Equities", "name": "Frontier markets (FM)", "percent": 3, "rationale": "Vietnam, Bangladesh, Nigeria, Romania." },
+        { "category": "Alternatives", "name": "Bitcoin ETF (IBIT)", "percent": 3, "rationale": "3% digital asset allocation. Asymmetric upside." },
+        { "category": "Alternatives", "name": "Private equity (interval fund)", "percent": 4, "rationale": "3–5% annual alpha over public markets historically." },
+        { "category": "Alternatives", "name": "Critical minerals (XLE + PICK)", "percent": 6, "rationale": "Uranium, copper demand projected to double by 2035." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-35%", "notes": "Tech overweight painful; EM and small cap also sold off" },
+        "gfc2008": { "estimatedDrawdown": "-47%", "notes": "Full market exposure; recovery took 3–4 years" },
+        "covid2020": { "estimatedDrawdown": "-35%", "notes": "Deepest drawdown but fastest recovery; tech surged" },
+        "rateShock2022": { "estimatedDrawdown": "-22%", "notes": "Growth stocks hit hardest" }
+      }
+    },
+    {
+      "id": "aggressive_growth",
+      "name": "Aggressive Growth",
+      "scoreRange": { "min": 79, "max": 90 },
+      "tagline": "Wealth is built through concentration and time.",
+      "description": "A high-conviction, growth-maximizing portfolio for investors with long time horizons (10+ years), high income stability, and proven psychological ability to hold through deep drawdowns.",
+      "expectedAnnualReturn": "10–14%",
+      "expectedVolatility": "20–28%",
+      "maxHistoricalDrawdown": "~55%",
+      "riskLabel": "High",
+      "colorCode": "#E91E63",
+      "allocation": [
+        { "category": "Fixed Income", "name": "Short TIPS / I-Bonds", "percent": 5, "rationale": "Inflation insurance only." },
+        { "category": "Equities", "name": "US growth — tech, consumer (QQQ + VGT)", "percent": 20, "rationale": "Highest-return equity category over 20 years." },
+        { "category": "Equities", "name": "Emerging markets (INDA + VNM)", "percent": 15, "rationale": "India in early stages of growth trajectory." },
+        { "category": "Equities", "name": "International developed (EWG + EWJ)", "percent": 10, "rationale": "30–40% valuation discount vs US equities." },
+        { "category": "Equities", "name": "US small/micro-cap (IWC + VBK)", "percent": 8, "rationale": "Most consistently underpriced equity category." },
+        { "category": "Equities", "name": "Semiconductor and AI (SOXX)", "percent": 10, "rationale": "NVIDIA, AMD, ASML, TSMC — entire compute supply chain." },
+        { "category": "Equities", "name": "Biotech and genomics (XBI + ARKG)", "percent": 7, "rationale": "Gene editing, precision oncology, AI-aided drug discovery." },
+        { "category": "Equities", "name": "Frontier markets (FM)", "percent": 4, "rationale": "Pre-emerging economies with early-stage growth." },
+        { "category": "Equities", "name": "Clean energy and grid (ICLN + GRID)", "percent": 4, "rationale": "Multi-decade government-backed energy transition." },
+        { "category": "Alternatives", "name": "Bitcoin ETF (7% position)", "percent": 7, "rationale": "Meaningful position contributing significantly in bull cycles." },
+        { "category": "Alternatives", "name": "Private equity (Hamilton Lane)", "percent": 5, "rationale": "3–5% annual alpha over public markets." },
+        { "category": "Alternatives", "name": "Venture capital (AngelList)", "percent": 3, "rationale": "Highest risk, highest return asset class." },
+        { "category": "Alternatives", "name": "Critical minerals (CPER + URNM)", "percent": 2, "rationale": "Structural commodity supercycle." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-50%", "notes": "Heavy tech concentration mirrors 2000 bust" },
+        "gfc2008": { "estimatedDrawdown": "-55%", "notes": "Near-full equity drawdown" },
+        "covid2020": { "estimatedDrawdown": "-42%", "notes": "Fastest recovery ever; BTC and tech surged" },
+        "rateShock2022": { "estimatedDrawdown": "-32%", "notes": "Growth stocks most impacted; BTC fell ~75%" }
+      }
+    },
+    {
+      "id": "maximum_growth",
+      "name": "Maximum Growth",
+      "scoreRange": { "min": 91, "max": 100 },
+      "tagline": "Compounding at maximum velocity. Not for the faint-hearted.",
+      "description": "The highest-risk, highest-potential portfolio. For young investors with decades of runway, very high income stability, and demonstrated ability to hold through 60%+ losses.",
+      "expectedAnnualReturn": "12–18%",
+      "expectedVolatility": "26–38%",
+      "maxHistoricalDrawdown": "~65%+",
+      "riskLabel": "Very High",
+      "colorCode": "#9C27B0",
+      "allocation": [
+        { "category": "Equities", "name": "High-conviction US growth (QQQ + top holdings)", "percent": 20, "rationale": "Maximum exposure to highest-quality businesses." },
+        { "category": "Equities", "name": "India + Southeast Asia (INDA + VNM)", "percent": 18, "rationale": "Greatest growth story of the next 30 years." },
+        { "category": "Equities", "name": "Semiconductor and AI (SOXX + ASML)", "percent": 12, "rationale": "AI requires exponentially more compute each generation." },
+        { "category": "Equities", "name": "US/international small-micro cap (IWC + DFA)", "percent": 10, "rationale": "Most systematically undervalued equity categories." },
+        { "category": "Equities", "name": "Biotech and longevity (XBI + ARKG)", "percent": 8, "rationale": "Longevity science in pre-commercial phase." },
+        { "category": "Equities", "name": "Clean energy and climate (ICLN + TAN)", "percent": 6, "rationale": "$5T+ multi-decade infrastructure buildout." },
+        { "category": "Equities", "name": "Frontier markets (FM ETF)", "percent": 6, "rationale": "Nigeria, Vietnam, Bangladesh at same stage as China in 1995." },
+        { "category": "Alternatives", "name": "Bitcoin — core position", "percent": 10, "rationale": "10% sized to deliver significant portfolio impact." },
+        { "category": "Alternatives", "name": "Ethereum and Layer-1 blockchain", "percent": 3, "rationale": "Global settlement layer for decentralized finance." },
+        { "category": "Alternatives", "name": "Venture capital (Republic, AngelList)", "percent": 4, "rationale": "Earliest-stage, highest-upside opportunities." },
+        { "category": "Alternatives", "name": "Private equity / buyout funds", "percent": 3, "rationale": "Illiquidity premium." }
+      ],
+      "stressTest": {
+        "dotcom2000": { "estimatedDrawdown": "-60%", "notes": "Maximum tech/growth exposure mirrors 2000 Nasdaq" },
+        "gfc2008": { "estimatedDrawdown": "-60%", "notes": "Full market participation; brutal drawdown" },
+        "covid2020": { "estimatedDrawdown": "-45%", "notes": "Steep drop followed by explosive recovery; BTC tripled" },
+        "rateShock2022": { "estimatedDrawdown": "-42%", "notes": "Growth + crypto double hit; BTC -77%, Nasdaq -33%" }
+      }
+    }
+  ]
+}

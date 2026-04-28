@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "name": "Planora Risk Analysis Questionnaire",
+    "version": "1.0",
+    "totalQuestions": 11,
+    "scoringRange": "0-100",
+    "description": "Weighted questionnaire that maps user answers to one of 7 portfolio archetypes"
+  },
+  "scoringLogic": {
+    "method": "weighted_average",
+    "formula": "sum(answer.score * question.weight) / sum(5 * question.weight) * 100",
+    "overrideRules": [
+      {
+        "id": "early_withdrawal_cap",
+        "condition": "q4.selectedScore == 1",
+        "action": "cap_final_score_at",
+        "value": 25,
+        "reason": "Investor withdrawing within 1 year must be in conservative archetype regardless of other answers"
+      },
+      {
+        "id": "unstable_income_loss_aversion_cap",
+        "condition": "q5.selectedScore == 1 AND q10.selectedTag == 'high_loss_aversion'",
+        "action": "cap_final_score_at",
+        "value": 30,
+        "reason": "Very unstable income combined with high loss aversion requires conservative protection"
+      },
+      {
+        "id": "dip_buyer_rational_floor",
+        "condition": "q7.selectedScore == 5 AND q10.selectedTag == 'rational_risk_taker'",
+        "action": "floor_final_score_at",
+        "value": 70,
+        "reason": "Investor who buys dips and handles losses rationally qualifies for growth archetype minimum"
+      }
+    ],
+    "archetypeMap": [
+      { "min": 0,  "max": 20,  "archetypeId": "capital_preservation" },
+      { "min": 21, "max": 35,  "archetypeId": "conservative_income" },
+      { "min": 36, "max": 50,  "archetypeId": "moderate_income" },
+      { "min": 51, "max": 65,  "archetypeId": "balanced_growth" },
+      { "min": 66, "max": 78,  "archetypeId": "growth_oriented" },
+      { "min": 79, "max": 90,  "archetypeId": "aggressive_growth" },
+      { "min": 91, "max": 100, "archetypeId": "maximum_growth" }
+    ]
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "category": "withdrawal_horizon",
+      "weight": 1.2,
+      "displayOrder": 1,
+      "text": "As I withdraw money from these investments, I plan to spend it over a period of…",
+      "inputType": "radio",
+      "options": [
+        { "label": "2 years or less",    "score": 1 },
+        { "label": "3–5 years",          "score": 2 },
+        { "label": "6–10 years",         "score": 3 },
+        { "label": "11–15 years",        "score": 4 },
+        { "label": "More than 15 years", "score": 5 }
+      ]
+    },
+    {
+      "id": "q2",
+      "category": "investment_horizon",
+      "weight": 1.3,
+      "displayOrder": 2,
+      "text": "When making a long-term investment, I plan to keep the money invested for…",
+      "inputType": "radio",
+      "options": [
+        { "label": "1–2 years",          "score": 1 },
+        { "label": "3–4 years",          "score": 2 },
+        { "label": "5–6 years",          "score": 3 },
+        { "label": "7–8 years",          "score": 4 },
+        { "label": "More than 8 years",  "score": 5 }
+      ]
+    },
+    {
+      "id": "q3",
+      "category": "experience",
+      "weight": 0.9,
+      "displayOrder": 3,
+      "text": "When it comes to investing, I would describe myself as…",
+      "inputType": "radio",
+      "options": [
+        { "label": "Very inexperienced",     "score": 1 },
+        { "label": "Somewhat inexperienced", "score": 2 },
+        { "label": "Somewhat experienced",   "score": 3 },
+        { "label": "Experienced",            "score": 4 },
+        { "label": "Very experienced",       "score": 5 }
+      ]
+    },
+    {
+      "id": "q4",
+      "category": "withdrawal_timing",
+      "weight": 1.4,
+      "displayOrder": 4,
+      "text": "I plan to begin taking money from my investments in…",
+      "inputType": "radio",
+      "options": [
+        { "label": "1 year or less",     "score": 1 },
+        { "label": "1–2 years",          "score": 2 },
+        { "label": "3–5 years",          "score": 3 },
+        { "label": "6–10 years",         "score": 4 },
+        { "label": "11–15 years",        "score": 4.5 },
+        { "label": "More than 15 years", "score": 5 }
+      ]
+    },
+    {
+      "id": "q5",
+      "category": "income_stability",
+      "weight": 1.1,
+      "displayOrder": 5,
+      "text": "My current and future income sources are…",
+      "inputType": "radio",
+      "options": [
+        { "label": "Very unstable", "score": 1 },
+        { "label": "Unstable",      "score": 2 },
+        { "label": "Stable",        "score": 4 },
+        { "label": "Very stable",   "score": 5 }
+      ]
+    },
+    {
+      "id": "q6",
+      "category": "liquidity_need",
+      "weight": 1.1,
+      "displayOrder": 6,
+      "text": "I expect my future financial needs and goals to require…",
+      "inputType": "radio",
+      "options": [
+        { "label": "Significant liquidation of assets", "score": 1 },
+        { "label": "Some liquidation of assets",        "score": 2 },
+        { "label": "Minor liquidation of assets",       "score": 4 },
+        { "label": "Little to no liquidation",          "score": 5 }
+      ]
+    },
+    {
+      "id": "q7",
+      "category": "behavioral",
+      "weight": 1.5,
+      "displayOrder": 7,
+      "text": "If my portfolio value dropped 20% in a year, I would…",
+      "inputType": "radio",
+      "options": [
+        { "label": "Sell all my investments immediately",  "score": 1 },
+        { "label": "Sell some to reduce losses",           "score": 2 },
+        { "label": "Do nothing and wait for recovery",     "score": 4 },
+        { "label": "Buy more at lower prices",             "score": 5 }
+      ]
+    },
+    {
+      "id": "q8",
+      "category": "objective",
+      "weight": 1.3,
+      "displayOrder": 8,
+      "text": "My main investment objective is…",
+      "inputType": "radio",
+      "options": [
+        { "label": "Preserve capital (minimal risk)",  "score": 1 },
+        { "label": "Generate income with some growth", "score": 2 },
+        { "label": "Balanced growth and income",       "score": 3 },
+        { "label": "Long-term growth",                 "score": 4 },
+        { "label": "Aggressive growth",                "score": 5 }
+      ]
+    },
+    {
+      "id": "q9",
+      "category": "retirement_spending",
+      "weight": 1.0,
+      "displayOrder": 9,
+      "text": "How do you plan to spend money in retirement?",
+      "helperText": "Select the option that best describes your primary retirement lifestyle goal.",
+      "inputType": "radio",
+      "options": [
+        {
+          "label": "Basic living expenses only — cover essentials and preserve everything possible for heirs or emergencies.",
+          "score": 1,
+          "tag": "legacy_preservation"
+        },
+        {
+          "label": "Comfortable but modest — travel occasionally, some hobbies, careful with spending.",
+          "score": 2,
+          "tag": "modest_comfort"
+        },
+        {
+          "label": "Active lifestyle — frequent travel, dining out, pursuing hobbies and experiences regularly.",
+          "score": 3,
+          "tag": "active_lifestyle"
+        },
+        {
+          "label": "Premium lifestyle — international travel, second home, luxury experiences, generous gifting to family.",
+          "score": 4,
+          "tag": "premium_lifestyle"
+        },
+        {
+          "label": "I plan to leave a significant financial legacy — building wealth for heirs, charity, or a foundation is my primary goal.",
+          "score": 5,
+          "tag": "legacy_building"
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "category": "psychological",
+      "weight": 1.4,
+      "displayOrder": 10,
+      "text": "When you look back at a financial loss, which feeling is stronger?",
+      "helperText": "Think about the last time you lost money — on anything, not just investments.",
+      "inputType": "radio",
+      "options": [
+        {
+          "label": "Deep regret — I replay what I should have done differently and it bothers me for a long time.",
+          "score": 1,
+          "tag": "high_loss_aversion"
+        },
+        {
+          "label": "Frustration — I feel bad about it for a while but eventually move on.",
+          "score": 2,
+          "tag": "moderate_loss_aversion"
+        },
+        {
+          "label": "Neutral — Losses are part of life. I feel the sting briefly but don't dwell on it.",
+          "score": 3,
+          "tag": "balanced"
+        },
+        {
+          "label": "Opportunity mindset — I focus more on what I could do next rather than what I lost.",
+          "score": 4,
+          "tag": "low_loss_aversion"
+        },
+        {
+          "label": "Minimal impact — I view losses as tuition. I analyze them calmly and move forward without emotional weight.",
+          "score": 5,
+          "tag": "rational_risk_taker"
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "category": "psychological",
+      "weight": 0.8,
+      "displayOrder": 11,
+      "text": "When making a major financial decision, how do you typically approach it?",
+      "inputType": "radio",
+      "options": [
+        {
+          "label": "I rely heavily on a trusted advisor or family member — I prefer someone experienced to guide me.",
+          "score": 2,
+          "tag": "advisor_reliant"
+        },
+        {
+          "label": "I research thoroughly and follow data — I read reports, compare options, and decide based on evidence.",
+          "score": 4,
+          "tag": "analytical"
+        },
+        {
+          "label": "I go with my gut — I have good instincts and trust them.",
+          "score": 3,
+          "tag": "intuitive"
+        },
+        {
+          "label": "I set a framework then act — I define my criteria in advance, compare options against them, and commit.",
+          "score": 5,
+          "tag": "systematic"
+        },
+        {
+          "label": "I often delay — I tend to gather more information and sometimes miss opportunities by waiting.",
+          "score": 1,
+          "tag": "avoidant"
+        }
+      ]
+    }
+  ]
+}

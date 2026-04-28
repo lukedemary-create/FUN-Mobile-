@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "name": "Planora Stress Test Scenarios",
+    "version": "1.0"
+  },
+  "scenarios": [
+    {
+      "id": "dotcom2000",
+      "name": "Dot-com crash",
+      "dateRange": "March 2000 – October 2002",
+      "peakTrough": "-49.1% (S&P 500) / -78% (Nasdaq)",
+      "duration": "~30 months to bottom",
+      "recoveryTime": "~7 years to full S&P 500 recovery",
+      "triggerSummary": "Speculative technology valuations collapsed after years of unprofitable internet company IPOs. When the Fed raised rates in 2000, money fled growth stocks.",
+      "keyFactors": [
+        "Technology and telecom stocks had Price-to-Earnings ratios of 100–200x",
+        "Many companies had zero earnings but multi-billion dollar valuations",
+        "Federal Reserve raised rates 6 times in 1999–2000",
+        "Bonds outperformed significantly — classic flight to quality",
+        "Value stocks and dividend payers held up well"
+      ],
+      "whatHeld": ["US Treasuries", "Investment-grade bonds", "Value stocks", "Consumer staples", "Utilities", "Gold"],
+      "whatFell": ["Nasdaq / tech stocks", "Telecom companies", "Internet-era IPOs", "Aggressive growth funds"],
+      "recoveryLesson": "Diversification across sectors and asset classes — not just tech concentration — would have protected most of the portfolio. Bonds were a genuine hedge in this environment.",
+      "displayColor": "#FF5722",
+      "icon": "crash"
+    },
+    {
+      "id": "gfc2008",
+      "name": "Global Financial Crisis",
+      "dateRange": "October 2007 – March 2009",
+      "peakTrough": "-56.8% (S&P 500)",
+      "duration": "~17 months to bottom",
+      "recoveryTime": "~5.5 years to full S&P 500 recovery",
+      "triggerSummary": "Subprime mortgage bubble collapsed, triggering a global credit crisis. Major financial institutions failed or required government bailouts. Credit markets froze worldwide.",
+      "keyFactors": [
+        "Lehman Brothers bankruptcy in September 2008 froze global credit markets",
+        "High-yield bonds and EM bonds sold off alongside equities — no safe haven in credit",
+        "Gold initially fell in September 2008 then surged as inflation fears returned",
+        "Federal Reserve cut rates to zero and launched QE1 — unprecedented at the time",
+        "TARP ($700B bank bailout) and FDIC guarantee of money market funds stabilized markets"
+      ],
+      "whatHeld": ["US Treasuries (massive flight to quality)", "TIPS (later in recovery)", "Gold (after initial sell-off)", "Short-duration cash equivalents"],
+      "whatFell": ["Financials", "Real estate / REITs", "High-yield bonds", "EM equities and bonds", "Commodities", "Nearly all equities"],
+      "recoveryLesson": "The GFC showed that correlations go to 1 in a genuine systemic crisis — almost everything fell together. Only US government bonds and cash truly held. Shorter time horizons before withdrawal need proportionally more protection.",
+      "displayColor": "#F44336",
+      "icon": "crisis"
+    },
+    {
+      "id": "covid2020",
+      "name": "COVID-19 crash",
+      "dateRange": "February 19 – March 23, 2020",
+      "peakTrough": "-33.9% (S&P 500)",
+      "duration": "33 days to bottom — fastest bear market in history",
+      "recoveryTime": "~5 months to full S&P 500 recovery",
+      "triggerSummary": "Global pandemic forced worldwide economic shutdown. Historic speed of the crash was matched by historic speed of recovery, driven by massive fiscal and monetary stimulus.",
+      "keyFactors": [
+        "Fastest 30%+ decline in S&P 500 history — just 33 days",
+        "Federal Reserve launched unlimited QE and cut rates to zero within days",
+        "$2.2 trillion CARES Act provided direct stimulus — largest in US history",
+        "Technology, biotech, and e-commerce surged in recovery as remote work accelerated",
+        "Travel, hospitality, energy, and brick-and-mortar retail devastated"
+      ],
+      "whatHeld": ["US Treasuries initially", "Gold", "Technology stocks (Amazon, Netflix, Zoom surged)", "Healthcare / biotech"],
+      "whatFell": ["Airlines", "Hotels and hospitality", "Cruise lines", "Oil and energy (also OPEC+ price war)", "Small banks", "Retail REITs"],
+      "recoveryLesson": "Speed mattered more than depth. Investors who sold at the bottom and waited to feel safe missed one of the fastest recoveries ever. Diversification across sectors — especially technology — made recovery portfolios outperform significantly.",
+      "displayColor": "#2196F3",
+      "icon": "pandemic"
+    },
+    {
+      "id": "rateShock2022",
+      "name": "Rate shock / inflation surge",
+      "dateRange": "January 2022 – December 2022",
+      "peakTrough": "-25.4% (S&P 500) / -18.1% (Bloomberg US Aggregate Bond Index)",
+      "duration": "~12 months",
+      "recoveryTime": "S&P 500 recovered by late 2023; bonds partially recovered",
+      "triggerSummary": "Post-COVID inflation surge forced the Federal Reserve to raise rates from 0% to 5.25% — the fastest rate hiking cycle in 40 years. Both stocks AND bonds fell simultaneously, breaking the traditional 60/40 model.",
+      "keyFactors": [
+        "Both stocks and bonds fell for the first time since 1969 — the 60/40 portfolio lost ~16%",
+        "The Fed raised rates 11 times in 12 months",
+        "Growth and tech stocks fell hardest as higher rates reduce value of future earnings",
+        "Value stocks and dividend payers significantly outperformed",
+        "Commodities (oil, gas, agriculture) surged — energy sector up 65%",
+        "TIPS and floating rate bonds were among the only fixed income safe havens"
+      ],
+      "whatHeld": ["Commodities (especially energy — XLE up 65%)", "TIPS", "Floating rate loans", "Value stocks", "Dividend payers", "Short-duration cash / T-bills"],
+      "whatFell": ["Long-duration bonds (TLT fell -31%)", "Growth/tech stocks (QQQ fell -33%)", "Bitcoin and crypto (-77%)", "REITs (-25%)", "Emerging market equities"],
+      "recoveryLesson": "The 2022 crisis proved that bonds are not always a hedge for equities. Portfolios with commodity exposure, TIPS, floating rate instruments, and value tilts dramatically outperformed traditional allocations. Diversification beyond stocks and bonds is now essential.",
+      "displayColor": "#FF9800",
+      "icon": "inflation"
+    }
+  ]
+}
