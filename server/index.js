@@ -2447,7 +2447,7 @@ try {
   console.warn('Could not load .env:', e.message);
 }
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Local backend running at http://localhost:${PORT}`);
   console.log('Available functions:', Object.keys(HANDLERS).join(', '));
   console.log('Available GET routes: /api/indices, /api/fred/:seriesId, /api/fred-multiple, /api/bls, /api/eia/:route, /api/market/breadth, /api/market/movers, /api/economic-calendar, /api/sector/heatmap, /api/watchlist/quote, /api/news');
