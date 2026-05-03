@@ -104,7 +104,7 @@ export default function Landing() {
       {/* Main content */}
       <div style={{
         position: "relative", zIndex: 1,
-        maxWidth: 1000, margin: "0 auto",
+        maxWidth: 1200, margin: "0 auto",
         padding: "64px 24px 48px",
       }}>
         {/* Hero */}
@@ -121,7 +121,7 @@ export default function Landing() {
         </div>
 
         {/* Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div className="landing-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20 }}>
 
           {/* ── Planora Terminal Card ── */}
           <div
@@ -267,6 +267,92 @@ export default function Landing() {
               Enter Nexus <ArrowIcon />
             </button>
           </div>
+          {/* ── FUN Card ── */}
+          <div
+            onClick={() => navigate("/fun")}
+            onMouseEnter={() => setHovering("fun")}
+            onMouseLeave={() => setHovering(null)}
+            style={{
+              background: hovering === "fun" ? "#0a1a2e" : "#0a1020",
+              border: `1px solid ${hovering === "fun" ? "rgba(0,180,198,0.45)" : "rgba(255,255,255,0.07)"}`,
+              borderRadius: 16, padding: 28,
+              cursor: "pointer", position: "relative", overflow: "hidden",
+              transition: "border-color 0.2s, background 0.2s, box-shadow 0.2s",
+              boxShadow: hovering === "fun" ? "0 0 40px rgba(0,180,198,0.12)" : "none",
+              display: "flex", flexDirection: "column",
+            }}>
+            {/* Teal top bar */}
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "#00B4C6", borderRadius: "16px 16px 0 0" }} />
+
+            <div style={{ marginBottom: 18 }}>
+              <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+                <circle cx="26" cy="26" r="25" stroke="#00B4C6" strokeWidth="1.5" fill="none" opacity="0.5"/>
+                <circle cx="26" cy="9"  r="5.5" fill="#00B4C6"/>
+                <circle cx="9"  cy="38" r="5.5" fill="#00B4C6" opacity="0.8"/>
+                <circle cx="43" cy="38" r="5.5" fill="#00B4C6" opacity="0.8"/>
+                <line x1="26" y1="14.5" x2="9"  y2="32.5" stroke="#5BC8E2" strokeWidth="1.5" opacity="0.7"/>
+                <line x1="26" y1="14.5" x2="43" y2="32.5" stroke="#5BC8E2" strokeWidth="1.5" opacity="0.7"/>
+                <line x1="9"  y1="38"   x2="43" y2="38"   stroke="#5BC8E2" strokeWidth="1.5" opacity="0.7"/>
+              </svg>
+            </div>
+            <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 6 }}>
+              Financial Education
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#dde6f5", letterSpacing: "-0.01em", marginBottom: 6 }}>
+              FUN
+            </div>
+            <div style={{ fontSize: 11, color: "#00B4C6", fontWeight: 600, letterSpacing: "0.04em", marginBottom: 14 }}>
+              Financial Understanding Network
+            </div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.65, marginBottom: 24 }}>
+              Financial clarity for every chapter of your life — from budgeting basics to estate planning, with interactive calculators and visual explainers.
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 9, marginBottom: 24, flex: 1 }}>
+              {[
+                "Financial Health Score — personalized assessment",
+                "11 planning sections: budget, debt, investing & more",
+                "25+ interactive calculators with live charts",
+                "Estate & wills, insurance, retirement planning",
+                "Visual explainers — diagrams, flowcharts & guides",
+              ].map(f => (
+                <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12, color: "rgba(255,255,255,0.6)" }}>
+                  <CheckIcon color="#00B4C6" />
+                  <span>{f}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 8, padding: "10px 14px",
+              marginBottom: 18, display: "flex", flexDirection: "column", gap: 5,
+            }}>
+              {[
+                ["Focus", "Education & Planning"],
+                ["Sections", "11 planning areas"],
+                ["Calculators", "25+ interactive tools"],
+              ].map(([l, v]) => (
+                <div key={l} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>{l}</span>
+                  <span style={{ fontSize: 12, color: "#dde6f5", fontWeight: 500 }}>{v}</span>
+                </div>
+              ))}
+            </div>
+
+            <button style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              padding: "12px 20px",
+              background: "#00B4C6", color: "#fff",
+              border: "none", borderRadius: 8,
+              fontSize: 13, fontWeight: 700, cursor: "pointer", width: "100%",
+              letterSpacing: "0.01em",
+            }}>
+              Enter FUN <ArrowIcon />
+            </button>
+          </div>
+
         </div>
 
         {/* Footer trust bar */}
@@ -282,7 +368,11 @@ export default function Landing() {
         </div>
       </div>
 
-      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
+      <style>{`
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @media (max-width: 960px) { .landing-grid { grid-template-columns: 1fr 1fr !important; } }
+        @media (max-width: 600px) { .landing-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </div>
   );
 }

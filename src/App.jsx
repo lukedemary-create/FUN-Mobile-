@@ -55,6 +55,9 @@ const TaxPlanning        = lazy(() => import('./pages/TaxPlanning'));
 const SocialSecurity     = lazy(() => import('./pages/SocialSecurity'));
 const Hub                = lazy(() => import('./pages/Hub'));
 
+/* ─── FUN app ────────────────────────────────────────────────────── */
+const FunApp             = lazy(() => import('./fun/FunApp'));
+
 /* ─── Nexus pages (imported directly to avoid nested Routes issues) ── */
 const NexusRoleSelector  = lazy(() => import('./nexus/pages/RoleSelector'));
 const AdvisorDashboard   = lazy(() => import('./nexus/pages/advisor/AdvisorDashboard'));
@@ -149,6 +152,9 @@ function AppRoutes() {
       <Routes>
         {/* ── Landing ── */}
         <Route path="/" element={<Landing />} />
+
+        {/* ── FUN (own full-page layout) ── */}
+        <Route path="/fun/*" element={<FunApp />} />
 
         {/* ── Nexus (own layouts, AppProvider wraps all) ── */}
         <Route path="/nexus" element={<NexusRoleSelector />} />

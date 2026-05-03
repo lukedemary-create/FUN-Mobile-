@@ -276,7 +276,7 @@ function Sidebar({ onClose }) {
         display: "flex", flexDirection: "column", gap: "0.5rem",
       }}>
         <NavLink
-          to="/nexus"
+          to="/"
           style={{
             display: "flex", alignItems: "center", gap: "0.5rem",
             padding: "6px 10px", borderRadius: 6,
@@ -293,7 +293,7 @@ function Sidebar({ onClose }) {
             <polygon points="26,3 49,14 49,38 26,49 3,38 3,14" fill="none" stroke="currentColor" strokeWidth="3"/>
             <circle cx="26" cy="26" r="5" fill="currentColor"/>
           </svg>
-          Switch to Nexus
+          Switch to Home
         </NavLink>
         <div style={{
           fontSize: "0.5rem", color: "var(--text-3)",
