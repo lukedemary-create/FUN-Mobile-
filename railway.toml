@@ -3,5 +3,3 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "node server/index.js"
-healthcheckPath = "/api/indices"
-healthcheckTimeout = 30
