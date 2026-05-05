@@ -25,7 +25,7 @@ function Section({ title, subtitle, icon, children }) {
         <div style={{ fontSize:"1.25rem" }}>{icon}</div>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:"0.75rem",fontWeight:800,color:"var(--text-1)" }}>{title}</div>
-          <div style={{ fontSize:"0.5625rem",color:"var(--text-3)",marginTop:1 }}>{subtitle}</div>
+          <div style={{ fontSize:"0.8rem",color:"var(--text-3)",marginTop:2 }}>{subtitle}</div>
         </div>
         {open ? <ChevronUp size={14} style={{ color:"var(--text-3)",flexShrink:0 }}/>
                : <ChevronDown size={14} style={{ color:"var(--text-3)",flexShrink:0 }}/>}

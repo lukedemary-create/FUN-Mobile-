@@ -244,6 +244,40 @@ animated on mount
 - Educational tone — warm, clear, never condescending
 - Progress indicators on all learning modules
 
+## Design Skills
+
+Three skills are installed in this project:
+- Emil Kowalski motion skill
+- Impeccable (/polish command)
+- Taste skill
+
+Rules for using them:
+
+MOTION & ANIMATIONS:
+Only apply the Emil Kowalski motion skill
+when Luke explicitly says to use motion
+or animations in a prompt. Never add
+animations or motion effects unless
+directly instructed. No auto-transitions,
+no hover animations, no scroll effects
+unless asked for.
+
+POLISH:
+Run /polish from Impeccable before
+finishing every component — always.
+This is mandatory on every build.
+
+TASTE:
+Apply Taste skill design standards to
+every component always — no generic AI
+aesthetics, no boring gradients, no
+cookie cutter layouts ever.
+
+SUMMARY:
+- Motion → only when told
+- Polish → always
+- Taste → always
+
 ## Absolute Rules — Never Break These
 - Never deviate from the color tokens above
 - Never use default Tailwind grays

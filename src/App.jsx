@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import ErrorBoundary from '@/lib/ErrorBoundary';
 import Layout from './Layout';
 import './nexus/styles/globals.css';
 import { AppProvider, useApp } from './nexus/context/AppContext';
@@ -54,6 +55,8 @@ const NetWorthTracker    = lazy(() => import('./pages/NetWorthTracker'));
 const TaxPlanning        = lazy(() => import('./pages/TaxPlanning'));
 const SocialSecurity     = lazy(() => import('./pages/SocialSecurity'));
 const Hub                = lazy(() => import('./pages/Hub'));
+const Privacy            = lazy(() => import('./pages/Privacy'));
+const Terms              = lazy(() => import('./pages/Terms'));
 
 /* ─── FUN app ────────────────────────────────────────────────────── */
 const FunApp             = lazy(() => import('./fun/FunApp'));
@@ -152,6 +155,8 @@ function AppRoutes() {
       <Routes>
         {/* ── Landing ── */}
         <Route path="/" element={<Landing />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* ── FUN (own full-page layout) ── */}
         <Route path="/fun/*" element={<FunApp />} />
@@ -227,15 +232,17 @@ function AppRoutes() {
 /* ─── App ────────────────────────────────────────────────────────── */
 export default function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AppProvider>
-            <AppRoutes />
-          </AppProvider>
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <AppProvider>
+              <AppRoutes />
+            </AppProvider>
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

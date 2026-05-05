@@ -1,606 +1,763 @@
+// ─────────────────────────────────────────────────────────────────────
+// Layout.jsx — Planora Terminal · Command Rail Navigation
+// Redesigned from scratch · Dark #0a0a0f · Gold #F5A623
+// ─────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useCallback } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard,
-  MonitorDot,
-  History,
-  PieChart,
-  TrendingUp,
-  CalendarDays,
-  Zap,
-  Users,
-  ShieldAlert,
-  Star,
-  BarChart2,
-  Sparkles,
-  Wallet,
-  LineChart,
-  Calculator,
-  Settings,
+  Brain, LayoutDashboard, CalendarDays, ShieldAlert, Wallet, Settings,
+  MonitorDot, History, PieChart, TrendingUp, SlidersHorizontal, Coins,
+  Newspaper, Zap, Users, ShoppingCart, Home, Star, BarChart2, Landmark,
+  Eye, Sparkles, LineChart, Calculator, GraduationCap, HeartPulse,
+  BookUser, BookOpen, Target, Receipt, ShieldCheck, X, ChevronRight,
   Menu,
-  X,
-  GraduationCap,
-  HeartPulse,
-  Landmark,
-  BookUser,
-  ShoppingCart,
-  Brain,
-  BookOpen,
-  SlidersHorizontal,
-  Coins,
-  Newspaper,
-  Home,
-  Eye,
-  Target,
-  Receipt,
-  ShieldCheck,
-  ChevronDown,
 } from "lucide-react";
 
-/* ─── Nav structure ──────────────────────────────────────────────── */
-const NAV_GROUPS = [
+const RAIL_W  = 56;
+const PANEL_W = 248;
+
+// ── Nav data ───────────────────────────────────────────────────────────
+const SECTIONS = [
   {
-    label: "Planora AI",
+    id: "ai", label: "Planora AI", icon: Brain,
+    items: [{ label: "Planora AI", icon: Brain, path: "/planora-ai" }],
+  },
+  {
+    id: "markets", label: "Markets", icon: LayoutDashboard,
     items: [
-      { label: "Planora AI", icon: Brain, path: "/planora-ai" },
+      { label: "Dashboard",      icon: LayoutDashboard,   path: "/dashboard"      },
+      { label: "Terminal",       icon: MonitorDot,        path: "/terminal"       },
+      { label: "Market History", icon: History,           path: "/MarketHistory"  },
+      { label: "Sectors",        icon: PieChart,          path: "/sectors"        },
+      { label: "Top Performers", icon: TrendingUp,        path: "/top-performers" },
+      { label: "Stock Screener", icon: SlidersHorizontal, path: "/stock-screener" },
+      { label: "Crypto Markets", icon: Coins,             path: "/crypto"         },
+      { label: "Market News",    icon: Newspaper,         path: "/market-news"    },
     ],
   },
   {
-    label: "Markets",
-    items: [
-      { label: "Dashboard",       icon: LayoutDashboard,    path: "/dashboard" },
-      { label: "Terminal",        icon: MonitorDot,         path: "/terminal" },
-      { label: "Market History",  icon: History,            path: "/MarketHistory" },
-      { label: "Sectors",         icon: PieChart,           path: "/sectors" },
-      { label: "Top Performers",  icon: TrendingUp,         path: "/top-performers" },
-      { label: "Stock Screener",  icon: SlidersHorizontal,  path: "/stock-screener" },
-      { label: "Crypto Markets",  icon: Coins,              path: "/crypto" },
-      { label: "Market News",     icon: Newspaper,          path: "/market-news" },
-    ],
-  },
-  {
-    label: "Macro",
+    id: "macro", label: "Macro", icon: CalendarDays,
     items: [
       { label: "Economic Calendar", icon: CalendarDays, path: "/economic-calendar" },
-      { label: "Energy Markets",    icon: Zap,          path: "/energy" },
-      { label: "Labor Markets",     icon: Users,        path: "/labor" },
-      { label: "The Consumer",      icon: ShoppingCart, path: "/consumer" },
-      { label: "Real Estate",       icon: Home,         path: "/real-estate" },
+      { label: "Energy Markets",    icon: Zap,          path: "/energy"           },
+      { label: "Labor Markets",     icon: Users,        path: "/labor"            },
+      { label: "The Consumer",      icon: ShoppingCart, path: "/consumer"         },
+      { label: "Real Estate",       icon: Home,         path: "/real-estate"      },
     ],
   },
   {
-    label: "Analysis",
+    id: "analysis", label: "Analysis", icon: ShieldAlert,
     items: [
-      { label: "Risk Analysis",          icon: ShieldAlert, path: "/RiskAnalysis" },
-      { label: "Watchlist",              icon: Star,        path: "/watchlist" },
-      { label: "Market Breadth",         icon: BarChart2,   path: "/market-breadth" },
-      { label: "Political Intelligence", icon: Landmark,    path: "/PoliticsEconomy" },
-      { label: "Insider Trading",        icon: Eye,         path: "/insider-trading" },
+      { label: "Risk Analysis",          icon: ShieldAlert, path: "/RiskAnalysis"     },
+      { label: "Watchlist",              icon: Star,        path: "/watchlist"         },
+      { label: "Market Breadth",         icon: BarChart2,   path: "/market-breadth"   },
+      { label: "Political Intelligence", icon: Landmark,    path: "/PoliticsEconomy"  },
+      { label: "Insider Trading",        icon: Eye,         path: "/insider-trading"  },
     ],
   },
   {
-    label: "Wealth",
+    id: "wealth", label: "Wealth", icon: Wallet,
     items: [
-      { label: "Breakdown Reports", icon: Sparkles,       path: "/AIAdvisor" },
-      { label: "Budget Planner",    icon: Wallet,         path: "/BudgetPlanner" },
-      { label: "Future Planning",   icon: LineChart,      path: "/FuturePlanning" },
-      { label: "Calculators",       icon: Calculator,     path: "/Calculators" },
-      { label: "Education",         icon: GraduationCap,  path: "/education" },
-      { label: "Life Insurance",    icon: HeartPulse,     path: "/life-insurance" },
-      { label: "Wealth Counsel",    icon: BookUser,       path: "/WealthCounsel" },
-      { label: "Brokerage Guide",   icon: BookOpen,       path: "/brokerage-guide" },
-      { label: "Net Worth Tracker", icon: Target,         path: "/net-worth" },
-      { label: "Tax Planning",      icon: Receipt,        path: "/tax-planning" },
-      { label: "Social Security",   icon: ShieldCheck,    path: "/social-security" },
+      { label: "Breakdown Reports", icon: Sparkles,      path: "/AIAdvisor"      },
+      { label: "Budget Planner",    icon: Wallet,        path: "/BudgetPlanner"  },
+      { label: "Future Planning",   icon: LineChart,     path: "/FuturePlanning" },
+      { label: "Calculators",       icon: Calculator,    path: "/Calculators"    },
+      { label: "Education",         icon: GraduationCap, path: "/education"      },
+      { label: "Life Insurance",    icon: HeartPulse,    path: "/life-insurance" },
+      { label: "Wealth Counsel",    icon: BookUser,      path: "/WealthCounsel"  },
+      { label: "Brokerage Guide",   icon: BookOpen,      path: "/brokerage-guide"},
+      { label: "Net Worth Tracker", icon: Target,        path: "/net-worth"      },
+      { label: "Tax Planning",      icon: Receipt,       path: "/tax-planning"   },
+      { label: "Social Security",   icon: ShieldCheck,   path: "/social-security"},
     ],
   },
   {
-    label: "Settings",
-    items: [
-      { label: "Settings", icon: Settings, path: "/Settings" },
-    ],
+    id: "settings", label: "Settings", icon: Settings,
+    items: [{ label: "Settings", icon: Settings, path: "/Settings" }],
   },
 ];
 
-const ALL_ITEMS = NAV_GROUPS.flatMap((g) => g.items);
+const ALL_ITEMS = SECTIONS.flatMap(s => s.items);
 
-/* ─── Page title helper ──────────────────────────────────────────── */
-function usePageTitle() {
-  const location = useLocation();
-  const found = ALL_ITEMS.find((i) => {
-    if (i.path === "/") return location.pathname === "/";
-    return location.pathname === i.path || location.pathname.startsWith(i.path + "/");
-  });
-  return found?.label ?? "Planora";
+function useActiveSection() {
+  const { pathname } = useLocation();
+  return SECTIONS.find(s =>
+    s.items.some(i => pathname === i.path || pathname.startsWith(i.path + "/"))
+  ) ?? null;
 }
 
-/* ─── Sidebar ────────────────────────────────────────────────────── */
-function Sidebar({ onClose }) {
-  const location = useLocation();
+function usePageTitle() {
+  const { pathname } = useLocation();
+  return ALL_ITEMS.find(i => pathname === i.path || pathname.startsWith(i.path + "/"))?.label ?? "Planora";
+}
+
+// ── Individual nav item (handles hover state internally) ───────────────
+function NavItem({ item, onClose }) {
+  const [hov, setHov] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const Icon = item.icon;
+  const isActive = pathname === item.path || pathname.startsWith(item.path + "/");
 
-  const activeGroupLabel = NAV_GROUPS.find(g =>
-    g.items.some(i => location.pathname === i.path || location.pathname.startsWith(i.path + "/"))
-  )?.label ?? null;
-
-  const [openGroups, setOpenGroups] = useState(() => {
-    try {
-      const saved = localStorage.getItem("planora_nav_open");
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return NAV_GROUPS.map(g => g.label);
-  });
-
-  useEffect(() => {
-    if (activeGroupLabel && !openGroups.includes(activeGroupLabel)) {
-      setOpenGroups(prev => {
-        const next = [...prev, activeGroupLabel];
-        localStorage.setItem("planora_nav_open", JSON.stringify(next));
-        return next;
-      });
-    }
-  }, [activeGroupLabel]); // eslint-disable-line
-
-  const toggleGroup = useCallback((label) => {
-    setOpenGroups(prev => {
-      const next = prev.includes(label) ? prev.filter(l => l !== label) : [...prev, label];
-      localStorage.setItem("planora_nav_open", JSON.stringify(next));
-      return next;
-    });
-  }, []);
+  function handleClick() {
+    onClose();
+    navigate(item.path);
+  }
 
   return (
-    <aside className="t-sidebar">
-      {/* Logo */}
-      <div
-        onClick={() => navigate('/hub')}
+    <div
+      onClick={handleClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: "flex", alignItems: "center", gap: 10,
+        padding: "9px 16px",
+        cursor: "pointer",
+        background: isActive ? "rgba(245,166,35,0.09)" : hov ? "rgba(255,255,255,0.04)" : "transparent",
+        borderLeft: `2px solid ${isActive ? "#F5A623" : "transparent"}`,
+        color: isActive ? "#F5A623" : "#94a3b8",
+        fontSize: 13,
+        fontWeight: isActive ? 600 : 400,
+        fontFamily: "'Inter', -apple-system, sans-serif",
+        transition: "background 0.12s",
+        letterSpacing: "-0.01em",
+      }}
+    >
+      <Icon size={14} style={{ flexShrink: 0 }}/>
+      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.label}</span>
+    </div>
+  );
+}
+
+// ── Icon Rail ──────────────────────────────────────────────────────────
+function Rail({ activeSection, openSectionId, onSectionClick }) {
+  const navigate = useNavigate();
+  const mainSections = SECTIONS.filter(s => s.id !== "settings");
+
+  return (
+    <div
+      id="planora-rail"
+      style={{
+        position: "fixed", top: 0, left: 0, bottom: 0,
+        width: RAIL_W,
+        background: "#0a0a0f",
+        borderRight: "1px solid #1e2028",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        zIndex: 60,
+      }}
+    >
+      {/* Logo mark */}
+      <button
+        onClick={() => navigate("/hub")}
+        title="Planora Hub"
         style={{
-          padding: "1rem 1rem 0.875rem",
-          borderBottom: "1px solid var(--border-c)",
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          gap: "0.625rem",
-          cursor: "pointer",
+          width: RAIL_W, height: 52, flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: "none", border: "none", cursor: "pointer",
+          borderBottom: "1px solid #1e2028",
         }}
       >
-        <div style={{
-          width: 28, height: 28,
-          background: "var(--gold)",
-          borderRadius: "4px",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0,
-        }}>
-          <span style={{
-            fontSize: "0.9375rem", fontWeight: 900,
-            color: "#07080a", lineHeight: 1,
-            fontFamily: "'Inter', sans-serif",
-          }}>P</span>
-        </div>
+        <motion.div
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            width: 28, height: 28, background: "#F5A623", borderRadius: 7,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 900, color: "#0a0a0f", lineHeight: 1 }}>P</span>
+        </motion.div>
+      </button>
 
-        <div style={{ minWidth: 0 }}>
-          <div style={{
-            fontWeight: 900, fontSize: "0.875rem",
-            letterSpacing: "0.18em", textTransform: "uppercase",
-            color: "var(--text-1)", lineHeight: 1.1,
-          }}>PLANORA</div>
-          <div style={{
-            fontSize: "0.5rem", fontWeight: 700,
-            letterSpacing: "0.22em", textTransform: "uppercase",
-            color: "var(--gold)", marginTop: "1px", lineHeight: 1,
-          }}>TERMINAL</div>
-        </div>
-
-        {onClose && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
-            style={{
-              marginLeft: "auto", background: "none", border: "none",
-              color: "var(--text-3)", cursor: "pointer",
-              padding: "4px", display: "flex", alignItems: "center",
-            }}
-            aria-label="Close menu"
-          >
-            <X size={15} />
-          </button>
-        )}
-      </div>
-
-      {/* Nav */}
-      <nav style={{ flex: 1, overflowY: "auto", padding: "0.375rem 0 1rem" }}>
-        {NAV_GROUPS.map((group) => {
-          const isOpen   = openGroups.includes(group.label);
-          const isActive = group.label === activeGroupLabel;
+      {/* Section icons */}
+      <nav style={{ flex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 0", gap: 1 }}>
+        {mainSections.map(section => {
+          const Icon = section.icon;
+          const isActive  = activeSection?.id === section.id;
+          const isOpen    = openSectionId === section.id;
 
           return (
-            <div key={group.label}>
-              <button
-                onClick={() => toggleGroup(group.label)}
-                style={{
-                  display: "flex", alignItems: "center",
-                  width: "100%", background: "none", border: "none",
-                  padding: "0.875rem 1rem 0.25rem",
-                  cursor: "pointer", gap: "0.375rem",
-                }}
-              >
-                <span
-                  className="t-nav-section"
+            <div key={section.id} style={{ position: "relative", width: "100%" }}>
+              {/* Active gold pip */}
+              {isActive && (
+                <motion.div
+                  layoutId="rail-active-pip"
                   style={{
-                    padding: 0, flex: 1, textAlign: "left",
-                    color: isActive ? "var(--gold)" : undefined,
-                    transition: "color 0.15s",
-                  }}
-                >
-                  {group.label}
-                </span>
-                <ChevronDown
-                  size={11}
-                  color={isActive ? "var(--gold)" : "var(--text-3)"}
-                  style={{
-                    flexShrink: 0,
-                    transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)",
-                    transition: "transform 0.2s ease",
+                    position: "absolute", left: 0, top: 6, bottom: 6,
+                    width: 2, background: "#F5A623", borderRadius: "0 2px 2px 0",
                   }}
                 />
+              )}
+              <button
+                onClick={() => onSectionClick(section.id)}
+                title={section.label}
+                style={{
+                  width: "100%", height: 44,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: isOpen
+                    ? "rgba(245,166,35,0.12)"
+                    : isActive
+                    ? "rgba(245,166,35,0.06)"
+                    : "transparent",
+                  border: "none", cursor: "pointer",
+                  transition: "background 0.15s",
+                  position: "relative",
+                }}
+                onMouseEnter={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                onMouseLeave={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "transparent"; }}
+              >
+                <Icon
+                  size={17}
+                  color={isActive || isOpen ? "#F5A623" : "#4a5568"}
+                  style={{ transition: "color 0.15s" }}
+                />
               </button>
-
-              <div style={{
-                overflow: "hidden",
-                maxHeight: isOpen ? `${group.items.length * 40}px` : "0px",
-                transition: "max-height 0.25s ease",
-              }}>
-                {group.items.map((item) => (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    end={item.path === "/"}
-                    className={({ isActive }) => `t-nav-item${isActive ? " active" : ""}`}
-                    onClick={onClose}
-                    aria-label={item.label}
-                  >
-                    <item.icon size={14} style={{ flexShrink: 0 }} />
-                    {item.label}
-                  </NavLink>
-                ))}
-              </div>
             </div>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div style={{
-        padding: "0.75rem 1rem",
-        borderTop: "1px solid var(--border-c)",
-        flexShrink: 0,
-        display: "flex", flexDirection: "column", gap: "0.5rem",
-      }}>
-        <NavLink
-          to="/"
+      {/* Bottom controls */}
+      <div style={{ width: "100%", borderTop: "1px solid #1e2028", padding: "6px 0" }}>
+        {/* Settings */}
+        {(() => {
+          const s = SECTIONS.find(x => x.id === "settings");
+          const isActive = activeSection?.id === "settings";
+          const isOpen   = openSectionId === "settings";
+          return (
+            <button
+              onClick={() => onSectionClick("settings")}
+              title="Settings"
+              style={{
+                width: "100%", height: 40,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: isOpen || isActive ? "rgba(245,166,35,0.08)" : "transparent",
+                border: "none", cursor: "pointer", transition: "background 0.15s",
+              }}
+              onMouseEnter={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+              onMouseLeave={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "transparent"; }}
+            >
+              <Settings size={16} color={isActive || isOpen ? "#F5A623" : "#4a5568"}/>
+            </button>
+          );
+        })()}
+
+        {/* Home */}
+        <button
+          onClick={() => navigate("/")}
+          title="Back to Home"
           style={{
-            display: "flex", alignItems: "center", gap: "0.5rem",
-            padding: "6px 10px", borderRadius: 6,
-            border: "1px solid var(--border-c)",
-            background: "transparent", color: "var(--text-3)",
-            fontSize: "0.625rem", fontWeight: 600,
-            letterSpacing: "0.06em", textTransform: "uppercase",
-            textDecoration: "none", transition: "all 0.15s",
+            width: "100%", height: 38,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "transparent", border: "none", cursor: "pointer", transition: "background 0.15s",
           }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--gold)"; e.currentTarget.style.color = "var(--gold)"; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-c)"; e.currentTarget.style.color = "var(--text-3)"; }}
+          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
+          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
         >
-          <svg width="12" height="12" viewBox="0 0 52 52" fill="none">
-            <polygon points="26,3 49,14 49,38 26,49 3,38 3,14" fill="none" stroke="currentColor" strokeWidth="3"/>
-            <circle cx="26" cy="26" r="5" fill="currentColor"/>
+          <svg width="14" height="14" viewBox="0 0 52 52" fill="none">
+            <polygon points="26,3 49,14 49,38 26,49 3,38 3,14" fill="none" stroke="#4a5568" strokeWidth="4"/>
+            <circle cx="26" cy="26" r="6" fill="#4a5568"/>
           </svg>
-          Switch to Home
-        </NavLink>
-        <div style={{
-          fontSize: "0.5rem", color: "var(--text-3)",
-          lineHeight: 1.6, textAlign: "center", letterSpacing: "0.03em",
-        }}>
-          For educational purposes only · Not financial advice
-        </div>
+        </button>
       </div>
-    </aside>
+    </div>
   );
 }
 
-/* ─── Top bar ────────────────────────────────────────────────────── */
-function TopBar({ onMenuClick }) {
-  const [time, setTime] = useState(() => {
-    const now = new Date();
-    return now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-  });
+// ── Flyout Panel ───────────────────────────────────────────────────────
+function FlyoutPanel({ section, onClose }) {
+  return (
+    <AnimatePresence>
+      {section && (
+          <motion.div
+            key="panel"
+            onClick={e => e.stopPropagation()}
+            initial={{ x: -(PANEL_W + 10), opacity: 0 }}
+            animate={{ x: 0, opacity: 1, transition: { type: "spring", stiffness: 420, damping: 38, mass: 0.75 } }}
+            exit={{ x: -(PANEL_W + 10), opacity: 0, transition: { duration: 0.12, ease: "easeIn" } }}
+            style={{
+              position: "fixed", top: 0, left: RAIL_W, bottom: 0,
+              width: PANEL_W,
+              background: "#111318",
+              borderRight: "1px solid #1e2028",
+              zIndex: 56,
+              display: "flex", flexDirection: "column",
+              overflow: "hidden",
+              boxShadow: "8px 0 40px rgba(0,0,0,0.5)",
+            }}
+          >
+            {/* Panel header */}
+            <div style={{
+              height: 52, flexShrink: 0,
+              display: "flex", alignItems: "center",
+              padding: "0 14px 0 16px",
+              borderBottom: "1px solid #1e2028",
+              gap: 8,
+            }}>
+              <div style={{ width: 2, height: 16, background: "#F5A623", borderRadius: 1, flexShrink: 0 }}/>
+              <span style={{
+                flex: 1, fontSize: 11, fontWeight: 700,
+                letterSpacing: "0.15em", textTransform: "uppercase",
+                color: "#f1f5f9",
+                fontFamily: "'Inter', sans-serif",
+              }}>
+                {section.label}
+              </span>
+              <button
+                onClick={(e) => { e.stopPropagation(); onClose(); }}
+                style={{
+                  background: "rgba(255,255,255,0.05)", border: "1px solid #1e2028",
+                  borderRadius: 6, cursor: "pointer",
+                  width: 26, height: 26,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: "#64748b",
+                }}
+              >
+                <X size={12}/>
+              </button>
+            </div>
 
-  const pageTitle = usePageTitle();
+            {/* Items */}
+            <nav style={{ flex: 1, overflowY: "auto", padding: "6px 0" }}>
+              {section.items.map((item) => (
+                <NavItem key={item.path} item={item} onClose={onClose} />
+              ))}
+            </nav>
+
+            {/* Footer */}
+            <div style={{
+              padding: "10px 16px",
+              borderTop: "1px solid #1e2028",
+              flexShrink: 0,
+            }}>
+              <p style={{ fontSize: 9.5, color: "#4a5568", lineHeight: 1.6, margin: 0, letterSpacing: "0.02em" }}>
+                For educational purposes only · Not financial advice
+              </p>
+            </div>
+          </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ── Top Bar ────────────────────────────────────────────────────────────
+function TopBar({ onMobileMenu }) {
+  const [clock, setClock] = useState("");
+  const activeSection = useActiveSection();
+  const pageTitle     = usePageTitle();
 
   useEffect(() => {
     const tick = () => {
-      const now = new Date();
-      setTime(now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+      setClock(new Date().toLocaleTimeString("en-US", {
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+      }));
     };
+    tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
   return (
-    <header className="t-topbar">
+    <header
+      id="planora-topbar"
+      style={{
+        position: "fixed", top: 0, left: RAIL_W, right: 0,
+        height: 48,
+        background: "rgba(10,10,15,0.94)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid #1e2028",
+        display: "flex", alignItems: "center",
+        padding: "0 20px 0 16px",
+        gap: 10,
+        zIndex: 40,
+        fontFamily: "'Inter', -apple-system, sans-serif",
+      }}
+    >
+      {/* Mobile hamburger */}
       <button
-        onClick={onMenuClick}
-        className="t-topbar-menu-btn"
-        aria-label="Open menu"
+        id="mobile-menu-btn"
+        onClick={onMobileMenu}
         style={{
           display: "none", background: "none", border: "none",
-          color: "var(--text-2)", cursor: "pointer",
-          padding: "5px", borderRadius: "4px",
+          cursor: "pointer", color: "#94a3b8", padding: 4,
           alignItems: "center", justifyContent: "center",
         }}
       >
-        <Menu size={18} />
+        <Menu size={18}/>
       </button>
 
-      <div style={{ flex: 1 }}>
-        <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em" }}>
+      {/* Breadcrumb */}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+        {activeSection && (
+          <>
+            <span style={{ fontSize: 11, color: "#4a5568", fontWeight: 500 }}>{activeSection.label}</span>
+            <ChevronRight size={11} color="#1e2028"/>
+          </>
+        )}
+        <span style={{
+          fontSize: 13, fontWeight: 700, color: "#f1f5f9",
+          letterSpacing: "-0.01em",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
           {pageTitle}
         </span>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <span
-          className="t-mono"
-          style={{ fontSize: "0.75rem", color: "var(--text-2)", fontVariantNumeric: "tabular-nums", letterSpacing: "0.04em" }}
-        >
-          {time}
+      {/* Clock */}
+      <span style={{
+        fontSize: 12, color: "#64748b",
+        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+        fontVariantNumeric: "tabular-nums",
+        letterSpacing: "0.04em",
+        flexShrink: 0,
+      }}>
+        {clock}
+      </span>
+
+      {/* LIVE pill */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 5,
+        padding: "3px 9px",
+        background: "rgba(16,185,129,0.08)",
+        border: "1px solid rgba(16,185,129,0.2)",
+        borderRadius: 99,
+        flexShrink: 0,
+      }}>
+        <div style={{
+          width: 5, height: 5, borderRadius: "50%", background: "#10b981",
+          animation: "liveGlow 2s ease infinite",
+        }}/>
+        <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", color: "#10b981", textTransform: "uppercase" }}>
+          LIVE
         </span>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
-          <div className="t-live" />
-          <span style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.1em", color: "var(--up)", textTransform: "uppercase" }}>
-            LIVE
-          </span>
-        </div>
       </div>
 
       <style>{`
+        @keyframes liveGlow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+          50%       { box-shadow: 0 0 0 4px rgba(16,185,129,0); }
+        }
         @media (max-width: 768px) {
-          .t-topbar-menu-btn { display: flex !important; }
+          #planora-rail    { display: none !important; }
+          #planora-topbar  { left: 0 !important; }
+          #planora-main    { margin-left: 0 !important; padding-bottom: 64px !important; }
+          #mobile-menu-btn { display: flex !important; }
         }
       `}</style>
     </header>
   );
 }
 
-/* ─── Mobile bottom nav ──────────────────────────────────────────── */
-const MOBILE_NAV_ITEMS = [
-  { label: "Hub",      icon: LayoutDashboard, path: "/hub" },
-  { label: "Markets",  icon: TrendingUp,      path: "/dashboard" },
+// ── Mobile full menu overlay ───────────────────────────────────────────
+function MobileMenuOverlay({ open, onClose }) {
+  const navigate = useNavigate();
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, x: -300 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -300 }}
+          transition={{ type: "spring", stiffness: 400, damping: 38 }}
+          style={{
+            position: "fixed", inset: 0, zIndex: 100,
+            background: "#111318",
+            overflowY: "auto",
+            paddingBottom: 80,
+          }}
+        >
+          {/* Header */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 10,
+            padding: "16px 20px",
+            borderBottom: "1px solid #1e2028",
+          }}>
+            <div style={{ width: 28, height: 28, background: "#F5A623", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: 13, fontWeight: 900, color: "#0a0a0f" }}>P</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#f1f5f9" }}>PLANORA</div>
+              <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F5A623", marginTop: 1 }}>TERMINAL</div>
+            </div>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
+              <X size={18}/>
+            </button>
+          </div>
+          {/* All sections */}
+          {SECTIONS.map(section => (
+            <div key={section.id}>
+              <div style={{ padding: "12px 20px 4px", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#4a5568" }}>
+                {section.label}
+              </div>
+              {section.items.map(item => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => { navigate(item.path); onClose(); }}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 10,
+                      width: "100%", padding: "10px 20px",
+                      background: "none", border: "none", cursor: "pointer",
+                      color: "#94a3b8", fontSize: 14, fontFamily: "inherit", textAlign: "left",
+                    }}
+                  >
+                    <Icon size={15}/>
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+          <div style={{ padding: "16px 20px", borderTop: "1px solid #1e2028", marginTop: 8 }}>
+            <button
+              onClick={() => { navigate("/"); onClose(); }}
+              style={{
+                display: "flex", alignItems: "center", gap: 8,
+                background: "none", border: "1px solid #1e2028",
+                borderRadius: 8, padding: "10px 14px",
+                cursor: "pointer", color: "#64748b", fontSize: 13, fontFamily: "inherit",
+              }}
+            >
+              Switch to Home
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ── Mobile Bottom Nav ──────────────────────────────────────────────────
+const MOBILE_QUICK = [
+  { label: "Markets",  icon: LayoutDashboard, path: "/dashboard"         },
   { label: "Macro",    icon: CalendarDays,    path: "/economic-calendar" },
-  { label: "Analysis", icon: BarChart2,       path: "/RiskAnalysis" },
-  { label: "Wealth",   icon: Wallet,          path: "/BudgetPlanner" },
+  { label: "Analysis", icon: ShieldAlert,     path: "/RiskAnalysis"      },
+  { label: "Wealth",   icon: Wallet,          path: "/BudgetPlanner"     },
+  { label: "AI",       icon: Brain,           path: "/planora-ai"        },
 ];
 
 function MobileNav() {
-  const location = useLocation();
-
-  const isActive = (path) => {
-    if (path === "/") return location.pathname === "/";
-    return location.pathname === path || location.pathname.startsWith(path + "/");
-  };
-
+  const { pathname } = useLocation();
   return (
-    <nav className="t-mobile-nav" style={{ display: "none" }} id="t-mobile-bottom-nav">
-      {MOBILE_NAV_ITEMS.map((item) => {
-        const active = isActive(item.path);
+    <nav
+      id="t-mobile-bottom-nav"
+      style={{
+        display: "none",
+        position: "fixed", bottom: 0, left: 0, right: 0, height: 58,
+        background: "#111318",
+        borderTop: "1px solid #1e2028",
+        zIndex: 50, flexDirection: "row",
+      }}
+    >
+      {MOBILE_QUICK.map(item => {
+        const Icon = item.icon;
+        const active = pathname === item.path || pathname.startsWith(item.path + "/");
         return (
           <NavLink
             key={item.path}
             to={item.path}
-            end={item.path === "/"}
-            className={`t-mobile-nav-item${active ? " active" : ""}`}
+            style={{
+              flex: 1, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: 3,
+              textDecoration: "none",
+              color: active ? "#F5A623" : "#4a5568",
+              borderTop: `2px solid ${active ? "#F5A623" : "transparent"}`,
+              paddingTop: 2,
+              fontFamily: "'Inter', sans-serif",
+            }}
           >
-            <div className="t-mobile-nav-icon">
-              <item.icon size={17} />
-            </div>
-            <span>{item.label}</span>
+            <Icon size={17}/>
+            <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.label}</span>
           </NavLink>
         );
       })}
-      <style>{`
-        @media (max-width: 768px) {
-          #t-mobile-bottom-nav { display: flex !important; }
-        }
-      `}</style>
+      <style>{`@media (max-width: 768px) { #t-mobile-bottom-nav { display: flex !important; } }`}</style>
     </nav>
   );
 }
 
-/* ─── Welcome Modal ──────────────────────────────────────────────── */
-const WELCOME_KEY = "planora_welcome_seen";
+// ── Welcome Modal ──────────────────────────────────────────────────────
+const WELCOME_KEY  = "planora_welcome_seen";
 
 const FEATURE_CARDS = [
-  {
-    icon: TrendingUp,
-    color: "var(--teal)",
-    bg: "rgba(0,184,153,0.08)",
-    border: "rgba(0,184,153,0.2)",
-    title: "Markets",
-    desc: "Live dashboards, sector heatmaps, stock screener, crypto, top performers, and real-time market news from global sources.",
-  },
-  {
-    icon: CalendarDays,
-    color: "var(--gold)",
-    bg: "rgba(201,168,76,0.08)",
-    border: "rgba(201,168,76,0.2)",
-    title: "Macro",
-    desc: "Economic calendar, Fed watch, labor markets, energy prices, consumer spending, and real estate trends — all in one place.",
-  },
-  {
-    icon: BarChart2,
-    color: "#4c9cf0",
-    bg: "rgba(76,156,240,0.08)",
-    border: "rgba(76,156,240,0.2)",
-    title: "Analysis",
-    desc: "Risk analysis, watchlist, market breadth, political intelligence, and insider trading filings to sharpen your edge.",
-  },
-  {
-    icon: Sparkles,
-    color: "#9b6cdb",
-    bg: "rgba(155,108,219,0.08)",
-    border: "rgba(155,108,219,0.2)",
-    title: "Wealth",
-    desc: "Budget planner, calculators, future planning, tax strategy, social security optimizer, net worth tracker, and brokerage guides.",
-  },
+  { icon: TrendingUp,  color: "#10b981", bg: "rgba(16,185,129,0.07)",  border: "rgba(16,185,129,0.18)",  title: "Markets",  desc: "Live dashboards, sector heatmaps, stock screener, crypto, top performers, and real-time market news." },
+  { icon: CalendarDays, color: "#F5A623", bg: "rgba(245,166,35,0.07)", border: "rgba(245,166,35,0.2)",   title: "Macro",    desc: "Economic calendar, Fed watch, labor markets, energy prices, consumer spending, and real estate trends." },
+  { icon: BarChart2,   color: "#818cf8", bg: "rgba(129,140,248,0.07)", border: "rgba(129,140,248,0.18)", title: "Analysis", desc: "Risk analysis, watchlist, market breadth, political intelligence, and insider trading filings." },
+  { icon: Sparkles,    color: "#00B4C6", bg: "rgba(0,180,198,0.07)",   border: "rgba(0,180,198,0.18)",   title: "Wealth",   desc: "Budget planner, calculators, future planning, tax strategy, net worth tracker, and brokerage guides." },
 ];
 
 function WelcomeModal({ onClose }) {
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 200,
-      background: "rgba(7,11,20,0.88)",
-      backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      padding: "1.5rem",
-    }}>
-      <div style={{
-        background: "var(--surface)",
-        border: "1px solid var(--border-alt)",
-        borderRadius: 16, width: "100%", maxWidth: 660,
-        maxHeight: "90vh", overflowY: "auto",
-        boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.08)",
-        animation: "tFadeUp 0.3s ease forwards",
-      }}>
-        <div style={{ height: 3, background: "linear-gradient(90deg, var(--gold), var(--teal), transparent)", borderRadius: "16px 16px 0 0" }} />
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: "fixed", inset: 0, zIndex: 200,
+        background: "rgba(5,7,14,0.92)",
+        backdropFilter: "blur(16px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "1.5rem",
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 32, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: "spring", stiffness: 340, damping: 32, delay: 0.08 }}
+        style={{
+          background: "#111318",
+          border: "1px solid #1e2028",
+          borderRadius: 18, width: "100%", maxWidth: 660,
+          maxHeight: "90vh", overflowY: "auto",
+          boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,166,35,0.06)",
+        }}
+      >
+        {/* Gold top stripe */}
+        <div style={{ height: 2, background: "linear-gradient(90deg, #F5A623 0%, #00B4C6 60%, transparent 100%)", borderRadius: "18px 18px 0 0" }} />
 
-        <div style={{ padding: "2rem 2rem 1.5rem" }}>
+        <div style={{ padding: "2rem" }}>
+          {/* Header */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.5rem" }}>
-            <div style={{
-              width: 44, height: 44, background: "var(--gold)", borderRadius: 10,
-              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-            }}>
+            <div style={{ width: 44, height: 44, background: "#F5A623", borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 30px rgba(245,166,35,0.25)" }}>
               <span style={{ fontSize: "1.375rem", fontWeight: 900, color: "#07080a", lineHeight: 1 }}>P</span>
             </div>
             <div>
-              <div style={{ fontWeight: 900, fontSize: "1.125rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-1)", lineHeight: 1.1 }}>
-                PLANORA
-              </div>
-              <div style={{ fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--gold)", marginTop: 2 }}>
-                FINANCIAL TERMINAL
-              </div>
+              <div style={{ fontWeight: 900, fontSize: "1rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#f1f5f9", lineHeight: 1.1 }}>PLANORA</div>
+              <div style={{ fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "#F5A623", marginTop: 2 }}>FINANCIAL TERMINAL</div>
             </div>
-            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.375rem" }}>
-              <div className="t-live" />
-              <span style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.1em", color: "var(--up)", textTransform: "uppercase" }}>LIVE</span>
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 99 }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#10b981", animation: "liveGlow 2s ease infinite" }}/>
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#10b981", textTransform: "uppercase" }}>LIVE</span>
             </div>
           </div>
 
-          <h2 style={{ fontSize: "1.375rem", fontWeight: 800, color: "var(--text-1)", letterSpacing: "-0.03em", margin: "0 0 0.75rem 0", lineHeight: 1.25 }}>
-            Welcome to your personal<br />
-            <span style={{ background: "linear-gradient(135deg, var(--gold), #d4b56a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+          <h2 style={{ fontSize: "1.375rem", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.03em", margin: "0 0 0.75rem 0", lineHeight: 1.25 }}>
+            Welcome to your personal<br/>
+            <span style={{ background: "linear-gradient(135deg, #F5A623, #d4a555)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               financial intelligence hub.
             </span>
           </h2>
 
-          <p style={{ fontSize: "0.9375rem", color: "var(--text-2)", lineHeight: 1.7, margin: "0 0 1.5rem 0" }}>
-            Planora Terminal brings together the tools, data, and education that were once only available to Wall Street professionals — and puts them at your fingertips. Whether you're tracking markets, planning for retirement, understanding tax strategy, or just starting to learn how money works, Planora is built to help you make smarter financial decisions.
+          <p style={{ fontSize: "0.9375rem", color: "#94a3b8", lineHeight: 1.75, margin: "0 0 1.5rem 0" }}>
+            Planora Terminal brings together tools, data, and education once reserved for Wall Street professionals — putting them directly in your hands. Track markets, plan for retirement, understand tax strategy, or start learning how money works.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem", marginBottom: "1.25rem" }}>
             {FEATURE_CARDS.map(card => {
               const Icon = card.icon;
               return (
-                <div key={card.title} style={{
-                  background: card.bg, border: `1px solid ${card.border}`,
-                  borderRadius: 10, padding: "0.875rem 1rem",
-                }}>
+                <div key={card.title} style={{ background: card.bg, border: `1px solid ${card.border}`, borderRadius: 10, padding: "0.875rem 1rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                    <Icon size={15} color={card.color} />
-                    <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: card.color, letterSpacing: "0.02em" }}>
-                      {card.title}
-                    </span>
+                    <Icon size={14} color={card.color}/>
+                    <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: card.color, letterSpacing: "0.02em" }}>{card.title}</span>
                   </div>
-                  <p style={{ fontSize: "0.8125rem", color: "var(--text-2)", lineHeight: 1.55, margin: 0 }}>
-                    {card.desc}
-                  </p>
+                  <p style={{ fontSize: "0.8125rem", color: "#94a3b8", lineHeight: 1.55, margin: 0 }}>{card.desc}</p>
                 </div>
               );
             })}
           </div>
 
-          <div style={{
-            background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.18)",
-            borderRadius: 8, padding: "0.75rem 1rem", marginBottom: "1.5rem",
-            display: "flex", gap: "0.75rem", alignItems: "flex-start",
-          }}>
-            <span style={{ fontSize: "1rem", flexShrink: 0, marginTop: 1 }}>📘</span>
-            <p style={{ fontSize: "0.8125rem", color: "var(--gold)", lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
-              <strong>For educational purposes only.</strong> Planora Terminal is designed to help you understand financial concepts, explore market data, and plan your personal finances. It is not a licensed financial advisor and nothing here constitutes investment, tax, or legal advice. Always consult a qualified professional before making major financial decisions.
+          <div style={{ background: "rgba(245,166,35,0.05)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: 8, padding: "0.75rem 1rem", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.8125rem", color: "#94a3b8", lineHeight: 1.6, margin: 0 }}>
+              <span style={{ color: "#F5A623", fontWeight: 700 }}>For educational purposes only.</span> Planora Terminal is designed to help you understand financial concepts, explore market data, and plan your personal finances. It is not a licensed financial advisor and nothing here constitutes investment, tax, or legal advice.
             </p>
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ filter: "brightness(1.1)", transform: "translateY(-1px)" }}
+            whileTap={{ scale: 0.98 }}
             onClick={onClose}
             style={{
-              width: "100%", padding: "0.875rem",
-              background: "linear-gradient(135deg, var(--gold) 0%, #a8882e 100%)",
-              border: "none", borderRadius: 8, cursor: "pointer",
+              width: "100%", padding: "0.9375rem",
+              background: "linear-gradient(135deg, #F5A623 0%, #c8881e 100%)",
+              border: "none", borderRadius: 10, cursor: "pointer",
               fontSize: "0.9375rem", fontWeight: 800,
-              color: "#07080a", letterSpacing: "0.04em",
-              textTransform: "uppercase", transition: "filter 0.15s",
+              color: "#07080a", letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              fontFamily: "'Inter', sans-serif",
+              boxShadow: "0 0 30px rgba(245,166,35,0.3)",
             }}
-            onMouseEnter={e => e.currentTarget.style.filter = "brightness(1.1)"}
-            onMouseLeave={e => e.currentTarget.style.filter = "brightness(1)"}
           >
-            Enter Terminal
-          </button>
+            Enter Terminal →
+          </motion.button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
-/* ─── Layout ─────────────────────────────────────────────────────── */
+// ── Layout ─────────────────────────────────────────────────────────────
 export default function Layout({ children }) {
-  const [mobileOpen,  setMobileOpen]  = useState(false);
-  const [showWelcome, setShowWelcome] = useState(() => !sessionStorage.getItem(WELCOME_KEY));
+  const [openSectionId,  setOpenSectionId]  = useState(null);
+  const [mobileOpen,     setMobileOpen]     = useState(false);
+  const [showWelcome,    setShowWelcome]    = useState(() => !sessionStorage.getItem(WELCOME_KEY));
+  const activeSection = useActiveSection();
+  const { pathname }  = useLocation();
 
-  const closeWelcome = () => {
+  // Close flyout on navigation
+  useEffect(() => { setOpenSectionId(null); }, [pathname]);
+
+  const handleSectionClick = useCallback((id) => {
+    setOpenSectionId(prev => (prev === id ? null : id));
+  }, []);
+
+  const closeFlyout = useCallback(() => setOpenSectionId(null), []);
+
+  const closeWelcome = useCallback(() => {
     sessionStorage.setItem(WELCOME_KEY, "1");
     setShowWelcome(false);
-  };
+  }, []);
+
+  const openSection = SECTIONS.find(s => s.id === openSectionId) ?? null;
 
   return (
-    <div className="t-bg">
-      {showWelcome && <WelcomeModal onClose={closeWelcome} />}
+    <div style={{ background: "#0a0a0f", minHeight: "100vh", fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      {/* Welcome */}
+      <AnimatePresence>
+        {showWelcome && <WelcomeModal onClose={closeWelcome} />}
+      </AnimatePresence>
 
-      {/* Desktop sidebar */}
-      <Sidebar />
+      {/* Icon Rail (desktop) */}
+      <Rail
+        activeSection={activeSection}
+        openSectionId={openSectionId}
+        onSectionClick={handleSectionClick}
+      />
 
-      {/* Mobile sidebar overlay */}
-      {mobileOpen && (
-        <>
-          <div
-            onClick={() => setMobileOpen(false)}
-            style={{
-              position: "fixed", inset: 0,
-              background: "rgba(7,11,20,0.8)",
-              backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)",
-              zIndex: 45,
-            }}
-          />
-          <div style={{ position: "fixed", top: 0, left: 0, bottom: 0, width: "var(--sidebar-w)", zIndex: 46 }}>
-            <Sidebar onClose={() => setMobileOpen(false)} />
-          </div>
-        </>
-      )}
+      {/* Flyout panel */}
+      <FlyoutPanel section={openSection} onClose={closeFlyout} />
 
-      <TopBar onMenuClick={() => setMobileOpen(true)} />
+      {/* Top bar */}
+      <TopBar onMobileMenu={() => setMobileOpen(true)} />
 
-      <main className="t-main">
-        <div style={{ padding: "1.25rem 1.25rem 2rem", maxWidth: "1400px", margin: "0 auto" }}>
+      {/* Mobile overlay menu */}
+      <MobileMenuOverlay open={mobileOpen} onClose={() => setMobileOpen(false)} />
+
+      {/* Main content */}
+      <main
+        id="planora-main"
+        onClick={() => { if (openSectionId) closeFlyout(); }}
+        style={{
+          marginLeft: RAIL_W,
+          paddingTop: 48,
+          minHeight: "100vh",
+          background: "#0a0a0f",
+        }}
+      >
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          style={{ padding: "1.25rem 1.25rem 2rem", maxWidth: 1400, margin: "0 auto" }}
+        >
           {children}
-        </div>
+        </motion.div>
       </main>
 
+      {/* Mobile bottom nav */}
       <MobileNav />
     </div>
   );

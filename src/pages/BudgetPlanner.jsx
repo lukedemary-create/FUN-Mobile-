@@ -690,11 +690,75 @@ function TabAccounts({ accounts, setAccounts, nwHistory, setNwHistory }) {
 }
 
 /* ─── Goals Tab ──────────────────────────────────────────────────── */
-function GoalCard({ g, monthsTo, addContribution, remove }) {
+const GOAL_ICONS = ["🎯", "🏠", "🚗", "✈️", "🎓", "💍", "🏖️", "💰", "🏥", "🛡️", "🎸", "📱", "🏋️", "🌎", "🚢"];
+
+function GoalForm({ value, onChange, onSave, onCancel, saveLabel = "Save Goal" }) {
+  return (
+    <div className="t-card" style={{ padding: "1.25rem" }}>
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
+        {GOAL_ICONS.map(ic => (
+          <button key={ic} onClick={() => onChange({ ...value, icon: ic })}
+            style={{ fontSize: "1.25rem", background: value.icon === ic ? GOLD + "33" : "none", border: value.icon === ic ? `1px solid ${GOLD}` : "1px solid transparent", borderRadius: 6, cursor: "pointer", padding: "2px 6px" }}>
+            {ic}
+          </button>
+        ))}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: "0.5rem" }}>
+        <div>
+          <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Goal Name</div>
+          <input className="t-input" value={value.name} onChange={e => onChange({ ...value, name: e.target.value })} placeholder="e.g. Emergency Fund" style={{ width: "100%", fontSize: "0.8rem" }} />
+        </div>
+        <div>
+          <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Target ($)</div>
+          <input type="number" className="t-input" value={value.target} onChange={e => onChange({ ...value, target: e.target.value })} placeholder="10000" style={{ width: "100%", fontSize: "0.8rem" }} />
+        </div>
+        <div>
+          <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Saved ($)</div>
+          <input type="number" className="t-input" value={value.saved} onChange={e => onChange({ ...value, saved: e.target.value })} placeholder="0" style={{ width: "100%", fontSize: "0.8rem" }} />
+        </div>
+        <div>
+          <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Monthly ($)</div>
+          <input type="number" className="t-input" value={value.monthly} onChange={e => onChange({ ...value, monthly: e.target.value })} placeholder="200" style={{ width: "100%", fontSize: "0.8rem" }} />
+        </div>
+        <div>
+          <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Target Date</div>
+          <input type="date" className="t-input" value={value.deadline} onChange={e => onChange({ ...value, deadline: e.target.value })} style={{ width: "100%", fontSize: "0.8rem" }} />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
+        <button className="t-btn" onClick={onSave} style={{ fontSize: "0.75rem" }}>{saveLabel}</button>
+        <button onClick={onCancel} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)", fontSize: "0.75rem" }}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+function GoalCard({ g, monthsTo, addContribution, editGoal, remove }) {
   const [contrib, setContrib] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ name: g.name, target: g.target, saved: g.saved, monthly: g.monthly, deadline: g.deadline || "", icon: g.icon });
   const p = pct(g.saved, g.target);
   const months = monthsTo(g);
   const done = p >= 100;
+
+  const saveEdit = () => {
+    if (!editForm.name || !editForm.target) return;
+    editGoal(g.id, { ...editForm, target: Number(editForm.target), saved: Number(editForm.saved || 0), monthly: Number(editForm.monthly || 0) });
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <GoalForm
+        value={editForm}
+        onChange={setEditForm}
+        onSave={saveEdit}
+        onCancel={() => setEditing(false)}
+        saveLabel="Update Goal"
+      />
+    );
+  }
+
   return (
     <div className="t-card" style={{ padding: "1.25rem", position: "relative", border: done ? `1px solid ${GREEN}40` : undefined }}>
       {done && <div style={{ position: "absolute", top: 10, right: 10, background: GREEN + "22", color: GREEN, fontSize: "0.6rem", fontWeight: 700, padding: "2px 7px", borderRadius: 99 }}>COMPLETE ✓</div>}
@@ -715,7 +779,12 @@ function GoalCard({ g, monthsTo, addContribution, remove }) {
           <button className="t-btn" onClick={() => { if (contrib) { addContribution(g.id, contrib); setContrib(""); } }} style={{ fontSize: "0.75rem" }}>Add</button>
         </div>
       )}
-      <button onClick={() => remove(g.id)} style={{ position: "absolute", bottom: 10, right: 10, background: "none", border: "none", cursor: "pointer", color: "var(--text-3)" }}><Trash2 size={11} /></button>
+      {/* Edit + Delete */}
+      <div style={{ position: "absolute", bottom: 10, right: 10, display: "flex", gap: 6 }}>
+        <button onClick={() => { setEditForm({ name: g.name, target: g.target, saved: g.saved, monthly: g.monthly, deadline: g.deadline || "", icon: g.icon }); setEditing(true); }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)" }}><Edit3 size={11} /></button>
+        <button onClick={() => remove(g.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)" }}><Trash2 size={11} /></button>
+      </div>
     </div>
   );
 }
@@ -723,7 +792,6 @@ function GoalCard({ g, monthsTo, addContribution, remove }) {
 function TabGoals({ goals, setGoals }) {
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState({ name: "", target: "", saved: "", monthly: "", deadline: "", icon: "🎯" });
-  const ICONS = ["🎯", "🏠", "🚗", "✈️", "🎓", "💍", "🏖️", "💰", "🏥", "🛡️"];
 
   const add = () => {
     if (!form.name || !form.target) return;
@@ -741,6 +809,10 @@ function TabGoals({ goals, setGoals }) {
       if (pct(newSaved, g.target) >= 100) fireworks();
       return { ...g, saved: newSaved };
     }));
+  };
+
+  const editGoal = (id, updated) => {
+    setGoals(prev => prev.map(g => g.id === id ? { ...g, ...updated } : g));
   };
 
   const remove = (id) => setGoals(prev => prev.filter(g => g.id !== id));
@@ -766,39 +838,12 @@ function TabGoals({ goals, setGoals }) {
       </div>
 
       {adding && (
-        <div className="t-card" style={{ padding: "1.25rem" }}>
-          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
-            {ICONS.map(ic => (
-              <button key={ic} onClick={() => setForm(p => ({ ...p, icon: ic }))} style={{ fontSize: "1.25rem", background: form.icon === ic ? GOLD + "33" : "none", border: form.icon === ic ? `1px solid ${GOLD}` : "1px solid transparent", borderRadius: 6, cursor: "pointer", padding: "2px 6px" }}>{ic}</button>
-            ))}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: "0.5rem" }}>
-            <div>
-              <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Goal Name</div>
-              <input className="t-input" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Emergency Fund" style={{ width: "100%", fontSize: "0.8rem" }} />
-            </div>
-            <div>
-              <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Target ($)</div>
-              <input type="number" className="t-input" value={form.target} onChange={e => setForm(p => ({ ...p, target: e.target.value }))} placeholder="10000" style={{ width: "100%", fontSize: "0.8rem" }} />
-            </div>
-            <div>
-              <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Saved ($)</div>
-              <input type="number" className="t-input" value={form.saved} onChange={e => setForm(p => ({ ...p, saved: e.target.value }))} placeholder="0" style={{ width: "100%", fontSize: "0.8rem" }} />
-            </div>
-            <div>
-              <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Monthly ($)</div>
-              <input type="number" className="t-input" value={form.monthly} onChange={e => setForm(p => ({ ...p, monthly: e.target.value }))} placeholder="200" style={{ width: "100%", fontSize: "0.8rem" }} />
-            </div>
-            <div>
-              <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Target Date</div>
-              <input type="date" className="t-input" value={form.deadline} onChange={e => setForm(p => ({ ...p, deadline: e.target.value }))} style={{ width: "100%", fontSize: "0.8rem" }} />
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
-            <button className="t-btn" onClick={add} style={{ fontSize: "0.75rem" }}>Save Goal</button>
-            <button onClick={() => setAdding(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)", fontSize: "0.75rem" }}>Cancel</button>
-          </div>
-        </div>
+        <GoalForm
+          value={form}
+          onChange={setForm}
+          onSave={add}
+          onCancel={() => setAdding(false)}
+        />
       )}
 
       {goals.length === 0 ? (
@@ -806,7 +851,7 @@ function TabGoals({ goals, setGoals }) {
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" }}>
           {goals.map(g => (
-            <GoalCard key={g.id} g={g} monthsTo={monthsTo} addContribution={addContribution} remove={remove} />
+            <GoalCard key={g.id} g={g} monthsTo={monthsTo} addContribution={addContribution} editGoal={editGoal} remove={remove} />
           ))}
         </div>
       )}
@@ -1358,16 +1403,314 @@ function TabFunding({ accounts, goals, allocations, setAllocations }) {
   );
 }
 
+/* ─── Retirement Expenses Tab ────────────────────────────────────── */
+const DEFAULT_RETIREMENT_INCOME = [
+  { id: "ri1", label: "Social Security",       amount: 1800 },
+  { id: "ri2", label: "Pension",                amount: 0    },
+  { id: "ri3", label: "Portfolio Withdrawals",  amount: 2500 },
+  { id: "ri4", label: "Part-Time Work",         amount: 0    },
+  { id: "ri5", label: "Rental Income",          amount: 0    },
+];
+
+const DEFAULT_RETIREMENT_EXPENSES = [
+  { id: "re1",  label: "Housing / Mortgage",    amount: 1400, color: GOLD    },
+  { id: "re2",  label: "Healthcare / Insurance", amount: 600,  color: PURPLE  },
+  { id: "re3",  label: "Food & Groceries",       amount: 500,  color: GREEN   },
+  { id: "re4",  label: "Utilities",              amount: 180,  color: TEAL    },
+  { id: "re5",  label: "Transportation",         amount: 250,  color: ORANGE  },
+  { id: "re6",  label: "Travel & Leisure",       amount: 400,  color: BLUE    },
+  { id: "re7",  label: "Entertainment",          amount: 150,  color: PURPLE  },
+  { id: "re8",  label: "Subscriptions",          amount: 80,   color: RED     },
+  { id: "re9",  label: "Gifts & Charitable",     amount: 100,  color: "#06b6d4" },
+  { id: "re10", label: "Miscellaneous",          amount: 200,  color: "#a3b8cc" },
+];
+
+function RetirementLineItem({ item, onEdit, onRemove }) {
+  const [editAmt, setEditAmt] = useState(String(item.amount));
+  const [editLabel, setEditLabel] = useState(item.label);
+  const [editing, setEditing] = useState(false);
+
+  const save = () => {
+    onEdit(item.id, { label: editLabel, amount: Number(editAmt) || 0 });
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", background: "var(--elevated)", borderRadius: 6 }}>
+        <div style={{ width: 8, height: 8, borderRadius: "50%", background: item.color, flexShrink: 0 }} />
+        <input className="t-input" value={editLabel} onChange={e => setEditLabel(e.target.value)}
+          style={{ flex: 1, fontSize: "0.8rem" }} />
+        <span style={{ color: "var(--text-3)", fontSize: "0.8rem" }}>$</span>
+        <input type="number" className="t-input" value={editAmt} onChange={e => setEditAmt(e.target.value)}
+          style={{ width: 90, fontSize: "0.8rem", fontFamily: "var(--font-mono)" }} />
+        <button onClick={save} style={{ background: "none", border: "none", cursor: "pointer", color: GREEN }}><Check size={13} /></button>
+        <button onClick={() => setEditing(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)" }}><X size={13} /></button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", borderRadius: 6, transition: "background 0.15s" }}
+      onMouseEnter={e => e.currentTarget.style.background = "var(--elevated)"}
+      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+    >
+      <div style={{ width: 8, height: 8, borderRadius: "50%", background: item.color, flexShrink: 0 }} />
+      <span style={{ flex: 1, fontSize: "0.82rem", color: "var(--text-2)" }}>{item.label}</span>
+      <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-1)", fontFamily: "var(--font-mono)" }}>{fc(item.amount)}</span>
+      <button onClick={() => { setEditLabel(item.label); setEditAmt(String(item.amount)); setEditing(true); }}
+        style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)", opacity: 0.6 }}><Edit3 size={11} /></button>
+      <button onClick={() => onRemove(item.id)}
+        style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)", opacity: 0.6 }}><Trash2 size={11} /></button>
+    </div>
+  );
+}
+
+function TabRetirement({ retirementData, setRetirementData }) {
+  const income   = retirementData.income   || DEFAULT_RETIREMENT_INCOME;
+  const expenses = retirementData.expenses || DEFAULT_RETIREMENT_EXPENSES;
+  const retireAge   = retirementData.retireAge   || 65;
+  const currentAge  = retirementData.currentAge  || 45;
+  const lifeExp     = retirementData.lifeExp     || 90;
+  const inflation   = retirementData.inflation   || 2.5;
+
+  const setIncome   = (fn) => setRetirementData(d => ({ ...d, income:   typeof fn === "function" ? fn(d.income   || DEFAULT_RETIREMENT_INCOME)   : fn }));
+  const setExpenses = (fn) => setRetirementData(d => ({ ...d, expenses: typeof fn === "function" ? fn(d.expenses || DEFAULT_RETIREMENT_EXPENSES) : fn }));
+  const setField    = (k, v) => setRetirementData(d => ({ ...d, [k]: v }));
+
+  const [addingExpense, setAddingExpense] = useState(false);
+  const [addingIncome, setAddingIncome]   = useState(false);
+  const [newExpense, setNewExpense] = useState({ label: "", amount: "" });
+  const [newIncome,  setNewIncome]  = useState({ label: "", amount: "" });
+
+  const totalIncome   = income.reduce((s, i) => s + i.amount, 0);
+  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+  const monthlySurplus = totalIncome - totalExpenses;
+  const yearsInRetirement = Math.max(0, lifeExp - retireAge);
+  const yearsToRetire     = Math.max(0, retireAge - currentAge);
+
+  // Inflation-adjusted monthly expenses at retirement
+  const inflationMultiplier = Math.pow(1 + inflation / 100, yearsToRetire);
+  const inflatedExpenses    = totalExpenses * inflationMultiplier;
+  const inflatedSurplus     = totalIncome - inflatedExpenses;
+
+  const pieData = expenses.filter(e => e.amount > 0).map(e => ({ name: e.label, value: e.amount, color: e.color }));
+
+  const editExpense = (id, updates) => setExpenses(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+  const removeExpense = (id) => setExpenses(prev => prev.filter(e => e.id !== id));
+  const addExpense = () => {
+    if (!newExpense.label) return;
+    const color = PIE_COLORS[expenses.length % PIE_COLORS.length];
+    setExpenses(prev => [...prev, { id: `re${Date.now()}`, label: newExpense.label, amount: Number(newExpense.amount) || 0, color }]);
+    setNewExpense({ label: "", amount: "" });
+    setAddingExpense(false);
+  };
+
+  const editIncome = (id, updates) => setIncome(prev => prev.map(i => i.id === id ? { ...i, ...updates } : i));
+  const removeIncome = (id) => setIncome(prev => prev.filter(i => i.id !== id));
+  const addIncome = () => {
+    if (!newIncome.label) return;
+    setIncome(prev => [...prev, { id: `ri${Date.now()}`, label: newIncome.label, amount: Number(newIncome.amount) || 0 }]);
+    setNewIncome({ label: "", amount: "" });
+    setAddingIncome(false);
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+
+      {/* ── Summary metrics ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.75rem" }}>
+        <MetricCard label="Monthly Income"   value={fc(totalIncome)}   color={GREEN}  icon={TrendingUp}  />
+        <MetricCard label="Monthly Expenses" value={fc(totalExpenses)} color={GOLD}   icon={DollarSign}  />
+        <MetricCard label="Monthly Surplus"  value={fc(Math.abs(monthlySurplus))} color={monthlySurplus >= 0 ? GREEN : RED} icon={monthlySurplus >= 0 ? ArrowUpRight : ArrowDownRight} sub={monthlySurplus >= 0 ? "surplus" : "shortfall"} />
+        <MetricCard label="Years in Retirement" value={yearsInRetirement} color={BLUE} icon={Calendar} sub={`Ages ${retireAge}–${lifeExp}`} />
+      </div>
+
+      {/* ── Assumptions strip ── */}
+      <div className="t-card" style={{ padding: "1rem 1.25rem" }}>
+        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.75rem" }}>Retirement Assumptions</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.75rem" }}>
+          {[
+            { label: "Current Age",          key: "currentAge",  min: 20,  max: 80,  step: 1,   suffix: "yrs" },
+            { label: "Retirement Age",        key: "retireAge",   min: 50,  max: 80,  step: 1,   suffix: "yrs" },
+            { label: "Life Expectancy",       key: "lifeExp",     min: 70,  max: 110, step: 1,   suffix: "yrs" },
+            { label: "Inflation Rate",        key: "inflation",   min: 0,   max: 10,  step: 0.1, suffix: "%" },
+          ].map(f => (
+            <div key={f.key}>
+              <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>{f.label}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                <input type="number" className="t-input" value={retirementData[f.key] || (f.key === "currentAge" ? 45 : f.key === "retireAge" ? 65 : f.key === "lifeExp" ? 90 : 2.5)}
+                  min={f.min} max={f.max} step={f.step}
+                  onChange={e => setField(f.key, Number(e.target.value))}
+                  style={{ width: "100%", fontSize: "0.85rem", fontFamily: "var(--font-mono)", fontWeight: 700 }} />
+                <span style={{ fontSize: "0.75rem", color: "var(--text-3)", whiteSpace: "nowrap" }}>{f.suffix}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "1rem" }}>
+
+        {/* ── Left: Income + Expenses ── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+
+          {/* Income sources */}
+          <div className="t-card" style={{ padding: "1.25rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
+              <div>
+                <div className="t-section-title" style={{ marginBottom: 2 }}>Retirement Income</div>
+                <div style={{ fontSize: "0.7rem", color: "var(--text-3)" }}>Monthly income sources in retirement</div>
+              </div>
+              <button className="t-btn" onClick={() => setAddingIncome(v => !v)} style={{ fontSize: "0.7rem", display: "flex", alignItems: "center", gap: 4 }}><Plus size={11} /> Add</button>
+            </div>
+
+            {addingIncome && (
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end", marginBottom: "0.75rem", padding: "0.6rem 0.75rem", background: "var(--elevated)", borderRadius: 6 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Source</div>
+                  <input className="t-input" value={newIncome.label} onChange={e => setNewIncome(p => ({ ...p, label: e.target.value }))} placeholder="e.g. Annuity" style={{ width: "100%", fontSize: "0.8rem" }} />
+                </div>
+                <div style={{ width: 110 }}>
+                  <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Monthly ($)</div>
+                  <input type="number" className="t-input" value={newIncome.amount} onChange={e => setNewIncome(p => ({ ...p, amount: e.target.value }))} placeholder="0" style={{ width: "100%", fontSize: "0.8rem" }} />
+                </div>
+                <button onClick={addIncome} className="t-btn" style={{ fontSize: "0.75rem" }}>Add</button>
+                <button onClick={() => setAddingIncome(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)" }}><X size={13} /></button>
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+              {income.map(i => (
+                <RetirementLineItem key={i.id} item={{ ...i, color: GREEN }} onEdit={editIncome} onRemove={removeIncome} />
+              ))}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border-c)", marginTop: "0.75rem", paddingTop: "0.6rem" }}>
+              <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-2)" }}>Total Monthly Income</span>
+              <span style={{ fontSize: "1rem", fontWeight: 900, color: GREEN, fontFamily: "var(--font-mono)" }}>{fc(totalIncome)}</span>
+            </div>
+          </div>
+
+          {/* Expense categories */}
+          <div className="t-card" style={{ padding: "1.25rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.85rem" }}>
+              <div>
+                <div className="t-section-title" style={{ marginBottom: 2 }}>Retirement Expenses</div>
+                <div style={{ fontSize: "0.7rem", color: "var(--text-3)" }}>Estimated monthly spending in retirement</div>
+              </div>
+              <button className="t-btn" onClick={() => setAddingExpense(v => !v)} style={{ fontSize: "0.7rem", display: "flex", alignItems: "center", gap: 4 }}><Plus size={11} /> Add</button>
+            </div>
+
+            {addingExpense && (
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end", marginBottom: "0.75rem", padding: "0.6rem 0.75rem", background: "var(--elevated)", borderRadius: 6 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Category</div>
+                  <input className="t-input" value={newExpense.label} onChange={e => setNewExpense(p => ({ ...p, label: e.target.value }))} placeholder="e.g. Long-Term Care" style={{ width: "100%", fontSize: "0.8rem" }} />
+                </div>
+                <div style={{ width: 110 }}>
+                  <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 3 }}>Monthly ($)</div>
+                  <input type="number" className="t-input" value={newExpense.amount} onChange={e => setNewExpense(p => ({ ...p, amount: e.target.value }))} placeholder="0" style={{ width: "100%", fontSize: "0.8rem" }} />
+                </div>
+                <button onClick={addExpense} className="t-btn" style={{ fontSize: "0.75rem" }}>Add</button>
+                <button onClick={() => setAddingExpense(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-3)" }}><X size={13} /></button>
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+              {expenses.map(e => (
+                <RetirementLineItem key={e.id} item={e} onEdit={editExpense} onRemove={removeExpense} />
+              ))}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border-c)", marginTop: "0.75rem", paddingTop: "0.6rem" }}>
+              <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-2)" }}>Total Monthly Expenses</span>
+              <span style={{ fontSize: "1rem", fontWeight: 900, color: GOLD, fontFamily: "var(--font-mono)" }}>{fc(totalExpenses)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Right: Charts + Summary ── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+
+          {/* Surplus / shortfall panel */}
+          <div className="t-card" style={{ padding: "1.25rem", border: `1px solid ${monthlySurplus >= 0 ? GREEN : RED}30` }}>
+            <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.75rem" }}>Monthly Cash Flow</div>
+            <div style={{ textAlign: "center", padding: "0.75rem 0 1rem" }}>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-3)", marginBottom: 4 }}>{monthlySurplus >= 0 ? "Monthly Surplus" : "Monthly Shortfall"}</div>
+              <div style={{ fontSize: "2.25rem", fontWeight: 900, fontFamily: "var(--font-mono)", letterSpacing: "-0.03em", color: monthlySurplus >= 0 ? GREEN : RED }}>
+                {monthlySurplus >= 0 ? "+" : "-"}{fc(Math.abs(monthlySurplus))}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-3)", marginTop: 6 }}>per month · {fc(Math.abs(monthlySurplus) * 12)}/year</div>
+            </div>
+            <div style={{ height: 6, background: "var(--border-c)", borderRadius: 99, marginBottom: "0.6rem" }}>
+              <div style={{ height: "100%", width: `${Math.min(100, (totalIncome / Math.max(totalExpenses, 1)) * 100)}%`, background: monthlySurplus >= 0 ? GREEN : RED, borderRadius: 99, transition: "width 0.4s" }} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "var(--text-3)" }}>
+              <span>Income covers {Math.round(Math.min(100, (totalIncome / Math.max(totalExpenses, 1)) * 100))}% of expenses</span>
+            </div>
+          </div>
+
+          {/* Inflation impact */}
+          <div className="t-card" style={{ padding: "1.25rem" }}>
+            <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.75rem" }}>Inflation Impact at Retirement</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              {[
+                { label: "Today's Expenses",            val: totalExpenses,    color: "var(--text-2)" },
+                { label: `At Retirement (${retireAge})`, val: inflatedExpenses, color: ORANGE           },
+                { label: "Projected Surplus/Shortfall",  val: inflatedSurplus,  color: inflatedSurplus >= 0 ? GREEN : RED },
+              ].map(r => (
+                <div key={r.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.45rem 0.6rem", background: "var(--elevated)", borderRadius: 6 }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--text-3)" }}>{r.label}</span>
+                  <span style={{ fontSize: "0.9rem", fontWeight: 700, fontFamily: "var(--font-mono)", color: r.color }}>{r.val >= 0 ? "" : "-"}{fc(Math.abs(r.val))}</span>
+                </div>
+              ))}
+              <div style={{ fontSize: "0.68rem", color: "var(--text-3)", marginTop: 2 }}>
+                Based on {inflation}% annual inflation over {yearsToRetire} years
+              </div>
+            </div>
+          </div>
+
+          {/* Spending breakdown donut */}
+          <div className="t-card" style={{ padding: "1.25rem" }}>
+            <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.75rem" }}>Spending Breakdown</div>
+            <div style={{ height: 160 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={pieData} innerRadius={45} outerRadius={72} dataKey="value" strokeWidth={0}>
+                    {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", maxHeight: 120, overflowY: "auto" }}>
+              {pieData.slice(0, 6).map(e => (
+                <div key={e.name} style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.72rem" }}>
+                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: e.color, flexShrink: 0 }} />
+                  <span style={{ flex: 1, color: "var(--text-3)" }}>{e.name}</span>
+                  <span style={{ color: "var(--text-1)", fontFamily: "var(--font-mono)", fontWeight: 700 }}>{fc(e.value)}</span>
+                  <span style={{ color: "var(--text-3)" }}>{Math.round((e.value / totalExpenses) * 100)}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const TABS = [
-  { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { key: "budget", label: "Budget", icon: DollarSign },
-  { key: "transactions", label: "Transactions", icon: CreditCard },
-  { key: "accounts", label: "Accounts", icon: Landmark },
-  { key: "goals", label: "Goals", icon: Target },
-  { key: "funding", label: "Funding", icon: Flag },
-  { key: "bills", label: "Bills", icon: Calendar },
-  { key: "insights", label: "Insights", icon: Lightbulb },
-  { key: "networth", label: "Net Worth", icon: TrendingUp },
+  { key: "dashboard",   label: "Dashboard",   icon: LayoutDashboard },
+  { key: "budget",      label: "Budget",       icon: DollarSign      },
+  { key: "transactions",label: "Transactions", icon: CreditCard      },
+  { key: "accounts",    label: "Accounts",     icon: Landmark        },
+  { key: "goals",       label: "Goals",        icon: Target          },
+  { key: "funding",     label: "Funding",      icon: Flag            },
+  { key: "bills",       label: "Bills",        icon: Calendar        },
+  { key: "retirement",  label: "Retirement",   icon: Wallet          },
+  { key: "insights",    label: "Insights",     icon: Lightbulb       },
+  { key: "networth",    label: "Net Worth",    icon: TrendingUp      },
 ];
 
 export default function BudgetPlanner() {
@@ -1381,8 +1724,9 @@ export default function BudgetPlanner() {
   const [bills, setBills] = useLocalStorage("bp_bills", []);
   const [nwHistory, setNwHistory] = useLocalStorage("bp_nw_history", []);
   const [allocations, setAllocations] = useLocalStorage("bp_allocations", []);
+  const [retirementData, setRetirementData] = useLocalStorage("bp_retirement", { currentAge: 45, retireAge: 65, lifeExp: 90, inflation: 2.5 });
 
-  const tabProps = { income, setIncome, extraIncome, setExtraIncome, categories, setCategories, transactions, setTransactions, accounts, setAccounts, goals, setGoals, bills, setBills, nwHistory, setNwHistory, allocations, setAllocations };
+  const tabProps = { income, setIncome, extraIncome, setExtraIncome, categories, setCategories, transactions, setTransactions, accounts, setAccounts, goals, setGoals, bills, setBills, nwHistory, setNwHistory, allocations, setAllocations, retirementData, setRetirementData };
 
   const renderTab = () => {
     switch (activeTab) {
@@ -1393,6 +1737,7 @@ export default function BudgetPlanner() {
       case "goals": return <TabGoals {...tabProps} />;
       case "funding": return <TabFunding {...tabProps} />;
       case "bills": return <TabBills {...tabProps} />;
+      case "retirement": return <TabRetirement {...tabProps} />;
       case "insights": return <TabInsights {...tabProps} />;
       case "networth": return <TabNetWorth {...tabProps} />;
       default: return null;

@@ -1048,19 +1048,51 @@ function Footer() {
           </motion.div>
         </div>
 
+        {/* Disclaimer */}
+        <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:20, marginBottom:16 }}>
+          <p style={{ fontSize:10, color:C.textMuted, lineHeight:1.7, textAlign:'center', maxWidth:800, margin:'0 auto' }}>
+            <strong style={{ color:'rgba(245,166,35,0.7)' }}>DISCLAIMER:</strong> Planora is for educational and informational purposes only.
+            Nothing on this platform constitutes financial, investment, legal, or tax advice. All data is provided "as is" without warranty.
+            Past performance is not indicative of future results. Always consult a licensed financial advisor before making investment decisions.
+          </p>
+        </div>
+
         <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:24, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           <div style={{ fontSize:11, color:C.textMuted }}>© 2026 Planora Technologies, Inc. All rights reserved.</div>
           <div style={{ display:'flex', gap:20 }}>
-            {['Privacy Policy','Terms of Service','Disclosure','Sitemap'].map(l => (
-              <span key={l} style={{ fontSize:11, color:C.textMuted, cursor:'pointer', transition:'color 0.15s' }}
+            {[
+              { label:'Privacy Policy', href:'/privacy' },
+              { label:'Terms of Service', href:'/terms' },
+              { label:'Disclosure', href:'/terms' },
+            ].map(({ label, href }) => (
+              <span key={label} style={{ fontSize:11, color:C.textMuted, cursor:'pointer', transition:'color 0.15s' }}
                 onMouseEnter={e => e.currentTarget.style.color = C.text}
                 onMouseLeave={e => e.currentTarget.style.color = C.textMuted}
-              >{l}</span>
+                onClick={() => window.location.href = href}
+              >{label}</span>
             ))}
           </div>
         </div>
       </div>
     </motion.footer>
+  );
+}
+
+/* ─── DISCLAIMER BANNER ──────────────────────────────────────────── */
+function DisclaimerBanner() {
+  const [visible, setVisible] = useState(() => !localStorage.getItem('planora_disclaimer_dismissed'));
+  if (!visible) return null;
+  return (
+    <div style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:9999, background:'rgba(10,10,15,0.96)', borderTop:`1px solid rgba(245,166,35,0.3)`, padding:'12px 24px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:16, backdropFilter:'blur(12px)' }}>
+      <p style={{ margin:0, fontSize:11, color:'#94a3b8', lineHeight:1.6, flex:1 }}>
+        <span style={{ color:'rgba(245,166,35,0.9)', fontWeight:700 }}>DISCLAIMER: </span>
+        Planora is for educational and informational purposes only. Nothing here constitutes financial, investment, or legal advice. Always consult a licensed financial advisor before making investment decisions.
+      </p>
+      <button
+        onClick={() => { localStorage.setItem('planora_disclaimer_dismissed','1'); setVisible(false); }}
+        style={{ background:'rgba(245,166,35,0.15)', border:`1px solid rgba(245,166,35,0.3)`, borderRadius:6, padding:'6px 14px', color:'#F5A623', fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0 }}
+      >Got it</button>
+    </div>
   );
 }
 
@@ -1130,6 +1162,7 @@ export default function Landing() {
       <style>{GLOBAL_CSS}</style>
 
       {!bootDone && <BootOverlay onComplete={handleBootComplete}/>}
+      <DisclaimerBanner/>
 
       <Nav onEnter={() => navigate('/dashboard')} visible={bootDone} scrollY={scrollY}/>
 

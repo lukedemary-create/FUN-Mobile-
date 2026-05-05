@@ -60,13 +60,13 @@ async function getYFCrumb() {
         if (crumbRes.ok && crumbText && crumbText.length > 3 && !crumbText.includes('<') && crumbText !== 'Too Many Requests') {
           yfCrumb = crumbText.trim();
           yfCrumbTime = Date.now();
-          console.log('[YF] crumb obtained from', host);
+          log('[YF] crumb obtained from', host);
           return { crumb: yfCrumb, cookies: yfCookies };
         }
-        console.log('[YF] crumb', host, crumbRes.status, crumbText.slice(0, 30));
+        log('[YF] crumb', host, crumbRes.status, crumbText.slice(0, 30));
       }
     } catch (e) {
-      console.log('[YF] crumb fetch error:', e.message);
+      log('[YF] crumb fetch error:', e.message);
     } finally {
       yfCrumbInflight = null;
     }
@@ -91,6 +91,38 @@ const CHART_TTL = 10 * 60 * 1000;
 
 // In-memory cache for FRED series
 const fredSeriesCache = {};
+
+// ─── Dev-only logger (silent in production) ───────────────────────────────────
+const isDev = process.env.NODE_ENV !== 'production';
+const log = isDev ? console.log.bind(console) : () => {};
+
+// ─── Rate Limiting ────────────────────────────────────────────────────────────
+
+const rateLimitMap = new Map();   // ip → { count, resetAt }
+const aiLimitMap   = new Map();   // ip → { count, resetAt }
+
+function getIP(req) {
+  return (req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').split(',')[0].trim();
+}
+
+function isRateLimited(ip, map, maxRequests, windowMs) {
+  const now = Date.now();
+  const entry = map.get(ip);
+  if (!entry || now > entry.resetAt) {
+    map.set(ip, { count: 1, resetAt: now + windowMs });
+    return false;
+  }
+  if (entry.count >= maxRequests) return true;
+  entry.count++;
+  return false;
+}
+
+// Cleanup stale entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of rateLimitMap) if (now > v.resetAt) rateLimitMap.delete(k);
+  for (const [k, v] of aiLimitMap)   if (now > v.resetAt) aiLimitMap.delete(k);
+}, 5 * 60 * 1000);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -224,7 +256,7 @@ async function yfQuoteSummary(ticker) {
       const result = json.quoteSummary?.result?.[0];
       if (result) { writeCache(ck, result); return result; }
     } catch (e) {
-      console.log(`quoteSummary ${host} failed:`, e.message);
+      log(`quoteSummary ${host} failed:`, e.message);
     }
   }
   throw new Error(`quoteSummary unavailable for ${ticker}`);
@@ -234,7 +266,7 @@ async function yfQuoteSummary(ticker) {
 async function avIncomeStatement(ticker, avKey) {
   const ck = `av_income_${ticker}`;
   const cached = readCache(ck, INCOME_TTL);
-  if (cached) { console.log(`[income cache hit] ${ticker}`); return cached; }
+  if (cached) { log(`[income cache hit] ${ticker}`); return cached; }
 
   const r = await fetchWithTimeout(
     `https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=${ticker}&apikey=${avKey}`,
@@ -242,7 +274,7 @@ async function avIncomeStatement(ticker, avKey) {
   );
   const inc = await r.json();
   if (!inc.annualReports && !inc.quarterlyReports) {
-    console.log(`[AV income rate-limited or no data] ${ticker}:`, inc.Information ? 'rate-limited' : 'no data');
+    log(`[AV income rate-limited or no data] ${ticker}:`, inc.Information ? 'rate-limited' : 'no data');
     return null;
   }
   writeCache(ck, inc);
@@ -419,7 +451,7 @@ async function avDailyHistory(ticker, avKey) {
   const r = await fetchWithTimeout(url, {}, 15000);
   const json = await r.json();
   const series = json['Time Series (Daily)'];
-  if (!series) { console.log('AV daily no series, keys:', Object.keys(json), JSON.stringify(json).slice(0, 200)); return null; }
+  if (!series) { log('AV daily no series, keys:', Object.keys(json), JSON.stringify(json).slice(0, 200)); return null; }
 
   const history = Object.entries(series)
     .map(([date, v]) => ({ date, price: parseFloat(v['4. close']) }))
@@ -463,7 +495,7 @@ async function getStockData(params) {
       const prevBar = dailyBars[dailyBars.length - 2];
       currentPrice = lastBar.c;
       prevClose = prevBar?.c ?? lastBar.c;
-      console.log(`[Polygon] ${ticker} daily — ${dailyBars.length} bars`);
+      log(`[Polygon] ${ticker} daily — ${dailyBars.length} bars`);
     }
 
     const snapData = snap[ticker.toUpperCase()];
@@ -485,7 +517,7 @@ async function getStockData(params) {
       polyCountry = details.locale?.toUpperCase() === 'US' ? 'United States' : details.locale;
     }
   } catch (e) {
-    console.log(`[Polygon] getStockData error for ${ticker}:`, e.message);
+    log(`[Polygon] getStockData error for ${ticker}:`, e.message);
   }
 
   // Polygon 15-min intraday (best-effort)
@@ -525,14 +557,14 @@ async function getStockData(params) {
         const prev = tiingoHistory[tiingoHistory.length - 2];
         currentPrice = currentPrice ?? last?.price;
         prevClose = prevClose ?? prev?.price ?? null;
-        console.log(`[Tiingo] ${ticker} OK — ${tiingoHistory.length} pts`);
+        log(`[Tiingo] ${ticker} OK — ${tiingoHistory.length} pts`);
       }
-    } catch (e) { console.log('[Tiingo] error:', e.message); }
+    } catch (e) { log('[Tiingo] error:', e.message); }
   }
 
   // ── 3. AV daily fallback ───────────────────────────────────────────────────
   if (!priceHistoryDaily.length && avKey) {
-    const avHistory = await avDailyHistory(ticker, avKey).catch(e => { console.log('AV history error:', e.message); return null; });
+    const avHistory = await avDailyHistory(ticker, avKey).catch(e => { log('AV history error:', e.message); return null; });
     if (avHistory) {
       priceHistoryDaily = avHistory;
       const last = priceHistoryDaily[priceHistoryDaily.length - 1];
@@ -568,7 +600,7 @@ async function getStockData(params) {
         if (j && !j.Information && j.Symbol) writeCache(ovCk, j);
       }
       if (j && !j.Information && j.Symbol) overview = j;
-    } catch (e) { console.log('AV overview error:', e.message); }
+    } catch (e) { log('AV overview error:', e.message); }
 
     try {
       const inc = await avIncomeStatement(ticker, avKey);
@@ -586,7 +618,7 @@ async function getStockData(params) {
           return { displayDate: `Q${quarter}'${String(year).slice(2)}`, year, quarter, revenue: parseInt(rep.totalRevenue) || 0, earnings: parseInt(rep.netIncome) || 0, eps: rep.reportedEPS && rep.reportedEPS !== 'None' ? parseFloat(rep.reportedEPS) : null };
         }).filter(r => r.year).sort((a, b) => a.year !== b.year ? a.year - b.year : a.quarter - b.quarter);
       }
-    } catch (e) { console.log('AV income error:', e.message); }
+    } catch (e) { log('AV income error:', e.message); }
   }
 
   const avF = (key) => { const v = overview[key]; return (v && v !== 'None' && v !== 'N/A' && v !== '-') ? parseFloat(v) : null; };
@@ -768,7 +800,7 @@ async function getTopPerformers(params) {
         };
         writeCache('market_movers', moversData);
       }
-    } catch (e) { console.log('[getTopPerformers] AV error:', e.message); }
+    } catch (e) { log('[getTopPerformers] AV error:', e.message); }
   }
 
   if (!moversData) return { gainers: [], losers: [], mostActive: [], totalAnalyzed: 0 };
@@ -1193,10 +1225,10 @@ const HANDLERS = {
 // ─── New GET Route Handlers ───────────────────────────────────────────────────
 
 async function handleIndices() {
-  console.log('[GET /api/indices]');
+  log('[GET /api/indices]');
 
   const cachedIndices = readCache('indices_result', 10 * 60 * 1000);
-  if (cachedIndices) { console.log('[indices] cache hit'); return cachedIndices; }
+  if (cachedIndices) { log('[indices] cache hit'); return cachedIndices; }
 
   const avKey = process.env.VITE_ALPHA_VANTAGE_API_KEY;
   const fredKey = process.env.VITE_FRED_API_KEY;
@@ -1216,7 +1248,7 @@ async function handleIndices() {
   // ── 1. Polygon index snapshot (primary for true indices) ──────────────────
   const polyIdxTickers = INDEX_MAP.filter(e => e.polyIdx).map(e => e.polyIdx);
   const polyIdxData = await polyIndexSnapshot(polyIdxTickers).catch(() => ({}));
-  console.log(`[indices] Polygon index — ${Object.keys(polyIdxData).length} indices`);
+  log(`[indices] Polygon index — ${Object.keys(polyIdxData).length} indices`);
 
   // ── 2. Polygon ETF snapshot for non-index items (DXY proxy, 10Y ETF) ─────
   const polyEtfTickers = INDEX_MAP.filter(e => !e.polyIdx && e.etf).map(e => e.etf);
@@ -1243,7 +1275,7 @@ async function handleIndices() {
             writeCache(ck, cached);
           }
         }
-      } catch (e) { console.log('[indices] Tiingo IEX error:', e.message); }
+      } catch (e) { log('[indices] Tiingo IEX error:', e.message); }
     }
     tiingoEtfMap = cached || {};
   }
@@ -1345,7 +1377,7 @@ async function handleIndices() {
           results.push({ symbol, name, price: indexPrice, change, changePercent, isUp: change >= 0 });
           continue;
         }
-      } catch (e) { console.log(`[indices] AV fallback error for ${etf}:`, e.message); }
+      } catch (e) { log(`[indices] AV fallback error for ${etf}:`, e.message); }
     }
 
     results.push({ symbol, name, price: 0, change: 0, changePercent: 0, isUp: false, error: true });
@@ -1356,7 +1388,7 @@ async function handleIndices() {
 }
 
 async function handleFredSeries(seriesId, limit = 100) {
-  console.log(`[GET /api/fred/${seriesId}] limit=${limit}`);
+  log(`[GET /api/fred/${seriesId}] limit=${limit}`);
   const fredKey = process.env.VITE_FRED_API_KEY;
   if (!fredKey) throw new Error('Missing VITE_FRED_API_KEY');
 
@@ -1383,7 +1415,7 @@ async function handleFredSeries(seriesId, limit = 100) {
 }
 
 async function handleFredMultiple(seriesParam, limit = 100) {
-  console.log(`[GET /api/fred-multiple] series=${seriesParam} limit=${limit}`);
+  log(`[GET /api/fred-multiple] series=${seriesParam} limit=${limit}`);
   if (!seriesParam) throw new Error('Query param "series" is required');
   const ids = seriesParam.split(',').map(s => s.trim()).filter(Boolean);
   const results = await Promise.all(ids.map(id => handleFredSeries(id, limit).catch(e => ({ seriesId: id, error: e.message, data: [] }))));
@@ -1393,7 +1425,7 @@ async function handleFredMultiple(seriesParam, limit = 100) {
 }
 
 async function handleEiaStateGas() {
-  console.log('[GET /api/eia-state-gas]');
+  log('[GET /api/eia-state-gas]');
   const eiaKey = process.env.VITE_EIA_API_KEY;
   if (!eiaKey) throw new Error('Missing VITE_EIA_API_KEY');
 
@@ -1428,7 +1460,7 @@ async function handleEiaStateGas() {
 }
 
 async function handleBls(seriesIdsParam) {
-  console.log(`[GET /api/bls] seriesIds=${seriesIdsParam}`);
+  log(`[GET /api/bls] seriesIds=${seriesIdsParam}`);
   const blsKey = process.env.VITE_BLS_API_KEY;
   if (!blsKey) throw new Error('Missing VITE_BLS_API_KEY');
   if (!seriesIdsParam) throw new Error('Query param "seriesIds" is required');
@@ -1447,7 +1479,7 @@ async function handleBls(seriesIdsParam) {
 }
 
 async function handleEia(route) {
-  console.log(`[GET /api/eia/${route}]`);
+  log(`[GET /api/eia/${route}]`);
   const eiaKey = process.env.VITE_EIA_API_KEY;
   if (!eiaKey) throw new Error('Missing VITE_EIA_API_KEY');
 
@@ -1458,7 +1490,7 @@ async function handleEia(route) {
 }
 
 async function handleMarketBreadth() {
-  console.log('[GET /api/market/breadth]');
+  log('[GET /api/market/breadth]');
 
   const etfTickers = ['SPY', 'QQQ', 'IWM', 'DIA'];
   const ETF_NAMES = { SPY: 'S&P 500 ETF', QQQ: 'NASDAQ 100 ETF', IWM: 'Russell 2000 ETF', DIA: 'Dow Jones ETF' };
@@ -1525,7 +1557,7 @@ async function handleMarketBreadth() {
 }
 
 async function handleMarketMovers() {
-  console.log('[GET /api/market/movers]');
+  log('[GET /api/market/movers]');
   const avKey = process.env.VITE_ALPHA_VANTAGE_API_KEY;
 
   const cached = readCache('market_movers', 5 * 60 * 1000);
@@ -1538,7 +1570,7 @@ async function handleMarketMovers() {
       writeCache('market_movers', movers);
       return movers;
     }
-  } catch (e) { console.log('[movers] Polygon error:', e.message); }
+  } catch (e) { log('[movers] Polygon error:', e.message); }
 
   // ── Fallback: Alpha Vantage TOP_GAINERS_LOSERS ────────────────────────────
   if (avKey) {
@@ -1562,14 +1594,14 @@ async function handleMarketMovers() {
         writeCache('market_movers', result);
         return result;
       }
-    } catch (e) { console.log('AV movers error:', e.message); }
+    } catch (e) { log('AV movers error:', e.message); }
   }
 
   return { gainers: [], losers: [], mostActive: [] };
 }
 
 async function handleEconomicCalendar() {
-  console.log('[GET /api/economic-calendar]');
+  log('[GET /api/economic-calendar]');
 
   const events = [
     { date: '2026-03-05', time: '08:30', event: 'Initial Jobless Claims', importance: 'medium', forecast: '215K', previous: '212K', actual: null },
@@ -1606,7 +1638,7 @@ async function handleEconomicCalendar() {
 }
 
 async function handleSectorHeatmap() {
-  console.log('[GET /api/sector/heatmap]');
+  log('[GET /api/sector/heatmap]');
 
   const SECTOR_ETFS = [
     { symbol: 'XLK',  name: 'Technology' },
@@ -1642,9 +1674,9 @@ async function handleSectorHeatmap() {
       for (const [sym, t] of Object.entries(polySnap)) {
         priceMap[sym] = { price: t.day?.c ?? t.lastTrade?.p ?? 0, prev: t.prevDay?.c ?? 0 };
       }
-      console.log(`[sector/heatmap] Polygon OK — ${Object.keys(priceMap).length} sectors`);
+      log(`[sector/heatmap] Polygon OK — ${Object.keys(priceMap).length} sectors`);
     }
-  } catch (e) { console.log('[sector/heatmap] Polygon error:', e.message); }
+  } catch (e) { log('[sector/heatmap] Polygon error:', e.message); }
 
   // ── Tiingo IEX fallback ───────────────────────────────────────────────────
   const tiingoKey = process.env.VITE_TIINGO_API_KEY;
@@ -1666,7 +1698,7 @@ async function handleSectorHeatmap() {
             writeCache(tiingoCk, cached);
           }
         }
-      } catch (e) { console.log('[sector/heatmap] Tiingo IEX error:', e.message); }
+      } catch (e) { log('[sector/heatmap] Tiingo IEX error:', e.message); }
     }
     if (cached) priceMap = cached;
   }
@@ -1706,7 +1738,7 @@ async function handleSectorHeatmap() {
 }
 
 async function handleWatchlistQuote(symbolsParam) {
-  console.log(`[GET /api/watchlist/quote] symbols=${symbolsParam}`);
+  log(`[GET /api/watchlist/quote] symbols=${symbolsParam}`);
   if (!symbolsParam) throw new Error('Query param "symbols" is required');
 
   const tiingoKey = process.env.VITE_TIINGO_API_KEY;
@@ -1851,9 +1883,9 @@ async function fetchNewsFromRSS() {
       const xml = await res.text();
       const parsed = parseRSS(xml, source.name, source.category);
       all.push(...parsed.slice(0, 15));
-      console.log(`[News] ${source.name}: ${parsed.length} articles`);
+      log(`[News] ${source.name}: ${parsed.length} articles`);
     } catch (e) {
-      console.log(`[News] ${source.name} failed: ${e.message}`);
+      log(`[News] ${source.name} failed: ${e.message}`);
     }
   }
   return all;
@@ -1893,7 +1925,7 @@ async function fetchNewsFromPolygon() {
       };
     });
   } catch (e) {
-    console.log('[News] Polygon fetch failed:', e.message);
+    log('[News] Polygon fetch failed:', e.message);
     return [];
   }
 }
@@ -1902,7 +1934,7 @@ let newsCache = null;
 let newsCacheTime = 0;
 
 async function refreshNews() {
-  console.log('[News] Refreshing news cache...');
+  log('[News] Refreshing news cache...');
   try {
     const [rssArticles, polyArticles] = await Promise.all([
       fetchNewsFromRSS(),
@@ -1920,9 +1952,9 @@ async function refreshNews() {
     deduped.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
     newsCache = { articles: deduped.slice(0, 60), lastUpdated: new Date().toISOString(), count: deduped.length };
     newsCacheTime = Date.now();
-    console.log(`[News] Cache updated: ${deduped.length} articles`);
+    log(`[News] Cache updated: ${deduped.length} articles`);
   } catch (e) {
-    console.log('[News] Refresh error:', e.message);
+    log('[News] Refresh error:', e.message);
   }
 }
 
@@ -1953,6 +1985,22 @@ const server = http.createServer(async (req, res) => {
     return res.end();
   }
 
+  const ip = getIP(req);
+
+  // AI endpoint — strict limit: 20 requests per hour per IP
+  if (path === '/api/planora-ai') {
+    if (isRateLimited(ip, aiLimitMap, 20, 60 * 60 * 1000)) {
+      return sendJSON(res, { error: 'AI rate limit exceeded. Please try again later.' }, 429);
+    }
+  }
+
+  // General API rate limit: 120 requests per minute per IP
+  if (path.startsWith('/api/') || path.startsWith('/functions/')) {
+    if (isRateLimited(ip, rateLimitMap, 120, 60 * 1000)) {
+      return sendJSON(res, { error: 'Rate limit exceeded. Please slow down.' }, 429);
+    }
+  }
+
   // ── Existing POST routes ────────────────────────────────────────────────────
 
   if (req.method === 'POST' && path === '/integrations/llm') {
@@ -1973,7 +2021,7 @@ const server = http.createServer(async (req, res) => {
     }
     try {
       const params = await readBody(req);
-      console.log(`[${fnName}]`, JSON.stringify(params).slice(0, 100));
+      log(`[${fnName}]`, JSON.stringify(params).slice(0, 100));
       const result = await handler(params);
       return sendJSON(res, result);
     } catch (err) {
@@ -2294,7 +2342,7 @@ const server = http.createServer(async (req, res) => {
             liveContext += '---\n';
           }
         } catch (e) {
-          console.log('[planora-ai] ticker enrichment error:', e.message);
+          log('[planora-ai] ticker enrichment error:', e.message);
         }
       }
 
@@ -2442,13 +2490,13 @@ try {
     const value = trimmed.slice(eqIdx + 1).trim();
     if (!process.env[key]) process.env[key] = value;
   }
-  console.log('Loaded .env file');
+  log('Loaded .env file');
 } catch (e) {
   console.warn('Could not load .env:', e.message);
 }
 
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Local backend running at http://localhost:${PORT}`);
-  console.log('Available functions:', Object.keys(HANDLERS).join(', '));
-  console.log('Available GET routes: /api/indices, /api/fred/:seriesId, /api/fred-multiple, /api/bls, /api/eia/:route, /api/market/breadth, /api/market/movers, /api/economic-calendar, /api/sector/heatmap, /api/watchlist/quote, /api/news');
+  log(`Local backend running at http://localhost:${PORT}`);
+  log('Available functions:', Object.keys(HANDLERS).join(', '));
+  log('Available GET routes: /api/indices, /api/fred/:seriesId, /api/fred-multiple, /api/bls, /api/eia/:route, /api/market/breadth, /api/market/movers, /api/economic-calendar, /api/sector/heatmap, /api/watchlist/quote, /api/news');
 });
