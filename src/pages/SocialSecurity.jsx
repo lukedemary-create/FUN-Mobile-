@@ -207,48 +207,43 @@ export default function SocialSecurity() {
 
   /* ─── Render ────────────────────────────────────────────────── */
   return (
-    <div style={{ padding: "1.5rem", maxWidth: 1280, margin: "0 auto" }}>
+    <div style={{ maxWidth: 1280 }}>
 
       {/* Hero Banner */}
-      <div className="t-card" style={{
-        background: "linear-gradient(135deg, rgba(201,168,76,0.12) 0%, rgba(77,208,196,0.08) 100%)",
-        border: "1px solid var(--border-c)", borderRadius: 12,
-        padding: "1.75rem 2rem", marginBottom: "1.5rem",
+      <div style={{
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem", marginBottom: "1.5rem",
+        position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.9rem", marginBottom: "1rem" }}>
-          <div style={{
-            width: 44, height: 44, borderRadius: 10,
-            background: "rgba(201,168,76,0.18)", display: "flex",
-            alignItems: "center", justifyContent: "center",
-          }}>
-            <ShieldCheck size={24} color={GOLD} />
-          </div>
-          <div>
-            <h1 className="t-page-title" style={{ margin: 0 }}>Social Security Optimizer</h1>
-            <p style={{ margin: 0, color: "var(--text-3)", fontSize: "0.82rem", marginTop: "0.2rem" }}>
-              Find the optimal claiming age to maximize your lifetime Social Security benefits
-            </p>
-          </div>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
-          {[
-            { icon: Calendar,   label: "Full Retirement Age",       value: "Age 67",    sub: "Born 1960 or later",         color: GOLD   },
-            { icon: TrendingUp, label: "Early Claiming Reduction",  value: "Up to 30%", sub: "If claimed at age 62",       color: RED    },
-            { icon: TrendingUp, label: "Delayed Claiming Bonus",    value: "+8%/year",  sub: "Each year past FRA",         color: GREEN  },
-            { icon: DollarSign, label: "Max Monthly Benefit 2025",  value: "$4,873",    sub: "Claimed at age 70",          color: TEAL   },
-          ].map(({ icon: Icon, label, value, sub, color }) => (
-            <div key={label} className="t-card" style={{ padding: "1rem 1.25rem", borderTop: `3px solid ${color}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <div className="t-label" style={{ marginBottom: "0.3rem" }}>{label}</div>
-                  <div className="t-mono" style={{ fontSize: "1.3rem", fontWeight: 900, color, lineHeight: 1 }}>{value}</div>
-                  <div style={{ fontSize: "0.68rem", color: "var(--text-3)", marginTop: "0.3rem" }}>{sub}</div>
-                </div>
-                <Icon size={18} color={color} style={{ opacity: 0.6 }} />
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+          <p style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 0.625rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ display: "inline-block", width: 18, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+            Wealth · Planning
+          </p>
+          <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            Social Security{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Optimizer</em>
+          </h1>
+          <p style={{ margin: "0 0 1.5rem", color: "var(--text-3)", fontSize: "0.875rem", lineHeight: 1.65, maxWidth: 560 }}>
+            Find the optimal claiming age to maximize your lifetime Social Security benefits
+          </p>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            {[
+              { label: "Full Retirement Age",    value: "Age 67",    color: GOLD   },
+              { label: "Early Claiming Penalty", value: "−30%",      color: RED    },
+              { label: "Delayed Bonus / Year",   value: "+8%",       color: GREEN  },
+              { label: "Max Monthly 2025",       value: "$4,873",    color: TEAL   },
+            ].map(({ label, value, color }) => (
+              <div key={label} style={{ background: `${color}10`, border: `1px solid ${color}30`, borderRadius: 8, padding: "0.5rem 0.875rem" }}>
+                <div className="t-mono" style={{ fontSize: "1.25rem", fontWeight: 800, color, lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 10, color: "var(--text-3)", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", marginTop: 4 }}>{label}</div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
@@ -315,7 +310,7 @@ export default function SocialSecurity() {
                     key={key}
                     onClick={() => setHealth(key)}
                     style={{
-                      background: health === key ? "rgba(201,168,76,0.15)" : "var(--bg)",
+                      background: health === key ? "rgba(201,169,110,0.15)" : "var(--bg)",
                       border: health === key ? `1px solid ${GOLD}` : "1px solid var(--border-c)",
                       borderRadius: 6, padding: "0.45rem 0.75rem",
                       color: health === key ? GOLD : "var(--text-2)",

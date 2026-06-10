@@ -100,7 +100,7 @@ export default function Settings() {
         </div>
 
         {/* Danger Zone */}
-        <div className="t-card t-card-p" style={{ borderLeft: "3px solid var(--down)" }}>
+        <div className="t-card t-card-p" style={{ border: "1px solid rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.03)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
             <div style={{ width: 36, height: 36, borderRadius: "9px", background: "rgba(255,59,92,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <AlertTriangle size={16} style={{ color: "var(--down)" }} />

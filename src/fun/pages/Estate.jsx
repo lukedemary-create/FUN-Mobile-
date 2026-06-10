@@ -7,17 +7,25 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
-const BG    = '#F4F7FA';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 
 /* ── Shared ───────────────────────────────────────────────────────── */
 function SectionCard({ title, subtitle, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
       {(title||subtitle) && (
         <div style={{ marginBottom:'1.25rem' }}>
-          {title && <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
-          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{subtitle}</p>}
+          {title && <h3 style={{ fontFamily:DISP, fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
+          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:T3, lineHeight:1.65, fontFamily:UI }}>{subtitle}</p>}
         </div>
       )}
       {children}
@@ -29,7 +37,7 @@ function InfoBox({ children, color = TEAL }) {
   return (
     <div style={{ display:'flex', gap:10, padding:'0.75rem 0.875rem', background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:10, marginTop:'0.875rem' }}>
       <Info size={14} color={color} style={{ flexShrink:0, marginTop:2 }}/>
-      <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{children}</p>
+      <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{children}</p>
     </div>
   );
 }
@@ -37,15 +45,15 @@ function InfoBox({ children, color = TEAL }) {
 function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1000, hint }) {
   return (
     <div style={{ marginBottom:'1rem' }}>
-      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>{label}</label>}
+      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>{label}</label>}
       <div style={{ position:'relative' }}>
-        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
+        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
         <input type="number" value={value} min={min} step={step} onChange={e => onChange(Number(e.target.value))}
-          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600, background:'#fafafa', boxSizing:'border-box' }}
-          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor='#e5e7eb'}/>
-        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
+          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'1rem', fontFamily:UI, color:NAVY, fontWeight:600, background:RAISE, boxSizing:'border-box' }}
+          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor=B2}/>
+        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
       </div>
-      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:T3, fontFamily:UI }}>{hint}</p>}
     </div>
   );
 }
@@ -53,15 +61,15 @@ function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1000
 function ResultBox({ label, value, color = TEAL, size = 'md' }) {
   return (
     <div style={{ background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:12, padding: size==='lg'?'1.25rem':'0.875rem 1rem', textAlign:'center' }}>
-      <div style={{ fontFamily:"'Playfair Display',serif", fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
-      <div style={{ fontSize:'0.75rem', color:'#6b7280', marginTop:4, fontFamily:"'DM Sans',sans-serif", fontWeight:500 }}>{label}</div>
+      <div style={{ fontFamily:DISP, fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
+      <div style={{ fontSize:'0.75rem', color:T3, marginTop:4, fontFamily:UI, fontWeight:500 }}>{label}</div>
     </div>
   );
 }
 
 function Pill({ text, color = '#6b7280' }) {
   return (
-    <span style={{ display:'inline-block', padding:'2px 10px', borderRadius:20, background:`${color}15`, color, fontSize:'0.7rem', fontWeight:700, fontFamily:"'DM Sans',sans-serif", letterSpacing:'0.04em', textTransform:'uppercase' }}>{text}</span>
+    <span style={{ display:'inline-block', padding:'2px 10px', borderRadius:20, background:`${color}15`, color, fontSize:'0.7rem', fontWeight:700, fontFamily:UI, letterSpacing:'0.04em', textTransform:'uppercase' }}>{text}</span>
   );
 }
 
@@ -90,13 +98,13 @@ function WillsLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         A will is the cornerstone of any estate plan. Without one, the state decides who gets your assets and who raises your children — a process called <strong>intestacy</strong>. Even a simple will gives you control.
       </p>
 
       <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1.25rem', display:'flex', gap:10 }}>
         <AlertCircle size={16} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>
-        <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', color:'#374151', lineHeight:1.65 }}>
+        <div style={{ fontFamily:UI, fontSize:'0.875rem', color:T2, lineHeight:1.65 }}>
           <strong style={{ color:'#ef4444' }}>Dying intestate (without a will)</strong> means a probate court applies your state's default rules. Your assets may go to relatives you wouldn't choose, and a judge — not you — picks your children's guardian.
         </div>
       </div>
@@ -105,15 +113,15 @@ function WillsLearn() {
         {types.map(t => (
           <div key={t.name} style={{ border:`1.5px solid ${t.color}30`, borderRadius:12, padding:'1rem 1.125rem' }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
-              <span style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, color:NAVY, fontSize:'1rem' }}>{t.name}</span>
+              <span style={{ fontFamily:DISP, fontWeight:700, color:NAVY, fontSize:'1rem' }}>{t.name}</span>
               <Pill text={t.badge} color={t.color}/>
             </div>
-            <p style={{ margin:'0 0 0.75rem', fontSize:'0.8375rem', color:'#374151', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{t.what}</p>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.625rem', fontSize:'0.8rem', fontFamily:"'DM Sans',sans-serif" }}>
+            <p style={{ margin:'0 0 0.75rem', fontSize:'0.8375rem', color:T2, lineHeight:1.65, fontFamily:UI }}>{t.what}</p>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.625rem', fontSize:'0.8rem', fontFamily:UI }}>
               <div>
                 <div style={{ fontWeight:700, color:'#22c55e', marginBottom:4 }}>Covers</div>
                 {t.covers.map(c => (
-                  <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:'#374151' }}>
+                  <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:T2 }}>
                     <CheckCircle2 size={12} color='#22c55e' style={{ flexShrink:0, marginTop:2 }}/>{c}
                   </div>
                 ))}
@@ -121,7 +129,7 @@ function WillsLearn() {
               <div>
                 <div style={{ fontWeight:700, color:'#ef4444', marginBottom:4 }}>Does NOT cover</div>
                 {t.doesnt.map(d => (
-                  <div key={d} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:'#374151' }}>
+                  <div key={d} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:T2 }}>
                     <XCircle size={12} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>{d}
                   </div>
                 ))}
@@ -137,13 +145,13 @@ function WillsLearn() {
           { group:'Anyone who owns property', urgency:'High', color:'#f59e0b', note:'Real estate, vehicles, and bank accounts without named beneficiaries go through probate.' },
           { group:'Unmarried couples', urgency:'High', color:'#f59e0b', note:'Without a will, your partner receives nothing — the state gives assets to blood relatives.' },
           { group:'Anyone with specific wishes', urgency:'Moderate', color:TEAL, note:'Heirlooms, charitable gifts, or leaving someone out requires explicit instruction.' },
-          { group:'Young singles with few assets', urgency:'Lower', color:'#6b7280', note:'Still valuable, but less urgent. At minimum name beneficiaries on accounts.' },
+          { group:'Young singles with few assets', urgency:'Lower', color:T3, note:'Still valuable, but less urgent. At minimum name beneficiaries on accounts.' },
         ].map(row => (
-          <div key={row.group} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <span style={{ minWidth:90, fontFamily:"'DM Sans',sans-serif", fontSize:'0.75rem', fontWeight:700, color:row.color, paddingTop:1 }}>{row.urgency}</span>
+          <div key={row.group} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <span style={{ minWidth:90, fontFamily:UI, fontSize:'0.75rem', fontWeight:700, color:row.color, paddingTop:1 }}>{row.urgency}</span>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:600, color:NAVY }}>{row.group}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{row.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:600, color:NAVY }}>{row.group}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{row.note}</div>
             </div>
           </div>
         ))}
@@ -180,11 +188,11 @@ function TrustsLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         A trust is a legal arrangement where you (the <strong>grantor</strong>) transfer assets to a trustee to manage for your beneficiaries. Trusts offer more control, privacy, and flexibility than a will alone.
       </p>
 
-      <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1.25rem', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', color:'#374151', lineHeight:1.65 }}>
+      <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1.25rem', fontFamily:UI, fontSize:'0.875rem', color:T2, lineHeight:1.65 }}>
         <strong style={{ color:NAVY }}>Will vs. Trust — The key difference:</strong> A will only takes effect <em>after</em> you die and must go through probate court. A trust takes effect <em>immediately</em>, works while you're alive, and passes assets at death without court involvement.
       </div>
 
@@ -192,15 +200,15 @@ function TrustsLearn() {
         {types.map(t => (
           <div key={t.name} style={{ border:`1.5px solid ${t.color}30`, borderRadius:12, padding:'1.125rem' }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-              <span style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, color:NAVY, fontSize:'1rem' }}>{t.name}</span>
+              <span style={{ fontFamily:DISP, fontWeight:700, color:NAVY, fontSize:'1rem' }}>{t.name}</span>
               <Pill text={t.badge} color={t.color}/>
             </div>
-            <p style={{ margin:'0 0 0.75rem', fontSize:'0.8375rem', color:'#374151', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{t.summary}</p>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.625rem', fontSize:'0.8rem', fontFamily:"'DM Sans',sans-serif", marginBottom:'0.75rem' }}>
+            <p style={{ margin:'0 0 0.75rem', fontSize:'0.8375rem', color:T2, lineHeight:1.65, fontFamily:UI }}>{t.summary}</p>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.625rem', fontSize:'0.8rem', fontFamily:UI, marginBottom:'0.75rem' }}>
               <div>
                 <div style={{ fontWeight:700, color:'#22c55e', marginBottom:4 }}>Pros</div>
                 {t.pros.map(p => (
-                  <div key={p} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:'#374151' }}>
+                  <div key={p} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:T2 }}>
                     <CheckCircle2 size={12} color='#22c55e' style={{ flexShrink:0, marginTop:2 }}/>{p}
                   </div>
                 ))}
@@ -208,13 +216,13 @@ function TrustsLearn() {
               <div>
                 <div style={{ fontWeight:700, color:'#ef4444', marginBottom:4 }}>Cons</div>
                 {t.cons.map(c => (
-                  <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:'#374151' }}>
+                  <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:T2 }}>
                     <XCircle size={12} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>{c}
                   </div>
                 ))}
               </div>
             </div>
-            <div style={{ background:`${t.color}0d`, border:`1px solid ${t.color}20`, borderRadius:8, padding:'0.5rem 0.75rem', fontSize:'0.8rem', color:'#374151', fontFamily:"'DM Sans',sans-serif" }}>
+            <div style={{ background:`${t.color}0d`, border:`1px solid ${t.color}20`, borderRadius:8, padding:'0.5rem 0.75rem', fontSize:'0.8rem', color:T2, fontFamily:UI }}>
               <strong style={{ color:t.color }}>Best for: </strong>{t.best}
             </div>
           </div>
@@ -252,7 +260,7 @@ function POALearn() {
     {
       name: 'Limited / Special POA',
       icon: FileText,
-      color: '#6b7280',
+      color: T3,
       badge: 'Situational',
       what: 'Grants authority for a specific transaction or time period — for example, allowing someone to close on a real estate sale while you\'re traveling.',
       key: 'Automatically expires after the specified event or date. Does not continue through incapacity.',
@@ -262,13 +270,13 @@ function POALearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         A Power of Attorney (POA) is a legal document that authorizes someone to act on your behalf. Unlike a will (which works after death), a POA is critical <strong>while you're alive but incapacitated</strong>.
       </p>
 
       <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1.25rem', display:'flex', gap:10 }}>
         <AlertCircle size={16} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>
-        <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', color:'#374151', lineHeight:1.65 }}>
+        <div style={{ fontFamily:UI, fontSize:'0.875rem', color:T2, lineHeight:1.65 }}>
           <strong style={{ color:'#ef4444' }}>Without a POA:</strong> If you become incapacitated, your family may need to petition a court for <strong>guardianship or conservatorship</strong> — a costly, public, and time-consuming legal process — just to manage your finances or make medical decisions.
         </div>
       </div>
@@ -280,15 +288,15 @@ function POALearn() {
             <div key={t.name} style={{ border:`1.5px solid ${t.color}30`, borderRadius:12, padding:'1.125rem' }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
                 <Icon size={16} color={t.color}/>
-                <span style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, color:NAVY, fontSize:'1rem' }}>{t.name}</span>
+                <span style={{ fontFamily:DISP, fontWeight:700, color:NAVY, fontSize:'1rem' }}>{t.name}</span>
                 <Pill text={t.badge} color={t.color}/>
               </div>
-              <p style={{ margin:'0 0 0.625rem', fontSize:'0.8375rem', color:'#374151', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{t.what}</p>
-              <div style={{ background:`${t.color}0d`, border:`1px solid ${t.color}20`, borderRadius:8, padding:'0.5rem 0.75rem', fontSize:'0.8rem', color:'#374151', fontFamily:"'DM Sans',sans-serif", marginBottom: t.warning ? '0.5rem' : 0 }}>
+              <p style={{ margin:'0 0 0.625rem', fontSize:'0.8375rem', color:T2, lineHeight:1.65, fontFamily:UI }}>{t.what}</p>
+              <div style={{ background:`${t.color}0d`, border:`1px solid ${t.color}20`, borderRadius:8, padding:'0.5rem 0.75rem', fontSize:'0.8rem', color:T2, fontFamily:UI, marginBottom: t.warning ? '0.5rem' : 0 }}>
                 <strong style={{ color:t.color }}>Key point: </strong>{t.key}
               </div>
               {t.warning && (
-                <div style={{ display:'flex', gap:8, padding:'0.5rem 0.75rem', background:'#fffbeb', border:'1px solid #fde68a', borderRadius:8, fontSize:'0.8rem', color:'#374151', fontFamily:"'DM Sans',sans-serif" }}>
+                <div style={{ display:'flex', gap:8, padding:'0.5rem 0.75rem', background:'#fffbeb', border:'1px solid #fde68a', borderRadius:8, fontSize:'0.8rem', color:T2, fontFamily:UI }}>
                   <AlertCircle size={13} color='#f59e0b' style={{ flexShrink:0, marginTop:1 }}/>{t.warning}
                 </div>
               )}
@@ -317,7 +325,7 @@ function DirectivesLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Healthcare directives are legal documents that communicate your medical wishes when you can't speak for yourself. They relieve your family of the burden of making these decisions during a crisis.
       </p>
 
@@ -327,18 +335,18 @@ function DirectivesLearn() {
           { name:'Healthcare Power of Attorney', color:'#ec4899', desc:'Names the person who makes medical decisions when you can\'t communicate. They interpret and apply your living will.' },
           { name:'POLST / MOLST Form', color:'#f59e0b', desc:'Physician Orders for Life-Sustaining Treatment. A medical order (not just a directive) that travels with you across care settings. For those with serious illness.' },
         ].map(d => (
-          <div key={d.name} style={{ padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:d.color, marginBottom:3 }}>{d.name}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#374151', lineHeight:1.65 }}>{d.desc}</div>
+          <div key={d.name} style={{ padding:'0.75rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:d.color, marginBottom:3 }}>{d.name}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T2, lineHeight:1.65 }}>{d.desc}</div>
           </div>
         ))}
       </SectionCard>
 
       <SectionCard title="Decisions to Address in Your Directive">
         {decisions.map(d => (
-          <div key={d.q} style={{ padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{d.q}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65 }}>{d.detail}</div>
+          <div key={d.q} style={{ padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{d.q}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65 }}>{d.detail}</div>
           </div>
         ))}
         <InfoBox color='#8b5cf6'>These conversations are hard but necessary. Tell your healthcare agent and family where your documents are stored. A directive no one can find doesn't help anyone.</InfoBox>
@@ -362,7 +370,7 @@ function BeneficiariesLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Beneficiary designations <strong>override your will</strong>. It doesn't matter what your will says — whoever is named on your accounts, retirement plans, and life insurance receives those assets directly.
       </p>
 
@@ -374,7 +382,7 @@ function BeneficiariesLearn() {
             'Payable-on-Death (POD) bank accounts','Transfer-on-Death (TOD) investment accounts',
             'HSAs and FSAs','Pension survivor benefits',
           ].map(a => (
-            <div key={a} style={{ display:'flex', gap:7, alignItems:'center', fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#374151' }}>
+            <div key={a} style={{ display:'flex', gap:7, alignItems:'center', fontFamily:UI, fontSize:'0.8125rem', color:T2 }}>
               <CheckCircle2 size={13} color={TEAL} style={{ flexShrink:0 }}/>{a}
             </div>
           ))}
@@ -384,12 +392,12 @@ function BeneficiariesLearn() {
 
       <SectionCard title="Common Beneficiary Mistakes">
         {mistakes.map(m => (
-          <div key={m.mistake} style={{ padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={m.mistake} style={{ padding:'0.75rem 0', borderBottom:`1px solid ` }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.6875rem', fontWeight:700, color:m.color, background:`${m.color}15`, padding:'2px 8px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.04em' }}>{m.impact}</span>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{m.mistake}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.6875rem', fontWeight:700, color:m.color, background:`${m.color}15`, padding:'2px 8px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.04em' }}>{m.impact}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{m.mistake}</span>
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65, paddingLeft:2 }}>{m.fix}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65, paddingLeft:2 }}>{m.fix}</div>
           </div>
         ))}
       </SectionCard>
@@ -418,7 +426,7 @@ function EstateTaxCalc() {
   return (
     <SectionCard title="Estate Size Estimator" subtitle="Estimate your gross estate and see where you stand relative to federal estate tax thresholds.">
       <div style={{ marginBottom:'1.25rem' }}>
-        <div style={{ fontSize:'0.8125rem', fontWeight:700, color:NAVY, fontFamily:"'DM Sans',sans-serif", marginBottom:'0.75rem' }}>Assets</div>
+        <div style={{ fontSize:'0.8125rem', fontWeight:700, color:NAVY, fontFamily:UI, marginBottom:'0.75rem' }}>Assets</div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1.25rem' }}>
           <NumInput label="Primary Home / Real Estate" value={assets.home} onChange={v => setAssets(a => ({...a, home:v}))}/>
           <NumInput label="Retirement Accounts (401k, IRA)" value={assets.retirement} onChange={v => setAssets(a => ({...a, retirement:v}))}/>
@@ -427,7 +435,7 @@ function EstateTaxCalc() {
           <NumInput label="Bank / Savings Accounts" value={assets.bankAccounts} onChange={v => setAssets(a => ({...a, bankAccounts:v}))}/>
           <NumInput label="Other Assets (business, vehicles, etc.)" value={assets.other} onChange={v => setAssets(a => ({...a, other:v}))}/>
         </div>
-        <div style={{ fontSize:'0.8125rem', fontWeight:700, color:NAVY, fontFamily:"'DM Sans',sans-serif", margin:'0.5rem 0 0.75rem' }}>Debts & Liabilities</div>
+        <div style={{ fontSize:'0.8125rem', fontWeight:700, color:NAVY, fontFamily:UI, margin:'0.5rem 0 0.75rem' }}>Debts & Liabilities</div>
         <NumInput label="Total Debts (mortgage, loans, etc.)" value={debts} onChange={setDebts}/>
       </div>
 
@@ -439,7 +447,7 @@ function EstateTaxCalc() {
 
       {/* Progress bar */}
       <div style={{ marginBottom:'1.25rem' }}>
-        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif", marginBottom:6 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.75rem', color:T3, fontFamily:UI, marginBottom:6 }}>
           <span>Your estate: {pctOfExemption.toFixed(1)}% of federal exemption</span>
           <span>$15M threshold</span>
         </div>
@@ -449,18 +457,18 @@ function EstateTaxCalc() {
       </div>
 
       {federalTax > 0 ? (
-        <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:12, padding:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:12, padding:'1rem', fontFamily:UI }}>
           <div style={{ fontSize:'0.875rem', fontWeight:700, color:'#ef4444', marginBottom:4 }}>Potential Federal Estate Tax Exposure</div>
-          <div style={{ fontSize:'1.5rem', fontWeight:700, color:'#ef4444', fontFamily:"'Playfair Display',serif" }}>${federalTax.toLocaleString()}</div>
-          <div style={{ fontSize:'0.8125rem', color:'#374151', marginTop:4 }}>Consult an estate planning attorney. Strategies like irrevocable trusts, gifting, and charitable giving can reduce this.</div>
+          <div style={{ fontSize:'1.5rem', fontWeight:700, color:'#ef4444', fontFamily:DISP }}>${federalTax.toLocaleString()}</div>
+          <div style={{ fontSize:'0.8125rem', color:T2, marginTop:4 }}>Consult an estate planning attorney. Strategies like irrevocable trusts, gifting, and charitable giving can reduce this.</div>
         </div>
       ) : (
-        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem', fontFamily:UI }}>
           <div style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
             <CheckCircle2 size={16} color={TEAL} style={{ flexShrink:0, marginTop:2 }}/>
             <div>
               <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:3 }}>Below Federal Estate Tax Threshold</div>
-              <div style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.65 }}>Your estimated estate is below the $15M federal exemption. Federal estate tax is not a concern at this size. Note: some states have lower thresholds — check your state's rules.</div>
+              <div style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.65 }}>Your estimated estate is below the $15M federal exemption. Federal estate tax is not a concern at this size. Note: some states have lower thresholds — check your state's rules.</div>
             </div>
           </div>
         </div>
@@ -497,23 +505,23 @@ function DocumentChecklist() {
         <div style={{ flex:1, background:'#f3f4f6', borderRadius:99, height:8, overflow:'hidden' }}>
           <div style={{ width:`${(done/docs.length)*100}%`, background:TEAL, height:'100%', borderRadius:99, transition:'width 0.3s' }}/>
         </div>
-        <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, whiteSpace:'nowrap' }}>{done} / {docs.length}</span>
+        <span style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, whiteSpace:'nowrap' }}>{done} / {docs.length}</span>
       </div>
 
       {docs.map(d => (
         <div key={d.id}
           onClick={() => toggle(d.id)}
-          style={{ display:'flex', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6', cursor:'pointer', alignItems:'flex-start' }}
+          style={{ display:'flex', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ${B2}`, cursor:'pointer', alignItems:'flex-start' }}
         >
           <div style={{ width:20, height:20, borderRadius:6, border:`2px solid ${checked[d.id] ? TEAL : '#d1d5db'}`, background: checked[d.id] ? TEAL : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1, transition:'all 0.15s' }}>
             {checked[d.id] && <CheckCircle2 size={12} color='#fff'/>}
           </div>
           <div style={{ flex:1 }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:600, color: checked[d.id] ? '#9ca3af' : NAVY, textDecoration: checked[d.id] ? 'line-through' : 'none' }}>{d.label}</span>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.6875rem', fontWeight:700, color:d.color, background:`${d.color}15`, padding:'1px 7px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.04em' }}>{d.priority}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:600, color: checked[d.id] ? '#9ca3af' : NAVY, textDecoration: checked[d.id] ? 'line-through' : 'none' }}>{d.label}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.6875rem', fontWeight:700, color:d.color, background:`${d.color}15`, padding:'1px 7px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.04em' }}>{d.priority}</span>
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280', lineHeight:1.55, marginTop:2 }}>{d.detail}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3, lineHeight:1.55, marginTop:2 }}>{d.detail}</div>
           </div>
         </div>
       ))}
@@ -562,10 +570,10 @@ function ResourcesTab() {
         <SectionCard key={section.category} title={section.category}>
           {section.items.map(item => (
             <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer"
-              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6', textDecoration:'none' }}>
+              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ${B2}`, textDecoration:'none' }}>
               <div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.55 }}>{item.desc}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.55 }}>{item.desc}</div>
               </div>
               <ExternalLink size={14} color='#d1d5db' style={{ flexShrink:0, marginTop:3 }}/>
             </a>
@@ -581,7 +589,7 @@ function ResourcesTab() {
           'You own property in multiple states',
           'Significant charitable giving goals',
         ].map(r => (
-          <div key={r} style={{ display:'flex', gap:8, alignItems:'flex-start', padding:'0.375rem 0', fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color:'#374151' }}>
+          <div key={r} style={{ display:'flex', gap:8, alignItems:'flex-start', padding:'0.375rem 0', fontFamily:UI, fontSize:'0.8375rem', color:T2 }}>
             <ArrowRight size={13} color={TEAL} style={{ flexShrink:0, marginTop:3 }}/>{r}
           </div>
         ))}
@@ -633,19 +641,19 @@ export default function Estate() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
       {/* Header */}
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 0' }}>
+      <div style={{ background:SURF, borderBottom:`1px solid `, padding:'2rem 2.5rem 0' }}>
         <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
-          <span style={{ fontFamily:"'DM Sans',sans-serif" }}>Estate & Wills</span>
+          <span style={{ fontFamily:UI }}>Estate & Wills</span>
         </div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
+        <h1 style={{ fontFamily:DISP, fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Estate Planning & Wills
         </h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Estate planning isn't just for the wealthy. It's about making sure your wishes are honored, your loved ones are protected, and your assets go exactly where you intend.
         </p>
         <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
@@ -656,7 +664,7 @@ export default function Estate() {
               <button key={t.id} onClick={() => setTab(t.id)} style={{
                 display:'flex', alignItems:'center', gap:7, padding:'0.75rem 1.25rem',
                 background:'none', border:'none', borderBottom:`2px solid ${active?TEAL:'transparent'}`,
-                cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem',
+                cursor:'pointer', fontFamily:UI, fontSize:'0.875rem',
                 fontWeight:active?700:500, color:active?TEAL:'rgba(255,255,255,0.45)',
                 marginBottom:-1, transition:'color 0.15s', whiteSpace:'nowrap',
               }}><Icon size={14}/>{t.label}</button>
@@ -680,7 +688,7 @@ export default function Estate() {
                     display:'flex', alignItems:'center', gap:6, padding:'7px 14px',
                     borderRadius:99, border:`1.5px solid ${active ? TEAL : '#e5e7eb'}`,
                     background: active ? TEAL : '#fff', cursor:'pointer',
-                    fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem',
+                    fontFamily:UI, fontSize:'0.8125rem',
                     fontWeight: active ? 700 : 500, color: active ? '#fff' : '#6b7280',
                     transition:'all 0.15s', whiteSpace:'nowrap',
                   }}>

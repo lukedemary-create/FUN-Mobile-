@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Header } from '../../components/shared/Header'
 import { useApp } from '../../context/AppContext'
 import { advisor, fmt } from '../../data/demoData'
+import { MessageSquare } from 'lucide-react'
 
 export default function ClientMessages() {
   const { selectedClientId, getClientData, sendMessage, markMessagesRead } = useApp()
@@ -49,7 +50,7 @@ export default function ClientMessages() {
       <div style={{ flex: 1, overflow: 'auto', padding: '24px 24px 0' }}>
         {messages.length === 0 ? (
           <div className="empty-state" style={{ height: '100%' }}>
-            <span style={{ fontSize: 40 }}>💬</span>
+            <MessageSquare size={40} color="var(--text-tertiary)" />
             <div style={{ fontSize: 14, fontWeight: 500 }}>No messages yet</div>
             <div style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>Start the conversation with your advisor.</div>
           </div>

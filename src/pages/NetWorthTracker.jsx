@@ -414,25 +414,29 @@ export default function NetWorthTracker() {
   }
 
   return (
-    <div style={{ padding: "24px 20px", maxWidth: 1400, margin: "0 auto" }}>
+    <div style={{ maxWidth: 1400 }}>
 
       {/* ─── Hero Banner ─── */}
-      <div className="t-card-p" style={{
-        marginBottom: 24,
-        background: "linear-gradient(135deg, rgba(201,168,76,0.12) 0%, rgba(77,208,196,0.08) 100%)",
-        borderRadius: 12,
+      <div style={{
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: 24, position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
-          <div style={{
-            width: 52, height: 52, borderRadius: 12,
-            background: "rgba(201,168,76,0.15)", display: "flex",
-            alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>
-            <Target size={26} color={GOLD} />
-          </div>
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap", position: "relative" }}>
           <div style={{ flex: 1 }}>
-            <div className="t-page-title" style={{ marginBottom: 4 }}>Net Worth Tracker</div>
-            <div style={{ color: "var(--text-2)", fontSize: "0.85rem" }}>
+            <p style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: "0 0 0.75rem", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--gold)" }}>
+              <span style={{ display: "inline-block", width: 20, height: 1, background: "var(--gold)", opacity: 0.7 }} />
+              Wealth · Planning
+            </p>
+            <div style={{ marginBottom: 8, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+              Net Worth{" "}
+              <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Tracker</em>
+            </div>
+            <div style={{ color: "var(--text-2)", fontSize: "0.875rem", lineHeight: 1.65 }}>
               Track your complete financial picture — assets, liabilities, and net worth over time
             </div>
           </div>
@@ -616,7 +620,7 @@ export default function NetWorthTracker() {
           {/* Net Worth Display */}
           <div className="t-card-p" style={{
             textAlign: "center",
-            background: "linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(77,208,196,0.06) 100%)",
+            background: "linear-gradient(135deg, rgba(201,169,110,0.08) 0%, rgba(77,208,196,0.06) 100%)",
           }}>
             <div className="t-label" style={{ marginBottom: 8 }}>YOUR NET WORTH</div>
             <div style={{
@@ -695,7 +699,7 @@ export default function NetWorthTracker() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <div className="t-label">Net Worth History</div>
               {history.length < 2 && (
-                <span className="t-badge" style={{ background: "rgba(201,168,76,0.15)", color: GOLD, fontSize: "0.68rem" }}>
+                <span className="t-badge" style={{ background: "rgba(201,169,110,0.15)", color: GOLD, fontSize: "0.68rem" }}>
                   Sample data — click Add Snapshot to record real data
                 </span>
               )}

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { CheckCircle, ChevronRight, ChevronLeft, RotateCcw } from "lucide-react";
+import { CheckCircle, ChevronRight, ChevronLeft, RotateCcw, AlertTriangle } from "lucide-react";
 import { RiskContext } from "../RiskAnalysis";
 import { PORTFOLIO_MODELS, getProfileByScore, GOLD, GREEN, RED, YELLOW, riskColor, riskLabel } from "./riskData";
 
@@ -272,12 +272,12 @@ function OptionBtn({ label, selected, onClick }) {
       onClick={onClick}
       style={{
         textAlign:"left",padding:"10px 14px",borderRadius:7,
-        border:`1px solid ${selected ? "rgba(201,168,76,0.5)" : "var(--border-c)"}`,
-        background: selected ? "rgba(201,168,76,0.10)" : "var(--elevated)",
+        border:`1px solid ${selected ? "rgba(201,169,110,0.5)" : "var(--border-c)"}`,
+        background: selected ? "rgba(201,169,110,0.10)" : "var(--elevated)",
         color: selected ? GOLD : "var(--text-2)",
         fontSize:"0.75rem",cursor:"pointer",transition:"all 0.15s",
         display:"flex",alignItems:"center",gap:8,
-        boxShadow: selected ? "0 0 0 1px rgba(201,168,76,0.25)" : "none",
+        boxShadow: selected ? "0 0 0 1px rgba(201,169,110,0.25)" : "none",
       }}
     >
       <div style={{
@@ -343,7 +343,7 @@ function ProfileResults({ score, answers, onRetake, portfolio }) {
             color:"var(--text-3)",marginBottom:4,letterSpacing:"0.06em" }}>
             <span>CONSERVATIVE</span><span>MODERATE</span><span>AGGRESSIVE</span>
           </div>
-          <div style={{ height:6,borderRadius:3,background:"rgba(255,255,255,0.06)",position:"relative" }}>
+          <div style={{ height:6,borderRadius:3,background:"var(--border-c)",position:"relative" }}>
             <div style={{ height:"100%",borderRadius:3,
               background:"linear-gradient(90deg,#22c55e,#eab308,#ef4444)",
               width:"100%" }}/>
@@ -365,7 +365,12 @@ function ProfileResults({ score, answers, onRetake, portfolio }) {
           color:gapMsg.type==="aligned"?GREEN:gapMsg.type==="high"?RED:YELLOW,
           lineHeight:1.6,
         }}>
-          <strong>{gapMsg.type==="aligned"?"✓ Portfolio Aligned":gapMsg.type==="high"?"⚠ Portfolio Too Aggressive":"⚠ Portfolio Too Conservative"}</strong>
+          <strong style={{ display:"inline-flex",alignItems:"center",gap:"0.25rem" }}>
+            {gapMsg.type==="aligned"
+              ? <><CheckCircle size={12} /> Portfolio Aligned</>
+              : <><AlertTriangle size={12} /> {gapMsg.type==="high"?"Portfolio Too Aggressive":"Portfolio Too Conservative"}</>
+            }
+          </strong>
           {"  "}{gapMsg.msg}
         </div>
       )}
@@ -377,9 +382,9 @@ function ProfileResults({ score, answers, onRetake, portfolio }) {
         <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:"0.75rem" }}>
           {topModels.map((m,i) => (
             <div key={m.id} style={{
-              border:`1px solid ${i===0?"rgba(201,168,76,0.3)":"var(--border-c)"}`,
+              border:`1px solid ${i===0?"rgba(201,169,110,0.3)":"var(--border-c)"}`,
               borderRadius:8,padding:"0.875rem",
-              background: i===0?"rgba(201,168,76,0.04)":"var(--elevated)",
+              background: i===0?"rgba(201,169,110,0.04)":"var(--elevated)",
             }}>
               {i===0&&<div style={{ fontSize:"0.5rem",color:GOLD,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:4 }}>
                 ⭐ Top Recommendation
@@ -418,7 +423,7 @@ function ProfileResults({ score, answers, onRetake, portfolio }) {
                 <div style={{ width:130,fontSize:"0.625rem",color:"var(--text-2)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>
                   {m.id}. {m.name}
                 </div>
-                <div style={{ flex:1,height:6,background:"rgba(255,255,255,0.05)",borderRadius:3,overflow:"hidden" }}>
+                <div style={{ flex:1,height:6,background:"var(--border-c)",borderRadius:3,overflow:"hidden" }}>
                   <div style={{ height:"100%",width:`${match}%`,background:c,borderRadius:3,transition:"width 0.5s" }}/>
                 </div>
                 <div style={{ width:32,textAlign:"right",fontSize:"0.625rem",fontWeight:700,color:c }}>{match}%</div>
@@ -462,7 +467,7 @@ function ProgressBar({ step, total }) {
         <span>Step {step+1} of {total}</span>
         <span>{Math.round((step/total)*100)}% complete</span>
       </div>
-      <div style={{ height:3,background:"rgba(255,255,255,0.06)",borderRadius:2 }}>
+      <div style={{ height:3,background:"var(--border-c)",borderRadius:2 }}>
         <div style={{ height:"100%",width:`${((step+1)/total)*100}%`,
           background:GOLD,borderRadius:2,transition:"width 0.3s" }}/>
       </div>
@@ -470,7 +475,7 @@ function ProgressBar({ step, total }) {
         {STEPS.map((s,i)=>(
           <div key={i} style={{
             flex:1,height:3,borderRadius:2,transition:"background 0.3s",
-            background: i<step?"rgba(201,168,76,0.5)":i===step?GOLD:"rgba(255,255,255,0.06)",
+            background: i<step?"rgba(201,169,110,0.5)":i===step?GOLD:"var(--border-c)",
           }}/>
         ))}
       </div>
@@ -562,8 +567,8 @@ export default function TabInvestorProfile() {
             disabled={!answered}
             style={{
               display:"flex",alignItems:"center",gap:4,padding:"8px 20px",
-              border:"1px solid rgba(201,168,76,0.4)",borderRadius:7,
-              background: answered?"rgba(201,168,76,0.12)":"rgba(255,255,255,0.04)",
+              border:"1px solid rgba(201,169,110,0.4)",borderRadius:7,
+              background: answered?"rgba(201,169,110,0.12)":"var(--border-c)",
               color: answered?GOLD:"var(--text-3)",
               fontSize:"0.75rem",fontWeight:700,cursor:answered?"pointer":"not-allowed",
             }}

@@ -78,7 +78,7 @@ function RecoveryChart({ event, models }) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="label" tick={{ fill:"var(--text-3)",fontSize:9 }} interval={3}/>
         <YAxis tickFormatter={v=>fmt(v)} tick={{ fill:"var(--text-3)",fontSize:9 }} width={70}/>
         <ReferenceLine y={100000} stroke="rgba(255,255,255,0.2)" strokeDasharray="4 4" label={{ value:"Start", fill:"var(--text-3)",fontSize:9 }}/>
@@ -127,7 +127,7 @@ export default function TabStressTest() {
       {/* ── Warning banner ── */}
       <div style={{ background:"rgba(239,68,68,0.06)",border:"1px solid rgba(239,68,68,0.2)",
         borderRadius:8,padding:"0.625rem 1rem",fontSize:"0.6875rem",color:"var(--text-2)",lineHeight:1.5 }}>
-        <strong style={{ color:RED }}>⚠ Stress Test Simulator</strong> — Drawdown estimates are based on historical
+        <strong style={{ color:RED }}>Stress Test Simulator</strong> — Drawdown estimates are based on historical
         behavior of similar portfolio allocations during each crisis period. Actual results vary.
         All figures assume a diversified portfolio matching the model's target allocation with no leverage.
       </div>
@@ -138,7 +138,7 @@ export default function TabStressTest() {
         {[["detail","Crisis Detail"],["heatmap","Heatmap View"]].map(([k,l])=>(
           <button key={k} onClick={()=>setView(k)} style={{
             padding:"5px 14px",borderRadius:6,border:"none",cursor:"pointer",
-            background: view===k?"rgba(201,168,76,0.15)":"transparent",
+            background: view===k?"rgba(201,169,110,0.15)":"transparent",
             color: view===k?GOLD:"var(--text-3)",fontSize:"0.6875rem",fontWeight:600,
           }}>{l}</button>
         ))}
@@ -197,8 +197,8 @@ export default function TabStressTest() {
                 return (
                   <button key={m.id} onClick={()=>toggleModel(m.id)} style={{
                     padding:"3px 8px",borderRadius:4,cursor:"pointer",fontSize:"0.6875rem",fontWeight:700,
-                    border:`1px solid ${sel?"rgba(201,168,76,0.4)":"var(--border-c)"}`,
-                    background:sel?"rgba(201,168,76,0.08)":"var(--elevated)",
+                    border:`1px solid ${sel?"rgba(201,169,110,0.4)":"var(--border-c)"}`,
+                    background:sel?"rgba(201,169,110,0.08)":"var(--elevated)",
                     color:sel?GOLD:ddColor(dd),
                   }}>
                     #{m.id} {m.name} ({dd}%)
@@ -245,7 +245,7 @@ export default function TabStressTest() {
                     const midRet = (m.targetReturnMin+m.targetReturnMax)/2;
                     const recYrs = recoveryYrs(dd, midRet);
                     return (
-                      <tr key={m.id} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                      <tr key={m.id} style={{ borderBottom:"1px solid var(--border-c)" }}>
                         <td style={{ padding:"7px 8px",fontWeight:700,color:"var(--text-1)",fontSize:"0.6875rem" }}>
                           #{m.id} {m.name}
                         </td>
@@ -279,7 +279,7 @@ export default function TabStressTest() {
               letterSpacing:"0.06em",textTransform:"uppercase" }}>All Models — Max Drawdown During {event.name}</div>
             <ResponsiveContainer width="100%" height={420}>
               <BarChart data={barData} layout="vertical" margin={{ left:0,right:40,top:0,bottom:0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false}/>
                 <XAxis type="number" tickFormatter={v=>v+"%"} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
                 <YAxis type="category" dataKey="name" width={160}
                   tick={{ fill:"var(--text-2)",fontSize:9 }}/>
@@ -327,7 +327,7 @@ export default function TabStressTest() {
             </thead>
             <tbody>
               {PORTFOLIO_MODELS.map(m=>(
-                <tr key={m.id} style={{ borderBottom:"1px solid rgba(255,255,255,0.03)" }}>
+                <tr key={m.id} style={{ borderBottom:"1px solid var(--elevated)" }}>
                   <td style={{ padding:"5px 6px",color:"var(--text-2)",fontWeight:600,whiteSpace:"nowrap",
                     fontSize:"0.5625rem" }}>
                     #{m.id} {m.name}

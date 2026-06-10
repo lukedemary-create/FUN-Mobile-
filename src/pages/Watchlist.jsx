@@ -330,16 +330,18 @@ export default function Watchlist() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -347,12 +349,14 @@ export default function Watchlist() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Star size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>WATCHLIST</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.6rem" }}>Watchlist</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Build and monitor your personalized stock watchlist. Track live prices, daily changes, and key metrics for the tickers that matter most to you.
@@ -362,8 +366,8 @@ export default function Watchlist() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -384,8 +388,8 @@ export default function Watchlist() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -598,7 +602,7 @@ export default function Watchlist() {
               className="t-btn t-btn-sm"
               style={{
                 color: symbols.includes(sym) ? "var(--text-3)" : "var(--gold)",
-                borderColor: symbols.includes(sym) ? "var(--border-c)" : "rgba(201,168,76,0.25)",
+                borderColor: symbols.includes(sym) ? "var(--border-c)" : "rgba(201,169,110,0.25)",
                 opacity: symbols.includes(sym) ? 0.5 : 1,
                 cursor: symbols.includes(sym) ? "default" : "pointer",
                 fontFamily: "'JetBrains Mono', monospace",

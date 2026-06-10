@@ -153,7 +153,7 @@ function SequenceChart() {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="year" tick={{ fill:"var(--text-3)",fontSize:10 }}
           tickFormatter={v=>`Yr ${v}`}/>
         <YAxis tickFormatter={v=>fmt(v)} tick={{ fill:"var(--text-3)",fontSize:9 }} width={70}/>
@@ -246,7 +246,7 @@ export default function TabMonteCarlo() {
           </div>
           <button onClick={run} disabled={running} style={{
             display:"flex",alignItems:"center",gap:6,padding:"7px 18px",
-            background:"rgba(201,168,76,0.15)",border:"1px solid rgba(201,168,76,0.4)",
+            background:"rgba(201,169,110,0.15)",border:"1px solid rgba(201,169,110,0.4)",
             borderRadius:7,color:GOLD,fontSize:"0.75rem",fontWeight:700,
             cursor:running?"not-allowed":"pointer",opacity:running?0.6:1,
           }}>
@@ -300,7 +300,7 @@ export default function TabMonteCarlo() {
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={result.fanData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
                 <XAxis dataKey="year" tickFormatter={v=>`Yr ${v}`} tick={{ fill:"var(--text-3)",fontSize:10 }}/>
                 <YAxis tickFormatter={v=>`$${(v/1000).toFixed(0)}K`} tick={{ fill:"var(--text-3)",fontSize:10 }}/>
                 <Tooltip content={<FanTip/>}/>
@@ -331,7 +331,7 @@ export default function TabMonteCarlo() {
                       textTransform:"uppercase",marginBottom:4 }}>SWR {w.rate}</div>
                     <div style={{ fontSize:"1.5rem",fontWeight:900,color:c }}>{w.success}%</div>
                     <div style={{ fontSize:"0.5rem",color:"var(--text-3)",marginTop:2 }}>success rate</div>
-                    <div style={{ marginTop:6,height:3,background:"rgba(255,255,255,0.06)",borderRadius:2 }}>
+                    <div style={{ marginTop:6,height:3,background:"var(--border-c)",borderRadius:2 }}>
                       <div style={{ height:"100%",width:`${w.success}%`,background:c,borderRadius:2 }}/>
                     </div>
                   </div>
@@ -365,8 +365,8 @@ export default function TabMonteCarlo() {
             </div>
           ))}
         </div>
-        <div style={{ marginTop:"0.875rem",padding:"0.75rem",background:"rgba(201,168,76,0.06)",
-          border:"1px solid rgba(201,168,76,0.15)",borderRadius:7,fontSize:"0.6875rem",
+        <div style={{ marginTop:"0.875rem",padding:"0.75rem",background:"rgba(201,169,110,0.06)",
+          border:"1px solid rgba(201,169,110,0.15)",borderRadius:7,fontSize:"0.6875rem",
           color:"var(--text-2)",lineHeight:1.6 }}>
           <strong style={{ color:GOLD }}>Protection Strategies:</strong> Bond tent (increase bonds around retirement),
           cash buffer (2 years of expenses in cash), dynamic withdrawal (reduce spending in down years),

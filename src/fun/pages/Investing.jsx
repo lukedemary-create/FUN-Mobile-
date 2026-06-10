@@ -7,13 +7,21 @@ import {
 import {
   BookOpen, Calculator, ExternalLink, ChevronRight, ArrowRight,
   Info, CheckCircle2, AlertCircle, TrendingUp, ChevronDown, ChevronUp,
-  Shield, Building, User, Landmark,
+  Shield, Building, User, Landmark, Users, Layers,
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 const LIGHT = '#5BC8E2';
-const BG    = '#F4F7FA';
 
 /* ── Shared ───────────────────────────────────────────────────────── */
 function fmt(n)  { return '$' + Math.round(Math.abs(n)).toLocaleString(); }
@@ -21,11 +29,11 @@ function fmtK(n) { return n >= 1000000 ? `$${(n/1000000).toFixed(2)}M` : n >= 10
 
 function SectionCard({ title, subtitle, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
       {(title||subtitle) && (
         <div style={{ marginBottom:'1.25rem' }}>
-          {title && <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
-          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{subtitle}</p>}
+          {title && <h3 style={{ fontFamily:DISP, fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
+          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:T3, lineHeight:1.65, fontFamily:UI }}>{subtitle}</p>}
         </div>
       )}
       {children}
@@ -37,7 +45,7 @@ function InfoBox({ children, color = TEAL }) {
   return (
     <div style={{ display:'flex', gap:10, padding:'0.75rem 0.875rem', background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:10, marginTop:'0.875rem' }}>
       <Info size={14} color={color} style={{ flexShrink:0, marginTop:2 }}/>
-      <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{children}</p>
+      <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{children}</p>
     </div>
   );
 }
@@ -45,15 +53,15 @@ function InfoBox({ children, color = TEAL }) {
 function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1, hint }) {
   return (
     <div style={{ marginBottom:'1rem' }}>
-      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>{label}</label>}
+      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>{label}</label>}
       <div style={{ position:'relative' }}>
-        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
+        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
         <input type="number" value={value} min={min} step={step} onChange={e => onChange(Number(e.target.value))}
-          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600, background:'#fafafa', boxSizing:'border-box' }}
-          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor='#e5e7eb'}/>
-        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
+          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'1rem', fontFamily:UI, color:NAVY, fontWeight:600, background:RAISE, boxSizing:'border-box' }}
+          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor=B2}/>
+        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
       </div>
-      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:T3, fontFamily:UI }}>{hint}</p>}
     </div>
   );
 }
@@ -61,7 +69,7 @@ function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1, h
 const CustomTip = ({ active, payload, label, valueFormatter }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:10, padding:'0.625rem 0.875rem', boxShadow:'0 4px 16px rgba(0,0,0,0.1)', fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:10, padding:'0.625rem 0.875rem', boxShadow:'0 4px 16px rgba(0,0,0,0.1)', fontFamily:UI }}>
       <div style={{ fontWeight:700, color:NAVY, marginBottom:4, fontSize:'0.8125rem' }}>Year {label}</div>
       {payload.map((p, i) => (
         <div key={i} style={{ fontSize:'0.8125rem', color:p.color || NAVY, display:'flex', gap:8, marginBottom:2 }}>
@@ -239,10 +247,10 @@ function AccountCards() {
       <div style={{ display:'flex', gap:'0.5rem', marginBottom:'1.25rem', flexWrap:'wrap' }}>
         {['all', ...groups].map(g => (
           <button key={g} onClick={() => setFilter(g)} style={{
-            padding:'5px 14px', borderRadius:100, border:`1.5px solid ${filter===g ? TEAL : '#e5e7eb'}`,
-            background: filter===g ? `rgba(0,180,198,0.1)` : '#f9fafb',
-            color: filter===g ? TEAL : '#6b7280', fontSize:'0.8125rem', fontWeight: filter===g ? 700 : 500,
-            cursor:'pointer', fontFamily:"'DM Sans',sans-serif", transition:'all 0.13s',
+            padding:'5px 14px', borderRadius:100, border:`1.5px solid ${filter===g ? TEAL : '#2a2018'}`,
+            background: filter===g ? `rgba(0,180,198,0.1)` : '#2a2018',
+            color: filter===g ? TEAL : '#a89070', fontSize:'0.8125rem', fontWeight: filter===g ? 700 : 500,
+            cursor:'pointer', fontFamily:UI, transition:'all 0.13s',
           }}>
             {g === 'all' ? 'All Accounts' : GROUP_LABELS[g]}
           </button>
@@ -253,17 +261,17 @@ function AccountCards() {
         {shown.map((acct, i) => {
           const isOpen = open === acct.name;
           return (
-            <div key={acct.name} style={{ border:`1.5px solid ${isOpen ? TEAL+'50' : '#e5e7eb'}`, borderRadius:12, overflow:'hidden', transition:'border-color 0.15s' }}>
+            <div key={acct.name} style={{ border:`1.5px solid ${isOpen ? TEAL+'50' : '#2a2018'}`, borderRadius:12, overflow:'hidden', transition:'border-color 0.15s' }}>
               <button
                 onClick={() => setOpen(isOpen ? null : acct.name)}
-                style={{ width:'100%', background: isOpen ? 'rgba(0,180,198,0.04)' : '#fff', border:'none', cursor:'pointer', textAlign:'left', padding:'0.875rem 1rem', display:'flex', alignItems:'center', gap:'0.875rem' }}
+                style={{ width:'100%', background: isOpen ? 'rgba(0,180,198,0.06)' : '#231c16', border:'none', cursor:'pointer', textAlign:'left', padding:'0.875rem 1rem', display:'flex', alignItems:'center', gap:'0.875rem' }}
               >
                 <div style={{ flex:1 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:'0.625rem', flexWrap:'wrap', marginBottom:4 }}>
-                    <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{acct.name}</span>
-                    <span style={{ padding:'2px 9px', background:`${acct.taxColor}15`, border:`1px solid ${acct.taxColor}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:acct.taxColor, fontFamily:"'DM Sans',sans-serif" }}>{acct.tax}</span>
+                    <span style={{ fontFamily:DISP, fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{acct.name}</span>
+                    <span style={{ padding:'2px 9px', background:`${acct.taxColor}15`, border:`1px solid ${acct.taxColor}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:acct.taxColor, fontFamily:UI }}>{acct.tax}</span>
                   </div>
-                  <div style={{ fontSize:'0.8125rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>
+                  <div style={{ fontSize:'0.8125rem', color:T3, fontFamily:UI }}>
                     <span style={{ fontWeight:600, color:NAVY }}>{acct.limit}</span>
                   </div>
                 </div>
@@ -271,17 +279,17 @@ function AccountCards() {
               </button>
 
               {isOpen && (
-                <div style={{ borderTop:'1px solid #f0f0f0', padding:'0.875rem 1rem', background:'#fafcff' }}>
+                <div style={{ borderTop:'1px solid #2a2018', padding:'0.875rem 1rem', background:'#1e1912' }}>
                   <div style={{ display:'flex', gap:8, marginBottom:'0.75rem', padding:'0.5rem 0.75rem', background:`${TEAL}0d`, borderRadius:8 }}>
                     <TrendingUp size={13} color={TEAL} style={{ flexShrink:0, marginTop:2 }}/>
-                    <p style={{ margin:0, fontSize:'0.8125rem', fontWeight:600, color:NAVY, lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>{acct.highlight}</p>
+                    <p style={{ margin:0, fontSize:'0.8125rem', fontWeight:600, color:NAVY, lineHeight:1.6, fontFamily:UI }}>{acct.highlight}</p>
                   </div>
                   <ul style={{ margin:'0 0 0.875rem', paddingLeft:'1.25rem' }}>
                     {acct.details.map((d, j) => (
-                      <li key={j} style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, marginBottom:4, fontFamily:"'DM Sans',sans-serif" }}>{d}</li>
+                      <li key={j} style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.7, marginBottom:4, fontFamily:UI }}>{d}</li>
                     ))}
                   </ul>
-                  <div style={{ padding:'0.5rem 0.75rem', background:'#f0f9ff', borderRadius:8, fontSize:'0.8125rem', color:'#374151', fontFamily:"'DM Sans',sans-serif" }}>
+                  <div style={{ padding:'0.5rem 0.75rem', background:'rgba(0,180,198,0.08)', borderRadius:8, fontSize:'0.8125rem', color:T2, fontFamily:UI }}>
                     <strong style={{ color:NAVY }}>Best for:</strong> {acct.bestFor}
                   </div>
                 </div>
@@ -302,13 +310,13 @@ const WATERFALL_STEPS = [
   { n:2, title:'Max your HSA (if you have an HDHP)', color:'#8b5cf6', badge:'Triple tax win', desc:'Triple tax advantage: pre-tax in, tax-free growth, tax-free out for medical. After 65 it works like a Traditional IRA. Invest the balance — don\'t let it sit in cash.' },
   { n:3, title:'Max your Roth IRA', color:TEAL, badge:'$7,500/yr', desc:'Tax-free growth forever, no RMDs, and you can withdraw contributions anytime. Backdoor Roth available if you earn too much. The most flexible retirement account there is.' },
   { n:4, title:'Maximize your 401(k)', color:'#3b82f6', badge:'$24,500/yr', desc:'After maxing the Roth IRA, go back and max the 401(k). Whether Traditional or Roth depends on your current vs future tax situation.' },
-  { n:5, title:'Taxable brokerage account', color:'#6b7280', badge:'No limit', desc:'No tax advantages, but no restrictions either. Use tax-efficient funds (index ETFs), harvest losses strategically, and hold for long-term capital gains rates.' },
+  { n:5, title:'Taxable brokerage account', color:T3, badge:'No limit', desc:'No tax advantages, but no restrictions either. Use tax-efficient funds (index ETFs), harvest losses strategically, and hold for long-term capital gains rates.' },
 ];
 
 function FundingWaterfall() {
   return (
     <div>
-      <p style={{ fontSize:'0.875rem', color:'#6b7280', marginBottom:'1.5rem', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ fontSize:'0.875rem', color:T3, marginBottom:'1.5rem', lineHeight:1.7, fontFamily:UI }}>
         When you have money to invest, <em>where</em> you put it matters as much as <em>how much</em>. Follow this priority order to maximize every tax advantage before moving to the next step.
       </p>
       <div style={{ position:'relative' }}>
@@ -316,7 +324,7 @@ function FundingWaterfall() {
           <div key={i} style={{ display:'flex', gap:'1rem', marginBottom: i < WATERFALL_STEPS.length-1 ? 0 : 0, position:'relative' }}>
             {/* Left: number + connector */}
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', width:40, flexShrink:0 }}>
-              <div style={{ width:40, height:40, borderRadius:'50%', background:s.color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", zIndex:1, boxShadow:`0 2px 8px ${s.color}50` }}>
+              <div style={{ width:40, height:40, borderRadius:'50%', background:s.color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:'1rem', fontFamily:UI, zIndex:1, boxShadow:`0 2px 8px ${s.color}50` }}>
                 {s.n}
               </div>
               {i < WATERFALL_STEPS.length - 1 && (
@@ -326,10 +334,10 @@ function FundingWaterfall() {
             {/* Right: content */}
             <div style={{ flex:1, paddingBottom: i < WATERFALL_STEPS.length-1 ? '1rem' : 0, paddingTop:4 }}>
               <div style={{ display:'flex', alignItems:'center', gap:'0.625rem', marginBottom:'0.375rem', flexWrap:'wrap' }}>
-                <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{s.title}</span>
-                <span style={{ padding:'2px 9px', background:`${s.color}18`, border:`1px solid ${s.color}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:s.color, fontFamily:"'DM Sans',sans-serif" }}>{s.badge}</span>
+                <span style={{ fontFamily:DISP, fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{s.title}</span>
+                <span style={{ padding:'2px 9px', background:`${s.color}18`, border:`1px solid ${s.color}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:s.color, fontFamily:UI }}>{s.badge}</span>
               </div>
-              <p style={{ margin:0, fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{s.desc}</p>
+              <p style={{ margin:0, fontSize:'0.8125rem', color:T3, lineHeight:1.7, fontFamily:UI }}>{s.desc}</p>
             </div>
           </div>
         ))}
@@ -342,11 +350,11 @@ function FundingWaterfall() {
    LEARN — Asset Classes
 ══════════════════════════════════════════════════════════════════ */
 const ASSETS = [
-  { name:'Stocks (Equities)', icon:'📈', risk:'High', return:'High (7–10% historical avg)', color:TEAL, desc:'Ownership shares in a company. Highest long-term return potential but most volatile. Best held in diversified funds, not individual picks.', examples:'S&P 500 index funds, growth ETFs, dividend stocks', tip:'Over any 20-year period in history, the S&P 500 has never lost money.' },
-  { name:'Bonds (Fixed Income)', icon:'🏛️', risk:'Low–Medium', return:'Low–Medium (2–5%)', color:'#3b82f6', desc:'Loans to governments or corporations that pay regular interest. Lower returns than stocks but provide stability and income. Critical for retirees and conservative investors.', examples:'US Treasury bonds, municipal bonds, corporate bond ETFs', tip:'When interest rates rise, bond prices fall — and vice versa. Duration risk matters.' },
-  { name:'ETFs (Exchange-Traded Funds)', icon:'🗂️', risk:'Varies', return:'Mirrors underlying index', color:'#8b5cf6', desc:'Baskets of securities that trade like stocks on an exchange. Usually track an index (S&P 500, total market, bonds). Low costs, instant diversification, tax-efficient.', examples:'VTI, VOO, BND, QQQ, SPY', tip:'A single total market ETF (like VTI) gives you 3,700+ stocks in one trade for 0.03% per year.' },
-  { name:'Mutual Funds', icon:'🤝', risk:'Varies', return:'Varies by type', color:'#f59e0b', desc:'Pooled investment vehicles that are priced once per day at close. Most are actively managed — attempting to beat the market. Evidence shows most underperform index funds over time.', examples:'Fidelity 500 Index Fund (FXAIX), American Funds Growth Fund', tip:'Check the expense ratio. A 1% fund costs 10x more than a 0.1% index fund over 30 years.' },
-  { name:'REITs (Real Estate Investment Trusts)', icon:'🏢', risk:'Medium–High', return:'Medium–High (5–8%)', color:'#ef4444', desc:'Companies that own income-producing real estate. Must distribute 90%+ of taxable income as dividends. Provides real estate exposure without buying property. Highly liquid.', examples:'VNQ (Vanguard REIT ETF), O (Realty Income), Simon Property Group', tip:'REITs often generate ordinary income dividends (taxed as income) — best held in tax-advantaged accounts.' },
+  { name:'Stocks (Equities)', icon: TrendingUp, risk:'High', return:'High (7–10% historical avg)', color:TEAL, desc:'Ownership shares in a company. Highest long-term return potential but most volatile. Best held in diversified funds, not individual picks.', examples:'S&P 500 index funds, growth ETFs, dividend stocks', tip:'Over any 20-year period in history, the S&P 500 has never lost money.' },
+  { name:'Bonds (Fixed Income)', icon: Landmark, risk:'Low–Medium', return:'Low–Medium (2–5%)', color:'#3b82f6', desc:'Loans to governments or corporations that pay regular interest. Lower returns than stocks but provide stability and income. Critical for retirees and conservative investors.', examples:'US Treasury bonds, municipal bonds, corporate bond ETFs', tip:'When interest rates rise, bond prices fall — and vice versa. Duration risk matters.' },
+  { name:'ETFs (Exchange-Traded Funds)', icon: Layers, risk:'Varies', return:'Mirrors underlying index', color:'#8b5cf6', desc:'Baskets of securities that trade like stocks on an exchange. Usually track an index (S&P 500, total market, bonds). Low costs, instant diversification, tax-efficient.', examples:'VTI, VOO, BND, QQQ, SPY', tip:'A single total market ETF (like VTI) gives you 3,700+ stocks in one trade for 0.03% per year.' },
+  { name:'Mutual Funds', icon: Users, risk:'Varies', return:'Varies by type', color:'#f59e0b', desc:'Pooled investment vehicles that are priced once per day at close. Most are actively managed — attempting to beat the market. Evidence shows most underperform index funds over time.', examples:'Fidelity 500 Index Fund (FXAIX), American Funds Growth Fund', tip:'Check the expense ratio. A 1% fund costs 10x more than a 0.1% index fund over 30 years.' },
+  { name:'REITs (Real Estate Investment Trusts)', icon: Building, risk:'Medium–High', return:'Medium–High (5–8%)', color:'#ef4444', desc:'Companies that own income-producing real estate. Must distribute 90%+ of taxable income as dividends. Provides real estate exposure without buying property. Highly liquid.', examples:'VNQ (Vanguard REIT ETF), O (Realty Income), Simon Property Group', tip:'REITs often generate ordinary income dividends (taxed as income) — best held in tax-advantaged accounts.' },
 ];
 
 function AssetClasses() {
@@ -356,30 +364,30 @@ function AssetClasses() {
       {ASSETS.map((a, i) => {
         const isOpen = open === i;
         return (
-          <div key={i} style={{ border:`1.5px solid ${isOpen ? a.color+'50' : '#e5e7eb'}`, borderRadius:12, overflow:'hidden', transition:'border-color 0.15s' }}>
-            <button onClick={() => setOpen(isOpen ? null : i)} style={{ width:'100%', background:isOpen?`${a.color}06`:'#fff', border:'none', cursor:'pointer', textAlign:'left', padding:'0.875rem 1rem', display:'flex', alignItems:'center', gap:'0.875rem' }}>
-              <span style={{ fontSize:'1.375rem' }}>{a.icon}</span>
+          <div key={i} style={{ border:`1.5px solid ${isOpen ? a.color+'50' : '#2a2018'}`, borderRadius:12, overflow:'hidden', transition:'border-color 0.15s' }}>
+            <button onClick={() => setOpen(isOpen ? null : i)} style={{ width:'100%', background:isOpen?`${a.color}10`:'#231c16', border:'none', cursor:'pointer', textAlign:'left', padding:'0.875rem 1rem', display:'flex', alignItems:'center', gap:'0.875rem' }}>
+              {(() => { const AI = a.icon; return <AI size={22} color={a.color} />; })()}
               <div style={{ flex:1 }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'0.5rem', flexWrap:'wrap', marginBottom:3 }}>
-                  <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{a.name}</span>
+                  <span style={{ fontFamily:DISP, fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{a.name}</span>
                 </div>
                 <div style={{ display:'flex', gap:'0.5rem', flexWrap:'wrap' }}>
-                  <span style={{ fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", color:'#6b7280' }}>Risk: <strong style={{ color: a.risk==='Low–Medium'?'#22c55e':a.risk==='Medium–High'?'#f59e0b':a.risk==='High'?'#ef4444':a.color }}>{a.risk}</strong></span>
-                  <span style={{ fontSize:'0.75rem', color:'#d1d5db' }}>·</span>
-                  <span style={{ fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", color:'#6b7280' }}>Return: <strong style={{ color:NAVY }}>{a.return}</strong></span>
+                  <span style={{ fontSize:'0.75rem', fontFamily:UI, color:T3 }}>Risk: <strong style={{ color: a.risk==='Low–Medium'?'#22c55e':a.risk==='Medium–High'?'#f59e0b':a.risk==='High'?'#ef4444':a.color }}>{a.risk}</strong></span>
+                  <span style={{ fontSize:'0.75rem', color:T3 }}>·</span>
+                  <span style={{ fontSize:'0.75rem', fontFamily:UI, color:T3 }}>Return: <strong style={{ color:NAVY }}>{a.return}</strong></span>
                 </div>
               </div>
               {isOpen ? <ChevronUp size={15} color={TEAL}/> : <ChevronDown size={15} color="#9ca3af"/>}
             </button>
             {isOpen && (
-              <div style={{ borderTop:'1px solid #f0f0f0', padding:'0.875rem 1rem', background:'#fafcff' }}>
-                <p style={{ margin:'0 0 0.625rem', fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{a.desc}</p>
-                <div style={{ fontSize:'0.8125rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif", marginBottom:'0.625rem' }}>
+              <div style={{ borderTop:'1px solid #2a2018', padding:'0.875rem 1rem', background:'#1e1912' }}>
+                <p style={{ margin:'0 0 0.625rem', fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{a.desc}</p>
+                <div style={{ fontSize:'0.8125rem', color:T3, fontFamily:UI, marginBottom:'0.625rem' }}>
                   <strong style={{ color:NAVY }}>Examples:</strong> {a.examples}
                 </div>
                 <div style={{ display:'flex', gap:7, padding:'0.5rem 0.75rem', background:`${a.color}0d`, borderRadius:8 }}>
                   <Info size={12} color={a.color} style={{ flexShrink:0, marginTop:2 }}/>
-                  <p style={{ margin:0, fontSize:'0.8rem', color:'#4b5563', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}><strong>Key insight:</strong> {a.tip}</p>
+                  <p style={{ margin:0, fontSize:'0.8rem', color:T2, lineHeight:1.6, fontFamily:UI }}><strong>Key insight:</strong> {a.tip}</p>
                 </div>
               </div>
             )}
@@ -468,7 +476,7 @@ function RiskQuiz() {
   const pieData = alloc ? [
     { name:'Stocks', value:alloc.stocks, color:alloc.color },
     { name:'Bonds',  value:alloc.bonds,  color:'#3b82f6'   },
-    { name:'Cash',   value:alloc.cash,   color:'#e5e7eb'   },
+    { name:'Cash',   value:alloc.cash,   color:'#94a3b8'   },
   ] : [];
 
   function pick(qi, pts) {
@@ -483,12 +491,12 @@ function RiskQuiz() {
     <div>
       {!done ? (
         <>
-          <p style={{ fontSize:'0.875rem', color:'#6b7280', marginBottom:'1.25rem', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+          <p style={{ fontSize:'0.875rem', color:T3, marginBottom:'1.25rem', lineHeight:1.65, fontFamily:UI }}>
             Answer 4 questions to get a personalized asset allocation suggestion.
           </p>
           {QUIZ.map((q, qi) => (
             <div key={qi} style={{ marginBottom:'1.25rem' }}>
-              <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:'0.625rem', fontFamily:"'DM Sans',sans-serif" }}>
+              <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:'0.625rem', fontFamily:UI }}>
                 {qi + 1}. {q.q}
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'0.375rem' }}>
@@ -496,10 +504,10 @@ function RiskQuiz() {
                   const sel = answers[qi] === o.pts;
                   return (
                     <button key={oi} onClick={() => pick(qi, o.pts)} style={{
-                      padding:'0.625rem 0.875rem', background: sel ? 'rgba(0,180,198,0.1)' : '#f9fafb',
-                      border:`1.5px solid ${sel ? TEAL : '#e5e7eb'}`, borderRadius:9,
+                      padding:'0.625rem 0.875rem', background: sel ? 'rgba(0,180,198,0.1)' : '#231c16',
+                      border:`1.5px solid ${sel ? TEAL : '#2a2018'}`, borderRadius:9,
                       cursor:'pointer', textAlign:'left', fontSize:'0.875rem', fontWeight: sel ? 600 : 400,
-                      color: sel ? TEAL : '#374151', fontFamily:"'DM Sans',sans-serif", transition:'all 0.13s',
+                      color: sel ? TEAL : NAVY, fontFamily:UI, transition:'all 0.13s',
                       display:'flex', alignItems:'center', gap:8,
                     }}>
                       {sel && <CheckCircle2 size={14} color={TEAL}/>}
@@ -514,9 +522,9 @@ function RiskQuiz() {
       ) : (
         <div>
           <div style={{ textAlign:'center', marginBottom:'1.25rem' }}>
-            <div style={{ fontSize:'0.75rem', fontWeight:700, color:'#9ca3af', letterSpacing:'0.08em', textTransform:'uppercase', fontFamily:"'DM Sans',sans-serif", marginBottom:4 }}>Suggested allocation</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.625rem', fontWeight:700, color:alloc.color }}>{alloc.label}</div>
-            <p style={{ fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, margin:'0.5rem 0 0', fontFamily:"'DM Sans',sans-serif" }}>{alloc.desc}</p>
+            <div style={{ fontSize:'0.75rem', fontWeight:700, color:T3, letterSpacing:'0.08em', textTransform:'uppercase', fontFamily:UI, marginBottom:4 }}>Suggested allocation</div>
+            <div style={{ fontFamily:DISP, fontSize:'1.625rem', fontWeight:700, color:alloc.color }}>{alloc.label}</div>
+            <p style={{ fontSize:'0.875rem', color:T3, lineHeight:1.65, margin:'0.5rem 0 0', fontFamily:UI }}>{alloc.desc}</p>
           </div>
 
           <div style={{ height:220 }}>
@@ -525,8 +533,8 @@ function RiskQuiz() {
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={88} paddingAngle={3} dataKey="value" animationBegin={0} animationDuration={800}>
                   {pieData.map((d, i) => <Cell key={i} fill={d.color} stroke="none"/>)}
                 </Pie>
-                <Legend formatter={(v) => <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:NAVY }}>{v}</span>}/>
-                <RechartsTip formatter={(v, n) => [`${v}%`, n]} contentStyle={{ fontFamily:"'DM Sans',sans-serif", fontSize:12, borderRadius:8 }}/>
+                <Legend formatter={(v) => <span style={{ fontFamily:UI, fontSize:'0.8125rem', color:NAVY }}>{v}</span>}/>
+                <RechartsTip formatter={(v, n) => [`${v}%`, n]} contentStyle={{ fontFamily:UI, fontSize:12, borderRadius:8 }}/>
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -534,14 +542,14 @@ function RiskQuiz() {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'0.625rem', marginBottom:'1rem' }}>
             {pieData.map((d, i) => (
               <div key={i} style={{ textAlign:'center', padding:'0.75rem', background:`${d.color}10`, border:`1px solid ${d.color}25`, borderRadius:10 }}>
-                <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.375rem', fontWeight:700, color:d.color }}>{d.value}%</div>
-                <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>{d.name}</div>
+                <div style={{ fontFamily:DISP, fontSize:'1.375rem', fontWeight:700, color:d.color }}>{d.value}%</div>
+                <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>{d.name}</div>
               </div>
             ))}
           </div>
 
           <InfoBox>This is a starting point, not a prescription. Revisit your allocation annually and as your life changes. Gradually shift to more bonds as you approach retirement.</InfoBox>
-          <button onClick={reset} style={{ marginTop:'0.875rem', display:'block', width:'100%', padding:'0.625rem', background:'none', border:'1px solid #e5e7eb', borderRadius:9, cursor:'pointer', fontSize:'0.8125rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>
+          <button onClick={reset} style={{ marginTop:'0.875rem', display:'block', width:'100%', padding:'0.625rem', background:'none', border:`1px solid ${B1}`, borderRadius:9, cursor:'pointer', fontSize:'0.8125rem', color:T3, fontFamily:UI }}>
             Retake quiz
           </button>
         </div>
@@ -586,22 +594,22 @@ function CompoundCalc() {
       </div>
 
       <div style={{ marginBottom:'1rem' }}>
-        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>
           Annual Return — <span style={{ color:TEAL }}>{rate}%</span>
-          <span style={{ fontWeight:400, color:'#9ca3af', fontSize:'0.75rem', marginLeft:8 }}>S&P 500 historical avg ~10% (7% inflation-adjusted)</span>
+          <span style={{ fontWeight:400, color:T3, fontSize:'0.75rem', marginLeft:8 }}>S&P 500 historical avg ~10% (7% inflation-adjusted)</span>
         </label>
         <input type="range" min={1} max={15} step={0.5} value={rate} onChange={e => setRate(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL, cursor:'pointer' }}/>
-        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.6875rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginTop:3 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.6875rem', color:T3, fontFamily:UI, marginTop:3 }}>
           <span>1%</span><span>5%</span><span>7% (real)</span><span>10% (nominal)</span><span>15%</span>
         </div>
       </div>
 
       <div style={{ marginBottom:'1.25rem' }}>
-        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>
           Time Horizon — <span style={{ color:TEAL }}>{years} years</span>
         </label>
         <input type="range" min={1} max={50} step={1} value={years} onChange={e => setYears(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL, cursor:'pointer' }}/>
-        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.6875rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginTop:3 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.6875rem', color:T3, fontFamily:UI, marginTop:3 }}>
           <span>1</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span>
         </div>
       </div>
@@ -614,8 +622,8 @@ function CompoundCalc() {
           { label:'Investment Growth', value:fmtK(totalGrowth), color:'#22c55e' },
         ].map(s => (
           <div key={s.label} style={{ textAlign:'center', padding:'0.875rem 0.5rem', background:`${s.color}09`, border:`1px solid ${s.color}25`, borderRadius:11 }}>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.25rem', fontWeight:700, color:s.color }}>{s.value}</div>
-            <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>{s.label}</div>
+            <div style={{ fontFamily:DISP, fontSize:'1.25rem', fontWeight:700, color:s.color }}>{s.value}</div>
+            <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -634,8 +642,8 @@ function CompoundCalc() {
                 <stop offset="95%" stopColor={NAVY} stopOpacity={0.02}/>
               </linearGradient>
             </defs>
-            <XAxis dataKey="year" tick={{ fontFamily:"'DM Sans',sans-serif", fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => `Yr ${v}`} interval={Math.floor(years/5)}/>
-            <YAxis tick={{ fontFamily:"'DM Sans',sans-serif", fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v => fmtK(v)} width={52}/>
+            <XAxis dataKey="year" tick={{ fontFamily:UI, fontSize:11, fill:'#6b5540' }} axisLine={false} tickLine={false} tickFormatter={v => `Yr ${v}`} interval={Math.floor(years/5)}/>
+            <YAxis tick={{ fontFamily:UI, fontSize:11, fill:'#6b5540' }} axisLine={false} tickLine={false} tickFormatter={v => fmtK(v)} width={52}/>
             <RechartsTip content={<CustomTip valueFormatter={fmt}/>}/>
             <Area type="monotone" dataKey="contributed" name="Contributed" stroke={NAVY} strokeWidth={1.5} fill="url(#contrGrad)" strokeDasharray="4 2"/>
             <Area type="monotone" dataKey="balance"     name="Balance"     stroke={TEAL} strokeWidth={2}   fill="url(#growthGrad)"/>
@@ -689,11 +697,11 @@ function FeeImpactCalc() {
       </div>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1rem' }}>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Gross Annual Return — {gross}%</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Gross Annual Return — {gross}%</label>
           <input type="range" min={4} max={12} step={0.5} value={gross} onChange={e=>setGross(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL, cursor:'pointer' }}/>
         </div>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Time Horizon — {years} years</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Time Horizon — {years} years</label>
           <input type="range" min={5} max={40} step={1} value={years} onChange={e=>setYears(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL, cursor:'pointer' }}/>
         </div>
       </div>
@@ -701,8 +709,8 @@ function FeeImpactCalc() {
       <div style={{ height:220, marginBottom:'1rem' }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top:4, right:4, left:0, bottom:0 }}>
-            <XAxis dataKey="year" tick={{ fontFamily:"'DM Sans',sans-serif", fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v=>`Yr ${v}`} interval={Math.floor(years/5)}/>
-            <YAxis tick={{ fontFamily:"'DM Sans',sans-serif", fontSize:11, fill:'#9ca3af' }} axisLine={false} tickLine={false} tickFormatter={v=>fmtK(v)} width={52}/>
+            <XAxis dataKey="year" tick={{ fontFamily:UI, fontSize:11, fill:'#6b5540' }} axisLine={false} tickLine={false} tickFormatter={v=>`Yr ${v}`} interval={Math.floor(years/5)}/>
+            <YAxis tick={{ fontFamily:UI, fontSize:11, fill:'#6b5540' }} axisLine={false} tickLine={false} tickFormatter={v=>fmtK(v)} width={52}/>
             <RechartsTip content={<CustomTip valueFormatter={fmt}/>}/>
             {FEE_LEVELS.map(fl => (
               <Line key={fl.fee} type="monotone" dataKey={`f${fl.fee}`} name={fl.label} stroke={fl.color} strokeWidth={fl.fee===0.03?2.5:1.5} dot={false}/>
@@ -714,14 +722,14 @@ function FeeImpactCalc() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:'0.5rem', marginBottom:'0.875rem' }}>
         {FEE_LEVELS.map(fl => (
           <div key={fl.fee} style={{ padding:'0.625rem 0.875rem', background:`${fl.color}0d`, border:`1px solid ${fl.color}25`, borderRadius:9 }}>
-            <div style={{ fontSize:'0.6875rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginBottom:2 }}>{fl.label}</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.125rem', fontWeight:700, color:fl.color }}>{fmtK(final[`f${fl.fee}`])}</div>
+            <div style={{ fontSize:'0.6875rem', color:T3, fontFamily:UI, marginBottom:2 }}>{fl.label}</div>
+            <div style={{ fontFamily:DISP, fontSize:'1.125rem', fontWeight:700, color:fl.color }}>{fmtK(final[`f${fl.fee}`])}</div>
           </div>
         ))}
       </div>
 
       <div style={{ padding:'0.875rem 1rem', background:'rgba(239,68,68,0.07)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:10 }}>
-        <p style={{ margin:0, fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:0, fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>
           Over {years} years, paying <strong>2% in fees vs 0.03%</strong> costs you <strong style={{ color:'#ef4444' }}>{fmtK(drag)}</strong> in lost returns. Fees are the only investment variable you control completely — minimize them relentlessly.
         </p>
       </div>
@@ -758,28 +766,28 @@ function RothVsTraditional() {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1rem' }}>
         <NumInput label="Annual Contribution" value={invest} onChange={setInvest} min={0} step={500}/>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Investment Return — {returnPct}%</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Investment Return — {returnPct}%</label>
           <input type="range" min={3} max={12} step={0.5} value={returnPct} onChange={e=>setReturn(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL }}/>
         </div>
       </div>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1rem', marginBottom:'0.5rem' }}>
         <div>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Your Current Tax Bracket</label>
-          <select value={nowBracket} onChange={e=>setNow(Number(e.target.value))} style={{ width:'100%', padding:'8px 10px', border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'0.9375rem', color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa', fontWeight:600 }}
-            onFocus={e=>e.target.style.borderColor=TEAL} onBlur={e=>e.target.style.borderColor='#e5e7eb'}>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Your Current Tax Bracket</label>
+          <select value={nowBracket} onChange={e=>setNow(Number(e.target.value))} style={{ width:'100%', padding:'8px 10px', border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'0.9375rem', color:NAVY, fontFamily:UI, background:RAISE, fontWeight:600 }}
+            onFocus={e=>e.target.style.borderColor=TEAL} onBlur={e=>e.target.style.borderColor=B2}>
             {BRACKETS.map(b => <option key={b.rate} value={b.rate}>{b.label}</option>)}
           </select>
         </div>
         <div>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Expected Retirement Tax Bracket</label>
-          <select value={retBracket} onChange={e=>setRet(Number(e.target.value))} style={{ width:'100%', padding:'8px 10px', border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'0.9375rem', color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa', fontWeight:600 }}
-            onFocus={e=>e.target.style.borderColor=TEAL} onBlur={e=>e.target.style.borderColor='#e5e7eb'}>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Expected Retirement Tax Bracket</label>
+          <select value={retBracket} onChange={e=>setRet(Number(e.target.value))} style={{ width:'100%', padding:'8px 10px', border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'0.9375rem', color:NAVY, fontFamily:UI, background:RAISE, fontWeight:600 }}
+            onFocus={e=>e.target.style.borderColor=TEAL} onBlur={e=>e.target.style.borderColor=B2}>
             {BRACKETS.map(b => <option key={b.rate} value={b.rate}>{b.label}</option>)}
           </select>
         </div>
       </div>
       <div style={{ marginBottom:'1.25rem' }}>
-        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Years Until Retirement — {years}</label>
+        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Years Until Retirement — {years}</label>
         <input type="range" min={5} max={40} step={1} value={years} onChange={e=>setYears(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL }}/>
       </div>
 
@@ -788,19 +796,19 @@ function RothVsTraditional() {
           { label:'Traditional IRA', sub:'Pre-tax now, taxed at withdrawal', value:traditional, color:'#22c55e', better:rothBetter===false },
           { label:'Roth IRA',        sub:'Taxed now, tax-free at withdrawal', value:roth,        color:TEAL,      better:rothBetter===true  },
         ].map(s => (
-          <div key={s.label} style={{ padding:'1rem', background: s.better?`${s.color}0d`:'#f9fafb', border:`1.5px solid ${s.better?s.color+'40':'#e5e7eb'}`, borderRadius:12 }}>
-            <div style={{ fontSize:'0.75rem', fontWeight:700, color:s.better?s.color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.06em', fontFamily:"'DM Sans',sans-serif", marginBottom:4 }}>
+          <div key={s.label} style={{ padding:'1rem', background: s.better?`${s.color}0d`:'#231c16', border:`1.5px solid ${s.better?s.color+'40':'#2a2018'}`, borderRadius:12 }}>
+            <div style={{ fontSize:'0.75rem', fontWeight:700, color:s.better?s.color:T3, textTransform:'uppercase', letterSpacing:'0.06em', fontFamily:UI, marginBottom:4 }}>
               {s.label} {s.better && '✓ Better'}
             </div>
-            <div style={{ fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginBottom:8 }}>{s.sub}</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.5rem', fontWeight:700, color:s.better?s.color:NAVY }}>{fmtK(s.value)}</div>
-            <div style={{ fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>after-tax value at retirement</div>
+            <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI, marginBottom:8 }}>{s.sub}</div>
+            <div style={{ fontFamily:DISP, fontSize:'1.5rem', fontWeight:700, color:s.better?s.color:NAVY }}>{fmtK(s.value)}</div>
+            <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>after-tax value at retirement</div>
           </div>
         ))}
       </div>
 
       <div style={{ padding:'0.875rem 1rem', background: rothBetter?'rgba(0,180,198,0.07)':'rgba(34,197,94,0.07)', border:`1px solid ${rothBetter?TEAL+'30':'#22c55e30'}`, borderRadius:10 }}>
-        <p style={{ margin:0, fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:0, fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>
           With your current ({nowBracket}%) vs retirement ({retBracket}%) brackets, the <strong style={{ color: rothBetter?TEAL:'#22c55e' }}>{rothBetter?'Roth':'Traditional'} IRA</strong> gives you <strong>{fmtK(diff)} more</strong> after tax over {years} years.
           {nowBracket === retBracket && ' When brackets are equal, Roth is generally preferred for its flexibility and no RMD requirement.'}
         </p>
@@ -826,24 +834,24 @@ function ResourcesTab() {
     <div>
       <div style={{ padding:'0.875rem 1rem', background:'rgba(0,180,198,0.06)', border:'1px solid rgba(0,180,198,0.2)', borderRadius:12, marginBottom:'1.25rem', display:'flex', gap:10, alignItems:'flex-start' }}>
         <Info size={15} color={TEAL} style={{ flexShrink:0, marginTop:1 }}/>
-        <p style={{ margin:0, fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:0, fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>
           <strong>How to choose:</strong> For most investors, a simple 3-fund portfolio (US stocks, international stocks, bonds) at Fidelity or Vanguard beats 90% of actively managed strategies. Complexity is not sophistication.
         </p>
       </div>
       <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
         {RESOURCES.map((r, i) => (
-          <div key={i} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
+          <div key={i} style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:14, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
             <div style={{ padding:'0.875rem 1.125rem', borderBottom:'1px solid #f0f0f0', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:700, color:NAVY }}>{r.name}</span>
-                <span style={{ padding:'2px 10px', background:`${r.badgeColor}15`, border:`1px solid ${r.badgeColor}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:r.badgeColor, fontFamily:"'DM Sans',sans-serif", letterSpacing:'0.03em' }}>{r.badge}</span>
+                <span style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:700, color:NAVY }}>{r.name}</span>
+                <span style={{ padding:'2px 10px', background:`${r.badgeColor}15`, border:`1px solid ${r.badgeColor}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:r.badgeColor, fontFamily:UI, letterSpacing:'0.03em' }}>{r.badge}</span>
               </div>
             </div>
             <div style={{ padding:'0.875rem 1.125rem' }}>
-              <p style={{ margin:'0 0 0.75rem', fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{r.desc}</p>
-              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'0.25rem 0.75rem', fontSize:'0.8125rem', fontFamily:"'DM Sans',sans-serif" }}>
-                <span style={{ color:'#9ca3af', fontWeight:600 }}>Cost</span><span style={{ color:'#374151' }}>{r.cost}</span>
-                <span style={{ color:'#9ca3af', fontWeight:600 }}>Best for</span><span style={{ color:'#374151' }}>{r.best}</span>
+              <p style={{ margin:'0 0 0.75rem', fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{r.desc}</p>
+              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'0.25rem 0.75rem', fontSize:'0.8125rem', fontFamily:UI }}>
+                <span style={{ color:T3, fontWeight:600 }}>Cost</span><span style={{ color:T2 }}>{r.cost}</span>
+                <span style={{ color:T3, fontWeight:600 }}>Best for</span><span style={{ color:T2 }}>{r.best}</span>
               </div>
             </div>
           </div>
@@ -867,18 +875,18 @@ export default function Investing() {
   const [tab, setTab] = useState('learn');
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 0' }}>
+      <div style={{ background:SURF, borderBottom:`1px solid `, padding:'2rem 2.5rem 0' }}>
         <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
-          <span style={{ fontFamily:"'DM Sans',sans-serif" }}>Investing & Accounts</span>
+          <span style={{ fontFamily:UI }}>Investing & Accounts</span>
         </div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
+        <h1 style={{ fontFamily:DISP, fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Investing & Accounts
         </h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Master every account type, learn what to invest in, discover the right order to fund your accounts, and see how compounding and fees shape your future.
         </p>
         <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
@@ -889,7 +897,7 @@ export default function Investing() {
               <button key={t.id} onClick={() => setTab(t.id)} style={{
                 display:'flex', alignItems:'center', gap:7, padding:'0.75rem 1.25rem',
                 background:'none', border:'none', borderBottom:`2px solid ${active?TEAL:'transparent'}`,
-                cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem',
+                cursor:'pointer', fontFamily:UI, fontSize:'0.875rem',
                 fontWeight:active?700:500, color:active?TEAL:'rgba(255,255,255,0.45)',
                 marginBottom:-1, transition:'color 0.15s', whiteSpace:'nowrap',
               }}><Icon size={14}/>{t.label}</button>
@@ -933,16 +941,16 @@ export default function Investing() {
 
         {tab === 'resources' && <ResourcesTab/>}
 
-        <div onClick={() => navigate('/fun/insurance')} style={{ marginTop:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'1rem 1.25rem', background:NAVY, borderRadius:12, cursor:'pointer', transition:'opacity 0.15s' }}
+        <div onClick={() => navigate('/fun/insurance')} style={{ marginTop:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'1rem 1.25rem', background:RAISE, borderRadius:12, cursor:'pointer', transition:'opacity 0.15s' }}
           onMouseEnter={e => e.currentTarget.style.opacity='0.88'} onMouseLeave={e => e.currentTarget.style.opacity='1'}>
           <div>
-            <div style={{ fontSize:'0.6875rem', color:'rgba(255,255,255,0.4)', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>Next section</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:600, color:'#fff' }}>Insurance Planning</div>
+            <div style={{ fontSize:'0.6875rem', color:'rgba(255,255,255,0.4)', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:3, fontFamily:UI }}>Next section</div>
+            <div style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:600, color:'#fff' }}>Insurance Planning</div>
           </div>
           <ArrowRight size={18} color={TEAL}/>
         </div>
 
-        <p style={{ marginTop:'2rem', fontSize:'0.6875rem', color:'#d1d5db', textAlign:'center', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ marginTop:'2rem', fontSize:'0.6875rem', color:T3, textAlign:'center', lineHeight:1.6, fontFamily:UI }}>
           For educational purposes only — not financial, investment, tax, or legal advice.
         </p>
       </div>

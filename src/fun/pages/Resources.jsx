@@ -7,8 +7,16 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
-const BG    = '#F4F7FA';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 
 const CATEGORIES = [
   { id:'all',            label:'All Resources',        icon:BookOpen,    color:NAVY    },
@@ -18,7 +26,7 @@ const CATEGORIES = [
   { id:'insurance',      label:'Insurance',            icon:Shield,      color:'#8b5cf6' },
   { id:'estate',         label:'Estate Planning',      icon:ScrollText,  color:'#f59e0b' },
   { id:'retirement',     label:'Retirement',           icon:Clock,       color:'#ec4899' },
-  { id:'majorpurchases', label:'Major Purchases',      icon:Home,        color:'#6b7280' },
+  { id:'majorpurchases', label:'Major Purchases',      icon:Home,        color:T3 },
   { id:'lifeevents',     label:'Life Events',          icon:Calendar,    color:'#f97316' },
   { id:'books',          label:'Books',                icon:BookMarked,  color:'#0ea5e9' },
   { id:'podcasts',       label:'Podcasts',             icon:Headphones,  color:'#a855f7' },
@@ -408,7 +416,7 @@ const RESOURCES = [
 
 const TYPE_COLORS = {
   Tool:      { bg:'#e0f2fe', color:'#0369a1' },
-  Guide:     { bg:'#dcfce7', color:'#15803d' },
+  Guide:     { bg:'#dcfce7', color:'#4a7c59' },
   Book:      { bg:'#fef9c3', color:'#854d0e' },
   Podcast:   { bg:'#f3e8ff', color:'#7e22ce' },
   Service:   { bg:'#ffe4e6', color:'#be123c' },
@@ -430,19 +438,19 @@ export default function Resources() {
   const activeCat = CATEGORIES.find(c => c.id === activeCategory);
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
       {/* Header */}
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 1.75rem' }}>
+      <div style={{ background:SURF, borderBottom:`1px solid `, padding:'2rem 2.5rem 1.75rem' }}>
         <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
           <span>Resource Directory</span>
         </div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
+        <h1 style={{ fontFamily:DISP, fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Resource Directory
         </h1>
-        <p style={{ margin:'0 0 1.5rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:560, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.5rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:560, fontFamily:UI }}>
           Curated tools, guides, books, podcasts, and government resources across every area of personal finance. All free or clearly labeled.
         </p>
 
@@ -453,7 +461,7 @@ export default function Resources() {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search resources..."
-            style={{ width:'100%', padding:'10px 12px 10px 36px', background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:10, color:'#fff', fontFamily:"'DM Sans',sans-serif", fontSize:'0.9rem', outline:'none', boxSizing:'border-box' }}
+            style={{ width:'100%', padding:'10px 12px 10px 36px', background:'var(--border-alt)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:10, color:'#fff', fontFamily:UI, fontSize:'0.9rem', outline:'none', boxSizing:'border-box' }}
           />
         </div>
       </div>
@@ -462,7 +470,7 @@ export default function Resources() {
 
         {/* Category sidebar */}
         <div style={{ width:200, flexShrink:0 }}>
-          <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'0.5rem', boxShadow:'0 1px 4px rgba(0,0,0,0.04)', position:'sticky', top:24 }}>
+          <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:14, padding:'0.5rem', boxShadow:'0 1px 4px rgba(0,0,0,0.04)', position:'sticky', top:24 }}>
             {CATEGORIES.map(cat => {
               const Icon = cat.icon;
               const isActive = activeCategory === cat.id;
@@ -473,15 +481,14 @@ export default function Resources() {
                   padding:'0.5625rem 0.75rem', borderRadius:9, border:'none',
                   background: isActive ? `${cat.color}12` : 'transparent',
                   cursor:'pointer', textAlign:'left', transition:'background 0.13s',
-                  borderLeft:`3px solid ${isActive ? cat.color : 'transparent'}`,
                   marginBottom:1,
                 }}
                 onMouseEnter={e => { if(!isActive) e.currentTarget.style.background='#f9fafb'; }}
                 onMouseLeave={e => { if(!isActive) e.currentTarget.style.background='transparent'; }}
                 >
                   <Icon size={13} color={isActive ? cat.color : '#9ca3af'} style={{ flexShrink:0 }}/>
-                  <span style={{ flex:1, fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', fontWeight: isActive ? 700 : 400, color: isActive ? cat.color : '#6b7280', lineHeight:1.3 }}>{cat.label}</span>
-                  <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.7rem', color: isActive ? cat.color : '#d1d5db', fontWeight:600 }}>{count}</span>
+                  <span style={{ flex:1, fontFamily:UI, fontSize:'0.8rem', fontWeight: isActive ? 700 : 400, color: isActive ? cat.color : '#6b7280', lineHeight:1.3 }}>{cat.label}</span>
+                  <span style={{ fontFamily:UI, fontSize:'0.7rem', color: isActive ? cat.color : '#d1d5db', fontWeight:600 }}>{count}</span>
                 </button>
               );
             })}
@@ -491,16 +498,16 @@ export default function Resources() {
         {/* Resource cards */}
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ marginBottom:'1rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.125rem', fontWeight:700, color:NAVY }}>
+            <div style={{ fontFamily:DISP, fontSize:'1.125rem', fontWeight:700, color:NAVY }}>
               {query ? `Results for "${query}"` : activeCat?.label}
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#9ca3af' }}>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3 }}>
               {filtered.length} resource{filtered.length !== 1 ? 's' : ''}
             </div>
           </div>
 
           {filtered.length === 0 ? (
-            <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'3rem', textAlign:'center', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>
+            <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:14, padding:'3rem', textAlign:'center', color:T3, fontFamily:UI }}>
               No resources found. Try a different search term or category.
             </div>
           ) : (
@@ -510,22 +517,22 @@ export default function Resources() {
                 const cat = CATEGORIES.find(c => c.id === r.category);
                 return (
                   <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer"
-                    style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, padding:'1rem 1.125rem', display:'flex', alignItems:'flex-start', gap:14, textDecoration:'none', boxShadow:'0 1px 4px rgba(0,0,0,0.04)', transition:'box-shadow 0.15s, border-color 0.15s' }}
+                    style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:14, padding:'1rem 1.125rem', display:'flex', alignItems:'flex-start', gap:14, textDecoration:'none', boxShadow:'0 1px 4px rgba(0,0,0,0.04)', transition:'box-shadow 0.15s, border-color 0.15s' }}
                     onMouseEnter={e => { e.currentTarget.style.boxShadow='0 4px 16px rgba(0,0,0,0.09)'; e.currentTarget.style.borderColor=TEAL; }}
                     onMouseLeave={e => { e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor='#e5e7eb'; }}
                   >
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginBottom:5 }}>
-                        <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{r.name}</span>
-                        <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.6875rem', fontWeight:700, background:typeStyle.bg, color:typeStyle.color, padding:'2px 8px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.04em', whiteSpace:'nowrap' }}>{r.type}</span>
+                        <span style={{ fontFamily:UI, fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{r.name}</span>
+                        <span style={{ fontFamily:UI, fontSize:'0.6875rem', fontWeight:700, background:typeStyle.bg, color:typeStyle.color, padding:'2px 8px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.04em', whiteSpace:'nowrap' }}>{r.type}</span>
                         {cat && cat.id !== 'all' && (
-                          <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.6875rem', fontWeight:600, color:cat.color, background:`${cat.color}12`, padding:'2px 8px', borderRadius:20, whiteSpace:'nowrap' }}>{cat.label}</span>
+                          <span style={{ fontFamily:UI, fontSize:'0.6875rem', fontWeight:600, color:cat.color, background:`${cat.color}12`, padding:'2px 8px', borderRadius:20, whiteSpace:'nowrap' }}>{cat.label}</span>
                         )}
                       </div>
-                      <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color:'#6b7280', lineHeight:1.65 }}>{r.desc}</div>
+                      <div style={{ fontFamily:UI, fontSize:'0.8375rem', color:T3, lineHeight:1.65 }}>{r.desc}</div>
                       <div style={{ display:'flex', flexWrap:'wrap', gap:'0.375rem', marginTop:'0.5rem' }}>
                         {r.tags.map(t => (
-                          <span key={t} onClick={e => { e.preventDefault(); setQuery(t); }} style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.7rem', color:'#9ca3af', background:'#f3f4f6', padding:'2px 7px', borderRadius:99, cursor:'pointer' }}>#{t}</span>
+                          <span key={t} onClick={e => { e.preventDefault(); setQuery(t); }} style={{ fontFamily:UI, fontSize:'0.7rem', color:T3, background:'#f3f4f6', padding:'2px 7px', borderRadius:99, cursor:'pointer' }}>#{t}</span>
                         ))}
                       </div>
                     </div>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MobileSelect, MobileSelectItem, MobileSelectContent } from "@/components/ui/mobile-select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Target, TrendingUp, Calendar, CheckCircle2, AlertCircle, Clock, Sparkles, FileText, Wallet, X } from "lucide-react";
+import { Plus, Trash2, Target, TrendingUp, Calendar, CheckCircle2, AlertCircle, Clock, Sparkles, FileText, Wallet, X, Shield, Umbrella, Home, CreditCard, GraduationCap, Plane, Car, Heart, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 
@@ -16,16 +16,16 @@ const PRIORITY_CONFIG = {
 };
 
 const GOAL_PRESETS = [
-  { name: "Emergency Fund", icon: "🛡️", reportHint: "Cash Flow Optimizer" },
-  { name: "Retirement (IRA/401k)", icon: "🏖️", reportHint: "Retirement Planner" },
-  { name: "Home Down Payment", icon: "🏠", reportHint: "Mortgage Readiness" },
-  { name: "Pay Off Debt", icon: "💳", reportHint: "Debt Strategist" },
-  { name: "College / Education", icon: "🎓", reportHint: "Education Funding" },
-  { name: "Vacation", icon: "✈️", reportHint: "Vacation Budget" },
-  { name: "New Vehicle", icon: "🚗", reportHint: "Auto Purchase" },
-  { name: "Wedding", icon: "💍", reportHint: "Event Planning" },
-  { name: "Start a Business", icon: "💼", reportHint: "Business Launch" },
-  { name: "Investment Account", icon: "📈", reportHint: "Portfolio Builder" },
+  { name: "Emergency Fund", icon: Shield, reportHint: "Cash Flow Optimizer" },
+  { name: "Retirement (IRA/401k)", icon: Umbrella, reportHint: "Retirement Planner" },
+  { name: "Home Down Payment", icon: Home, reportHint: "Mortgage Readiness" },
+  { name: "Pay Off Debt", icon: CreditCard, reportHint: "Debt Strategist" },
+  { name: "College / Education", icon: GraduationCap, reportHint: "Education Funding" },
+  { name: "Vacation", icon: Plane, reportHint: "Vacation Budget" },
+  { name: "New Vehicle", icon: Car, reportHint: "Auto Purchase" },
+  { name: "Wedding", icon: Heart, reportHint: "Event Planning" },
+  { name: "Start a Business", icon: Briefcase, reportHint: "Business Launch" },
+  { name: "Investment Account", icon: TrendingUp, reportHint: "Portfolio Builder" },
 ];
 
 const BREAKDOWN_REPORT_LINKS = [
@@ -200,7 +200,7 @@ export default function GoalsTab({ plan, onChange }) {
                   className="px-3 py-1.5 rounded-lg text-xs border border-[#1e293b] text-[#94a3b8] hover:text-white hover:border-[#06b6d4]/40 transition-all flex items-center gap-1 touch-manipulation active:scale-95 min-h-[44px]"
                   aria-label={`Add ${p.name} goal`}
                 >
-                  <span>{p.icon}</span> {p.name}
+                  {(() => { const PI = p.icon; return <PI size={12} />; })()} {p.name}
                 </button>
               ))}
             </div>
@@ -338,7 +338,7 @@ export default function GoalsTab({ plan, onChange }) {
                     {progress >= 100 && (
                       <div className="flex items-center gap-1 text-xs text-[#00d4aa]">
                         <CheckCircle2 className="w-3 h-3" />
-                        <span className="font-medium">Goal Achieved! 🎉</span>
+                        <span className="font-medium">Goal Achieved!</span>
                       </div>
                     )}
                   </div>

@@ -464,41 +464,38 @@ export default function RealEstate() {
   };
 
   return (
-    <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px 40px" }}>
+    <div style={{ maxWidth: 1280 }}>
 
       {/* ── Hero Banner ────────────────────────────────────────────── */}
       <div style={{
-        background: "linear-gradient(135deg, rgba(250,189,0,0.08) 0%, rgba(0,184,153,0.06) 100%)",
-        border: "1px solid var(--border-c)", borderRadius: 12,
-        padding: "28px 32px", marginBottom: 24
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem", marginBottom: 24,
+        position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
-          <div style={{
-            background: "rgba(250,189,0,0.12)", border: "1px solid rgba(250,189,0,0.3)",
-            borderRadius: 10, padding: 12, display: "flex", alignItems: "center", justifyContent: "center"
-          }}>
-            <Home size={24} style={{ color: "var(--gold)" }} />
-          </div>
-          <div>
-            <h1 className="t-page-title" style={{ marginBottom: 4 }}>Real Estate Markets</h1>
-            <div style={{ color: "var(--text-2)", fontSize: "0.88rem" }}>
-              Housing market intelligence — prices, inventory, mortgage rates &amp; investment data · April 2026
-            </div>
-          </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12 }}>
-          {HERO_STATS.map(s => (
-            <div key={s.label} style={{
-              background: "var(--surface)", border: "1px solid var(--border-c)",
-              borderRadius: 8, padding: "12px 16px"
-            }}>
-              <div className="t-label" style={{ marginBottom: 6 }}>{s.label}</div>
-              <div className="t-mono" style={{ fontSize: "1.2rem", fontWeight: 700, color: "var(--text-1)", marginBottom: 2 }}>
-                {s.value}
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+          <p style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 0.625rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ display: "inline-block", width: 18, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+            Market Intelligence
+          </p>
+          <h1 style={{ marginBottom: "0.5rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            Real Estate{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Markets</em>
+          </h1>
+          <p style={{ color: "var(--text-2)", fontSize: "0.875rem", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1.25rem" }}>
+            Housing market intelligence — prices, inventory, mortgage rates &amp; investment data · 2026
+          </p>
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+            {HERO_STATS.map(s => (
+              <div key={s.label} style={{ background: "rgba(201,169,110,0.08)", border: "1px solid rgba(201,169,110,0.2)", borderRadius: 8, padding: "0.5rem 0.875rem" }}>
+                <div className="t-mono" style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--gold)", lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: 10, color: "var(--text-3)", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
               </div>
-              <div style={{ fontSize: "0.72rem", color: "var(--text-3)" }}>{s.sub}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
@@ -521,25 +518,15 @@ export default function RealEstate() {
       </div>
 
       {/* ── Tab Nav ────────────────────────────────────────────────── */}
-      <div style={{
-        display: "flex", gap: 4, marginBottom: 20,
-        borderBottom: "1px solid var(--border-c)", paddingBottom: 0
-      }}>
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            style={{
-              padding: "8px 16px", fontSize: "0.8rem", fontWeight: 600,
-              background: "none", border: "none", cursor: "pointer",
-              borderBottom: tab === t.id ? "2px solid var(--gold)" : "2px solid transparent",
-              color: tab === t.id ? "var(--gold)" : "var(--text-2)",
-              marginBottom: "-1px", transition: "color 0.15s"
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: 20 }}>
+        {TABS.map(t => {
+          const active = tab === t.id;
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}>
+              {t.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* ══════════════════════════════════════════════════════════════

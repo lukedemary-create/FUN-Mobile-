@@ -158,18 +158,32 @@ export default function AdvisorMarketplace() {
 
   return (
     <div style={{ maxWidth: 1200 }}>
-      {/* Header */}
-      <div className="t-card t-card-p" style={{ padding: "1.5rem", marginBottom: "1.25rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem" }}>
-          <div style={{ width: 44, height: 44, borderRadius: "12px", background: `${ACCENT}18`, border: `1px solid ${ACCENT}30`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Users size={20} style={{ color: ACCENT }} />
+      {/* Hero Banner */}
+      <div style={{
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "1.75rem 2.25rem", marginBottom: "1.25rem",
+        position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
+      }}>
+        <div style={{ position: "absolute", top: -50, right: -30, width: 260, height: 260, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem", position: "relative" }}>
+          <div style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Users size={14} style={{ color: "var(--gold)" }} />
           </div>
-          <div>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 800, letterSpacing: "-0.025em", color: "var(--text-1)" }}>
-              Advisor <span style={{ color: ACCENT }}>Marketplace</span>
-            </h1>
-            <p style={{ fontSize: "0.8125rem", color: "var(--text-3)", marginTop: 2 }}>Connect with certified financial professionals in your area</p>
-          </div>
+          <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            ADVISOR{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Marketplace</em>
+          </h1>
+        </div>
+        <p style={{ margin: "0 0 1rem", color: "var(--text-2)", fontSize: "0.875rem", lineHeight: 1.65, maxWidth: 520, position: "relative" }}>
+          Connect with certified financial professionals in your area. Compare credentials, specializations, and fees to find the right advisor for your situation.
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", position: "relative" }}>
+          {["CFP Certified", "Fee-Only Options", "Fiduciary Advisors", "Local & Remote"].map(tag => (
+            <span key={tag} style={{ fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px", borderRadius: 99, letterSpacing: "0.04em", background: "rgba(201,169,110,0.10)", border: "1px solid rgba(201,169,110,0.25)", color: "var(--gold)" }}>{tag}</span>
+          ))}
         </div>
       </div>
 

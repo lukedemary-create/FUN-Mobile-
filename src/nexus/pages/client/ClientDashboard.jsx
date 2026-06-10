@@ -4,6 +4,7 @@ import { Header } from '../../components/shared/Header'
 import { PerformanceChart } from '../../components/shared/PortfolioChart'
 import { useApp } from '../../context/AppContext'
 import { advisor, fmt, categoryIcon, goalCategoryColor } from '../../data/demoData'
+import { MessageSquare } from 'lucide-react'
 
 export default function ClientDashboard() {
   const { selectedClientId, getClientData } = useApp()
@@ -58,7 +59,7 @@ export default function ClientDashboard() {
         {/* Alert Banners */}
         {unread > 0 && (
           <div style={styles.alertBanner} onClick={() => navigate('/nexus/client/messages')}>
-            <span style={{ fontSize: 14 }}>💬</span>
+            <MessageSquare size={14} />
             <span style={{ flex: 1, fontSize: 13, fontWeight: 500 }}>
               {unread} new message{unread > 1 ? 's' : ''} from {advisor.name}
             </span>
@@ -186,7 +187,7 @@ export default function ClientDashboard() {
                     padding: '12px 0',
                     borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
                   }}>
-                    <div style={{ fontSize: 20 }}>{categoryIcon[ev.category] || '📌'}</div>
+                    <div style={{ fontSize: '0.5rem', fontWeight: 800, letterSpacing: '0.05em', color: 'var(--text-tertiary)', width: 28, textAlign: 'center' }}>{categoryIcon[ev.category] || 'EVT'}</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>{ev.title}</div>
@@ -255,8 +256,8 @@ const styles = {
     alignItems: 'center',
     gap: 24,
     background: 'var(--bg-surface)',
-    border: '1px solid var(--border)',
-    borderLeft: '3px solid var(--gold)',
+    border: '1px solid rgba(201,169,110,0.25)',
+    borderTop: '2px solid var(--gold)',
     borderRadius: 12,
     padding: '20px 24px',
     marginBottom: 16,

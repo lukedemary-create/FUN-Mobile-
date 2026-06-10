@@ -168,25 +168,28 @@ function StockRow({ rank, stock }) {
 function MomentumCard({ stock }) {
   const isUp = (stock.change_percent ?? 0) >= 0;
   const sparkData = makeSparkData(stock);
+  const pctColor = isUp ? "var(--up)" : "var(--down)";
   return (
-    <div className="t-card t-card-hover" style={{ padding: "0.875rem", flex: "1 1 140px", minWidth: 130 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-        <span className="t-mono" style={{ fontWeight: 800, fontSize: "0.9375rem", color: "var(--gold)" }}>
+    <div style={{ padding: "0.875rem", flex: "1 1 140px", minWidth: 130, background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 12, backdropFilter: "blur(8px)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.375rem" }}>
+        <span style={{ fontWeight: 800, fontSize: "0.9375rem", color: "var(--gold)", fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>
           {stock.ticker}
         </span>
-        <span className={`t-badge ${isUp ? "t-badge-up" : "t-badge-down"}`} style={{ fontSize: "0.625rem" }}>
+        <span style={{ fontSize: "0.5625rem", fontWeight: 700, padding: "2px 6px", borderRadius: 5, fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+          background: isUp ? "rgba(0,184,153,0.12)" : "rgba(255,59,92,0.12)",
+          color: pctColor, border: `1px solid ${isUp ? "rgba(0,184,153,0.25)" : "rgba(255,59,92,0.25)"}` }}>
           {fmtPct(stock.change_percent)}
         </span>
       </div>
-      <div style={{ fontSize: "0.6875rem", color: "var(--text-3)", marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      <div style={{ fontSize: "0.6875rem", color: "var(--text-3)", marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "'Inter', system-ui, sans-serif" }}>
         {stock.company_name ?? stock.name ?? "—"}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <div className="t-mono" style={{ fontSize: "1rem", fontWeight: 700, color: isUp ? "var(--up)" : "var(--down)" }}>
+          <div style={{ fontSize: "1rem", fontWeight: 700, color: pctColor, fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>
             {fmtPct(stock.change_percent)}
           </div>
-          <div style={{ fontSize: "0.625rem", color: "var(--text-3)" }}>
+          <div style={{ fontSize: "0.625rem", color: "var(--text-3)", fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>
             {fmtPrice(stock.current_price ?? stock.price)}
           </div>
         </div>
@@ -293,74 +296,66 @@ export default function TopPerformers() {
   const momentumLeaders = [...gainers].slice(0, 6);
 
   return (
-    <div className="t-bg" style={{ minHeight: "100vh", padding: "1.5rem" }}>
+    <div>
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
-        marginBottom: "1.25rem",
-        position: "relative",
-        overflow: "hidden",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: "1.25rem", position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{
-          position: "absolute", top: -60, right: -40,
-          width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
+        <div style={{ position: "absolute", top: -80, right: -60, width: 400, height: 400, background: "radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 68%)", pointerEvents: "none" }} />
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <TrendingUp size={14} style={{ color: "var(--gold)" }} />
-              </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>TOP PERFORMERS</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.875rem" }}>
+              <div style={{ width: 20, height: 1, background: "var(--gold)", opacity: 0.55 }} />
+              <p style={{ fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--gold)", margin: 0, fontFamily: "'Inter', system-ui, sans-serif" }}>
+                Terminal · Markets
+              </p>
             </div>
-            <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
+            <h1 style={{ margin: "0 0 0.625rem", fontSize: "clamp(1.5rem, 2.5vw, 2rem)", fontWeight: 800, letterSpacing: "-0.04em", color: "var(--text-1)", lineHeight: 1.05, fontFamily: "'Inter', system-ui, sans-serif", display: "flex", alignItems: "baseline", gap: "0.375rem", flexWrap: "wrap" }}>
+              <span>Top</span>
+              <em style={{ fontStyle: "italic", color: "var(--gold)", fontFamily: "'Playfair Display', Georgia, serif" }}>Performers</em>
+            </h1>
+            <p style={{ fontSize: "0.875rem", color: "var(--text-3)", lineHeight: 1.75, maxWidth: 520, margin: "0 0 1.125rem", fontFamily: "'Inter', system-ui, sans-serif" }}>
               Scan the market for today's biggest movers. Track top gainers, top losers, and high-volume stocks driving momentum across all major exchanges.
             </p>
-            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.375rem" }}>
               {["Daily Movers", "Volume Spikes", "52-Week Highs", "Real-Time Screening"].map((label) => (
                 <span key={label} style={{
-                  fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
-                  borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
-                  color: "var(--gold)",
+                  fontSize: "0.5625rem", fontWeight: 700, padding: "3px 10px",
+                  borderRadius: 99, letterSpacing: "0.08em", textTransform: "uppercase",
+                  background: "rgba(201,169,110,0.08)", border: "1px solid rgba(201,169,110,0.2)",
+                  color: "var(--gold)", fontFamily: "'Inter', system-ui, sans-serif",
                 }}>{label}</span>
               ))}
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", flexShrink: 0 }}>
             {[
-              { icon: TrendingUp, label: "Top Gainers", sub: "Biggest % movers up", color: "#3b82f6" },
-              { icon: TrendingDown, label: "Top Losers", sub: "Biggest % movers down", color: "var(--gold)" },
-              { icon: Volume2, label: "Volume Leaders", sub: "Unusual volume stocks", color: "var(--teal)" },
-              { icon: Zap, label: "Breakout Stocks", sub: "52-week high breakers", color: "#f59e0b" },
-            ].map(({ icon: Icon, label, sub, color }) => (
+              { icon: TrendingUp, label: "Top Gainers", sub: "Biggest % movers up" },
+              { icon: TrendingDown, label: "Top Losers", sub: "Biggest % movers down" },
+              { icon: Volume2, label: "Volume Leaders", sub: "Unusual volume stocks" },
+              { icon: Zap, label: "Breakout Stocks", sub: "52-week high breakers" },
+            ].map(({ icon: Icon, label, sub }) => (
               <div key={label} style={{
                 display: "flex", alignItems: "center", gap: "0.625rem",
                 padding: "0.625rem 0.875rem",
-                background: "var(--bg)", border: "1px solid var(--border-c)",
-                borderRadius: 10, minWidth: 170,
+                background: "var(--elevated)", border: "1px solid var(--border-c)",
+                borderRadius: 10, minWidth: 160,
               }}>
                 <div style={{
-                  width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  width: 28, height: 28, borderRadius: 7, flexShrink: 0,
+                  background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                  <Icon size={14} style={{ color }} />
+                  <Icon size={13} style={{ color: "var(--gold)" }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-1)", lineHeight: 1 }}>{label}</div>
-                  <div style={{ fontSize: "0.625rem", color: "var(--text-3)", marginTop: 2, lineHeight: 1.3 }}>{sub}</div>
+                  <div style={{ fontSize: "0.6875rem", fontWeight: 700, color: "var(--text-1)", lineHeight: 1.2, fontFamily: "'Inter', system-ui, sans-serif" }}>{label}</div>
+                  <div style={{ fontSize: "0.5625rem", color: "var(--text-3)", marginTop: 2, fontFamily: "'Inter', system-ui, sans-serif" }}>{sub}</div>
                 </div>
               </div>
             ))}
@@ -369,16 +364,19 @@ export default function TopPerformers() {
       </div>
 
       {/* Period selector */}
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.25rem" }}>
+      <div style={{ display: "flex", gap: "0.25rem", marginBottom: "1rem", background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 10, padding: "0.3rem", width: "fit-content" }}>
         {PERIODS.map((p, i) => (
           <button
             key={p.label}
             onClick={() => setPeriodIdx(i)}
-            className="t-btn t-btn-sm"
             style={{
-              background: periodIdx === i ? "var(--gold-dim)" : "var(--elevated)",
-              color: periodIdx === i ? "var(--gold)" : "var(--text-2)",
-              borderColor: periodIdx === i ? "rgba(201,168,76,0.3)" : "var(--border-alt)",
+              background: periodIdx === i ? "rgba(201,169,110,0.18)" : "transparent",
+              color: periodIdx === i ? "var(--gold)" : "var(--text-3)",
+              border: periodIdx === i ? "1px solid rgba(201,169,110,0.35)" : "1px solid transparent",
+              borderRadius: 7, padding: "0.35rem 0.75rem",
+              fontSize: "0.6875rem", fontWeight: periodIdx === i ? 700 : 500,
+              cursor: "pointer", transition: "all 0.12s",
+              fontFamily: "'Inter', system-ui, sans-serif",
             }}
           >
             {p.label}
@@ -387,12 +385,21 @@ export default function TopPerformers() {
       </div>
 
       {/* Tabs */}
-      <div className="t-tabs" style={{ marginBottom: "1rem" }}>
+      <div style={{ display: "flex", gap: "0.25rem", marginBottom: "1.125rem", background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 10, padding: "0.3rem", width: "fit-content", flexWrap: "wrap" }}>
         {PERFORMER_TABS.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`t-tab ${activeTab === tab ? "active" : ""}`}
+            style={{
+              background: activeTab === tab ? "rgba(201,169,110,0.18)" : "transparent",
+              color: activeTab === tab ? "var(--gold)" : "var(--text-3)",
+              border: activeTab === tab ? "1px solid rgba(201,169,110,0.35)" : "1px solid transparent",
+              borderRadius: 7, padding: "0.35rem 0.75rem",
+              fontSize: "0.625rem", fontWeight: activeTab === tab ? 700 : 500,
+              cursor: "pointer", transition: "all 0.12s",
+              fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.06em",
+              whiteSpace: "nowrap",
+            }}
           >
             {tab}
           </button>
@@ -400,7 +407,7 @@ export default function TopPerformers() {
       </div>
 
       {/* Table */}
-      <div className="t-card" style={{ overflowX: "auto", marginBottom: "1.5rem" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 14, overflowX: "auto", marginBottom: "1.5rem", backdropFilter: "blur(8px)" }}>
         <table
           className="t-table"
           style={{ fontSize: "0.8125rem" }}
@@ -442,13 +449,13 @@ export default function TopPerformers() {
       {/* Momentum Leaders */}
       {(momentumLeaders.length > 0 || isLoading) && (
         <div>
-          <div className="t-section-title" style={{ marginBottom: "0.875rem" }}>
+          <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-2)", marginBottom: "0.875rem", letterSpacing: "0.06em", textTransform: "uppercase", fontFamily: "'Inter', system-ui, sans-serif" }}>
             Momentum Leaders
           </div>
           {isLoading ? (
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="t-card" style={{ flex: "1 1 140px", minWidth: 130, padding: "0.875rem" }}>
+                <div key={i} style={{ flex: "1 1 140px", minWidth: 130, padding: "0.875rem", background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 12 }}>
                   <div className="t-skeleton" style={{ height: 14, marginBottom: 8, borderRadius: 3 }} />
                   <div className="t-skeleton" style={{ height: 10, marginBottom: 12, borderRadius: 3, width: "70%" }} />
                   <div className="t-skeleton" style={{ height: 32, borderRadius: 3 }} />

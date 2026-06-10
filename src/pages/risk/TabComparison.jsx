@@ -59,7 +59,7 @@ function MiniDonut({ model }) {
 /* ── Comparison table row ────────────────────────────────────────── */
 function CompRow({ label, values, formatFn, colorFn }) {
   return (
-    <tr style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+    <tr style={{ borderBottom:"1px solid var(--border-c)" }}>
       <td style={{ padding:"7px 10px",fontSize:"0.5625rem",color:"var(--text-3)",
         textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600 }}>{label}</td>
       {values.map((v,i) => (
@@ -111,7 +111,7 @@ export default function TabComparison() {
           </div>
           <button onClick={()=>setPickOpen(p=>!p)} style={{
             display:"flex",alignItems:"center",gap:5,padding:"5px 12px",
-            background:"rgba(201,168,76,0.08)",border:"1px solid rgba(201,168,76,0.2)",
+            background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.2)",
             borderRadius:6,color:GOLD,fontSize:"0.6875rem",fontWeight:600,cursor:"pointer",
           }}>
             <Plus size={12}/> {pickOpen?"Close":"Add Model"}
@@ -216,7 +216,7 @@ export default function TabComparison() {
                 <CompRow label="Worst Year" values={models.map(m=>`${m.worstYear}%`)} colorFn={()=>RED}/>
                 <CompRow label="Dividend Yield" values={models.map(m=>`${m.yield}%`)} colorFn={v=>parseFloat(v)>2?GREEN:"var(--text-1)"}/>
                 <CompRow label="4% Rule Income on $1M" values={models.map(m=>"$40,000")} colorFn={()=>"var(--text-1)"}/>
-                <tr style={{ background:"rgba(34,197,94,0.04)",borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                <tr style={{ background:"rgba(34,197,94,0.04)",borderBottom:"1px solid var(--border-c)" }}>
                   <td style={{ padding:"7px 10px",fontSize:"0.5625rem",color:"var(--text-3)",
                     textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600 }}>$100K → 10 Yrs</td>
                   {models.map((m,i) => {
@@ -226,7 +226,7 @@ export default function TabComparison() {
                     </td>;
                   })}
                 </tr>
-                <tr style={{ background:"rgba(34,197,94,0.04)",borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                <tr style={{ background:"rgba(34,197,94,0.04)",borderBottom:"1px solid var(--border-c)" }}>
                   <td style={{ padding:"7px 10px",fontSize:"0.5625rem",color:"var(--text-3)",
                     textTransform:"uppercase",letterSpacing:"0.06em",fontWeight:600 }}>$100K → 20 Yrs</td>
                   {models.map((m,i) => {
@@ -259,7 +259,7 @@ export default function TabComparison() {
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={projections}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
                 <XAxis dataKey="year" tick={{ fill:"var(--text-3)",fontSize:10 }}/>
                 <YAxis tickFormatter={v=>`$${(v/1000).toFixed(0)}K`} tick={{ fill:"var(--text-3)",fontSize:10 }}/>
                 <Tooltip content={<CompTip/>}/>
@@ -277,7 +277,7 @@ export default function TabComparison() {
               letterSpacing:"0.06em",textTransform:"uppercase" }}>Return & Drawdown Comparison</div>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={retData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false}/>
                 <XAxis type="number" tick={{ fill:"var(--text-3)",fontSize:10 }} tickFormatter={v=>v+"%"}/>
                 <YAxis type="category" dataKey="metric" width={100} tick={{ fill:"var(--text-2)",fontSize:10 }}/>
                 <Tooltip content={<CompTip/>}/>
@@ -302,7 +302,7 @@ export default function TabComparison() {
                       letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:4 }}>{m.name}</div>
                     <div style={{ fontSize:"1.25rem",fontWeight:900,color:GOLD }}>{m.sharpe}</div>
                     <div style={{ fontSize:"0.5rem",color:"var(--text-3)",marginBottom:6 }}>Sharpe Ratio</div>
-                    <div style={{ height:2,background:"rgba(255,255,255,0.06)",borderRadius:1,marginBottom:6 }}>
+                    <div style={{ height:2,background:"var(--border-c)",borderRadius:1,marginBottom:6 }}>
                       <div style={{ height:"100%",width:`${Math.min(100,efficiency*80)}%`,
                         background:MODEL_COLORS[i],borderRadius:1 }}/>
                     </div>

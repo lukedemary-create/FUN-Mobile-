@@ -531,7 +531,7 @@ const CustomTip = ({active,payload,label}) => {
 };
 
 const DISCLAIMER = () => (
-  <div style={{marginTop:"1.5rem",padding:"0.65rem 0.9rem",background:"rgba(201,168,76,0.05)",borderRadius:6,border:"1px solid rgba(201,168,76,0.12)",fontSize:"0.63rem",color:"var(--text-3)",lineHeight:1.6}}>
+  <div style={{marginTop:"1.5rem",padding:"0.65rem 0.9rem",background:"rgba(201,169,110,0.05)",borderRadius:6,border:"1px solid rgba(201,169,110,0.12)",fontSize:"0.63rem",color:"var(--text-3)",lineHeight:1.6}}>
     <strong style={{color:"var(--gold)"}}>Data Sources: </strong>
     Federal Reserve (FRED), Congressional Budget Office, Bureau of Labor Statistics, Bureau of Economic Analysis, US Treasury.
     Economic outcomes reflect complex interactions between policy, global events, Federal Reserve decisions, and economic cycles across administrations.
@@ -568,7 +568,7 @@ function TabCommand() {
     <div style={{display:"flex",flexDirection:"column",gap:"1.25rem"}}>
 
       {/* Live Debt Counter */}
-      <div className="t-card" style={{padding:"1.5rem",background:"linear-gradient(135deg,rgba(201,168,76,0.06) 0%,var(--surface) 60%)",border:"1px solid rgba(201,168,76,0.2)"}}>
+      <div className="t-card" style={{padding:"1.5rem",background:"linear-gradient(135deg,rgba(201,169,110,0.06) 0%,var(--surface) 60%)",border:"1px solid rgba(201,169,110,0.2)"}}>
         <div style={{textAlign:"center"}}>
           <div style={{fontSize:"0.65rem",fontWeight:700,color:"var(--text-3)",textTransform:"uppercase",letterSpacing:"0.15em",marginBottom:"0.5rem"}}>
             🇺🇸 U.S. NATIONAL DEBT — LIVE COUNTER
@@ -720,7 +720,7 @@ function TabPresidents() {
         </div>
 
         {/* Header */}
-        <div className="t-card" style={{padding:"1.25rem",borderLeft:`4px solid ${pc(p.party)}`}}>
+        <div className="t-card" style={{padding:"1.25rem",border:`1px solid ${pc(p.party)}40`,borderTop:`2px solid ${pc(p.party)}`}}>
           <div style={{fontSize:"1.25rem",fontWeight:900,color:"var(--text-1)"}}>{p.name}</div>
           <div style={{fontSize:"0.75rem",color:"var(--text-3)",marginTop:4}}>{p.era}</div>
           <div style={{fontSize:"0.78rem",color:"var(--text-2)",marginTop:"0.6rem",lineHeight:1.6}}>{p.summary}</div>
@@ -845,7 +845,7 @@ function TabComparison() {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:"1.25rem"}}>
       {/* Disclaimer banner */}
-      <div style={{padding:"0.75rem 1rem",background:"rgba(201,168,76,0.08)",borderRadius:6,border:"1px solid rgba(201,168,76,0.2)",fontSize:"0.72rem",color:"var(--text-2)",lineHeight:1.6}}>
+      <div style={{padding:"0.75rem 1rem",background:"rgba(201,169,110,0.08)",borderRadius:6,border:"1px solid rgba(201,169,110,0.2)",fontSize:"0.72rem",color:"var(--text-2)",lineHeight:1.6}}>
         <strong style={{color:GOLD}}>Important Note: </strong>
         Economic outcomes are influenced by many factors beyond presidential party — global events, Congressional composition, Federal Reserve decisions, and economic cycles inherited from prior administrations. This data is presented for educational comparison only.
       </div>
@@ -1040,11 +1040,11 @@ function TabPhilosophy() {
         <div key={i} className="t-card" style={{padding:"1.25rem"}}>
           <div style={{fontSize:"0.78rem",fontWeight:800,color:"var(--text-1)",marginBottom:"0.75rem"}}>{d.topic}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0.75rem",marginBottom:"0.75rem"}}>
-            <div style={{padding:"0.65rem 0.85rem",background:DEM+"18",borderRadius:6,borderLeft:`3px solid ${DEM}`}}>
+            <div style={{padding:"0.65rem 0.85rem",background:DEM+"18",borderRadius:6,border:`1px solid ${DEM}38`}}>
               <div style={{fontSize:"0.63rem",color:DEM,fontWeight:700,marginBottom:3}}>DEMOCRATIC VIEW</div>
               <div style={{fontSize:"0.72rem",color:"var(--text-2)",lineHeight:1.5}}>{d.dem}</div>
             </div>
-            <div style={{padding:"0.65rem 0.85rem",background:REP+"18",borderRadius:6,borderLeft:`3px solid ${REP}`}}>
+            <div style={{padding:"0.65rem 0.85rem",background:REP+"18",borderRadius:6,border:`1px solid ${REP}38`}}>
               <div style={{fontSize:"0.63rem",color:REP,fontWeight:700,marginBottom:3}}>REPUBLICAN VIEW</div>
               <div style={{fontSize:"0.72rem",color:"var(--text-2)",lineHeight:1.5}}>{d.rep}</div>
             </div>
@@ -1278,7 +1278,7 @@ function TabBudget() {
       </div>
 
       {/* Your tax dollar */}
-      <div className="t-card" style={{padding:"1.25rem",borderLeft:`3px solid ${GOLD}`}}>
+      <div className="t-card" style={{padding:"1.25rem",border:`1px solid ${GOLD}30`}}>
         <div style={{fontSize:"0.75rem",fontWeight:800,color:"var(--text-1)",marginBottom:"0.75rem"}}>WHERE YOUR TAX DOLLAR GOES</div>
         <div style={{display:"flex",flexWrap:"wrap",gap:"0.5rem"}}>
           {dollarBreakdown.map((d,i)=>(
@@ -1292,7 +1292,7 @@ function TabBudget() {
       </div>
 
       {/* Foreign aid reality check */}
-      <div className="t-card" style={{padding:"1.25rem",borderLeft:`3px solid ${TEAL}`}}>
+      <div className="t-card" style={{padding:"1.25rem",border:`1px solid ${TEAL}30`}}>
         <div style={{fontSize:"0.75rem",fontWeight:800,color:"var(--text-1)",marginBottom:"0.5rem"}}>FOREIGN AID REALITY CHECK</div>
         <div style={{fontSize:"0.72rem",color:"var(--text-2)",lineHeight:1.6,marginBottom:"0.75rem"}}>
           Surveys consistently show Americans believe foreign aid is 20–25% of the federal budget. The actual figure is approximately <strong style={{color:TEAL}}>1% of the federal budget</strong> (~$60B/yr). Most foreign aid funds security assistance, disaster relief, and development programs that serve US strategic interests.
@@ -1408,7 +1408,7 @@ function ExpandLeg({law}) {
   const [open, setOpen] = useState(false);
   const catColor = {Tax:GOLD,Social:DEM,Infrastructure:GREEN,Healthcare:TEAL,Trade:PURP,Regulation:ORNG,Financial:REP,Stimulus:GREEN,Investment:TEAL,Monetary:GOLD,Climate:GREEN}[law.cat]||GOLD;
   return (
-    <div className="t-card" style={{overflow:"hidden",borderLeft:`3px solid ${pc(law.party)}`}}>
+    <div className="t-card" style={{overflow:"hidden",borderTop:`2px solid ${pc(law.party)}`}}>
       <button onClick={()=>setOpen(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"0.85rem 1.1rem",background:"none",border:"none",cursor:"pointer",textAlign:"left"}}>
         <div style={{display:"flex",alignItems:"center",gap:"0.6rem",flexWrap:"wrap"}}>
           <span style={{fontSize:"0.62rem",fontWeight:700,padding:"1px 7px",borderRadius:99,background:catColor+"22",color:catColor,border:`1px solid ${catColor}44`}}>{law.cat}</span>
@@ -1426,7 +1426,7 @@ function ExpandLeg({law}) {
               {label:"Immediate Impact", text:law.impact, color:GREEN},
               {label:"Actual Outcome", text:law.outcome, color:TEAL},
             ].map((x,i)=>(
-              <div key={i} style={{padding:"0.6rem 0.75rem",background:x.color+"12",borderRadius:6,borderLeft:`2px solid ${x.color}44`}}>
+              <div key={i} style={{padding:"0.6rem 0.75rem",background:x.color+"12",borderRadius:6,border:`1px solid ${x.color}40`}}>
                 <div style={{fontSize:"0.6rem",fontWeight:700,color:x.color,marginBottom:3}}>{x.label}</div>
                 <div style={{fontSize:"0.72rem",color:"var(--text-2)",lineHeight:1.5}}>{x.text}</div>
               </div>
@@ -1502,16 +1502,18 @@ export default function PoliticsEconomy() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -1519,12 +1521,15 @@ export default function PoliticsEconomy() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Landmark size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>POLITICS & ECONOMY</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                POLITICS &amp;{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Economy</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Understand how Washington and world events move markets. Track fiscal policy, Federal Reserve decisions, trade agreements, and geopolitical risks with their direct market implications.
@@ -1534,8 +1539,8 @@ export default function PoliticsEconomy() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1556,8 +1561,8 @@ export default function PoliticsEconomy() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -1573,12 +1578,12 @@ export default function PoliticsEconomy() {
       </div>
 
       {/* Tabs */}
-      <div style={{display:"flex",gap:"0.2rem",background:"var(--surface)",padding:"0.3rem",borderRadius:8,border:"1px solid var(--border-c)",overflowX:"auto"}}>
-        {TABS.map(t=>{
-          const active = tab===t.key;
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)" }}>
+        {TABS.map(t => {
+          const active = tab === t.key;
           return (
-            <button key={t.key} onClick={()=>setTab(t.key)} style={{display:"flex",alignItems:"center",gap:"0.35rem",padding:"0.4rem 0.75rem",borderRadius:6,border:"none",cursor:"pointer",background:active?GOLD:"none",color:active?"#07080a":"var(--text-3)",fontWeight:active?800:500,fontSize:"0.72rem",whiteSpace:"nowrap",flexShrink:0,transition:"all 0.15s"}}>
-              <t.icon size={12}/>{t.label}
+            <button key={t.key} onClick={() => setTab(t.key)} style={{ display: "flex", alignItems: "center", gap: "0.35rem", padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0, transition: "all 0.15s" }}>
+              <t.icon size={12} />{t.label}
             </button>
           );
         })}

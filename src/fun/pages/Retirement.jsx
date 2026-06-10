@@ -7,17 +7,25 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
-const BG    = '#F4F7FA';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 
 /* ── Shared ───────────────────────────────────────────────────────── */
 function SectionCard({ title, subtitle, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:16, padding:'1.5rem', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.03)', marginBottom:'1.25rem' }}>
       {(title||subtitle) && (
         <div style={{ marginBottom:'1.25rem' }}>
-          {title && <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
-          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{subtitle}</p>}
+          {title && <h3 style={{ fontFamily:DISP, fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
+          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:T2, lineHeight:1.65, fontFamily:UI }}>{subtitle}</p>}
         </div>
       )}
       {children}
@@ -29,7 +37,7 @@ function InfoBox({ children, color = TEAL }) {
   return (
     <div style={{ display:'flex', gap:10, padding:'0.75rem 0.875rem', background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:10, marginTop:'0.875rem' }}>
       <Info size={14} color={color} style={{ flexShrink:0, marginTop:2 }}/>
-      <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{children}</p>
+      <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{children}</p>
     </div>
   );
 }
@@ -37,15 +45,15 @@ function InfoBox({ children, color = TEAL }) {
 function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1000, hint, max }) {
   return (
     <div style={{ marginBottom:'1rem' }}>
-      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>{label}</label>}
+      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>{label}</label>}
       <div style={{ position:'relative' }}>
-        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
+        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
         <input type="number" value={value} min={min} max={max} step={step} onChange={e => onChange(Number(e.target.value))}
-          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600, background:'#fafafa', boxSizing:'border-box' }}
-          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor='#e5e7eb'}/>
-        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
+          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'1rem', fontFamily:UI, color:NAVY, fontWeight:600, background:RAISE, boxSizing:'border-box' }}
+          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor=B2}/>
+        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
       </div>
-      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:T3, fontFamily:UI }}>{hint}</p>}
     </div>
   );
 }
@@ -53,15 +61,15 @@ function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1000
 function ResultBox({ label, value, color = TEAL, size = 'md' }) {
   return (
     <div style={{ background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:12, padding: size==='lg'?'1.25rem':'0.875rem 1rem', textAlign:'center' }}>
-      <div style={{ fontFamily:"'Playfair Display',serif", fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
-      <div style={{ fontSize:'0.75rem', color:'#6b7280', marginTop:4, fontFamily:"'DM Sans',sans-serif", fontWeight:500 }}>{label}</div>
+      <div style={{ fontFamily:DISP, fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
+      <div style={{ fontSize:'0.75rem', color:T3, marginTop:4, fontFamily:UI, fontWeight:500 }}>{label}</div>
     </div>
   );
 }
 
-function Pill({ text, color = '#6b7280' }) {
+function Pill({ text, color = '#6b5540' }) {
   return (
-    <span style={{ display:'inline-block', padding:'2px 10px', borderRadius:20, background:`${color}15`, color, fontSize:'0.7rem', fontWeight:700, fontFamily:"'DM Sans',sans-serif", letterSpacing:'0.04em', textTransform:'uppercase' }}>{text}</span>
+    <span style={{ display:'inline-block', padding:'2px 10px', borderRadius:20, background:`${color}18`, border:`1px solid ${color}30`, color, fontSize:'0.7rem', fontWeight:700, fontFamily:UI, letterSpacing:'0.04em', textTransform:'uppercase' }}>{text}</span>
   );
 }
 
@@ -137,7 +145,7 @@ function AccountTypesLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Retirement accounts are the most powerful wealth-building tools available. They offer tax advantages — either on contributions now (Traditional) or withdrawals later (Roth) — that dramatically accelerate compounding.
       </p>
 
@@ -147,7 +155,7 @@ function AccountTypesLearn() {
           <button key={k} onClick={() => setActive(k)} style={{
             padding:'7px 14px', borderRadius:99, border:`1.5px solid ${active===k ? map[k].color : '#e5e7eb'}`,
             background: active===k ? map[k].color : '#fff', cursor:'pointer',
-            fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem',
+            fontFamily:UI, fontSize:'0.8125rem',
             fontWeight: active===k ? 700 : 500, color: active===k ? '#fff' : '#6b7280',
             transition:'all 0.15s', whiteSpace:'nowrap',
           }}>{labels[k]}</button>
@@ -157,30 +165,30 @@ function AccountTypesLearn() {
       {/* Account detail */}
       <div style={{ border:`1.5px solid ${acct.color}30`, borderRadius:14, padding:'1.25rem', marginBottom:'1.25rem' }}>
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
-          <span style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, color:NAVY, fontSize:'1.125rem' }}>{acct.name}</span>
+          <span style={{ fontFamily:DISP, fontWeight:700, color:NAVY, fontSize:'1.125rem' }}>{acct.name}</span>
           <Pill text={acct.badge} color={acct.color}/>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem', marginBottom:'1rem', fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem' }}>
-          <div style={{ background:'#f9fafb', borderRadius:9, padding:'0.625rem 0.75rem' }}>
-            <div style={{ color:'#9ca3af', fontWeight:600, marginBottom:2 }}>2026 Limit</div>
-            <div style={{ color:NAVY, fontWeight:700 }}>{acct.limit2026}</div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem', marginBottom:'1rem', fontFamily:UI, fontSize:'0.8125rem' }}>
+          <div style={{ background:RAISE, borderRadius:9, padding:'0.625rem 0.75rem' }}>
+            <div style={{ color:T3, fontWeight:600, marginBottom:2 }}>2026 Limit</div>
+            <div style={{ color:NAVY, fontWeight:700, fontFamily:UI }}>{acct.limit2026}</div>
           </div>
-          <div style={{ background:'#f9fafb', borderRadius:9, padding:'0.625rem 0.75rem' }}>
-            <div style={{ color:'#9ca3af', fontWeight:600, marginBottom:2 }}>Tax Treatment</div>
-            <div style={{ color:NAVY, fontWeight:700 }}>{acct.taxType}</div>
+          <div style={{ background:RAISE, borderRadius:9, padding:'0.625rem 0.75rem' }}>
+            <div style={{ color:T3, fontWeight:600, marginBottom:2 }}>Tax Treatment</div>
+            <div style={{ color:NAVY, fontWeight:700, fontFamily:UI }}>{acct.taxType}</div>
           </div>
         </div>
         {acct.match && (
-          <div style={{ display:'flex', gap:8, padding:'0.5rem 0.75rem', background:'#f0fdf4', border:'1px solid #bbf7d0', borderRadius:8, fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#374151', marginBottom:'0.875rem' }}>
+          <div style={{ display:'flex', gap:8, padding:'0.5rem 0.75rem', background:'rgba(74,124,89,0.09)', border:'1px solid rgba(74,124,89,0.25)', borderRadius:8, fontFamily:UI, fontSize:'0.8125rem', color:T2, marginBottom:'0.875rem' }}>
             <CheckCircle2 size={14} color='#22c55e' style={{ flexShrink:0, marginTop:1 }}/>
-            <strong style={{ color:'#15803d' }}>Employer match available — always contribute enough to get 100% of the match. It's an instant 50–100% return.</strong>
+            <strong style={{ color:'#4a7c59' }}>Employer match available — always contribute enough to get 100% of the match. It's an instant 50–100% return.</strong>
           </div>
         )}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem', fontSize:'0.8rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem', fontSize:'0.8rem', fontFamily:UI }}>
           <div>
             <div style={{ fontWeight:700, color:'#22c55e', marginBottom:4 }}>Pros</div>
             {acct.pros.map(p => (
-              <div key={p} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:4, color:'#374151' }}>
+              <div key={p} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:4, color:T2 }}>
                 <CheckCircle2 size={12} color='#22c55e' style={{ flexShrink:0, marginTop:2 }}/>{p}
               </div>
             ))}
@@ -188,13 +196,13 @@ function AccountTypesLearn() {
           <div>
             <div style={{ fontWeight:700, color:'#ef4444', marginBottom:4 }}>Cons</div>
             {acct.cons.map(c => (
-              <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:4, color:'#374151' }}>
+              <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:4, color:T2 }}>
                 <XCircle size={12} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>{c}
               </div>
             ))}
           </div>
         </div>
-        <div style={{ background:`${acct.color}0d`, border:`1px solid ${acct.color}20`, borderRadius:8, padding:'0.5rem 0.75rem', fontSize:'0.8rem', color:'#374151', fontFamily:"'DM Sans',sans-serif", marginTop:'0.875rem' }}>
+        <div style={{ background:`${acct.color}0d`, border:`1px solid ${acct.color}20`, borderRadius:8, padding:'0.5rem 0.75rem', fontSize:'0.8rem', color:T2, fontFamily:UI, marginTop:'0.875rem' }}>
           <strong style={{ color:acct.color }}>Best for: </strong>{acct.best}
         </div>
       </div>
@@ -206,11 +214,11 @@ function AccountTypesLearn() {
           { step:'3', label:'Max your 401(k) ($24,500)', color:'#8b5cf6', note:'After the Roth, go back and fill up your 401(k) to the annual limit.' },
           { step:'4', label:'Taxable brokerage account', color:'#f59e0b', note:'Once tax-advantaged accounts are maxed, invest in a regular brokerage. Still powerful with index funds.' },
         ].map(row => (
-          <div key={row.step} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ width:26, height:26, borderRadius:'50%', background:row.color, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:"'DM Sans',sans-serif" }}>{row.step}</div>
+          <div key={row.step} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ${B2}` }}>
+            <div style={{ width:26, height:26, borderRadius:'50%', background:row.color, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:UI }}>{row.step}</div>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{row.label}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{row.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{row.label}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{row.note}</div>
             </div>
           </div>
         ))}
@@ -231,19 +239,19 @@ function SocialSecurityLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Social Security is a guaranteed, inflation-adjusted income stream you'll receive for life. When you claim matters enormously — the difference between claiming at 62 vs 70 can exceed <strong>$200,000 in lifetime benefits</strong>.
       </p>
 
       <SectionCard title="When to Claim: The Age Decision">
         {ages.map(a => (
-          <div key={a.age} style={{ padding:'0.875rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={a.age} style={{ padding:'0.875rem 0', borderBottom:`1px solid ${B2}` }}>
             <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:5 }}>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.5rem', fontWeight:700, color:a.color }}>{a.age}</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.5rem', fontWeight:700, color:a.color }}>{a.age}</div>
               <Pill text={a.label} color={a.color}/>
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color:'#374151', lineHeight:1.65, marginBottom:4 }}>{a.benefit}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280', lineHeight:1.6 }}><strong style={{ color:NAVY }}>Choose this if:</strong> {a.when}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8375rem', color:T2, lineHeight:1.65, marginBottom:4 }}>{a.benefit}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3, lineHeight:1.6 }}><strong style={{ color:NAVY }}>Choose this if:</strong> {a.when}</div>
           </div>
         ))}
       </SectionCard>
@@ -257,9 +265,9 @@ function SocialSecurityLearn() {
           { label:'Earnings test (before FRA)', detail:'If you claim before FRA and continue working, benefits are temporarily reduced if earnings exceed $24,480 (2026). This goes away at FRA.' },
           { label:'Taxation of benefits', detail:'Up to 85% of SS benefits may be taxable if your combined income exceeds $34K (single) or $44K (married). Plan withdrawals from taxable accounts accordingly.' },
         ].map(f => (
-          <div key={f.label} style={{ padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{f.label}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65 }}>{f.detail}</div>
+          <div key={f.label} style={{ padding:'0.625rem 0', borderBottom:`1px solid ${B2}` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{f.label}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65 }}>{f.detail}</div>
           </div>
         ))}
         <InfoBox>Create a free account at ssa.gov/myaccount to see your actual earnings history and projected benefit estimates at ages 62, 67, and 70.</InfoBox>
@@ -274,16 +282,16 @@ function SocialSecurityLearn() {
 function WithdrawalLearn() {
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Knowing when and how to withdraw from retirement accounts — and in what order — is just as important as saving. Poor withdrawal sequencing can cost tens of thousands in unnecessary taxes.
       </p>
 
       <SectionCard title="Early Withdrawal (Before Age 59½)">
-        <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:10, padding:'0.875rem 1rem', marginBottom:'1rem', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', color:'#374151', display:'flex', gap:10 }}>
+        <div style={{ background:'rgba(192,57,43,0.09)', border:'1px solid rgba(192,57,43,0.25)', borderRadius:10, padding:'0.875rem 1rem', marginBottom:'1rem', fontFamily:UI, fontSize:'0.875rem', color:T2, display:'flex', gap:10 }}>
           <AlertCircle size={16} color='#ef4444' style={{ flexShrink:0, marginTop:1 }}/>
           <div>Withdrawing from a Traditional 401(k) or IRA before 59½ triggers a <strong style={{ color:'#ef4444' }}>10% penalty plus ordinary income tax</strong>. On a $50,000 withdrawal, you could lose $20,000+.</div>
         </div>
-        <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:8 }}>Exceptions to the 10% penalty:</div>
+        <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:8 }}>Exceptions to the 10% penalty:</div>
         {[
           'Death or permanent disability',
           'Substantially Equal Periodic Payments (SEPP / Rule 72(t))',
@@ -294,7 +302,7 @@ function WithdrawalLearn() {
           'Age 55 separation from service (401(k) only)',
           'Qualified domestic relations order (divorce)',
         ].map(e => (
-          <div key={e} style={{ display:'flex', gap:7, alignItems:'flex-start', marginBottom:5, fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#374151' }}>
+          <div key={e} style={{ display:'flex', gap:7, alignItems:'flex-start', marginBottom:5, fontFamily:UI, fontSize:'0.8125rem', color:T2 }}>
             <CheckCircle2 size={13} color={TEAL} style={{ flexShrink:0, marginTop:2 }}/>{e}
           </div>
         ))}
@@ -302,7 +310,7 @@ function WithdrawalLearn() {
       </SectionCard>
 
       <SectionCard title="Required Minimum Distributions (RMDs)">
-        <p style={{ margin:'0 0 0.875rem', fontSize:'0.8375rem', color:'#374151', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 0.875rem', fontSize:'0.8375rem', color:T2, lineHeight:1.65, fontFamily:UI }}>
           The IRS requires you to start withdrawing from Traditional IRAs and 401(k)s at age 73 (SECURE 2.0 Act). RMDs are calculated based on your account balance and IRS life expectancy tables.
         </p>
         {[
@@ -311,15 +319,15 @@ function WithdrawalLearn() {
           { label:'Penalty for missing', detail:'25% excise tax on the amount you should have withdrawn (reduced to 10% if corrected timely).' },
           { label:'Strategy', detail:'Consider Roth conversions in your 60s to reduce Traditional IRA balances and future RMD amounts before they start.' },
         ].map(r => (
-          <div key={r.label} style={{ padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.label}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65 }}>{r.detail}</div>
+          <div key={r.label} style={{ padding:'0.625rem 0', borderBottom:`1px solid ${B2}` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.label}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65 }}>{r.detail}</div>
           </div>
         ))}
       </SectionCard>
 
       <SectionCard title="Withdrawal Order Strategy (Tax Efficiency)">
-        <p style={{ margin:'0 0 0.875rem', fontSize:'0.8375rem', color:'#374151', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 0.875rem', fontSize:'0.8375rem', color:T2, lineHeight:1.65, fontFamily:UI }}>
           The sequence you withdraw from accounts matters for taxes. A common approach:
         </p>
         {[
@@ -328,11 +336,11 @@ function WithdrawalLearn() {
           { step:'3', label:'Traditional IRA / 401(k)', note:'Taxed as ordinary income. Withdraw enough to fill lower tax brackets efficiently.', color:TEAL },
           { step:'4', label:'Roth IRA last', note:'Let tax-free money grow as long as possible. No RMDs. Ideal for legacy or late-retirement withdrawals.', color:'#22c55e' },
         ].map(row => (
-          <div key={row.step} style={{ display:'flex', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6', alignItems:'flex-start' }}>
-            <div style={{ width:26, height:26, borderRadius:'50%', background:row.color, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:"'DM Sans',sans-serif" }}>{row.step}</div>
+          <div key={row.step} style={{ display:'flex', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ${B2}`, alignItems:'flex-start' }}>
+            <div style={{ width:26, height:26, borderRadius:'50%', background:row.color, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:UI }}>{row.step}</div>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{row.label}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{row.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{row.label}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{row.note}</div>
             </div>
           </div>
         ))}
@@ -348,14 +356,14 @@ function WithdrawalLearn() {
 function IncomeLearn() {
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Accumulating a retirement nest egg is only half the challenge. The other half is making it last 20–30+ years. That requires understanding safe withdrawal rates and how to structure retirement income.
       </p>
 
       <SectionCard title="The 4% Rule">
-        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1rem', fontFamily:UI }}>
           <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:6 }}>What it says</div>
-          <div style={{ fontSize:'0.8375rem', color:'#374151', lineHeight:1.65 }}>
+          <div style={{ fontSize:'0.8375rem', color:T2, lineHeight:1.65 }}>
             If you withdraw 4% of your portfolio in year one, then adjust for inflation each year after, your portfolio has historically lasted 30 years with a high probability of success — even through major market downturns.
           </div>
         </div>
@@ -369,9 +377,9 @@ function IncomeLearn() {
             { spend:'$150,000/yr', need:'$3,750,000', color:'#ef4444' },
           ].map(r => (
             <div key={r.spend} style={{ background:`${r.color}0d`, border:`1px solid ${r.color}20`, borderRadius:10, padding:'0.625rem 0.75rem', textAlign:'center' }}>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.75rem', color:'#6b7280', marginBottom:2 }}>Spend {r.spend}</div>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:700, color:r.color }}>{r.need}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.7rem', color:'#9ca3af' }}>needed</div>
+              <div style={{ fontFamily:UI, fontSize:'0.75rem', color:T3, marginBottom:2 }}>Spend {r.spend}</div>
+              <div style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:700, color:r.color }}>{r.need}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.7rem', color:T3 }}>needed</div>
             </div>
           ))}
         </div>
@@ -386,13 +394,13 @@ function IncomeLearn() {
           { source:'Roth IRA', type:'Tax-free', color:'#8b5cf6', note:'Tax-free withdrawals. No RMDs. Best used last to maximize tax-free compounding or as legacy assets.' },
           { source:'Taxable Brokerage', type:'Capital gains', color:'#f59e0b', note:'Favorable long-term capital gains rates. Flexible — no restrictions on withdrawals. Good bridge account.' },
           { source:'Rental Income', type:'Semi-passive', color:'#ec4899', note:'Inflation-hedged income if managed well. Requires active management or property manager costs.' },
-          { source:'Part-time work', type:'Earned', color:'#6b7280', note:'Even $10–20K/year from part-time work dramatically reduces portfolio withdrawal needs in early retirement.' },
+          { source:'Part-time work', type:'Earned', color:T3, note:'Even $10–20K/year from part-time work dramatically reduces portfolio withdrawal needs in early retirement.' },
         ].map(r => (
-          <div key={r.source} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={r.source} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ${B2}` }}>
             <Pill text={r.type} color={r.color}/>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.source}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{r.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.source}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{r.note}</div>
             </div>
           </div>
         ))}
@@ -452,24 +460,24 @@ function RetirementCalc() {
       </div>
 
       {onTrack ? (
-        <div style={{ background:'#f0fdf4', border:'1px solid #bbf7d0', borderRadius:12, padding:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ background:'rgba(74,124,89,0.09)', border:'1px solid rgba(74,124,89,0.25)', borderRadius:12, padding:'1rem', fontFamily:UI }}>
           <div style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
             <CheckCircle2 size={16} color='#22c55e' style={{ flexShrink:0, marginTop:2 }}/>
             <div>
-              <div style={{ fontSize:'0.875rem', fontWeight:700, color:'#15803d', marginBottom:3 }}>You're on track!</div>
-              <div style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.65 }}>
+              <div style={{ fontSize:'0.875rem', fontWeight:700, color:'#4a7c59', marginBottom:3 }}>You're on track!</div>
+              <div style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.65 }}>
                 Your projected portfolio of <strong>{fmt(total)}</strong> exceeds the <strong>{fmt(needed)}</strong> needed to support {fmt(neededIncome)}/year in retirement income (after Social Security). Keep it up.
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:12, padding:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ background:'rgba(192,57,43,0.09)', border:'1px solid rgba(192,57,43,0.25)', borderRadius:12, padding:'1rem', fontFamily:UI }}>
           <div style={{ fontSize:'0.875rem', fontWeight:700, color:'#ef4444', marginBottom:4 }}>Savings Gap: {fmt(gap)}</div>
-          <div style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.65, marginBottom:8 }}>
+          <div style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.65, marginBottom:8 }}>
             To close this gap, you'd need to increase monthly contributions by approximately <strong style={{ color:'#ef4444' }}>{fmt(monthlyNeeded)}/month</strong> — or adjust your retirement age, income goal, or return assumption.
           </div>
-          <div style={{ fontSize:'0.8rem', color:'#6b7280' }}>Other options: delay retirement by a few years, reduce desired income, work part-time in early retirement, or maximize tax-advantaged accounts.</div>
+          <div style={{ fontSize:'0.8rem', color:T3 }}>Other options: delay retirement by a few years, reduce desired income, work part-time in early retirement, or maximize tax-advantaged accounts.</div>
         </div>
       )}
 
@@ -539,10 +547,10 @@ function SSBreakEvenCalc() {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1.25rem' }}>
         <NumInput label="Your FRA Monthly Benefit ($)" value={fraMonthly} onChange={setFraMonthly} step={100} hint="Find this at ssa.gov/myaccount"/>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Claim at Age</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Claim at Age</label>
           <input type="range" min={62} max={70} step={1} value={claimAge} onChange={e => setClaimAge(Number(e.target.value))}
             style={{ width:'100%', accentColor:TEAL }}/>
-          <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginTop:4 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.75rem', color:T3, fontFamily:UI, marginTop:4 }}>
             <span>62</span><span style={{ fontWeight:700, color:TEAL }}>Age {claimAge}</span><span>70</span>
           </div>
         </div>
@@ -555,9 +563,9 @@ function SSBreakEvenCalc() {
       </div>
 
       {breakEvenAge && (
-        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem', fontFamily:"'DM Sans',sans-serif", marginBottom:'1rem' }}>
+        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem', fontFamily:UI, marginBottom:'1rem' }}>
           <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:4 }}>Break-Even Age: ~{Math.round(breakEvenAge)}</div>
-          <div style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.65 }}>
+          <div style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.65 }}>
             {claimAge < FRA
               ? `If you live past age ${Math.round(breakEvenAge)}, you would have received more lifetime income by waiting until FRA.`
               : `If you live past age ${Math.round(breakEvenAge)}, your larger benefit from waiting pays off more than claiming at FRA.`
@@ -611,10 +619,10 @@ function ResourcesTab() {
         <SectionCard key={section.category} title={section.category}>
           {section.items.map(item => (
             <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer"
-              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6', textDecoration:'none' }}>
+              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ${B2}`, textDecoration:'none' }}>
               <div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.55 }}>{item.desc}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.55 }}>{item.desc}</div>
               </div>
               <ExternalLink size={14} color='#d1d5db' style={{ flexShrink:0, marginTop:3 }}/>
             </a>
@@ -630,7 +638,7 @@ function ResourcesTab() {
           'You need Roth conversion planning to reduce future RMDs and taxes',
           'You\'re self-employed and want to maximize retirement account options',
         ].map(r => (
-          <div key={r} style={{ display:'flex', gap:8, alignItems:'flex-start', padding:'0.375rem 0', fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color:'#374151' }}>
+          <div key={r} style={{ display:'flex', gap:8, alignItems:'flex-start', padding:'0.375rem 0', fontFamily:UI, fontSize:'0.8375rem', color:T2 }}>
             <ArrowRight size={13} color={TEAL} style={{ flexShrink:0, marginTop:3 }}/>{r}
           </div>
         ))}
@@ -679,22 +687,22 @@ export default function Retirement() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
       {/* Header */}
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 0' }}>
-        <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
-          <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
-          <span style={{ fontFamily:"'DM Sans',sans-serif" }}>Retirement Planning</span>
+      <div style={{ background:SURF, borderBottom:`1px solid ${B1}`, padding:'2rem 2.5rem 0' }}>
+        <div style={{ fontSize:'0.75rem', color:T3, marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
+          <ChevronRight size={12} color={B2}/>
+          <span style={{ fontFamily:UI, color:T3 }}>Retirement Planning</span>
         </div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
+        <h1 style={{ fontFamily:DISP, fontSize:'2rem', fontWeight:700, color:NAVY, margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Retirement Planning
         </h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:T2, lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Retirement isn't an age — it's a number. Learn which accounts to use, when to claim Social Security, how to withdraw efficiently, and how to make your money last.
         </p>
-        <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
+        <div style={{ display:'flex', gap:0, borderBottom:`1px solid ${B1}` }}>
           {MAIN_TABS.map(t => {
             const Icon = t.icon;
             const active = tab === t.id;
@@ -702,8 +710,8 @@ export default function Retirement() {
               <button key={t.id} onClick={() => setTab(t.id)} style={{
                 display:'flex', alignItems:'center', gap:7, padding:'0.75rem 1.25rem',
                 background:'none', border:'none', borderBottom:`2px solid ${active?TEAL:'transparent'}`,
-                cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem',
-                fontWeight:active?700:500, color:active?TEAL:'rgba(255,255,255,0.45)',
+                cursor:'pointer', fontFamily:UI, fontSize:'0.875rem',
+                fontWeight:active?700:500, color:active?TEAL:T3,
                 marginBottom:-1, transition:'color 0.15s', whiteSpace:'nowrap',
               }}><Icon size={14}/>{t.label}</button>
             );
@@ -722,10 +730,10 @@ export default function Retirement() {
                 return (
                   <button key={t.id} onClick={() => setLearnTab(t.id)} style={{
                     display:'flex', alignItems:'center', gap:6, padding:'7px 14px',
-                    borderRadius:99, border:`1.5px solid ${active ? TEAL : '#e5e7eb'}`,
-                    background: active ? TEAL : '#fff', cursor:'pointer',
-                    fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem',
-                    fontWeight: active ? 700 : 500, color: active ? '#fff' : '#6b7280',
+                    borderRadius:99, border:`1px solid ${active ? TEAL : B2}`,
+                    background: active ? TEAL : RAISE, cursor:'pointer',
+                    fontFamily:UI, fontSize:'0.8125rem',
+                    fontWeight: active ? 700 : 500, color: active ? '#1a1410' : T3,
                     transition:'all 0.15s', whiteSpace:'nowrap',
                   }}>
                     <Icon size={13}/>{t.label}

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Header } from '../../components/shared/Header'
 import { useApp } from '../../context/AppContext'
 import { fmt, categoryIcon } from '../../data/demoData'
+import { Lightbulb, Leaf } from 'lucide-react'
 
 const CATEGORIES = ['family', 'career', 'financial', 'health', 'education', 'travel']
 
@@ -62,7 +63,7 @@ export default function LifeEvents() {
                   >
                     {CATEGORIES.map(c => (
                       <option key={c} value={c} style={{ textTransform: 'capitalize' }}>
-                        {categoryIcon[c]} {c.charAt(0).toUpperCase() + c.slice(1)}
+                        {c.charAt(0).toUpperCase() + c.slice(1)}
                       </option>
                     ))}
                   </select>
@@ -114,7 +115,7 @@ export default function LifeEvents() {
 
         {/* Info Banner */}
         <div style={styles.infoBanner}>
-          <span style={{ fontSize: 18 }}>💡</span>
+          <Lightbulb size={18} color="var(--gold)" />
           <div>
             <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 2 }}>
               Why log life events?
@@ -139,12 +140,12 @@ export default function LifeEvents() {
                 {/* Dot */}
                 <div style={styles.timelineDotWrap}>
                   <div style={{ ...styles.timelineDot, borderColor: CAT_COLORS[ev.category] || 'var(--border-light)' }}>
-                    <span style={{ fontSize: 14 }}>{categoryIcon[ev.category] || '📌'}</span>
+                    <span style={{ fontSize: '0.5rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text-tertiary)' }}>{categoryIcon[ev.category] || 'EVT'}</span>
                   </div>
                 </div>
 
                 {/* Card */}
-                <div className="card" style={{ ...styles.eventCard, borderLeft: `3px solid ${CAT_COLORS[ev.category] || 'var(--border)'}` }}>
+                <div className="card" style={{ ...styles.eventCard, border: `1px solid ${(CAT_COLORS[ev.category] || 'var(--gold)')}38`, borderTop: `2px solid ${CAT_COLORS[ev.category] || 'var(--gold)'}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{ev.title}</div>
@@ -185,7 +186,7 @@ export default function LifeEvents() {
 
             {events.length === 0 && (
               <div className="empty-state">
-                <span style={{ fontSize: 40 }}>🌱</span>
+                <Leaf size={40} color="var(--text-tertiary)" />
                 <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)' }}>No life events logged yet</div>
                 <div style={{ fontSize: 12, color: 'var(--text-tertiary)', maxWidth: 320, textAlign: 'center' }}>
                   Life events help your advisor give you proactive, relevant guidance. Log your first event to get started.

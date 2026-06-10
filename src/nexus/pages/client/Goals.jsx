@@ -2,14 +2,15 @@ import React from 'react'
 import { Header } from '../../components/shared/Header'
 import { useApp } from '../../context/AppContext'
 import { fmt, goalCategoryColor } from '../../data/demoData'
+import { Umbrella, Home, GraduationCap, TrendingUp, DollarSign, Landmark, Target } from 'lucide-react'
 
 const CATEGORY_ICONS = {
-  retirement: '🏖',
-  'real-estate': '🏡',
-  education: '🎓',
-  financial: '📈',
-  income: '💵',
-  estate: '🏛',
+  retirement: Umbrella,
+  'real-estate': Home,
+  education: GraduationCap,
+  financial: TrendingUp,
+  income: DollarSign,
+  estate: Landmark,
 }
 
 const CATEGORY_LABELS = {
@@ -91,11 +92,11 @@ export default function Goals() {
             const color = goalCategoryColor[goal.category] || 'var(--gold)'
 
             return (
-              <div key={goal.id} className="card" style={{ borderLeft: `3px solid ${color}` }}>
+              <div key={goal.id} className="card" style={{ border: `1px solid ${color}38`, background: `${color}06`, borderTop: `2px solid ${color}` }}>
                 <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
                   {/* Icon + Label */}
                   <div style={{ ...styles.goalIcon, background: color + '18', borderColor: color + '40' }}>
-                    <span style={{ fontSize: 24 }}>{CATEGORY_ICONS[goal.category] || '🎯'}</span>
+                    {(() => { const GI = CATEGORY_ICONS[goal.category] || Target; return <GI size={22} color={color} />; })()}
                   </div>
 
                   <div style={{ flex: 1 }}>
@@ -177,7 +178,7 @@ export default function Goals() {
 
           {goals.length === 0 && (
             <div className="empty-state">
-              <span style={{ fontSize: 40 }}>🎯</span>
+              <Target size={40} color="var(--gold)" />
               <div>No goals set up yet. Contact your advisor to define your financial goals.</div>
             </div>
           )}

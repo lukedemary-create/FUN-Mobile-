@@ -246,37 +246,52 @@ animated on mount
 
 ## Design Skills
 
-Three skills are installed in this project:
+Skills installed in this project:
 - Emil Kowalski motion skill
 - Impeccable (/polish command)
 - Taste skill
+- julianoczkowski designer-skills (brief-to-tasks, design-brief,
+  design-flow, design-review, design-tokens, frontend-design,
+  grill-me, information-architecture)
 
 Rules for using them:
 
+DESIGNER-FIRST WORKFLOW:
+Apply the julianoczkowski designer-skills workflow to every
+section before writing any code. Think like a designer first,
+engineer second. Plan layout, hierarchy, spacing, and
+component structure as a designer would before touching code.
+
 MOTION & ANIMATIONS:
-Only apply the Emil Kowalski motion skill
-when Luke explicitly says to use motion
-or animations in a prompt. Never add
-animations or motion effects unless
-directly instructed. No auto-transitions,
-no hover animations, no scroll effects
+Only apply the Emil Kowalski motion skill when Luke explicitly
+says to use motion or animations in a prompt. Never add
+animations or motion effects unless directly instructed.
+No auto-transitions, no hover animations, no scroll effects
 unless asked for.
 
 POLISH:
-Run /polish from Impeccable before
-finishing every component — always.
-This is mandatory on every build.
+Run impeccable /polish before finishing every single component.
+This is mandatory on every build — no exceptions.
 
 TASTE:
-Apply Taste skill design standards to
-every component always — no generic AI
-aesthetics, no boring gradients, no
-cookie cutter layouts ever.
+Apply Taste skill design standards to every component always —
+no generic AI aesthetics, no boring gradients, no cookie-cutter
+layouts ever.
+
+VISUAL QUALITY BENCHMARK:
+Stripe.com is the visual quality benchmark for Planora.
+Not to copy Stripe — to match that level of precision and
+intentionality. Planora is a financial platform like Stripe —
+institutional, precise, trusted. Every component must meet or
+exceed that standard of craft: spacing, typography, hierarchy,
+and component quality must be at Stripe-level or better.
 
 SUMMARY:
-- Motion → only when told
-- Polish → always
+- Designer workflow → always, before writing code
+- Motion → only when explicitly told by Luke
+- Polish → always, before finishing every component
 - Taste → always
+- Quality bar → Stripe-level precision and intentionality
 
 ## Absolute Rules — Never Break These
 - Never deviate from the color tokens above

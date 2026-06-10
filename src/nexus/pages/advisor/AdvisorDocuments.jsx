@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Header } from '../../components/shared/Header'
 import { clients, fmt } from '../../data/demoData'
+import { Folder } from 'lucide-react'
 
 const ALL_DOCS = clients.flatMap(c =>
   (c.documents || []).map(d => ({ ...d, clientName: c.name, clientId: c.id, clientInitials: c.initials }))
@@ -121,7 +122,7 @@ export default function AdvisorDocuments() {
           ))}
           {filtered.length === 0 && (
             <div className="empty-state">
-              <span style={{ fontSize: 32 }}>📁</span>
+              <Folder size={32} color="var(--text-tertiary)" />
               <div>No documents match your filters.</div>
             </div>
           )}

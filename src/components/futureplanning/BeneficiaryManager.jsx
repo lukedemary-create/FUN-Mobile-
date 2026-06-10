@@ -139,7 +139,7 @@ export default function BeneficiaryManager({ beneficiaries, onUpdate, onNext, on
           {totalPercentage !== 100 && (
             <div className="mb-4 p-3 rounded-lg bg-[#f59e0b]/10 border border-[#f59e0b]/30">
               <p className="text-xs text-[#f59e0b]">
-                ⚠️ Total allocation should equal 100%. Currently: {totalPercentage}%
+                Total allocation should equal 100%. Currently: {totalPercentage}%
               </p>
             </div>
           )}

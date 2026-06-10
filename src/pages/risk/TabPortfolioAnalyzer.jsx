@@ -487,7 +487,7 @@ export default function TabPortfolioAnalyzer() {
           display: "flex", alignItems: "center", gap: "0.5rem",
           padding: "0.625rem 1.5rem", borderRadius: 7, cursor: status?.running ? "not-allowed" : "pointer",
           border: "none", fontWeight: 700, fontSize: "0.8125rem", letterSpacing: "0.02em",
-          background: status?.running ? "rgba(201,168,76,0.3)" : GOLD,
+          background: status?.running ? "rgba(201,169,110,0.3)" : GOLD,
           color: status?.running ? "rgba(255,255,255,0.5)" : "#07080a",
           transition: "all 0.15s",
         }}
@@ -534,7 +534,7 @@ export default function TabPortfolioAnalyzer() {
                 style={{
                   padding: "0.4375rem 0.875rem", borderRadius: 6, border: "none", cursor: "pointer",
                   fontSize: "0.6875rem", fontWeight: 600, whiteSpace: "nowrap",
-                  background: view === t.key ? "rgba(201,168,76,0.12)" : "transparent",
+                  background: view === t.key ? "rgba(201,169,110,0.12)" : "transparent",
                   color: view === t.key ? GOLD : "var(--text-3)",
                   borderBottom: view === t.key ? `2px solid ${GOLD}` : "2px solid transparent",
                   transition: "all 0.15s",
@@ -795,7 +795,7 @@ function GrowthChart({ results }) {
       </div>
       <ResponsiveContainer width="100%" height={340}>
         <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
           <XAxis
             dataKey="month"
             tickFormatter={v => v.slice(0, 7)}
@@ -834,7 +834,7 @@ function CompareView({ results }) {
         <td style={{ padding: "8px 12px", fontSize: "0.6875rem", color: "var(--text-3)", borderBottom: "1px solid var(--border-c)" }}>{label}</td>
         <td style={{
           padding: "8px 12px", textAlign: "center", borderBottom: "1px solid var(--border-c)",
-          background: winner === "A" ? "rgba(201,168,76,0.07)" : "transparent",
+          background: winner === "A" ? "rgba(201,169,110,0.07)" : "transparent",
         }}>
           <PctCell v={av} bold={winner === "A"} />
           {winner === "A" && <span style={{ fontSize: "0.5rem", marginLeft: 4, color: GOLD }}>▲</span>}
@@ -947,7 +947,7 @@ function CompareView({ results }) {
         </div>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={barData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }} barCategoryGap="20%">
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
             <XAxis dataKey="name" tick={{ fontSize: 9, fill: "var(--text-3)" }} />
             <YAxis tick={{ fontSize: 10, fill: "var(--text-3)" }} tickFormatter={v => `${v.toFixed(0)}%`} />
             <Tooltip formatter={(v) => v !== null ? `${v >= 0 ? "+" : ""}${v?.toFixed(1)}%` : "—"}

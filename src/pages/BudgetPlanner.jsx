@@ -8,6 +8,8 @@ import {
   Lightbulb, TrendingUp, Plus, Trash2, Edit3, Check, X, ChevronDown,
   ChevronUp, Download, AlertTriangle, CheckCircle, Info, Zap, ArrowUpRight,
   ArrowDownRight, Calendar, RefreshCw, Flag, Wallet,
+  Home, Car, Plane, GraduationCap, Heart, Umbrella, Shield,
+  Music, Smartphone, Dumbbell, Globe, Anchor,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -690,7 +692,12 @@ function TabAccounts({ accounts, setAccounts, nwHistory, setNwHistory }) {
 }
 
 /* ─── Goals Tab ──────────────────────────────────────────────────── */
-const GOAL_ICONS = ["🎯", "🏠", "🚗", "✈️", "🎓", "💍", "🏖️", "💰", "🏥", "🛡️", "🎸", "📱", "🏋️", "🌎", "🚢"];
+const GOAL_ICONS = ["Target", "Home", "Car", "Plane", "GraduationCap", "Heart", "Umbrella", "DollarSign", "Shield", "Wallet", "Music", "Smartphone", "Dumbbell", "Globe", "Anchor"];
+const GOAL_ICON_MAP = { Target, Home, Car, Plane, GraduationCap, Heart, Umbrella, DollarSign, Shield, Wallet, Music, Smartphone, Dumbbell, Globe, Anchor };
+function GoalIcon({ name, size = 18, color = "var(--text-2)" }) {
+  const Icon = GOAL_ICON_MAP[name] || Target;
+  return <Icon size={size} color={color} />;
+}
 
 function GoalForm({ value, onChange, onSave, onCancel, saveLabel = "Save Goal" }) {
   return (
@@ -698,8 +705,8 @@ function GoalForm({ value, onChange, onSave, onCancel, saveLabel = "Save Goal" }
       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
         {GOAL_ICONS.map(ic => (
           <button key={ic} onClick={() => onChange({ ...value, icon: ic })}
-            style={{ fontSize: "1.25rem", background: value.icon === ic ? GOLD + "33" : "none", border: value.icon === ic ? `1px solid ${GOLD}` : "1px solid transparent", borderRadius: 6, cursor: "pointer", padding: "2px 6px" }}>
-            {ic}
+            style={{ background: value.icon === ic ? GOLD + "33" : "none", border: value.icon === ic ? `1px solid ${GOLD}` : "1px solid transparent", borderRadius: 6, cursor: "pointer", padding: "5px 7px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <GoalIcon name={ic} size={16} color={value.icon === ic ? GOLD : "var(--text-3)"} />
           </button>
         ))}
       </div>
@@ -765,7 +772,7 @@ function GoalCard({ g, monthsTo, addContribution, editGoal, remove }) {
       <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
         <CircularProgress pct={p} size={72} color={done ? GREEN : GOLD} label={`${p}%`} />
         <div>
-          <div style={{ fontSize: "1.25rem", marginBottom: "0.25rem" }}>{g.icon}</div>
+          <div style={{ marginBottom: "0.25rem" }}><GoalIcon name={g.icon} size={20} color={done ? GREEN : GOLD} /></div>
           <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-1)" }}>{g.name}</div>
           <div style={{ fontSize: "0.75rem", color: "var(--text-3)" }}>{fc(g.saved)} of {fc(g.target)}</div>
           {months && <div style={{ fontSize: "0.7rem", color: GOLD, marginTop: "0.2rem" }}>{months} months to go</div>}
@@ -791,14 +798,14 @@ function GoalCard({ g, monthsTo, addContribution, editGoal, remove }) {
 
 function TabGoals({ goals, setGoals }) {
   const [adding, setAdding] = useState(false);
-  const [form, setForm] = useState({ name: "", target: "", saved: "", monthly: "", deadline: "", icon: "🎯" });
+  const [form, setForm] = useState({ name: "", target: "", saved: "", monthly: "", deadline: "", icon: "Target" });
 
   const add = () => {
     if (!form.name || !form.target) return;
     const g = { ...form, id: `g${Date.now()}`, target: Number(form.target), saved: Number(form.saved || 0), monthly: Number(form.monthly || 0) };
     setGoals(prev => [...prev, g]);
     if (pct(g.saved, g.target) >= 100) fireworks();
-    setForm({ name: "", target: "", saved: "", monthly: "", deadline: "", icon: "🎯" });
+    setForm({ name: "", target: "", saved: "", monthly: "", deadline: "", icon: "Target" });
     setAdding(false);
   };
 
@@ -1023,7 +1030,7 @@ function TabInsights({ income, extraIncome, categories, transactions, bills, goa
         <div className="t-section-title" style={{ marginBottom: "1rem" }}>Financial Health Rules</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "0.75rem" }}>
           {rulesData.map(r => (
-            <div key={r.rule} style={{ padding: "0.75rem 1rem", background: "var(--elevated)", borderRadius: 8, borderLeft: `3px solid ${r.status === "green" ? GREEN : r.status === "yellow" ? GOLD : RED}` }}>
+            <div key={r.rule} style={{ padding: "0.75rem 1rem", background: r.status === "green" ? `${GREEN}12` : r.status === "yellow" ? `${GOLD}12` : `${RED}12`, borderRadius: 8, border: `1px solid ${r.status === "green" ? GREEN : r.status === "yellow" ? GOLD : RED}32` }}>
               <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-3)", marginBottom: "0.25rem" }}>{r.rule}</div>
               <div style={{ fontSize: "1rem", fontWeight: 900, color: r.status === "green" ? GREEN : r.status === "yellow" ? GOLD : RED, fontFamily: "var(--font-mono)" }}>{r.actual}</div>
               <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginTop: "0.2rem" }}>{r.desc}</div>
@@ -1038,7 +1045,7 @@ function TabInsights({ income, extraIncome, categories, transactions, bills, goa
         {insights.length === 0 ? <EmptyState icon={Lightbulb} message="Add more data to generate insights" /> : (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
             {insights.map((ins, i) => (
-              <div key={i} style={{ display: "flex", gap: "0.75rem", padding: "0.75rem 1rem", background: "var(--elevated)", borderRadius: 6, borderLeft: `3px solid ${ins.type === "success" ? GREEN : ins.type === "warning" ? GOLD : BLUE}` }}>
+              <div key={i} style={{ display: "flex", gap: "0.75rem", padding: "0.75rem 1rem", background: ins.type === "success" ? `${GREEN}10` : ins.type === "warning" ? `${GOLD}10` : `${BLUE}10`, borderRadius: 8, border: `1px solid ${ins.type === "success" ? GREEN : ins.type === "warning" ? GOLD : BLUE}28` }}>
                 {ins.type === "success" ? <CheckCircle size={16} color={GREEN} style={{ flexShrink: 0, marginTop: 1 }} /> : ins.type === "warning" ? <AlertTriangle size={16} color={GOLD} style={{ flexShrink: 0, marginTop: 1 }} /> : <Info size={16} color={BLUE} style={{ flexShrink: 0, marginTop: 1 }} />}
                 <span style={{ fontSize: "0.8rem", color: "var(--text-2)", lineHeight: 1.5 }}>{ins.text}</span>
               </div>
@@ -1257,7 +1264,7 @@ function TabFunding({ accounts, goals, allocations, setAllocations }) {
               <div style={{ fontSize: "0.65rem", color: "var(--text-3)", marginBottom: 4 }}>Toward Goal</div>
               <select className="t-input" value={form.goalId} onChange={e => setForm(p => ({ ...p, goalId: e.target.value }))} style={{ width: "100%", fontSize: "0.8rem" }}>
                 <option value="">Select goal…</option>
-                {goals.map(g => <option key={g.id} value={g.id}>{g.icon} {g.name} (target {fc(g.target)})</option>)}
+                {goals.map(g => <option key={g.id} value={g.id}>{g.name} (target {fc(g.target)})</option>)}
               </select>
             </div>
             <div>
@@ -1304,7 +1311,7 @@ function TabFunding({ accounts, goals, allocations, setAllocations }) {
             {goalFunding.map(g => (
               <div key={g.id} className="t-card" style={{ padding: "1rem 1.25rem" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.6rem" }}>
-                  <span style={{ fontSize: "1.1rem" }}>{g.icon}</span>
+                  <GoalIcon name={g.icon} size={18} color={GOLD} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-1)" }}>{g.name}</div>
                     <div style={{ fontSize: "0.7rem", color: "var(--text-3)" }}>Target: {fc(g.target)}</div>
@@ -1352,7 +1359,7 @@ function TabFunding({ accounts, goals, allocations, setAllocations }) {
                 ...al,
                 dollarAmt: allocAmt(al),
                 goalName: goals.find(g => g.id === al.goalId)?.name || "Unknown",
-                goalIcon: goals.find(g => g.id === al.goalId)?.icon || "🎯",
+                goalIcon: goals.find(g => g.id === al.goalId)?.icon || "Target",
               }));
               return (
                 <div key={a.id} className="t-card" style={{ padding: "1rem 1.25rem" }}>
@@ -1385,7 +1392,7 @@ function TabFunding({ accounts, goals, allocations, setAllocations }) {
                       {goalsForAccount.map((gf, i) => (
                         <div key={gf.id} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.72rem" }}>
                           <div style={{ width: 6, height: 6, borderRadius: "50%", background: PIE_COLORS[i % PIE_COLORS.length], flexShrink: 0 }} />
-                          <span style={{ color: "var(--text-2)" }}>{gf.goalIcon} {gf.goalName}</span>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", color: "var(--text-2)" }}><GoalIcon name={gf.goalIcon} size={12} color="var(--text-2)" /> {gf.goalName}</span>
                           <span style={{ marginLeft: "auto", color: GOLD, fontWeight: 700 }}>{gf.pct}%</span>
                           <span style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>{fc(gf.dollarAmt)}</span>
                         </div>
@@ -1750,15 +1757,17 @@ export default function BudgetPlanner() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -1766,12 +1775,15 @@ export default function BudgetPlanner() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Wallet size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>BUDGET PLANNER</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                BUDGET{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Planner</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Build a budget that actually works. Categorize your income and expenses, set savings goals, and visualize your monthly cash flow to take control of your finances.
@@ -1781,8 +1793,8 @@ export default function BudgetPlanner() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1803,8 +1815,8 @@ export default function BudgetPlanner() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -1820,11 +1832,11 @@ export default function BudgetPlanner() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 8, border: "1px solid var(--border-c)", overflowX: "auto" }}>
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)" }}>
         {TABS.map(t => {
           const active = activeTab === t.key;
           return (
-            <button key={t.key} onClick={() => setActiveTab(t.key)} style={{ display: "flex", alignItems: "center", gap: "0.4rem", padding: "0.45rem 0.85rem", borderRadius: 6, border: "none", cursor: "pointer", background: active ? GOLD : "none", color: active ? "#07080a" : "var(--text-3)", fontWeight: active ? 800 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", transition: "all 0.15s ease", flexShrink: 0 }}>
+            <button key={t.key} onClick={() => setActiveTab(t.key)} style={{ display: "flex", alignItems: "center", gap: "0.4rem", padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", transition: "all 0.15s ease", flexShrink: 0 }}>
               <t.icon size={13} />
               {t.label}
             </button>

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { ChevronDown, ChevronUp, Filter } from "lucide-react";
+import { ChevronDown, ChevronUp, Filter, Lightbulb } from "lucide-react";
 import { PORTFOLIO_MODELS, GOLD, GREEN, RED, YELLOW, riskColor, riskLabel, getTickerExpenseRatio } from "./riskData";
 import { RiskContext } from "../RiskAnalysis";
 
@@ -28,7 +28,7 @@ function RiskBar({ level }) {
       {Array.from({length:10}).map((_,i) => (
         <div key={i} style={{
           height:5,flex:1,borderRadius:1,
-          background: i < level ? riskColor(level) : "rgba(255,255,255,0.06)",
+          background: i < level ? riskColor(level) : "var(--border-c)",
         }}/>
       ))}
       <span style={{ fontSize:"0.5625rem",color:riskColor(level),fontWeight:700,marginLeft:4,whiteSpace:"nowrap" }}>
@@ -56,9 +56,9 @@ function ModelCard({ model, expanded, onToggle, matchScore }) {
   return (
     <div style={{
       background:"var(--surface)",
-      border: expanded ? "1px solid rgba(201,168,76,0.35)" : "1px solid var(--border-c)",
+      border: expanded ? "1px solid rgba(201,169,110,0.35)" : "1px solid var(--border-c)",
       borderRadius:9,overflow:"hidden",transition:"border-color 0.2s, box-shadow 0.2s",
-      boxShadow: expanded ? "0 0 0 1px rgba(201,168,76,0.1),0 6px 28px rgba(0,0,0,0.35)" : "none",
+      boxShadow: expanded ? "0 0 0 1px rgba(201,169,110,0.1),0 6px 28px rgba(0,0,0,0.35)" : "none",
     }}>
       {/* ── Card header (always visible) ── */}
       <div style={{ padding:"0.875rem 1rem",display:"flex",gap:"0.75rem",alignItems:"flex-start" }}>
@@ -115,7 +115,7 @@ function ModelCard({ model, expanded, onToggle, matchScore }) {
         style={{
           width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:5,
           padding:"0.4375rem 1rem",
-          background: expanded ? "rgba(201,168,76,0.08)" : "rgba(255,255,255,0.02)",
+          background: expanded ? "rgba(201,169,110,0.08)" : "var(--surface)",
           border:"none",borderTop:"1px solid var(--border-c)",cursor:"pointer",
           color: expanded ? GOLD : "var(--text-3)",
           fontSize:"0.5625rem",fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",
@@ -130,12 +130,12 @@ function ModelCard({ model, expanded, onToggle, matchScore }) {
 
       {/* ── Expanded panel ── */}
       {expanded && (
-        <div style={{ padding:"1rem",borderTop:"1px solid rgba(201,168,76,0.12)" }}>
+        <div style={{ padding:"1rem",borderTop:"1px solid rgba(201,169,110,0.12)" }}>
 
           {/* Description */}
           <div style={{ fontSize:"0.6875rem",color:"var(--text-2)",lineHeight:1.65,marginBottom:"1rem",
-            padding:"0.625rem 0.75rem",background:"rgba(201,168,76,0.04)",
-            borderLeft:"2px solid rgba(201,168,76,0.3)",borderRadius:"0 6px 6px 0" }}>
+            padding:"0.625rem 0.75rem",background:"rgba(201,169,110,0.04)",
+            border:"1px solid rgba(201,169,110,0.18)",borderRadius:6 }}>
             {model.description}
           </div>
 
@@ -172,7 +172,7 @@ function ModelCard({ model, expanded, onToggle, matchScore }) {
                       </div>
 
                       {/* Weight bar */}
-                      <div style={{ height:5,background:"rgba(255,255,255,0.06)",borderRadius:3,marginBottom:4 }}>
+                      <div style={{ height:5,background:"var(--border-c)",borderRadius:3,marginBottom:4 }}>
                         <div style={{ height:"100%",width:`${a.weight}%`,background:a.color,
                           borderRadius:3,transition:"width 0.4s" }}/>
                       </div>
@@ -240,8 +240,8 @@ function ModelCard({ model, expanded, onToggle, matchScore }) {
               ))}
 
               {/* Best For */}
-              <div style={{ padding:"0.625rem 0.75rem",background:"rgba(201,168,76,0.05)",
-                border:"1px solid rgba(201,168,76,0.15)",borderRadius:6,marginTop:4 }}>
+              <div style={{ padding:"0.625rem 0.75rem",background:"rgba(201,169,110,0.05)",
+                border:"1px solid rgba(201,169,110,0.15)",borderRadius:6,marginTop:4 }}>
                 <div style={{ fontSize:"0.4375rem",color:GOLD,letterSpacing:"0.12em",
                   textTransform:"uppercase",marginBottom:4,fontWeight:700 }}>Best For</div>
                 <div style={{ fontSize:"0.625rem",color:"var(--text-2)",lineHeight:1.55 }}>{model.bestFor}</div>
@@ -262,7 +262,7 @@ function ModelCard({ model, expanded, onToggle, matchScore }) {
                     <div key={yr} style={{ display:"flex",justifyContent:"space-between",
                       alignItems:"center",marginBottom:4 }}>
                       <span style={{ fontSize:"0.5625rem",color:"var(--text-3)" }}>{yr} yrs</span>
-                      <div style={{ flex:1,mx:8,height:3,background:"rgba(255,255,255,0.05)",
+                      <div style={{ flex:1,mx:8,height:3,background:"var(--border-c)",
                         borderRadius:2,margin:"0 8px",overflow:"hidden" }}>
                         <div style={{ height:"100%",width:`${Math.min(100,(x/2000)*100)}%`,
                           background:GREEN,borderRadius:2 }}/>
@@ -367,9 +367,9 @@ export default function TabModelLibrary() {
 
       {!profile && (
         <div style={{ fontSize:"0.75rem",color:"var(--text-3)",
-          background:"rgba(201,168,76,0.04)",border:"1px solid rgba(201,168,76,0.12)",
+          background:"rgba(201,169,110,0.04)",border:"1px solid rgba(201,169,110,0.12)",
           borderRadius:7,padding:"0.625rem 1rem" }}>
-          💡 Complete the <strong style={{ color:GOLD }}>Investor Profile</strong> questionnaire to see personalized match scores for each model.
+          <span style={{ display:"inline-flex",alignItems:"center",gap:6,verticalAlign:"middle" }}><Lightbulb size={13} color={GOLD} /></span> Complete the <strong style={{ color:GOLD }}>Investor Profile</strong> questionnaire to see personalized match scores for each model.
         </div>
       )}
 

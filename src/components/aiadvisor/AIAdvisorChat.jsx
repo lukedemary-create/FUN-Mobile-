@@ -88,7 +88,7 @@ ${language === 'es' ? 'RESPOND IN SPANISH.' : 'RESPOND IN ENGLISH.'}`;
       console.error("Error details:", error.message, error.stack);
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: `❌ Error: ${error.message || "I apologize, but I encountered an error. Please try again."}`
+        content: `Error: ${error.message || "I apologize, but I encountered an error. Please try again."}`
       }]);
     }
 
@@ -100,9 +100,9 @@ ${language === 'es' ? 'RESPOND IN SPANISH.' : 'RESPOND IN ENGLISH.'}`;
     
     try {
       // Show generating message immediately
-      const generatingMsg = language === 'es' 
-        ? "📄 Generando su informe profesional en PDF..." 
-        : "📄 Generating your professional PDF report...";
+      const generatingMsg = language === 'es'
+        ? "Generando su informe profesional en PDF..."
+        : "Generating your professional PDF report...";
       
       setMessages(prev => [...prev, { 
         role: "assistant", 
@@ -188,8 +188,8 @@ ${language === 'es' ? 'GENERATE THE ENTIRE REPORT IN SPANISH.' : 'GENERATE THE E
 
       // Show success message with option to chat more
       const successMsg = language === 'es'
-        ? "✅ **Informe descargado exitosamente**\n\nSu informe profesional en PDF se ha descargado. Puede hacer preguntas de seguimiento sobre el informe o solicitar aclaraciones sobre cualquier sección."
-        : "✅ **Report Downloaded Successfully**\n\nYour professional PDF report has been downloaded. You can ask follow-up questions about the report or request clarification on any section.";
+        ? "**Informe descargado exitosamente**\n\nSu informe profesional en PDF se ha descargado. Puede hacer preguntas de seguimiento sobre el informe o solicitar aclaraciones sobre cualquier sección."
+        : "**Report Downloaded Successfully**\n\nYour professional PDF report has been downloaded. You can ask follow-up questions about the report or request clarification on any section.";
       
       setMessages(prev => [...prev, { 
         role: "assistant", 

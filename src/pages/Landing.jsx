@@ -1,1299 +1,1835 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  motion, AnimatePresence, useInView,
-  useScroll, useTransform, useSpring, useMotionValue,
-} from 'framer-motion';
-import {
-  AreaChart, Area, LineChart, Line, PieChart, Pie, Cell,
-  ResponsiveContainer,
-} from 'recharts';
-import {
-  Activity, Shield, Users, BookOpen, TrendingUp,
-  Lock, BarChart2, Globe, ArrowRight, Target,
-} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import { ArrowRight, ArrowUpRight, Search, X, TrendingUp, Clock, Shield, Home, Users, FileText, Wallet, Baby, BarChart2, Globe, LogOut, UserCircle, BookOpen } from 'lucide-react'
+import { AreaChart, Area, ResponsiveContainer } from 'recharts'
+import { useAuth } from '@/lib/AuthContext'
 
-/* ─── TOKENS ────────────────────────────────────────────────────── */
-const C = {
-  bg:        '#0a0a0f',
-  surface:   '#111318',
-  elevated:  '#16181f',
-  border:    '#1e2028',
-  text:      '#f1f5f9',
-  textSec:   '#94a3b8',
-  textMuted: '#64748b',
-  success:   '#10b981',
-  warning:   '#f59e0b',
-  danger:    '#ef4444',
-  gold:      '#F5A623',
-  teal:      '#00B4C6',
-  indigo:    '#818cf8',
-};
+// ── Typography tokens — matching Arche exactly
+const DISPLAY = "'Playfair Display', Georgia, serif"
+const UI      = "'Inter', system-ui, sans-serif"
+const MONO    = "'JetBrains Mono', 'Courier New', monospace"
+const EASE    = [0.32, 0.72, 0, 1]
 
-/* ─── CHART DATA ─────────────────────────────────────────────────── */
-const gdpData = [
-  { y:'2022', usa:2.1, eu:3.5, china:3.0 },
-  { y:'2023', usa:2.5, eu:0.6, china:5.2 },
-  { y:'2024', usa:2.8, eu:0.9, china:4.8 },
-  { y:'2025', usa:2.4, eu:1.4, china:4.5 },
-  { y:'2026', usa:2.6, eu:1.8, china:4.2 },
-];
-const allocData = [
-  { name:'Equities',     value:58.2, color:C.gold    },
-  { name:'Fixed Income', value:22.1, color:C.teal    },
-  { name:'Alternatives', value:14.0, color:C.indigo  },
-  { name:'Real Estate',  value:2.0,  color:'#10b981' },
-  { name:'Cash',         value:3.7,  color:'#64748b' },
-];
-const fpData = [
-  {y:0,v:100000},{y:5,v:148000},{y:10,v:210000},
-  {y:15,v:320000},{y:20,v:480000},{y:25,v:720000},{y:30,v:1100000},
-];
+// ── Portfolio preview sparkline
+const PORTFOLIO_SPARK = [
+  { v: 221 }, { v: 228 }, { v: 224 }, { v: 237 }, { v: 243 },
+  { v: 239 }, { v: 252 }, { v: 259 }, { v: 256 }, { v: 268 },
+  { v: 272 }, { v: 266 }, { v: 280 }, { v: 284 }, { v: 279 }, { v: 284 },
+]
+const PORTFOLIO_METRICS = [
+  { label: 'S&P Beta',   value: '1.04'   },
+  { label: 'Sharpe',     value: '1.87'   },
+  { label: 'YTD Return', value: '+28.4%' },
+]
 
-/* ─── GLOBAL CSS ─────────────────────────────────────────────────── */
-const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { overflow-x: hidden; }
-  input::placeholder { color: #64748b; }
+// ── S&P 500 sparkline for section preview card
+const SP500_SPARK = [
+  { v: 4880 }, { v: 4920 }, { v: 4895 }, { v: 4980 }, { v: 5040 },
+  { v: 5010 }, { v: 5110 }, { v: 5090 }, { v: 5180 }, { v: 5210 },
+  { v: 5280 }, { v: 5248 }, { v: 5340 }, { v: 5402 }, { v: 5388 },
+  { v: 5471 }, { v: 5520 }, { v: 5498 }, { v: 5612 }, { v: 5847 },
+]
 
-  @keyframes breatheGold {
-    0%,100% { box-shadow: 0 0 20px rgba(245,166,35,0.15); }
-    50%      { box-shadow: 0 0 55px rgba(245,166,35,0.45); }
-  }
-  @keyframes tickerScroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-  @keyframes scanLine {
-    0%   { top:0%; opacity:0; }
-    5%   { opacity:0.4; }
-    95%  { opacity:0.4; }
-    100% { top:100%; opacity:0; }
-  }
-  @keyframes orbDrift {
-    0%   { transform: translate(0px,0px) scale(1); }
-    33%  { transform: translate(60px,-40px) scale(1.08); }
-    66%  { transform: translate(-30px,25px) scale(0.96); }
-    100% { transform: translate(0px,0px) scale(1); }
-  }
-  @keyframes featureFloat {
-    0%,100% { transform: translateY(0px); }
-    50%      { transform: translateY(-5px); }
-  }
-  @keyframes shimmerSlide {
-    0%   { background-position: -200% center; }
-    100% { background-position:  200% center; }
-  }
-  .ticker-track { display:flex; animation: tickerScroll 28s linear infinite; }
-  .scan-line    { position:absolute; left:0; right:0; height:1px; background:rgba(0,180,198,0.35); animation:scanLine 9s linear infinite; pointer-events:none; z-index:2; }
-  .orb          { position:absolute; border-radius:50%; filter:blur(110px); pointer-events:none; animation:orbDrift 30s ease-in-out infinite; }
-`;
+// ── Featured insights
+const INSIGHTS = [
+  {
+    category:  'Market Intelligence',
+    headline:  "Understanding Risk-Adjusted Returns: What Your Portfolio's Sharpe Ratio Reveals",
+    excerpt:   "Most investors track returns. Sophisticated investors track risk-adjusted returns. The Sharpe ratio measures how much return a portfolio generates for every unit of risk taken. A portfolio returning 15% with a Sharpe of 0.8 is actually worse than one returning 12% with a Sharpe of 1.6. The math tells a different story than the headline number.",
+    concept:   'Sharpe Ratio',
+    definition:"The return earned per unit of risk, calculated as (portfolio return − risk-free rate) ÷ standard deviation. A Sharpe above 1.0 is considered good. Above 2.0 is exceptional.",
+    quote:     "The stock market is a device for transferring money from the impatient to the patient.",
+    quoteAttr: 'Warren Buffett',
+    href:      '/risk-analysis',
+    readTime:  '5 min read',
+    books:     ['A Random Walk Down Wall Street', 'The Intelligent Investor', 'Common Stocks and Uncommon Profits'],
+  },
+  {
+    category:  'Tax Strategy',
+    headline:  "Tax Alpha: The Return Most Investors Leave on the Table Every Year",
+    excerpt:   "Tax drag is one of the largest — and most preventable — sources of investment underperformance. The average investor loses 1.0 to 2.5% annually to avoidable taxes through poor asset location and failure to harvest losses. Tax alpha is the additional return generated by managing investments tax-efficiently. Over 30 years, this compounding difference is substantial.",
+    concept:   'Tax Alpha',
+    definition:"The additional investment return generated through tax-efficient portfolio management — including tax-loss harvesting, asset location optimization, and strategic gain realization timing.",
+    quote:     "An investment in knowledge pays the best interest.",
+    quoteAttr: 'Benjamin Franklin',
+    href:      '/tax-planning',
+    readTime:  '7 min read',
+    books:     ['The Bogleheads Guide to Investing', 'Tax-Free Wealth', 'The Little Book of Common Sense Investing'],
+  },
+  {
+    category:  'Retirement Planning',
+    headline:  "The 4% Rule: What Bengen's Research Actually Says About Retirement Income",
+    excerpt:   "In 1994, financial planner William Bengen published research showing that a retiree who withdrew 4% of their portfolio in year one — adjusted for inflation each year after — would not run out of money over any 30-year historical period. What the headlines miss: the rule assumes a specific equity allocation and exact 30-year horizon. Your circumstances change the math.",
+    concept:   'Safe Withdrawal Rate',
+    definition:"The percentage of a retirement portfolio that can be withdrawn annually — adjusted for inflation — without depleting the portfolio over a defined horizon. Bengen's research established 4% as the historical floor for 30-year retirements.",
+    quote:     "Someone is sitting in the shade today because someone planted a tree a long time ago.",
+    quoteAttr: 'Warren Buffett',
+    href:      '/retirement-planning',
+    readTime:  '6 min read',
+    books:     ['Die With Zero', 'The Psychology of Money', 'Your Money or Your Life'],
+  },
+]
 
-/* ─── PARTICLE CANVAS ────────────────────────────────────────────── */
-function ParticleCanvas({ count = 260, style = {} }) {
-  const canvasRef = useRef(null);
-  const animRef   = useRef(null);
-  const mouseRef  = useRef({ x: -9999, y: -9999 });
+// ── Nav links
+const NAV_LINKS = [
+  { label: 'Terminal', href: '/dashboard'     },
+  { label: 'Wealth Counsel', href: '/wealth-counsel' },
+  { label: 'FUN',      href: '/fun'           },
+  { label: 'Markets',  href: '/MarketHistory' },
+]
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
+// ─────────────────────────────────────────────────────────────────────────────
+// FLOATING PORTFOLIO PREVIEW CARD — hero right side
+// ─────────────────────────────────────────────────────────────────────────────
+// DAILY FINANCIAL FACTS — one per day, rotates by day-of-year
+// ─────────────────────────────────────────────────────────────────────────────
+const DAILY_FACTS = [
+  {
+    fact: "A $10,000 investment in the S&P 500 in 1994 would be worth over $220,000 today — without adding a single dollar.",
+    concept: 'Compound Growth', stat: '22×', statLabel: '30-year S&P return', source: 'Bloomberg',
+    category: 'Investing',
+  },
+  {
+    fact: "The average American spends $18,000 per year on non-essential purchases. Invested at 7% over 30 years, that's $1.8 million in foregone wealth.",
+    concept: 'Opportunity Cost', stat: '$1.8M', statLabel: 'cost of lifestyle inflation', source: 'Bureau of Labor Statistics',
+    category: 'Budgeting',
+  },
+  {
+    fact: "Missing just the 10 best trading days in any 20-year period cuts your return roughly in half. Staying invested beats timing the market.",
+    concept: 'Market Timing Risk', stat: '~50%', statLabel: 'return lost by missing 10 best days', source: 'JPMorgan Asset Management',
+    category: 'Investing',
+  },
+  {
+    fact: "A 1% higher annual fee on a $500,000 portfolio costs $147,000 over 10 years — money that goes to the fund manager, not your retirement.",
+    concept: 'Expense Ratio', stat: '$147K', statLabel: 'cost of 1% fee on $500K over 10 yrs', source: 'Vanguard',
+    category: 'Investing',
+  },
+  {
+    fact: "66% of Americans couldn't pass a basic financial literacy test. The countries with the highest financial literacy have the highest median net worth.",
+    concept: 'Financial Literacy', stat: '66%', statLabel: 'of Americans fail basic financial quiz', source: 'FINRA',
+    category: 'Education',
+  },
+  {
+    fact: "The Rule of 72: divide 72 by your annual return to find how many years it takes to double your money. At 7%, money doubles every 10.3 years.",
+    concept: 'Rule of 72', stat: '10.3 yrs', statLabel: 'to double money at 7% return', source: 'Financial Math',
+    category: 'Investing',
+  },
+  {
+    fact: "A household that contributes the max to a 401(k) for 30 years ($23,000/yr at 7%) accumulates $2.3 million — mostly from compounding, not contributions.",
+    concept: '401(k) Power', stat: '$2.3M', statLabel: '30-year max 401(k) at 7% return', source: 'IRS / Planora',
+    category: 'Retirement',
+  },
+  {
+    fact: "The average retiree needs 70–90% of pre-retirement income to maintain their lifestyle. Most Americans retire with less than $200,000 saved.",
+    concept: 'Retirement Gap', stat: '$200K', statLabel: 'median retirement savings in the US', source: 'Federal Reserve',
+    category: 'Retirement',
+  },
+  {
+    fact: "Paying an extra $200/month on a $400,000 mortgage at 7% eliminates 7 years of payments and saves over $118,000 in interest.",
+    concept: 'Early Mortgage Payoff', stat: '$118K', statLabel: 'saved with $200/mo extra payment', source: 'Mortgage calculation',
+    category: 'Real Estate',
+  },
+  {
+    fact: "Tax-loss harvesting — selling losing positions to offset gains — can add 0.5–1.5% in after-tax returns annually. Most investors never use it.",
+    concept: 'Tax-Loss Harvesting', stat: '+1.5%', statLabel: 'avg annual after-tax return boost', source: 'Vanguard',
+    category: 'Tax Strategy',
+  },
+  {
+    fact: "The average American pays $524,000 in interest over a lifetime — on mortgages, car loans, student debt, and credit cards. Debt is wealth in reverse.",
+    concept: 'Lifetime Interest Cost', stat: '$524K', statLabel: 'avg lifetime interest paid per American', source: 'LendingTree',
+    category: 'Debt',
+  },
+  {
+    fact: "Roth IRA contributions grow tax-free forever. $6,000 contributed at age 22, never touched, becomes $91,000 by retirement at a 7% return.",
+    concept: 'Roth IRA Compounding', stat: '15×', statLabel: 'growth on a single year\'s Roth contribution', source: 'IRS / Planora',
+    category: 'Retirement',
+  },
+  {
+    fact: "The 4% rule: a retiree can withdraw 4% of their portfolio in year one, adjust for inflation annually, and historically not run out of money over 30 years.",
+    concept: '4% Withdrawal Rule', stat: '4%', statLabel: 'safe withdrawal rate over 30-year retirement', source: 'William Bengen, 1994',
+    category: 'Retirement',
+  },
+  {
+    fact: "Investors who trade frequently underperform buy-and-hold investors by 1.5–6.5% annually. Emotion is the most expensive investment strategy.",
+    concept: 'Behavioral Finance', stat: '-6.5%', statLabel: 'annual underperformance from frequent trading', source: 'Dalbar QAIB',
+    category: 'Investing',
+  },
+  {
+    fact: "The USDA estimates the cost of raising a child to age 18 at $310,605 — before college. A 4-year private university averages $240,000 all-in.",
+    concept: 'Cost of a Child', stat: '$310K', statLabel: 'average cost to raise a child to 18', source: 'USDA 2023',
+    category: 'Family Planning',
+  },
+  {
+    fact: "Asset location — placing bonds in tax-deferred accounts and stocks in taxable accounts — can add 0.2–0.8% annually with zero additional risk.",
+    concept: 'Asset Location', stat: '+0.8%', statLabel: 'annual return from optimal asset location', source: 'Morningstar',
+    category: 'Tax Strategy',
+  },
+  {
+    fact: "Social Security delayed from 62 to 70 increases your monthly benefit by 76%. For a couple, the lifetime difference can exceed $250,000.",
+    concept: 'Social Security Timing', stat: '+76%', statLabel: 'benefit increase from claiming at 70 vs 62', source: 'SSA',
+    category: 'Retirement',
+  },
+  {
+    fact: "The average car costs $12,182/year to own and operate. Over 40 years, investing that instead at 7% compounds to over $2.5 million.",
+    concept: 'True Cost of a Car', stat: '$12K/yr', statLabel: 'average annual total cost of car ownership', source: 'AAA 2023',
+    category: 'Budgeting',
+  },
+  {
+    fact: "Inflation at 3% cuts the purchasing power of $100,000 in half in 24 years. Cash under the mattress is a guaranteed loss of wealth.",
+    concept: 'Inflation Risk', stat: '24 yrs', statLabel: 'for 3% inflation to halve purchasing power', source: 'BLS',
+    category: 'Macro',
+  },
+  {
+    fact: "A Vanguard study found that a good financial advisor adds about 3% in net returns annually — mostly through behavioral coaching, not security selection.",
+    concept: 'Advisor Alpha', stat: '+3%', statLabel: 'annual net return added by a good advisor', source: 'Vanguard Advisor\'s Alpha',
+    category: 'Wealth Counsel',
+  },
+  {
+    fact: "Index funds now hold over 50% of all US equity fund assets. The average actively managed fund underperforms its index benchmark over 15 years.",
+    concept: 'Index vs. Active', stat: '92%', statLabel: 'of active large-cap funds underperform over 15 yrs', source: 'S&P SPIVA 2023',
+    category: 'Investing',
+  },
+  {
+    fact: "The break-even age for delaying Social Security from 62 to 70 is roughly 82. If you live past 82, waiting always wins financially.",
+    concept: 'Break-Even Age', stat: '82', statLabel: 'break-even age for Social Security delay strategy', source: 'SSA',
+    category: 'Retirement',
+  },
+  {
+    fact: "Homeownership builds 40× more wealth than renting over a lifetime — largely through forced savings via equity and leverage on an appreciating asset.",
+    concept: 'Homeownership Wealth', stat: '40×', statLabel: 'homeowner net worth vs. renter net worth', source: 'Federal Reserve',
+    category: 'Real Estate',
+  },
+  {
+    fact: "An emergency fund of 6 months of expenses prevents the need to liquidate investments during a crisis — protecting the compounding timeline that builds wealth.",
+    concept: 'Emergency Fund', stat: '6 mos', statLabel: 'expenses recommended in liquid emergency fund', source: 'CFP Board',
+    category: 'Budgeting',
+  },
+  {
+    fact: "The top 10% of earners save 38% of their income. The bottom 20% save less than 1%. The gap in wealth comes from savings rate, not income alone.",
+    concept: 'Savings Rate', stat: '38%', statLabel: 'savings rate of top 10% earners', source: 'Federal Reserve SCF',
+    category: 'Budgeting',
+  },
+  {
+    fact: "Term life insurance costs $30–$50/month for a healthy 30-year-old with a $1 million policy. Most people are underinsured relative to what their family actually needs.",
+    concept: 'Life Insurance', stat: '$35/mo', statLabel: 'avg cost of $1M 20-yr term policy at age 30', source: 'Policygenius 2023',
+    category: 'Insurance',
+  },
+  {
+    fact: "Capital gains held longer than one year are taxed at 0–20%. Short-term gains are taxed as ordinary income — potentially at 37%. Patience is literally a tax strategy.",
+    concept: 'Long-Term Capital Gains', stat: '0–20%', statLabel: 'long-term capital gains tax rate vs 37% short-term', source: 'IRS',
+    category: 'Tax Strategy',
+  },
+  {
+    fact: "Dollar-cost averaging — investing a fixed amount on a schedule — removes emotion from market timing and results in a lower average cost per share over time.",
+    concept: 'Dollar-Cost Averaging', stat: 'DCA', statLabel: 'removes emotion from market entry timing', source: 'Financial Research',
+    category: 'Investing',
+  },
+  {
+    fact: "The median net worth of Americans aged 55–64 is $212,000. Most financial planners recommend having 10–12× your salary saved by retirement age.",
+    concept: 'Retirement Readiness', stat: '$212K', statLabel: 'median net worth of Americans ages 55-64', source: 'Federal Reserve 2022',
+    category: 'Retirement',
+  },
+  {
+    fact: "529 plans grow tax-free and withdrawals for education are never taxed. Starting at birth vs. age 10 doubles the projected balance by college enrollment.",
+    concept: '529 College Savings', stat: '2×', statLabel: 'more saved starting at birth vs. age 10', source: 'Vanguard / Planora',
+    category: 'Education',
+  },
+  {
+    fact: "Warren Buffett made 99% of his wealth after age 52. The most powerful variable in investing is not return — it is time in the market.",
+    concept: 'Time in Market', stat: '99%', statLabel: 'of Buffett\'s wealth built after age 52', source: 'Morgan Housel',
+    category: 'Investing',
+  },
+]
 
-    const particles = Array.from({ length: count }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.22,
-      vy: (Math.random() - 0.5) * 0.16,
-      size: Math.random() * 1.8 + 0.3,
-      opacity: Math.random() * 0.28 + 0.06,
-      color: Math.random() > 0.48 ? C.gold : C.teal,
-      layer: Math.floor(Math.random() * 3),
-    }));
-
-    const SPEED = [0.2, 0.55, 1.0];
-    const ALPHA = [0.1, 0.2, 0.35];
-
-    const tick = () => {
-      if (!canvas.width) { animRef.current = requestAnimationFrame(tick); return; }
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const mx = mouseRef.current.x, my = mouseRef.current.y;
-      particles.forEach(p => {
-        p.x += p.vx * SPEED[p.layer];
-        p.y += p.vy * SPEED[p.layer];
-        if (p.x < -4) p.x = canvas.width + 4;
-        if (p.x > canvas.width + 4) p.x = -4;
-        if (p.y < -4) p.y = canvas.height + 4;
-        if (p.y > canvas.height + 4) p.y = -4;
-        const dx = p.x - mx, dy = p.y - my;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 100 && dist > 0) { const f = (100 - dist) / 100; p.x += (dx/dist)*f*1.5; p.y += (dy/dist)*f*1.5; }
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * (p.layer + 1) / 2, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.opacity * ALPHA[p.layer];
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      animRef.current = requestAnimationFrame(tick);
-    };
-    tick();
-
-    const onMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    };
-    document.addEventListener('mousemove', onMove);
-    return () => { cancelAnimationFrame(animRef.current); ro.disconnect(); document.removeEventListener('mousemove', onMove); };
-  }, [count]);
-
-  return <canvas ref={canvasRef} style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', ...style }} />;
+const CATEGORY_COLORS = {
+  'Investing':       '#c9a96e',
+  'Budgeting':       '#00B4C6',
+  'Retirement':      '#818cf8',
+  'Tax Strategy':    '#4a7c59',
+  'Real Estate':     '#d4a017',
+  'Debt':            '#c0392b',
+  'Education':       '#818cf8',
+  'Family Planning': '#00B4C6',
+  'Macro':           '#a89070',
+  'Wealth Counsel':  '#00B4C6',
+  'Insurance':       '#4a7c59',
 }
 
-/* ─── BOOT OVERLAY ───────────────────────────────────────────────── */
-function BootOverlay({ onComplete }) {
-  const [phase, setPhase]       = useState(0);
-  const [typed, setTyped]       = useState('');
-  const [tagTyped, setTagTyped] = useState('');
-  const [done, setDone]         = useState(false);
-  const wordmark = 'PLANORA';
-  const tagline  = 'INSTITUTIONAL INTELLIGENCE. PERSONAL IMPACT.';
-
-  const skip = useCallback(() => { setDone(true); setTimeout(onComplete, 400); }, [onComplete]);
-
-  useEffect(() => {
-    const timers = [];
-    const t = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); };
-    t(() => setPhase(1), 300);
-    t(() => setPhase(2), 1200);
-    t(() => setPhase(3), 1700);
-    let i = 0;
-    const typeWord = () => { if (i < wordmark.length) { i++; setTyped(wordmark.slice(0, i)); t(typeWord, 80); } };
-    t(typeWord, 1750);
-    let j = 0;
-    const typeTag = () => { if (j < tagline.length) { j++; setTagTyped(tagline.slice(0, j)); t(typeTag, 22); } };
-    t(() => { setPhase(4); typeTag(); }, 2350);
-    t(() => setPhase(5), 3000);
-    t(() => { setDone(true); onComplete(); }, 3500);
-    return () => timers.forEach(clearTimeout);
-  }, []);
+function DailyFactCard() {
+  const today    = new Date()
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000)
+  const fact     = DAILY_FACTS[dayOfYear % DAILY_FACTS.length]
+  const color    = CATEGORY_COLORS[fact.category] || '#c9a96e'
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const dateStr  = `${monthNames[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`
 
   return (
-    <AnimatePresence>
-      {!done && (
-        <motion.div
-          onClick={skip}
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.45 }}
-          style={{ position:'fixed', inset:0, zIndex:9999, background:C.bg, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', cursor:'pointer', overflow:'hidden' }}
-        >
-          {phase >= 1 && (
-            <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.6 }} style={{ position:'absolute', inset:0 }}>
-              <ParticleCanvas count={180} />
-            </motion.div>
-          )}
-          {phase === 0 && (
-            <motion.div
-              initial={{ opacity:0, scale:0 }} animate={{ opacity:[0,1,0.4,1], scale:[0,1.4,0.8,1] }} transition={{ duration:0.3 }}
-              style={{ width:6, height:6, borderRadius:'50%', background:C.gold, boxShadow:`0 0 20px ${C.gold}` }}
-            />
-          )}
-          {phase >= 2 && (
-            <motion.div
-              initial={{ scale:0, opacity:0 }}
-              animate={phase >= 5 ? { scale:0.3, opacity:0, y:-300, x:-480 } : { scale:1, opacity:1 }}
-              transition={phase >= 5 ? { duration:0.45, ease:[0.4,0,0.2,1] } : { type:'spring', stiffness:280, damping:22 }}
-              style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:20, position:'relative', zIndex:2 }}
-            >
-              <motion.div
-                initial={{ scale:0 }} animate={{ scale:1 }}
-                transition={{ type:'spring', stiffness:320, damping:20 }}
-                style={{ width:80, height:80, background:C.gold, borderRadius:20, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 60px ${C.gold}70, 0 0 120px ${C.gold}30`, animation:'breatheGold 2.5s ease-in-out infinite' }}
-              >
-                <span style={{ fontSize:40, fontWeight:900, color:'#0a0a0f', lineHeight:1, fontFamily:'Inter, sans-serif', letterSpacing:'-0.04em' }}>P</span>
-              </motion.div>
-              {phase >= 3 && (
-                <div style={{ display:'flex', gap:2 }}>
-                  {typed.split('').map((ch, i) => (
-                    <motion.span key={i} initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.15 }}
-                      style={{ fontSize:32, fontWeight:900, color:C.gold, letterSpacing:'0.18em', fontFamily:'Inter, sans-serif', textShadow:`0 0 30px ${C.gold}60` }}
-                    >{ch}</motion.span>
-                  ))}
-                  {typed.length < wordmark.length && (
-                    <motion.span animate={{ opacity:[1,0] }} transition={{ repeat:Infinity, duration:0.5 }} style={{ fontSize:32, color:C.gold }}>|</motion.span>
-                  )}
-                </div>
-              )}
-              {phase >= 4 && (
-                <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.3 }}
-                  style={{ fontSize:10, fontWeight:700, color:C.teal, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:'Inter, sans-serif', maxWidth:400, textAlign:'center' }}
-                >
-                  {tagTyped}
-                  {tagTyped.length < tagline.length && (
-                    <motion.span animate={{ opacity:[1,0] }} transition={{ repeat:Infinity, duration:0.4 }}>|</motion.span>
-                  )}
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-          <motion.div
-            initial={{ opacity:0 }} animate={{ opacity:0.5 }} transition={{ delay:0.8 }}
-            style={{ position:'absolute', bottom:32, right:32, fontSize:11, color:C.textMuted, border:`1px solid ${C.border}`, borderRadius:6, padding:'6px 14px', letterSpacing:'0.06em' }}
-          >CLICK TO SKIP</motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
+    <div style={{ position: 'relative', width: 380 }}>
+      {/* Stacked back cards */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        transform: 'translate(14px, 14px) rotate(2.2deg)',
+        background: '#1c1510', border: '1px solid #3d3028',
+        borderRadius: 18, opacity: 0.55,
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0,
+        transform: 'translate(7px, 7px) rotate(1.1deg)',
+        background: '#1f1812', border: '1px solid #3d3028',
+        borderRadius: 18, opacity: 0.7,
+      }} />
 
-/* ─── NAV ────────────────────────────────────────────────────────── */
-function Nav({ onEnter, visible, scrollY }) {
-  const navBg = useTransform(scrollY, [0, 80], ['rgba(10,10,15,0.0)', 'rgba(10,10,15,0.92)']);
-  const navBorder = useTransform(scrollY, [0, 80], ['rgba(30,32,40,0)', 'rgba(30,32,40,1)']);
-  const links = ['Platform','Solutions','Research','Wealth','Education','About'];
+      {/* Main card */}
+      <div style={{
+        position: 'relative',
+        background: 'rgba(35,28,22,0.98)',
+        border: '1px solid #3d3028',
+        borderRadius: 18,
+        boxShadow: '0 28px 56px rgba(0,0,0,0.55), inset 0 1px 0 var(--border-c)',
+        overflow: 'hidden',
+      }}>
+        {/* Top accent line */}
+        <div style={{ height: 2, background: `linear-gradient(90deg, ${color} 0%, transparent 60%)` }} />
 
-  return (
-    <motion.header
-      initial={{ opacity:0, y:-20 }}
-      animate={visible ? { opacity:1, y:0 } : { opacity:0, y:-20 }}
-      transition={{ duration:0.5 }}
-      style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, backdropFilter:'blur(24px)', background:navBg, borderBottom:`1px solid`, borderBottomColor:navBorder }}
-    >
-      <div style={{ maxWidth:1280, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0 32px', height:60 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <div style={{ width:30, height:30, background:C.gold, borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 12px ${C.gold}40` }}>
-            <span style={{ fontSize:14, fontWeight:900, color:'#0a0a0f', lineHeight:1 }}>P</span>
+        <div style={{ padding: '20px 22px' }}>
+          {/* Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
+            <div>
+              <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#6b5540', marginBottom: 4, fontFamily: UI }}>
+                Daily Financial Fact
+              </div>
+              <div style={{ fontSize: 11, color: '#a89070', fontFamily: UI }}>
+                {dateStr}
+              </div>
+            </div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              background: `${color}14`, border: `1px solid ${color}30`,
+              borderRadius: 6, padding: '4px 10px',
+            }}>
+              <span style={{ fontSize: 9, color, fontWeight: 700, fontFamily: UI, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{fact.category}</span>
+            </div>
           </div>
-          <span style={{ fontSize:14, fontWeight:800, color:C.text, letterSpacing:'0.04em' }}>PLANORA</span>
-          <span style={{ fontSize:8, fontWeight:700, color:C.gold, letterSpacing:'0.1em', textTransform:'uppercase', opacity:0.75 }}>TERMINAL</span>
+
+          {/* Fact text */}
+          <p style={{
+            fontFamily: DISPLAY, fontSize: 15, fontWeight: 400,
+            color: '#f0e8d8', lineHeight: 1.65,
+            margin: '0 0 20px', fontStyle: 'italic',
+          }}>
+            "{fact.fact}"
+          </p>
+
+          {/* Stat highlight */}
+          <div style={{
+            background: '#2d2419', border: '1px solid #3d3028',
+            borderRadius: 10, padding: '12px 14px',
+            display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18,
+          }}>
+            <div style={{ fontFamily: MONO, fontSize: 22, fontWeight: 700, color, lineHeight: 1, flexShrink: 0 }}>
+              {fact.stat}
+            </div>
+            <div>
+              <div style={{ fontFamily: UI, fontSize: 11.5, color: '#a89070', lineHeight: 1.45 }}>{fact.statLabel}</div>
+              <div style={{ fontFamily: UI, fontSize: 10, color: '#6b5540', marginTop: 3 }}>Source: {fact.source}</div>
+            </div>
+          </div>
         </div>
-        <nav style={{ display:'flex', alignItems:'center', gap:2 }}>
-          {links.map(l => (
-            <button key={l} style={{ background:'none', border:'none', cursor:'pointer', padding:'6px 11px', borderRadius:6, fontSize:13, color:C.textSec, fontWeight:500, fontFamily:'inherit', transition:'color 0.15s' }}
-              onMouseEnter={e => e.currentTarget.style.color = C.text}
-              onMouseLeave={e => e.currentTarget.style.color = C.textSec}
-            >{l}</button>
-          ))}
-        </nav>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <button style={{ background:'none', border:'none', cursor:'pointer', padding:'7px 14px', fontSize:13, color:C.textSec, fontFamily:'inherit' }}>Sign In</button>
-          <button onClick={onEnter} style={{ background:C.gold, color:'#0a0a0f', border:'none', borderRadius:8, padding:'8px 18px', fontSize:13, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontFamily:'inherit', boxShadow:`0 0 20px ${C.gold}35`, transition:'box-shadow 0.2s, transform 0.15s' }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow=`0 0 36px ${C.gold}60`; e.currentTarget.style.transform='translateY(-1px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow=`0 0 20px ${C.gold}35`; e.currentTarget.style.transform='none'; }}
-          >Request Demo <ArrowRight size={13}/></button>
+
+        {/* Footer */}
+        <div style={{
+          padding: '10px 22px 16px',
+          borderTop: '1px solid #2a2018',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <div style={{ width: 5, height: 5, borderRadius: '50%', background: color, flexShrink: 0 }} />
+            <span style={{ fontSize: 10, color: '#6b5540', fontFamily: UI }}>
+              Concept: <span style={{ color: '#a89070', fontWeight: 600 }}>{fact.concept}</span>
+            </span>
+          </div>
+          <span style={{ fontSize: 9, color: '#3d3028', fontFamily: UI, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Updates daily
+          </span>
         </div>
       </div>
-    </motion.header>
-  );
+    </div>
+  )
 }
 
-/* ─── CHAR-BY-CHAR TITLE ─────────────────────────────────────────── */
-function CharByChar({ text, style = {} }) {
-  const chars = text.split('');
+// ─────────────────────────────────────────────────────────────────────────────
+// NAV
+// ─────────────────────────────────────────────────────────────────────────────
+function Nav() {
+  const [scrolled,    setScrolled]    = useState(false)
+  const [menuOpen,    setMenuOpen]    = useState(false)
+  const [searchOpen,  setSearchOpen]  = useState(false)
+  const [searchVal,   setSearchVal]   = useState('')
+  const [showAccount, setShowAccount] = useState(false)
+  const navigate = useNavigate()
+  const { user, isAuthenticated, logout } = useAuth()
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 32)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (searchVal.trim()) {
+      navigate(`/ticker-lookup?q=${searchVal.trim().toUpperCase()}`)
+      setSearchVal('')
+      setSearchOpen(false)
+    }
+  }
+
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once:true, margin:'-80px' }}
-      variants={{ hidden:{}, visible:{ transition:{ staggerChildren:0.025 } } }}
-      style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', ...style }}
-    >
-      {chars.map((ch, i) => (
-        <motion.span
-          key={i}
-          variants={{
-            hidden: { opacity:0, y:14, filter:'blur(4px)' },
-            visible: { opacity:1, y:0, filter:'blur(0px)', transition:{ type:'spring', stiffness:280, damping:22 } },
-          }}
-          style={{ display:'inline-block', whiteSpace: ch === ' ' ? 'pre' : 'normal' }}
-        >{ch === ' ' ? '\u00a0' : ch}</motion.span>
-      ))}
-    </motion.div>
-  );
-}
+    <>
+      <motion.header style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
+        transition: 'background 0.4s cubic-bezier(0.32,0.72,0,1), border-color 0.4s cubic-bezier(0.32,0.72,0,1)',
+        background: scrolled ? 'rgba(26,20,16,0.94)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid #2a2018' : '1px solid transparent',
+      }}>
+        <div style={{
+          maxWidth: 1400, margin: '0 auto', padding: '0 40px',
+          height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          {/* Logo */}
+          <button
+            onClick={() => navigate('/')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'baseline', gap: 2, padding: 0 }}
+          >
+            <span style={{ fontFamily: DISPLAY, fontSize: 20, fontWeight: 700, color: '#c9a96e', letterSpacing: '-0.01em', lineHeight: 1 }}>
+              Planora
+            </span>
+          </button>
 
-/* ─── HERO DASHBOARD MOCKUP ──────────────────────────────────────── */
-function HeroDashboard({ rotateX, rotateY, opacity, scale }) {
-  return (
-    <motion.div style={{ opacity, scale, perspective: 1200 }} initial={{ opacity:0, x:50 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.9, delay:0.5, ease:[0.22,1,0.36,1] }}>
-      {/* Continuous float */}
-      <motion.div animate={{ y:[0,-12,0] }} transition={{ duration:5.2, repeat:Infinity, ease:'easeInOut' }} style={{ transformStyle:'preserve-3d' }}>
-        {/* Subtle rotation oscillation — different period for organic feel */}
-        <motion.div animate={{ rotateZ:[0,-1.3,0] }} transition={{ duration:7.1, repeat:Infinity, ease:'easeInOut' }} style={{ transformStyle:'preserve-3d' }}>
-          {/* Mouse tilt — driven by spring motion values from parent */}
-          <motion.div style={{ rotateX, rotateY, position:'relative', transformStyle:'preserve-3d' }}>
+          {/* Center nav — desktop */}
+          <nav style={{ display: 'flex', gap: 36, alignItems: 'center' }} className="planora-nav-center">
+            {NAV_LINKS.map(link => (
+              <button
+                key={link.href}
+                onClick={() => navigate(link.href)}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 2px',
+                  fontSize: 13, fontWeight: 500, color: '#a89070',
+                  letterSpacing: '0.01em', fontFamily: UI,
+                  transition: 'color 0.2s cubic-bezier(0.32,0.72,0,1)',
+                  borderBottom: '1px solid transparent',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#f0e8d8' }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#a89070' }}
+              >
+                {link.label}
+              </button>
+            ))}
+          </nav>
 
-            {/* Floating portfolio card */}
-            <motion.div
-              initial={{ opacity:0, x:-30 }} animate={{ opacity:1, x:0 }}
-              transition={{ delay:1.2, duration:0.7 }}
-              style={{ position:'absolute', top:'10%', left:'4%', zIndex:4, background:'rgba(17,19,24,0.94)', backdropFilter:'blur(16px)', border:`1px solid ${C.border}`, borderRadius:12, padding:'12px 16px', width:148, boxShadow:'0 20px 50px rgba(0,0,0,0.5)' }}
+          {/* Right side */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Search */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(61,48,40,0.5)', border: '1px solid #3d3028',
+                borderRadius: 8, padding: '6px 12px',
+                color: '#a89070', fontSize: 12, fontFamily: UI, cursor: 'pointer',
+                transition: 'all 0.2s cubic-bezier(0.32,0.72,0,1)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a96e50'; e.currentTarget.style.color = '#f0e8d8' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#3d3028';   e.currentTarget.style.color = '#a89070'  }}
+              className="planora-nav-search"
             >
-              <div style={{ fontSize:8, color:C.textMuted, letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:8 }}>Portfolio</div>
-              <div style={{ width:80, height:80, margin:'0 auto 8px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={allocData} innerRadius={22} outerRadius={36} dataKey="value" strokeWidth={0}>
-                      {allocData.map((e,i) => <Cell key={i} fill={e.color}/>)}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div style={{ fontSize:14, fontWeight:800, color:C.text, fontFamily:'monospace', textAlign:'center' }}>$28.7M</div>
-              <div style={{ fontSize:9, color:C.success, fontFamily:'monospace', textAlign:'center' }}>+12.4% YTD</div>
-            </motion.div>
+              <Search size={13} />
+              <span>Search ticker</span>
+              <span style={{ fontSize: 10, color: '#6b5540', background: '#2d2419', borderRadius: 4, padding: '1px 5px', fontFamily: MONO }}>
+                ⌘K
+              </span>
+            </button>
 
-            {/* Floating risk card */}
-            <motion.div
-              initial={{ opacity:0, x:30 }} animate={{ opacity:1, x:0 }}
-              transition={{ delay:1.4, duration:0.7 }}
-              style={{ position:'absolute', bottom:'6%', right:'-14%', zIndex:4, background:'rgba(17,19,24,0.94)', backdropFilter:'blur(16px)', border:`1px solid ${C.teal}35`, borderRadius:12, padding:'12px 16px', width:136, boxShadow:`0 20px 50px rgba(0,0,0,0.5), 0 0 20px ${C.teal}15` }}
-            >
-              <div style={{ fontSize:8, color:C.textMuted, letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:6 }}>Risk Score</div>
-              <div style={{ fontSize:28, fontWeight:900, color:C.teal, fontFamily:'monospace', letterSpacing:'-0.02em' }}>42</div>
-              <div style={{ fontSize:9, color:C.teal, fontWeight:700, marginBottom:8 }}>MODERATE</div>
-              <div style={{ height:4, background:C.elevated, borderRadius:2 }}>
-                <div style={{ width:'42%', height:'100%', background:`linear-gradient(90deg, ${C.success}, ${C.teal})`, borderRadius:2 }}/>
-              </div>
-            </motion.div>
-
-            {/* Main dashboard window */}
-            <div style={{ background:'#0d1117', border:`1px solid ${C.border}`, borderRadius:16, overflow:'hidden', boxShadow:`0 50px 120px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04), 0 0 60px ${C.gold}10`, position:'relative' }}>
-              <div className="scan-line"/>
-              {/* Chrome */}
-              <div style={{ background:C.elevated, padding:'10px 14px', display:'flex', alignItems:'center', gap:6, borderBottom:`1px solid ${C.border}` }}>
-                {['#ef4444','#f59e0b','#10b981'].map((c,i) => <div key={i} style={{ width:10, height:10, borderRadius:'50%', background:c, opacity:0.8 }}/>)}
-                <div style={{ flex:1, display:'flex', justifyContent:'center' }}>
-                  <div style={{ background:C.bg, border:`1px solid ${C.border}`, borderRadius:6, padding:'3px 20px', fontSize:10, color:C.textMuted, fontFamily:'monospace' }}>planora.app/dashboard</div>
-                </div>
-                <div style={{ display:'flex', alignItems:'center', gap:4 }}>
-                  <div style={{ width:5, height:5, borderRadius:'50%', background:C.success, boxShadow:`0 0 6px ${C.success}` }}/>
-                  <span style={{ fontSize:9, color:C.success, fontFamily:'monospace', fontWeight:700 }}>LIVE</span>
-                </div>
-              </div>
-              {/* Ticker */}
-              <div style={{ background:C.bg, borderBottom:`1px solid ${C.border}`, overflow:'hidden', height:24 }}>
-                <div className="ticker-track">
-                  {['S&P 500 7,242.53 +0.39%','AAPL $192.40 +1.24%','NVDA $875.62 +2.18%','MSFT $415.20 -0.31%','TSLA $256.80 +3.45%','JPM $198.40 +0.88%',
-                    'S&P 500 7,242.53 +0.39%','AAPL $192.40 +1.24%','NVDA $875.62 +2.18%','MSFT $415.20 -0.31%','TSLA $256.80 +3.45%','JPM $198.40 +0.88%',
-                  ].map((t,i) => (
-                    <span key={i} style={{ fontSize:9, color:i%3===2?C.danger:C.success, fontFamily:'monospace', padding:'0 20px', lineHeight:'24px', whiteSpace:'nowrap' }}>{t}</span>
-                  ))}
-                </div>
-              </div>
-              {/* Body */}
-              <div style={{ display:'flex', height:300 }}>
-                {/* Sidebar */}
-                <div style={{ width:46, background:C.bg, borderRight:`1px solid ${C.border}`, display:'flex', flexDirection:'column', alignItems:'center', padding:'10px 0', gap:6 }}>
-                  <div style={{ width:26, height:26, background:C.gold, borderRadius:6, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:4, boxShadow:`0 0 10px ${C.gold}50` }}>
-                    <span style={{ fontSize:11, fontWeight:900, color:'#0a0a0f' }}>P</span>
-                  </div>
-                  {[true,false,false,false,false,false].map((active,i) => (
-                    <div key={i} style={{ width:28, height:28, borderRadius:6, background:active?`${C.gold}18`:'transparent', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                      <div style={{ width:13, height:2, background:active?C.gold:'rgba(255,255,255,0.15)', borderRadius:2 }}/>
-                    </div>
-                  ))}
-                </div>
-                {/* Main */}
-                <div style={{ flex:1, padding:'12px', overflow:'hidden' }}>
-                  <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:8 }}>MARKETS OVERVIEW</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:5, marginBottom:8 }}>
-                    {[
-                      { sym:'S&P 500',   val:'7,242.53',  chg:'+28.06', pct:'+0.39%', up:true  },
-                      { sym:'DOW JONES', val:'49,502.00', chg:'-163.00',pct:'-0.33%', up:false },
-                      { sym:'NASDAQ',    val:'25,288.63', chg:'+248.38',pct:'+0.99%', up:true  },
-                    ].map(idx => (
-                      <div key={idx.sym} style={{ background:C.elevated, borderRadius:6, padding:'7px 8px', border:`1px solid ${idx.up?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.2)'}` }}>
-                        <div style={{ fontSize:7.5, color:C.textMuted, fontFamily:'monospace', marginBottom:2 }}>{idx.sym}</div>
-                        <div style={{ fontSize:12, fontWeight:700, color:C.text, fontFamily:'monospace' }}>{idx.val}</div>
-                        <div style={{ fontSize:8.5, color:idx.up?C.success:C.danger, fontFamily:'monospace' }}>{idx.chg} ({idx.pct})</div>
+            {/* Auth CTA */}
+            {isAuthenticated ? (
+              <div style={{ position: 'relative' }} className="planora-nav-cta">
+                <button
+                  onClick={() => setShowAccount(v => !v)}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 7,
+                    background: '#2d2419', border: '1px solid #3d3028',
+                    borderRadius: 8, padding: '6px 12px',
+                    color: '#f0e8d8', fontSize: 12, fontWeight: 600, fontFamily: UI,
+                    cursor: 'pointer', transition: 'border-color 0.2s',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = '#c9a96e50')}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#3d3028')}
+                >
+                  <UserCircle size={14} color="#c9a96e" />
+                  {user?.name?.split(' ')[0] || 'Account'}
+                </button>
+                <AnimatePresence>
+                  {showAccount && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 4, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      style={{
+                        position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                        background: '#231c16', border: '1px solid #3d3028',
+                        borderRadius: 10, padding: '8px 0', minWidth: 180,
+                        boxShadow: '0 12px 32px rgba(0,0,0,0.5)',
+                        zIndex: 200,
+                      }}
+                    >
+                      <div style={{ padding: '8px 16px 10px', borderBottom: '1px solid #2a2018' }}>
+                        <div style={{ fontFamily: UI, fontSize: 12, fontWeight: 700, color: '#f0e8d8' }}>{user?.name}</div>
+                        <div style={{ fontFamily: UI, fontSize: 11, color: '#6b5540', marginTop: 2 }}>{user?.email}</div>
                       </div>
-                    ))}
-                  </div>
-                  <div style={{ background:C.elevated, borderRadius:6, padding:'8px 10px', marginBottom:8, border:`1px solid ${C.border}` }}>
-                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
-                      <span style={{ fontSize:8, color:C.textSec, fontFamily:'monospace' }}>S&P 500 · 1D</span>
-                      <span style={{ fontSize:8, color:C.success, fontFamily:'monospace', fontWeight:600 }}>+0.39%</span>
-                    </div>
-                    <svg width="100%" height="38" viewBox="0 0 260 38" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="hero-g" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.28"/>
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0"/>
-                        </linearGradient>
-                        <filter id="lineGlow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                      </defs>
-                      <polygon points="0,34 22,26 43,30 65,18 87,12 108,15 130,8 152,4 173,10 195,2 216,0 238,4 260,2 260,38 0,38" fill="url(#hero-g)"/>
-                      <polyline points="0,34 22,26 43,30 65,18 87,12 108,15 130,8 152,4 173,10 195,2 216,0 238,4 260,2" stroke="#10b981" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" filter="url(#lineGlow)"/>
-                    </svg>
-                  </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:3 }}>
-                    {[{sym:'XLK',pct:'+1.49%',up:true},{sym:'XLF',pct:'-0.48%',up:false},{sym:'XLE',pct:'-1.34%',up:false},{sym:'XLV',pct:'-0.53%',up:false},{sym:'XLY',pct:'+0.24%',up:true}].map(s => (
-                      <div key={s.sym} style={{ background:s.up?'rgba(16,185,129,0.12)':'rgba(239,68,68,0.12)', borderRadius:4, padding:4, textAlign:'center', border:`1px solid ${s.up?'rgba(16,185,129,0.22)':'rgba(239,68,68,0.22)'}` }}>
-                        <div style={{ fontSize:8, fontWeight:700, color:C.text, fontFamily:'monospace' }}>{s.sym}</div>
-                        <div style={{ fontSize:7.5, color:s.up?C.success:C.danger, fontFamily:'monospace' }}>{s.pct}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* Right panel */}
-                <div style={{ width:108, borderLeft:`1px solid ${C.border}`, padding:'12px 10px', display:'flex', flexDirection:'column', gap:10 }}>
-                  <div>
-                    <div style={{ fontSize:7.5, color:C.textMuted, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:6 }}>Fear & Greed</div>
-                    <svg width="88" height="48" viewBox="0 0 88 48">
-                      <defs><linearGradient id="fg-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#ef4444"/><stop offset="50%" stopColor="#f59e0b"/><stop offset="100%" stopColor="#10b981"/></linearGradient></defs>
-                      <path d="M 7 43 A 37 37 0 0 1 81 43" stroke="#1e2028" strokeWidth="7" fill="none" strokeLinecap="round"/>
-                      <path d="M 7 43 A 37 37 0 0 1 81 43" stroke="url(#fg-g)" strokeWidth="7" fill="none" strokeLinecap="round" strokeDasharray="116" strokeDashoffset="30"/>
-                      <text x="44" y="41" textAnchor="middle" fontSize="16" fontWeight="800" fill={C.text} fontFamily="monospace">48</text>
-                    </svg>
-                    <div style={{ fontSize:9, color:C.warning, fontWeight:700, marginTop:-2 }}>Neutral</div>
-                  </div>
-                  <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:8 }}>
-                    <div style={{ fontSize:7.5, color:C.textMuted, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:5 }}>Market Clock</div>
-                    <div style={{ display:'flex', alignItems:'center', gap:4, marginBottom:3 }}>
-                      <div style={{ width:5, height:5, borderRadius:'50%', background:C.danger }}/>
-                      <span style={{ fontSize:9, color:C.danger, fontWeight:700 }}>CLOSED</span>
-                    </div>
-                    <div style={{ fontSize:11, color:C.text, fontFamily:'monospace', fontWeight:700 }}>01:45:12</div>
-                    <div style={{ fontSize:8, color:C.textMuted, marginTop:2 }}>Opens Mon 9:30</div>
-                  </div>
-                  <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:8 }}>
-                    <div style={{ fontSize:7.5, color:C.textMuted, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:4 }}>VIX</div>
-                    <div style={{ fontSize:13, fontWeight:700, color:C.text, fontFamily:'monospace' }}>18.42</div>
-                    <div style={{ fontSize:8, color:C.success, fontFamily:'monospace' }}>+0.00%</div>
-                  </div>
-                </div>
+                      <button
+                        onClick={() => { navigate('/dashboard') }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '9px 16px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: UI, fontSize: 13, color: '#a89070', textAlign: 'left' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#2d2419'; e.currentTarget.style.color = '#f0e8d8' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#a89070' }}
+                      >
+                        Enter Platform
+                      </button>
+                      <button
+                        onClick={() => { logout(); setShowAccount(false) }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '9px 16px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: UI, fontSize: 13, color: '#a89070', textAlign: 'left' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#2d2419'; e.currentTarget.style.color = '#c0392b' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#a89070' }}
+                      >
+                        <LogOut size={13} /> Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }} className="planora-nav-cta">
+                <button
+                  onClick={() => navigate('/login')}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    background: 'transparent', border: '1px solid #3d3028',
+                    borderRadius: 8, padding: '6px 14px',
+                    color: '#a89070', fontSize: 12, fontWeight: 600, fontFamily: UI,
+                    cursor: 'pointer', transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a96e50'; e.currentTarget.style.color = '#f0e8d8' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#3d3028'; e.currentTarget.style.color = '#a89070' }}
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    background: '#c9a96e', borderRadius: 8, padding: '7px 14px',
+                    color: '#1a1410', fontSize: 12, fontWeight: 700, fontFamily: UI,
+                    border: 'none', cursor: 'pointer', transition: 'opacity 0.2s',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                >
+                  Enter Platform
+                </button>
+              </div>
+            )}
 
-            {/* Portfolio value badge */}
-            <motion.div
-              initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ delay:1.5, duration:0.55 }}
-              style={{ position:'absolute', bottom:-20, left:-28, background:'rgba(17,19,24,0.94)', backdropFilter:'blur(12px)', border:`1px solid ${C.border}`, borderRadius:12, padding:'10px 14px', boxShadow:'0 20px 50px rgba(0,0,0,0.5)', display:'flex', alignItems:'center', gap:10, zIndex:3 }}
+            {/* Hamburger */}
+            <button
+              onClick={() => setMenuOpen(true)}
+              style={{
+                background: 'none', border: 'none', color: '#a89070', cursor: 'pointer',
+                padding: 4, display: 'flex', flexDirection: 'column', gap: 5,
+              }}
+              className="planora-nav-hamburger"
             >
-              <div style={{ width:32, height:32, background:`rgba(16,185,129,0.12)`, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <TrendingUp size={14} color={C.success}/>
-              </div>
-              <div>
-                <div style={{ fontSize:10, color:C.textSec }}>Portfolio Value</div>
-                <div style={{ fontSize:14, fontWeight:700, color:C.text, fontFamily:'monospace' }}>$2,847,320</div>
-              </div>
-              <div style={{ fontSize:11, color:C.success, fontFamily:'monospace', fontWeight:600 }}>+2.4%</div>
+              <span style={{ display: 'block', width: 20, height: 1.5, background: 'currentColor' }} />
+              <span style={{ display: 'block', width: 14, height: 1.5, background: 'currentColor' }} />
+            </button>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Search overlay */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 600,
+              background: 'rgba(10,8,5,0.92)', backdropFilter: 'blur(24px)',
+              display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+              paddingTop: 120,
+            }}
+            onClick={() => setSearchOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.96, opacity: 0, y: -12 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              onClick={e => e.stopPropagation()}
+              style={{ width: '100%', maxWidth: 560, padding: '0 24px' }}
+            >
+              <form onSubmit={handleSearch}>
+                <div style={{
+                  background: '#231c16', border: '1px solid #3d3028', borderRadius: 14,
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px',
+                  boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 var(--border-c)',
+                }}>
+                  <Search size={18} color="#6b5540" />
+                  <input
+                    autoFocus
+                    value={searchVal}
+                    onChange={e => setSearchVal(e.target.value.toUpperCase())}
+                    placeholder="Search ticker — AAPL, MSFT, NVDA..."
+                    style={{
+                      flex: 1, background: 'none', border: 'none', outline: 'none',
+                      fontSize: 16, color: '#f0e8d8', fontFamily: MONO, fontWeight: 500,
+                    }}
+                  />
+                  <button
+                    onClick={() => setSearchOpen(false)}
+                    type="button"
+                    style={{ background: 'none', border: 'none', color: '#6b5540', cursor: 'pointer', padding: 2 }}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </form>
+              <p style={{ fontSize: 11, color: '#6b5540', marginTop: 10, paddingLeft: 4, letterSpacing: '0.04em', fontFamily: UI }}>
+                Enter any US stock ticker to research — press Return to search
+              </p>
             </motion.div>
           </motion.div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
-  );
-}
+        )}
+      </AnimatePresence>
 
-/* ─── SCENE 2: PLATFORM CARD ─────────────────────────────────────── */
-function PlatformCard({ p, navigate, entryVariants }) {
-  const cardRef   = useRef(null);
-  const spotX     = useMotionValue(0);
-  const spotY     = useMotionValue(0);
-  const rotX      = useMotionValue(0);
-  const rotY      = useMotionValue(0);
-  const springRotX = useSpring(rotX, { stiffness:300, damping:25 });
-  const springRotY = useSpring(rotY, { stiffness:300, damping:25 });
-  const [hov, setHov] = useState(false);
-
-  const onMove = useCallback((e) => {
-    if (!cardRef.current) return;
-    const r = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - r.left;
-    const y = e.clientY - r.top;
-    spotX.set(x - 150);
-    spotY.set(y - 150);
-    rotX.set(((y / r.height) - 0.5) * -12);
-    rotY.set(((x / r.width)  - 0.5) *  12);
-  }, [rotX, rotY, spotX, spotY]);
-
-  const onLeave = useCallback(() => {
-    rotX.set(0); rotY.set(0); setHov(false);
-  }, [rotX, rotY]);
-
-  return (
-    <motion.div variants={entryVariants} style={{ perspective:1200, transformStyle:'preserve-3d' }}>
-      <motion.div
-        ref={cardRef}
-        onMouseMove={onMove}
-        onMouseEnter={() => setHov(true)}
-        onMouseLeave={onLeave}
-        onClick={() => navigate(p.route)}
-        style={{
-          rotateX: springRotX,
-          rotateY: springRotY,
-          transformStyle: 'preserve-3d',
-          background: C.surface,
-          border: `1px solid ${hov ? p.accent + '55' : C.border}`,
-          borderRadius:18, padding:28, cursor:'pointer',
-          position:'relative', overflow:'hidden',
-          boxShadow: hov ? `0 28px 64px rgba(0,0,0,0.55), 0 0 40px ${p.accent}15` : '0 8px 32px rgba(0,0,0,0.3)',
-          transition:'border-color 0.25s, box-shadow 0.25s',
-          willChange:'transform',
-        }}
-        whileHover={{ scale:1.02, transition:{ type:'spring', stiffness:200, damping:20 } }}
-      >
-        {/* Mouse-tracking spotlight */}
-        <motion.div style={{ position:'absolute', width:300, height:300, borderRadius:'50%', background:`radial-gradient(circle, ${p.accent}18 0%, transparent 70%)`, pointerEvents:'none', x:spotX, y:spotY, opacity: hov ? 1 : 0, transition:'opacity 0.3s' }}/>
-
-        {/* Top accent bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg, transparent, ${p.accent}, transparent)`, borderRadius:'18px 18px 0 0' }}/>
-
-        {/* Corner glow */}
-        <div style={{ position:'absolute', top:-40, right:-40, width:180, height:180, background:`radial-gradient(circle, ${p.accent}10 0%, transparent 65%)`, pointerEvents:'none' }}/>
-
-        {/* Arrow */}
-        <motion.div
-          animate={{ rotate: hov ? 45 : 0, color: hov ? p.accent : C.textMuted }}
-          transition={{ duration:0.22 }}
-          style={{ position:'absolute', top:22, right:22 }}
-        >
-          <ArrowRight size={15} color={hov ? p.accent : C.textMuted}/>
-        </motion.div>
-
-        <div style={{ marginBottom:18 }}>{p.icon}</div>
-        <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.12em', color:p.accent, textTransform:'uppercase', marginBottom:6 }}>{p.label}</div>
-        <div style={{ fontSize:21, fontWeight:800, color:C.text, letterSpacing:'-0.01em', marginBottom:10 }}>{p.name}</div>
-        <div style={{ fontSize:13, color:C.textSec, lineHeight:1.72, marginBottom:22 }}>{p.desc}</div>
-        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-          {p.features.map(f => (
-            <div key={f} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11, color:C.textSec }}>
-              <div style={{ width:5, height:5, borderRadius:'50%', background:p.accent, flexShrink:0, boxShadow:`0 0 4px ${p.accent}` }}/>{f}
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 600,
+              background: 'rgba(15,12,9,0.97)', backdropFilter: 'blur(24px)',
+              display: 'flex', flexDirection: 'column',
+              padding: '24px 32px 48px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 48 }}>
+              <span style={{ fontFamily: DISPLAY, fontSize: 20, fontWeight: 700, color: '#c9a96e' }}>Planora</span>
+              <button onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none', color: '#a89070', cursor: 'pointer', padding: 4 }}>
+                <X size={20} />
+              </button>
             </div>
-          ))}
-        </div>
-      </motion.div>
-    </motion.div>
-  );
+            <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[...NAV_LINKS, { label: 'Enter Platform', href: '/dashboard' }].map((link, i) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.08 + i * 0.06, type: 'spring', stiffness: 300, damping: 28 }}
+                >
+                  <button
+                    onClick={() => { setMenuOpen(false); navigate(link.href) }}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      width: '100%', padding: '18px 0',
+                      borderBottom: '1px solid #2a2018',
+                      background: 'none', border: 'none', borderBottom: '1px solid #2a2018',
+                      color: link.label === 'Enter Platform' ? '#c9a96e' : '#f0e8d8',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <span style={{ fontFamily: DISPLAY, fontSize: 28, fontWeight: 600 }}>{link.label}</span>
+                    <ArrowUpRight size={18} color={link.label === 'Enter Platform' ? '#c9a96e' : '#6b5540'} />
+                  </button>
+                </motion.div>
+              ))}
+            </nav>
+            <p style={{ fontSize: 11, color: '#6b5540', letterSpacing: '0.08em', fontFamily: UI }}>
+              Institutional Intelligence. Personal Impact.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .planora-nav-center { display: none !important; }
+          .planora-nav-search { display: none !important; }
+          .planora-nav-cta    { display: none !important; }
+        }
+        @media (min-width: 901px) {
+          .planora-nav-hamburger { display: none !important; }
+        }
+      `}</style>
+    </>
+  )
 }
 
-/* ─── SCENE 2: PLATFORM CARDS SECTION ───────────────────────────── */
-function PlatformCards({ navigate }) {
-  const sectionRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['center center', 'end start'],
-  });
-  const leftX  = useTransform(scrollYProgress, [0,1], [0, -50]);
-  const rightX = useTransform(scrollYProgress, [0,1], [0,  50]);
-
-  const platforms = [
-    {
-      id:'terminal', accent:C.gold, route:'/dashboard',
-      label:'Market Intelligence Platform', name:'Planora Terminal',
-      desc:'Institutional-grade analytics, live market data, risk modeling, and wealth planning tools — all in one terminal.',
-      features:['Real-time Data','Risk Analysis','Planning Tools','Wealth Counsel'],
-      icon:(
-        <div style={{ width:44, height:44, background:C.gold, borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 20px ${C.gold}40` }}>
-          <span style={{ fontSize:22, fontWeight:900, color:'#0a0a0f' }}>P</span>
-        </div>
-      ),
-    },
-    {
-      id:'nexus', accent:C.teal, route:'/nexus',
-      label:'Advisor-Client Platform', name:'Nexus',
-      desc:'Secure collaboration hub for advisors and clients with shared dashboards, messaging, and portfolio oversight.',
-      features:['Client Portal','Workflow Center','Life Events','Secure Messaging'],
-      icon:(
-        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-          <polygon points="22,2 42,12 42,32 22,42 2,32 2,12" fill="none" stroke={C.teal} strokeWidth="1.5"/>
-          <polygon points="22,10 34,17 34,27 22,34 10,27 10,17" fill="none" stroke={C.teal} strokeWidth="1" opacity="0.4"/>
-          <circle cx="22" cy="22" r="5" fill={C.teal}/>
-          <circle cx="22" cy="22" r="9" fill="none" stroke={C.teal} strokeWidth="0.5" opacity="0.3"/>
-        </svg>
-      ),
-    },
-    {
-      id:'fun', accent:C.indigo, route:'/fun',
-      label:'Financial Education Network', name:'FUN',
-      desc:'Interactive learning, calculators, and planning modules to empower clients at every stage of their journey.',
-      features:['Education Modules','Calculators','Visual Guides','Assessments'],
-      icon:(
-        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-          <circle cx="22" cy="22" r="21" stroke={C.indigo} strokeWidth="1.5" fill="none" opacity="0.6"/>
-          <circle cx="22" cy="7"  r="5" fill={C.indigo}/>
-          <circle cx="7"  cy="35" r="5" fill={C.indigo} opacity="0.8"/>
-          <circle cx="37" cy="35" r="5" fill={C.indigo} opacity="0.8"/>
-          <line x1="22" y1="12" x2="7"  y2="30" stroke={C.indigo} strokeWidth="1.5" opacity="0.6"/>
-          <line x1="22" y1="12" x2="37" y2="30" stroke={C.indigo} strokeWidth="1.5" opacity="0.6"/>
-          <line x1="7"  y1="35" x2="37" y2="35" stroke={C.indigo} strokeWidth="1.5" opacity="0.6"/>
-        </svg>
-      ),
-    },
-  ];
-
-  // Entry variants: left slides from -60+rotate, center rises, right slides from +60+rotate
-  const cardVariants = [
-    { hidden:{ opacity:0, x:-60, rotate:-5 }, visible:{ opacity:1, x:0, rotate:0, transition:{ type:'spring', stiffness:100, damping:20 } } },
-    { hidden:{ opacity:0, y:70 },             visible:{ opacity:1, y:0,            transition:{ type:'spring', stiffness:100, damping:20, delay:0.15 } } },
-    { hidden:{ opacity:0, x:60, rotate:5 },  visible:{ opacity:1, x:0, rotate:0,  transition:{ type:'spring', stiffness:100, damping:20, delay:0.3 } } },
-  ];
+// ─────────────────────────────────────────────────────────────────────────────
+// HERO
+// ─────────────────────────────────────────────────────────────────────────────
+function Hero() {
+  const ref   = useRef(null)
+  const inView = useInView(ref, { once: true })
 
   return (
-    <section ref={sectionRef} style={{ padding:'120px 0', background:C.bg, position:'relative', overflow:'hidden' }}>
-      {/* Ambient orbs */}
-      <div className="orb" style={{ width:500, height:500, background:`radial-gradient(circle, ${C.gold}07 0%, transparent 65%)`, top:'-10%', right:'-5%' }}/>
-      <div className="orb" style={{ width:400, height:400, background:`radial-gradient(circle, ${C.teal}06 0%, transparent 65%)`, bottom:'-10%', left:'10%', animationDelay:'-12s' }}/>
+    <section
+      ref={ref}
+      style={{
+        minHeight: '100dvh',
+        background: '#1a1410',
+        position: 'relative', overflow: 'hidden',
+        display: 'flex', alignItems: 'center',
+      }}
+    >
+      {/* Warm radial glow — left */}
+      <div style={{
+        position: 'absolute', top: '-10%', left: '-5%',
+        width: '55%', height: '70%',
+        background: 'radial-gradient(ellipse at top left, rgba(201,169,110,0.05) 0%, transparent 65%)',
+        pointerEvents: 'none',
+      }} />
+      {/* Cool radial glow — right */}
+      <div style={{
+        position: 'absolute', bottom: '-10%', right: '5%',
+        width: '40%', height: '60%',
+        background: 'radial-gradient(ellipse at bottom right, rgba(0,180,198,0.04) 0%, transparent 65%)',
+        pointerEvents: 'none',
+      }} />
 
-      {/* Scene top gradient overlap */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:80, background:`linear-gradient(to bottom, ${C.bg}, transparent)`, pointerEvents:'none', zIndex:2 }}/>
+      <div
+        style={{
+          maxWidth: 1400, margin: '0 auto', padding: '80px 40px',
+          width: '100%', display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 80, alignItems: 'center',
+        }}
+        className="planora-hero-grid"
+      >
+        {/* Left content */}
+        <div>
+          {/* Eyebrow badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: EASE }}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: 'rgba(201,169,110,0.08)',
+              border: '1px solid rgba(201,169,110,0.22)',
+              borderRadius: 100, padding: '5px 12px', marginBottom: 28,
+            }}
+          >
+            <motion.div
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+              style={{ width: 5, height: 5, borderRadius: '50%', background: '#c9a96e' }}
+            />
+            <span style={{
+              fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em',
+              fontWeight: 600, color: '#c9a96e', fontFamily: UI,
+            }}>
+              Institutional Intelligence. Personal Impact.
+            </span>
+          </motion.div>
 
-      <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 32px', position:'relative', zIndex:1 }}>
-        {/* Eyebrow pill */}
+          {/* Headline — Playfair Display, staggered */}
+          <h1 style={{
+            fontFamily: DISPLAY, fontSize: 'clamp(40px,4.5vw,68px)',
+            fontWeight: 700, color: '#f0e8d8',
+            lineHeight: 1.06, letterSpacing: '-0.02em', margin: '0 0 24px',
+          }}>
+            {[
+              { text: 'The foundation of',            delay: 0.10 },
+              { text: 'every sound',                  delay: 0.18 },
+              { text: <><span style={{ color: '#c9a96e', fontStyle: 'italic' }}>financial decision</span></>, delay: 0.26 },
+              { text: 'starts here.',                 delay: 0.32 },
+            ].map((line, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: line.delay, ease: EASE }}
+                style={{ display: 'block' }}
+              >
+                {line.text}
+              </motion.span>
+            ))}
+          </h1>
+
+          {/* Subheading */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.38, ease: EASE }}
+            style={{
+              fontSize: 16, color: '#a89070', lineHeight: 1.75,
+              maxWidth: 460, margin: '0 0 36px', fontFamily: UI,
+            }}
+          >
+            Institutional-grade market intelligence, advisor collaboration, and financial
+            education — unified for investors who want to understand before they act.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.46, ease: EASE }}
+            style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 44 }}
+          >
+            <button
+              onClick={() => window._planoraNavigate?.('/dashboard')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                background: '#c9a96e', border: 'none', borderRadius: 10,
+                padding: '13px 20px', color: '#1a1410',
+                fontSize: 14, fontWeight: 700, fontFamily: UI,
+                cursor: 'pointer',
+                transition: 'all 0.25s cubic-bezier(0.32,0.72,0,1)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(201,169,110,0.25)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)';    e.currentTarget.style.boxShadow = 'none' }}
+              onClick={() => { window.location.href = '/dashboard' }}
+            >
+              Enter Platform
+              <span style={{
+                width: 24, height: 24, borderRadius: '50%',
+                background: 'rgba(26,20,16,0.15)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <ArrowRight size={13} />
+              </span>
+            </button>
+
+            <button
+              onClick={() => { window.location.href = '/wealth-counsel' }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                background: 'transparent', border: '1px solid rgba(201,169,110,0.3)',
+                borderRadius: 10, padding: '13px 20px',
+                color: '#c9a96e', fontSize: 14, fontWeight: 600, fontFamily: UI,
+                cursor: 'pointer',
+                transition: 'all 0.25s cubic-bezier(0.32,0.72,0,1)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,169,110,0.06)'; e.currentTarget.style.borderColor = 'rgba(201,169,110,0.5)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent';             e.currentTarget.style.borderColor = 'rgba(201,169,110,0.3)' }}
+            >
+              Explore Solutions
+            </button>
+          </motion.div>
+
+          {/* Trust row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.58 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}
+          >
+            {['Real Data', 'Institutional Grade', 'Three Platforms'].map((t, i) => (
+              <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span style={{
+                  fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em',
+                  color: '#6b5540', fontFamily: UI, fontWeight: 500,
+                }}>
+                  {t}
+                </span>
+                {i < 2 && <span style={{ color: '#3d3028', fontSize: 10 }}>—</span>}
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Right — floating card */}
         <motion.div
-          initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
-          viewport={{ once:true, margin:'-60px' }} transition={{ duration:0.6 }}
-          style={{ textAlign:'center', marginBottom:20 }}
+          initial={{ opacity: 0, x: 40, y: 20 }}
+          animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.3, ease: EASE }}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
-          <div style={{ display:'inline-flex', alignItems:'center', gap:10, background:`${C.gold}10`, border:`1px solid ${C.gold}25`, borderRadius:99, padding:'6px 18px' }}>
-            <div style={{ width:5, height:5, borderRadius:'50%', background:C.gold, boxShadow:`0 0 8px ${C.gold}` }}/>
-            <span style={{ fontSize:11, fontWeight:700, color:C.gold, letterSpacing:'0.16em', textTransform:'uppercase' }}>Three Platforms. One Ecosystem.</span>
-          </div>
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
+          >
+            <DailyFactCard />
+          </motion.div>
         </motion.div>
+      </div>
 
-        {/* Character-by-character title */}
-        <CharByChar
-          text="Choose your command center."
-          style={{ fontSize:36, fontWeight:800, color:C.text, letterSpacing:'-0.02em', marginBottom:56, justifyContent:'center' }}
+      <style>{`
+        @media (max-width: 900px) {
+          .planora-hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 48px !important;
+            padding: 100px 24px 60px !important;
+          }
+        }
+      `}</style>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUOTE SECTION
+// ─────────────────────────────────────────────────────────────────────────────
+function QuoteSection() {
+  const ref    = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  return (
+    <section
+      ref={ref}
+      style={{
+        background: '#231c16',
+        borderTop: '1px solid #2a2018',
+        borderBottom: '1px solid #2a2018',
+        padding: '80px 40px',
+        position: 'relative', overflow: 'hidden',
+      }}
+    >
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,169,110,0.03) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ maxWidth: 860, margin: '0 auto', textAlign: 'center', position: 'relative' }}>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={inView ? { scaleX: 1 } : {}}
+          transition={{ duration: 0.8, ease: EASE }}
+          style={{
+            height: 1,
+            background: 'linear-gradient(to right, transparent, #c9a96e50, transparent)',
+            marginBottom: 48, transformOrigin: 'center',
+          }}
         />
 
-        {/* Cards with spread parallax */}
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once:true, margin:'-80px' }}
-          style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:20 }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
+          style={{
+            fontFamily: DISPLAY, fontSize: 80, lineHeight: 0.6,
+            color: '#c9a96e', opacity: 0.25,
+            marginBottom: 24, display: 'block', userSelect: 'none',
+          }}
         >
-          <motion.div style={{ x: leftX }}>
-            <PlatformCard p={platforms[0]} navigate={navigate} entryVariants={cardVariants[0]} />
-          </motion.div>
-          <PlatformCard p={platforms[1]} navigate={navigate} entryVariants={cardVariants[1]} />
-          <motion.div style={{ x: rightX }}>
-            <PlatformCard p={platforms[2]} navigate={navigate} entryVariants={cardVariants[2]} />
-          </motion.div>
+          &ldquo;
         </motion.div>
+
+        <motion.blockquote
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.18, ease: EASE }}
+          style={{
+            fontFamily: DISPLAY, fontSize: 'clamp(22px,3vw,36px)',
+            fontStyle: 'italic', fontWeight: 500,
+            color: '#f0e8d8', lineHeight: 1.55,
+            margin: '0 0 32px', letterSpacing: '-0.01em',
+          }}
+        >
+          Institutional intelligence that every investor deserves — not just the privileged few.
+        </motion.blockquote>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
+        >
+          <div style={{ width: 24, height: 1, background: '#c9a96e50', marginBottom: 10 }} />
+          <span style={{ fontSize: 12, color: '#a89070', fontWeight: 600, letterSpacing: '0.08em', fontFamily: UI }}>
+            The Planora Philosophy
+          </span>
+          <span style={{ fontSize: 11, color: '#6b5540', fontStyle: 'italic', fontFamily: UI }}>
+            Bloomberg Terminal standards. Built for everyone.
+          </span>
+        </motion.div>
+
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={inView ? { scaleX: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
+          style={{
+            height: 1,
+            background: 'linear-gradient(to right, transparent, #c9a96e50, transparent)',
+            marginTop: 48, transformOrigin: 'center',
+          }}
+        />
       </div>
     </section>
-  );
+  )
 }
 
-/* ─── SCENE 3: FEATURE STRIP ─────────────────────────────────────── */
-function FeatureStrip() {
-  const sectionRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset:['start end', 'center center'] });
-  const sectionScale = useTransform(scrollYProgress, [0,1], [0.95, 1]);
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.5], [0.5, 1]);
-
-  const features = [
-    { icon: Activity,  title:'Real-Time Intelligence',  desc:'Live markets, news, and macro insights',               delay:0     },
-    { icon: BarChart2, title:'Advanced Risk Analysis',  desc:'Scenario modeling & Monte Carlo simulations',           delay:0.1   },
-    { icon: Target,    title:'Portfolio Optimization',  desc:'Data-driven allocation & rebalancing tools',            delay:0.2   },
-    { icon: Globe,     title:'Wealth Planning',         desc:'Cash flow, goals, estate & retirement',                 delay:0.3   },
-    { icon: Users,     title:'Client Collaboration',    desc:'Dashboards, tasks & secure communication',              delay:0.4   },
-    { icon: Lock,      title:'Secure by Design',        desc:'Bank-grade security & enterprise infrastructure',        delay:0.5   },
-  ];
-
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION PREVIEW — asymmetric bento (Terminal big left, Wealth Counsel top right, FUN full width bottom)
+// ─────────────────────────────────────────────────────────────────────────────
+function TerminalCard({ inView }) {
   return (
-    <motion.section
-      ref={sectionRef}
-      style={{ scale: sectionScale, opacity: sectionOpacity, background:C.elevated, borderTop:`1px solid ${C.border}`, borderBottom:`1px solid ${C.border}`, padding:'52px 0', willChange:'transform, opacity' }}
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
     >
-      <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 32px' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:36 }}>
-          <div style={{ flexShrink:0, minWidth:130 }}>
-            <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.14em', color:C.gold, textTransform:'uppercase', lineHeight:1.8 }}>BUILT FOR MODERN<br/>WEALTH MANAGERS</div>
-          </div>
-          <div style={{ width:1, height:50, background:C.border, flexShrink:0 }}/>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', flex:1 }}>
-            {features.map((f, i) => {
-              const Icon = f.icon;
-              return (
-                <motion.div
-                  key={f.title}
-                  initial={{ opacity:0, x:-30 }}
-                  whileInView={{ opacity:1, x:0 }}
-                  viewport={{ once:true, margin:'-40px' }}
-                  transition={{ duration:0.55, delay:f.delay, ease:[0.22,1,0.36,1] }}
-                  style={{ padding:'0 18px', borderLeft: i > 0 ? `1px solid ${C.border}` : 'none' }}
-                >
-                  {/* Icon — rotates on entry, subtle float after */}
-                  <motion.div
-                    initial={{ rotate:-180, scale:0.5 }}
-                    whileInView={{ rotate:0, scale:1 }}
-                    viewport={{ once:true }}
-                    transition={{ type:'spring', stiffness:200, damping:16, delay:f.delay + 0.05 }}
-                    style={{ marginBottom:10, display:'inline-block', animation:`featureFloat ${3.5 + i * 0.4}s ease-in-out infinite`, animationDelay:`${i * 0.5}s` }}
-                  >
-                    <Icon size={18} color={C.gold}/>
-                  </motion.div>
-                  <div style={{ fontSize:12, fontWeight:700, color:C.text, marginBottom:4, lineHeight:1.3 }}>{f.title}</div>
-                  <div style={{ fontSize:11, color:C.textMuted, lineHeight:1.5 }}>{f.desc}</div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </motion.section>
-  );
-}
-
-/* ─── SCENE 4: DASHBOARD PREVIEW ─────────────────────────────────── */
-function DashboardPreview() {
-  const navigate = useNavigate();
-  const sectionRef  = useRef(null);
-  const curtainRef  = useRef(null);
-  const row1Ref     = useRef(null);
-  const row2Ref     = useRef(null);
-
-  // Curtain reveal
-  const { scrollYProgress: curtainProg } = useScroll({ target: curtainRef, offset:['start end','start 25%'] });
-  const curtainClip = useTransform(curtainProg, [0,1], ['inset(0 100% 0 0)', 'inset(0 0% 0 0)']);
-
-  // Row depth parallax
-  const { scrollYProgress: row1Prog } = useScroll({ target: row1Ref, offset:['start end','end start'] });
-  const { scrollYProgress: row2Prog } = useScroll({ target: row2Ref, offset:['start end','end start'] });
-  const row1Y = useTransform(row1Prog, [0,1], [40, -40]);
-  const row2Y = useTransform(row2Prog, [0,1], [60, -25]);
-
-  const HoverCard = ({ children, delay = 0, accent = C.gold }) => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { once:true, margin:'-60px' });
-    const [hov, setHov] = useState(false);
-
-    return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity:0, scale:0.88, y:30 }}
-        animate={inView ? { opacity:1, scale:1, y:0 } : {}}
-        transition={{ duration:0.65, delay, ease:[0.22,1,0.36,1] }}
-        onMouseEnter={() => setHov(true)}
-        onMouseLeave={() => setHov(false)}
+      <div
+        onClick={() => { window.location.href = '/terminal-hub' }}
         style={{
-          background:'rgba(17,19,24,0.92)', backdropFilter:'blur(12px)',
-          border:`1px solid ${hov ? accent + '45' : C.border}`,
-          borderRadius:14, padding:20, cursor:'default',
-          boxShadow: hov ? `0 20px 48px rgba(0,0,0,0.45), 0 0 28px ${accent}12` : '0 4px 16px rgba(0,0,0,0.2)',
-          transform: hov ? 'translateY(-6px) scale(1.015)' : 'none',
-          transition:'border-color 0.2s, box-shadow 0.2s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+          background: '#231c16', border: '1px solid #3d3028', borderRadius: 20,
+          overflow: 'hidden', cursor: 'pointer',
+          transition: 'all 0.3s cubic-bezier(0.32,0.72,0,1)',
+          boxShadow: 'inset 0 1px 0 var(--border-c)',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.borderColor = 'rgba(201,169,110,0.4)'
+          e.currentTarget.style.transform = 'translateY(-4px)'
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 var(--border-c)'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.borderColor = '#3d3028'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = 'inset 0 1px 0 var(--border-c)'
         }}
       >
-        {children}
-      </motion.div>
-    );
-  };
-
-  return (
-    <section ref={sectionRef} style={{ padding:'120px 0', background:C.bg, position:'relative', overflow:'hidden' }}>
-      {/* Curtain-revealed atmospheric background */}
-      <motion.div
-        ref={curtainRef}
-        style={{ clipPath: curtainClip, position:'absolute', inset:0, background:`radial-gradient(ellipse 80% 60% at 30% 50%, ${C.teal}06 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 70% 30%, ${C.gold}05 0%, transparent 55%)`, pointerEvents:'none' }}
-      />
-
-      {/* Scene gradient at top */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:100, background:`linear-gradient(to bottom, ${C.elevated}, transparent)`, pointerEvents:'none', zIndex:1 }}/>
-
-      <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 32px', position:'relative', zIndex:2 }}>
-        <motion.div
-          initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }}
-          viewport={{ once:true, margin:'-60px' }} transition={{ duration:0.6 }}
-          style={{ marginBottom:52 }}
-        >
-          <div style={{ fontSize:11, fontWeight:700, letterSpacing:'0.18em', color:C.textMuted, textTransform:'uppercase', marginBottom:14 }}>PLATFORM INTELLIGENCE</div>
-          <CharByChar text="Every tool you need. All in one place." style={{ fontSize:36, fontWeight:800, color:C.text, letterSpacing:'-0.02em', marginBottom:14, justifyContent:'flex-start' }}/>
-          <p style={{ fontSize:15, color:C.textSec, maxWidth:500, lineHeight:1.75 }}>Institutional-grade dashboards, research, and planning tools built for modern wealth management professionals.</p>
-        </motion.div>
-
-        {/* Row 1 — front row (100% scroll rate) */}
-        <motion.div ref={row1Ref} style={{ y: row1Y, display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, marginBottom:14, willChange:'transform' }}>
-          {/* Card 1 — Portfolio */}
-          <HoverCard delay={0} accent={C.gold}>
-            <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:12 }}>PORTFOLIO ALLOCATION</div>
-            <div style={{ display:'flex', gap:12, alignItems:'center', marginBottom:14 }}>
-              <div style={{ width:80, height:80, flexShrink:0 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart><Pie data={allocData} innerRadius={25} outerRadius={38} dataKey="value" strokeWidth={0}>{allocData.map((e,i) => <Cell key={i} fill={e.color}/>)}</Pie></PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div style={{ flex:1 }}>
-                <div style={{ fontSize:16, fontWeight:800, color:C.text, fontFamily:'monospace', marginBottom:2 }}>$28.7M</div>
-                <div style={{ fontSize:10, color:C.textMuted, marginBottom:8 }}>Total Value</div>
-                {allocData.map(a => (
-                  <div key={a.name} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:3 }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:5 }}>
-                      <div style={{ width:6, height:6, borderRadius:2, background:a.color, flexShrink:0 }}/>
-                      <span style={{ fontSize:9, color:C.textSec }}>{a.name}</span>
-                    </div>
-                    <span style={{ fontSize:9, color:C.text, fontFamily:'monospace' }}>{a.value}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.text, marginBottom:4 }}>Portfolio Intelligence</div>
-            <div style={{ fontSize:11, color:C.textSec, lineHeight:1.6, marginBottom:10 }}>Deep visibility into performance, allocation, and risk across all accounts.</div>
-            <span onClick={() => navigate('/RiskAnalysis')} style={{ fontSize:11, color:C.gold, fontWeight:700, display:'flex', alignItems:'center', gap:4, cursor:'pointer' }}>Learn more <ArrowRight size={11}/></span>
-          </HoverCard>
-
-          {/* Card 2 — Macro Outlook */}
-          <HoverCard delay={0.08} accent={C.teal}>
-            <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:4 }}>MACRO OUTLOOK</div>
-            <div style={{ fontSize:11, color:C.textSec, marginBottom:12 }}>Global GDP Growth Forecast</div>
-            <div style={{ height:90, marginBottom:8 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={gdpData} margin={{ top:4, right:4, left:-30, bottom:0 }}>
-                  <Line type="monotone" dataKey="usa"   stroke={C.gold}   strokeWidth={1.5} dot={false}/>
-                  <Line type="monotone" dataKey="eu"    stroke={C.teal}   strokeWidth={1.5} dot={false}/>
-                  <Line type="monotone" dataKey="china" stroke={C.danger} strokeWidth={1.5} dot={false}/>
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div style={{ display:'flex', gap:12, marginBottom:12 }}>
-              {[['USA',C.gold],['Europe',C.teal],['China',C.danger]].map(([l,c]) => (
-                <div key={l} style={{ display:'flex', alignItems:'center', gap:5, fontSize:9, color:C.textSec }}>
-                  <div style={{ width:12, height:2, background:c, borderRadius:1 }}/>{l}
-                </div>
-              ))}
-            </div>
-            <div style={{ fontSize:11, color:C.textSec, lineHeight:1.6, marginBottom:10 }}>Macro insights from global markets, economy, and policy trends.</div>
-            <span onClick={() => navigate('/consumer')} style={{ fontSize:11, color:C.gold, fontWeight:700, display:'flex', alignItems:'center', gap:4, cursor:'pointer' }}>Learn more <ArrowRight size={11}/></span>
-          </HoverCard>
-
-          {/* Card 3 — Macro Research */}
-          <HoverCard delay={0.16} accent={C.gold}>
-            <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:12 }}>MACRO RESEARCH</div>
-            <div style={{ display:'flex', flexDirection:'column', gap:6, marginBottom:14 }}>
-              {[
-                { label:'Fed Funds Rate', val:'4.25%', delta:'▼ -0.25%', color:C.success },
-                { label:'CPI YoY',        val:'3.1%',  delta:'▼ -0.2%',  color:C.success },
-                { label:'10Y Treasury',   val:'4.42%', delta:'▲ +0.08%', color:C.danger  },
-                { label:'Unemployment',   val:'4.1%',  delta:'→ flat',   color:C.warning },
-              ].map(r => (
-                <div key={r.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'6px 8px', background:C.elevated, borderRadius:6 }}>
-                  <span style={{ fontSize:11, color:C.textSec }}>{r.label}</span>
-                  <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                    <span style={{ fontSize:10, color:r.color, fontFamily:'monospace' }}>{r.delta}</span>
-                    <span style={{ fontSize:12, fontWeight:700, color:C.text, fontFamily:'monospace' }}>{r.val}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={{ fontSize:11, color:C.textSec, lineHeight:1.6, marginBottom:10 }}>Actionable insights from global markets, economy, and policy trends.</div>
-            <span onClick={() => navigate('/labor')} style={{ fontSize:11, color:C.gold, fontWeight:700, display:'flex', alignItems:'center', gap:4, cursor:'pointer' }}>Learn more <ArrowRight size={11}/></span>
-          </HoverCard>
-        </motion.div>
-
-        {/* Row 2 — back row (85% scroll rate = slightly slower) */}
-        <motion.div ref={row2Ref} style={{ y: row2Y, display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14, willChange:'transform' }}>
-          {/* Card 4 — Retirement */}
-          <HoverCard delay={0.04} accent={C.success}>
-            <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:12 }}>RETIREMENT PLAN</div>
-            <div style={{ marginBottom:12 }}>
-              <div style={{ fontSize:11, color:C.textSec, marginBottom:4 }}>Probability of Success</div>
-              <div style={{ fontSize:40, fontWeight:900, color:C.success, fontFamily:'monospace', letterSpacing:'-0.03em', lineHeight:1 }}>92%</div>
-            </div>
-            <div style={{ marginBottom:12 }}>
-              <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
-                <span style={{ fontSize:10, color:C.textMuted }}>Target: 85%</span>
-                <span style={{ fontSize:10, color:C.success, fontWeight:700 }}>On Track</span>
-              </div>
-              <div style={{ height:5, background:C.elevated, borderRadius:99 }}>
-                <div style={{ width:'92%', height:'100%', background:`linear-gradient(90deg, ${C.success}, #34d399)`, borderRadius:99, boxShadow:`0 0 8px ${C.success}50` }}/>
-              </div>
-            </div>
-            <div style={{ display:'flex', justifyContent:'space-between', padding:'8px 0', borderTop:`1px solid ${C.border}`, marginBottom:10 }}>
-              <span style={{ fontSize:11, color:C.textMuted }}>Investable Assets</span>
-              <span style={{ fontSize:12, fontWeight:700, color:C.text, fontFamily:'monospace' }}>$4,250,000</span>
-            </div>
-            <div style={{ fontSize:11, color:C.textSec, lineHeight:1.6, marginBottom:10 }}>Model your retirement with Monte Carlo simulation and 2026 contribution limits.</div>
-            <span style={{ fontSize:11, color:C.textMuted, fontWeight:600, display:'flex', alignItems:'center', gap:4 }}>Coming soon <ArrowRight size={11}/></span>
-          </HoverCard>
-
-          {/* Card 5 — Future Planning */}
-          <HoverCard delay={0.12} accent={C.indigo}>
-            <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:12 }}>FUTURE PLANNING</div>
-            <div style={{ height:80, marginBottom:10 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={fpData} margin={{ top:4, right:4, left:-30, bottom:0 }}>
-                  <defs>
-                    <linearGradient id="fp-g" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={C.indigo} stopOpacity="0.3"/>
-                      <stop offset="100%" stopColor={C.indigo} stopOpacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <Area type="monotone" dataKey="v" stroke={C.indigo} strokeWidth={1.5} fill="url(#fp-g)" dot={false}/>
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.text, marginBottom:6 }}>Future Planning</div>
-            <div style={{ fontSize:11, color:C.textSec, lineHeight:1.6, marginBottom:10 }}>Model your future with confidence using goals-based planning tools with real-time projections.</div>
-            <span onClick={() => navigate('/FuturePlanning')} style={{ fontSize:11, color:C.gold, fontWeight:700, display:'flex', alignItems:'center', gap:4, cursor:'pointer' }}>Learn more <ArrowRight size={11}/></span>
-          </HoverCard>
-
-          {/* Card 6 — Client Engagement */}
-          <HoverCard delay={0.2} accent={C.teal}>
-            <div style={{ fontSize:8, fontWeight:700, letterSpacing:'0.14em', color:C.textMuted, textTransform:'uppercase', marginBottom:12 }}>CLIENT ENGAGEMENT</div>
-            <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:14 }}>
-              <div style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
-                <div style={{ width:24, height:24, borderRadius:'50%', background:`${C.gold}22`, border:`1px solid ${C.gold}40`, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, color:C.gold, fontWeight:700 }}>A</div>
-                <div style={{ background:C.elevated, borderRadius:'8px 8px 8px 2px', padding:'7px 10px', flex:1 }}>
-                  <div style={{ fontSize:9, color:C.gold, fontWeight:600, marginBottom:2 }}>Advisor · Today 10:30 AM</div>
-                  <div style={{ fontSize:11, color:C.textSec }}>Market update and portfolio review is ready.</div>
-                </div>
-              </div>
-              <div style={{ display:'flex', gap:8, alignItems:'flex-start', flexDirection:'row-reverse' }}>
-                <div style={{ width:24, height:24, borderRadius:'50%', background:`${C.teal}22`, border:`1px solid ${C.teal}40`, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, color:C.teal, fontWeight:700 }}>C</div>
-                <div style={{ background:`${C.teal}12`, borderRadius:'8px 8px 2px 8px', padding:'7px 10px', flex:1 }}>
-                  <div style={{ fontSize:9, color:C.teal, fontWeight:600, marginBottom:2 }}>Client · 10:32 AM</div>
-                  <div style={{ fontSize:11, color:C.textSec }}>Great, thank you!</div>
-                </div>
-              </div>
-            </div>
-            <div style={{ fontSize:11, color:C.textSec, lineHeight:1.6, marginBottom:10 }}>Stronger relationships through transparency, communication, and proactive insights.</div>
-            <span onClick={() => navigate('/nexus/client')} style={{ fontSize:11, color:C.gold, fontWeight:700, display:'flex', alignItems:'center', gap:4, cursor:'pointer' }}>Learn more <ArrowRight size={11}/></span>
-          </HoverCard>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── SCENE 5: FOOTER ────────────────────────────────────────────── */
-function Footer() {
-  const [email, setEmail] = useState('');
-  const cols = [
-    { head:'Platform',  links:['Planora Terminal','Nexus','FUN','Integrations','Security'] },
-    { head:'Solutions', links:['Wealth Management','Family Office','RIAs','Institutions','Trust & Estates'] },
-    { head:'Research',  links:['Market Insights','Macro Outlook','Sector Analysis','Reports','Data Providers'] },
-    { head:'Wealth',    links:['Portfolio Tools','Risk Analysis','Financial Planning','Retirement','Tax Planning'] },
-    { head:'Education', links:['Courses','Calculators','Guides','Webinars','Resource Center'] },
-    { head:'Company',   links:['About Us','Careers','Press','Partners','Contact'] },
-  ];
-
-  return (
-    <motion.footer
-      initial={{ opacity:0, y:60, scaleY:0.96 }}
-      whileInView={{ opacity:1, y:0, scaleY:1 }}
-      viewport={{ once:true, margin:'-5%' }}
-      transition={{ duration:0.9, ease:[0.22,1,0.36,1] }}
-      style={{ background:C.elevated, borderTop:`1px solid ${C.border}`, padding:'64px 0 30px', transformOrigin:'bottom', willChange:'transform, opacity' }}
-    >
-      <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 32px' }}>
-        <div style={{ display:'grid', gridTemplateColumns:'240px 1fr 280px', gap:48, marginBottom:52 }}>
-          {/* Brand */}
-          <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.1 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
-              <div style={{ width:32, height:32, background:C.gold, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 16px ${C.gold}40` }}>
-                <span style={{ fontSize:15, fontWeight:900, color:'#0a0a0f' }}>P</span>
-              </div>
-              <div>
-                <div style={{ fontSize:13, fontWeight:800, color:C.text, letterSpacing:'0.04em' }}>PLANORA</div>
-                <div style={{ fontSize:8, color:C.gold, letterSpacing:'0.1em', textTransform:'uppercase' }}>TERMINAL</div>
-              </div>
-            </div>
-            <p style={{ fontSize:12, color:C.textMuted, lineHeight:1.75, marginBottom:20 }}>
-              The unified ecosystem for institutional intelligence, advisor collaboration, and financial education.
-            </p>
-            <div style={{ display:'flex', gap:8 }}>
-              {['in','tw','yt','⊕'].map(s => (
-                <div key={s} style={{ width:30, height:30, borderRadius:7, border:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, color:C.textMuted, cursor:'pointer', transition:'border-color 0.15s, color 0.15s' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.gold; e.currentTarget.style.color=C.gold; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.textMuted; }}
-                >{s}</div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Nav cols — stagger left to right */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:8 }}>
-            {cols.map((col, ci) => (
-              <motion.div key={col.head} initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:0.15 + ci * 0.06 }}>
-                <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.12em', color:C.text, textTransform:'uppercase', marginBottom:14 }}>{col.head}</div>
-                {col.links.map(l => (
-                  <div key={l} style={{ fontSize:12, color:C.textMuted, marginBottom:9, cursor:'pointer', transition:'color 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.color = C.text}
-                    onMouseLeave={e => e.currentTarget.style.color = C.textMuted}
-                  >{l}</div>
-                ))}
-              </motion.div>
-            ))}
+        <div style={{ padding: '28px 28px 0' }}>
+          {/* Tag */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'rgba(201,169,110,0.1)', border: '1px solid rgba(201,169,110,0.2)',
+            borderRadius: 6, padding: '4px 10px', marginBottom: 20,
+          }}>
+            <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#c9a96e' }} />
+            <span style={{ fontSize: 10, color: '#c9a96e', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: UI }}>
+              Planora Terminal
+            </span>
           </div>
 
-          {/* Newsletter */}
-          <motion.div initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:0.55 }}>
-            <div style={{ fontSize:16, fontWeight:800, color:C.text, marginBottom:8, letterSpacing:'-0.01em' }}>Stay ahead of the markets.</div>
-            <div style={{ fontSize:12, color:C.textMuted, marginBottom:18, lineHeight:1.7 }}>Get insights, platform updates, and market intelligence weekly.</div>
-            <div style={{ display:'flex' }}>
-              <input
-                type="email" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                style={{ flex:1, background:C.surface, border:`1px solid ${C.border}`, borderRight:'none', borderRadius:'8px 0 0 8px', padding:'11px 14px', fontSize:12, color:C.text, outline:'none', fontFamily:'inherit', transition:'border-color 0.2s' }}
-                onFocus={e => e.target.style.borderColor=`${C.gold}60`}
-                onBlur={e  => e.target.style.borderColor=C.border}
-              />
-              <button style={{ background:C.gold, color:'#0a0a0f', border:'none', borderRadius:'0 8px 8px 0', padding:'11px 18px', fontSize:12, fontWeight:800, cursor:'pointer', whiteSpace:'nowrap', fontFamily:'inherit', boxShadow:`0 0 16px ${C.gold}40`, transition:'box-shadow 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow=`0 0 28px ${C.gold}60`}
-                onMouseLeave={e => e.currentTarget.style.boxShadow=`0 0 16px ${C.gold}40`}
-              >Subscribe</button>
-            </div>
-          </motion.div>
+          <h3 style={{ fontFamily: DISPLAY, fontSize: 28, fontWeight: 700, color: '#f0e8d8', margin: '0 0 10px', letterSpacing: '-0.01em' }}>
+            Markets &amp; Intelligence
+          </h3>
+          <p style={{ fontSize: 13, color: '#a89070', lineHeight: 1.65, margin: '0 0 20px', maxWidth: 360, fontFamily: UI }}>
+            Real-time data, risk analysis, sector intelligence, and portfolio analytics.
+            Research any ticker and understand it the way institutions do.
+          </p>
+
+          {/* Live market stats */}
+          <div style={{ display: 'flex', gap: 20, marginBottom: 20 }}>
+            {[
+              { label: 'S&P 500', value: '5,847', chg: '+1.84%', up: true },
+              { label: 'NDX',     value: '20,412', chg: '+2.31%', up: true },
+              { label: 'VIX',     value: '13.4',  chg: '-0.8%',  up: false },
+            ].map(s => (
+              <div key={s.label}>
+                <div style={{ fontSize: 10, color: '#6b5540', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 3, fontFamily: UI }}>{s.label}</div>
+                <div className="font-mono" style={{ fontSize: 14, fontWeight: 700, color: '#f0e8d8' }}>{s.value}</div>
+                <div className="font-mono" style={{ fontSize: 11, color: s.up ? '#4a7c59' : '#8b3a3a' }}>{s.chg}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Disclaimer */}
-        <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:20, marginBottom:16 }}>
-          <p style={{ fontSize:10, color:C.textMuted, lineHeight:1.7, textAlign:'center', maxWidth:800, margin:'0 auto' }}>
-            <strong style={{ color:'rgba(245,166,35,0.7)' }}>DISCLAIMER:</strong> Planora is for educational and informational purposes only.
-            Nothing on this platform constitutes financial, investment, legal, or tax advice. All data is provided "as is" without warranty.
-            Past performance is not indicative of future results. Always consult a licensed financial advisor before making investment decisions.
+        {/* Chart bleeds to edge */}
+        <ResponsiveContainer width="100%" height={80}>
+          <AreaChart data={SP500_SPARK} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="terminalGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stopColor="#c9a96e" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#c9a96e" stopOpacity={0}    />
+              </linearGradient>
+            </defs>
+            <Area type="monotone" dataKey="v" stroke="#c9a96e" strokeWidth={1.5} fill="url(#terminalGrad)" dot={false} isAnimationActive={false} />
+          </AreaChart>
+        </ResponsiveContainer>
+
+        <div style={{ padding: '14px 28px', borderTop: '1px solid #2a2018', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: '#6b5540', fontFamily: UI }}>Risk analysis, sectors, portfolio, planning</span>
+          <ArrowUpRight size={16} color="#c9a96e" />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function WealthCounselCard({ inView }) {
+  const features = ['Advisor Marketplace', 'Verified CFP Profiles', 'Specialization Matching', 'Fee Transparency']
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+    >
+      <div
+        onClick={() => { window.location.href = '/wealth-counsel' }}
+        style={{
+          background: '#231c16', border: '1px solid #3d3028', borderRadius: 20,
+          padding: 28, height: '100%', display: 'flex', flexDirection: 'column',
+          cursor: 'pointer',
+          transition: 'all 0.3s cubic-bezier(0.32,0.72,0,1)',
+          boxShadow: 'inset 0 1px 0 var(--border-c)',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.borderColor = 'rgba(0,180,198,0.35)'
+          e.currentTarget.style.transform = 'translateY(-4px)'
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 var(--border-c)'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.borderColor = '#3d3028'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = 'inset 0 1px 0 var(--border-c)'
+        }}
+      >
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          background: 'rgba(0,180,198,0.08)', border: '1px solid rgba(0,180,198,0.2)',
+          borderRadius: 6, padding: '4px 10px', marginBottom: 20, alignSelf: 'flex-start',
+        }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#00B4C6' }} />
+          <span style={{ fontSize: 10, color: '#00B4C6', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: UI }}>
+            Wealth Counsel
+          </span>
+        </div>
+
+        <h3 style={{ fontFamily: DISPLAY, fontSize: 24, fontWeight: 700, color: '#f0e8d8', margin: '0 0 10px', letterSpacing: '-0.01em' }}>
+          Find Your Advisor
+        </h3>
+        <p style={{ fontSize: 13, color: '#a89070', lineHeight: 1.65, margin: '0 0 24px', fontFamily: UI }}>
+          Browse verified CFP professionals matched to your goals — transparent fees, real credentials, no cold calls.
+        </p>
+
+        <div style={{ flex: 1 }} />
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+          {features.map(f => (
+            <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 3, height: 3, borderRadius: '50%', background: '#00B4C6', flexShrink: 0 }} />
+              <span style={{ fontSize: 12, color: '#a89070', fontFamily: UI }}>{f}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ borderTop: '1px solid #2a2018', paddingTop: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: '#6b5540', fontFamily: UI }}>Advisor marketplace</span>
+          <ArrowUpRight size={16} color="#00B4C6" />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function FUNCard({ inView }) {
+  const topics = [
+    { label: 'Investing Basics',     color: '#c9a96e' },
+    { label: 'Retirement Planning',  color: '#8b6340' },
+    { label: 'Tax Strategy',         color: '#6b5540' },
+    { label: 'Budgeting',            color: '#c9a96e' },
+    { label: 'Estate Planning',      color: '#8b6340' },
+    { label: 'Insurance',            color: '#6b5540' },
+    { label: 'Debt & Credit',        color: '#c9a96e' },
+    { label: 'Real Estate',          color: '#8b6340' },
+  ]
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+    >
+      <div
+        onClick={() => { window.location.href = '/education-hub' }}
+        style={{
+          background: '#231c16', border: '1px solid #3d3028', borderRadius: 20,
+          padding: '28px 32px', cursor: 'pointer',
+          transition: 'all 0.3s cubic-bezier(0.32,0.72,0,1)',
+          boxShadow: 'inset 0 1px 0 var(--border-c)',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.borderColor = 'rgba(129,140,248,0.35)'
+          e.currentTarget.style.transform = 'translateY(-4px)'
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 var(--border-c)'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.borderColor = '#3d3028'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = 'inset 0 1px 0 var(--border-c)'
+        }}
+      >
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 32, alignItems: 'center' }} className="fun-card-inner">
+          <div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              background: 'rgba(129,140,248,0.08)', border: '1px solid rgba(129,140,248,0.22)',
+              borderRadius: 6, padding: '4px 10px', marginBottom: 16,
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#818cf8' }} />
+              <span style={{ fontSize: 10, color: '#818cf8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: UI }}>
+                Financial Education
+              </span>
+            </div>
+            <h3 style={{ fontFamily: DISPLAY, fontSize: 24, fontWeight: 700, color: '#f0e8d8', margin: '0 0 8px', letterSpacing: '-0.01em' }}>
+              FUN — Financial Understanding Network
+            </h3>
+            <p style={{ fontSize: 13, color: '#a89070', lineHeight: 1.65, margin: 0, fontFamily: UI, maxWidth: 420 }}>
+              Tax strategy, retirement planning, investing fundamentals, estate protection — every dimension of financial life, explained like a patient professor.
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, maxWidth: 320 }}>
+            {topics.map(t => (
+              <span key={t.label} style={{
+                fontSize: 11, fontFamily: UI, color: t.color,
+                background: `${t.color}10`, border: `1px solid ${t.color}25`,
+                borderRadius: 6, padding: '4px 10px', fontWeight: 500,
+              }}>
+                {t.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function SectionPreview() {
+  const ref    = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
+  return (
+    <section ref={ref} style={{ background: '#1a1410', padding: '100px 40px' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: EASE }}
+          style={{ marginBottom: 48 }}
+        >
+          <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#6b5540', fontFamily: UI, fontWeight: 600, marginBottom: 12 }}>
+            Everything you need
+          </div>
+          <h2 style={{
+            fontFamily: DISPLAY, fontSize: 'clamp(28px,3.5vw,44px)',
+            fontWeight: 700, color: '#f0e8d8',
+            margin: 0, letterSpacing: '-0.02em', maxWidth: 480,
+          }}>
+            One platform. Three disciplines.
+          </h2>
+        </motion.div>
+
+        {/* Asymmetric bento — NOT equal columns */}
+        <div
+          style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gridTemplateRows: 'auto auto', gap: 16 }}
+          className="planora-preview-grid"
+        >
+          <TerminalCard inView={inView} />
+          <WealthCounselCard inView={inView} />
+          <div style={{ gridColumn: '1 / -1' }}>
+            <FUNCard inView={inView} />
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .planora-preview-grid { grid-template-columns: 1fr !important; }
+          .fun-card-inner        { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          section { padding-left: 24px !important; padding-right: 24px !important; }
+        }
+      `}</style>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PLANNER SECTIONS — clickable section hub cards
+// ─────────────────────────────────────────────────────────────────────────────
+const PLANNER_SECTIONS = [
+  {
+    id: 'planning',
+    icon: FileText,
+    label: 'Financial Planning',
+    tagline: 'The discipline that separates wealth builders from earners.',
+    desc: 'Investment, retirement, tax, insurance, real estate, estate, and family planning — all in one place.',
+    href: '/planning',
+    stat: '2.5× more wealth',
+    statLabel: 'for people with a written plan',
+    accent: '#c9a96e',
+    accentDim: 'rgba(201,169,110,0.08)',
+    accentBdr: 'rgba(201,169,110,0.18)',
+    subsections: ['Budget Planner', 'Retirement Planning', 'Tax Planning', 'Life Insurance', 'Estate Planning', 'Social Security'],
+  },
+  {
+    id: 'markets',
+    icon: BarChart2,
+    label: 'Markets & Intelligence',
+    tagline: 'Institutional-grade market data, live.',
+    desc: 'Live indices, sector heat maps, top movers, market news, and terminal-grade data — Bloomberg quality.',
+    href: '/markets',
+    stat: '60s refresh',
+    statLabel: 'on all live market data',
+    accent: '#c9a96e',
+    accentDim: 'rgba(201,169,110,0.08)',
+    accentBdr: 'rgba(201,169,110,0.18)',
+    subsections: ['Dashboard', 'Terminal', 'Market History', 'Sectors', 'Top Performers', 'Market News', 'Political Intelligence'],
+  },
+  {
+    id: 'wealth',
+    icon: TrendingUp,
+    label: 'Wealth & Investing',
+    tagline: 'Build and protect what you earn.',
+    desc: 'Risk analysis, portfolio research, market breadth, insider flows, and investment tools — all connected.',
+    href: '/wealth',
+    stat: '7% avg',
+    statLabel: 'annual S&P 500 real return',
+    accent: '#c9a96e',
+    accentDim: 'rgba(201,169,110,0.08)',
+    accentBdr: 'rgba(201,169,110,0.18)',
+    subsections: ['Risk Analysis', 'AI Reports', 'Brokerage Guide', 'Watchlist', 'Market Breadth', 'Insider Trading'],
+  },
+  {
+    id: 'macro',
+    icon: Globe,
+    label: 'Macro & Economics',
+    tagline: 'Understand the forces moving the world.',
+    desc: 'Economic calendar, energy, labor, consumer trends, real estate data, and political intelligence — the macro context behind every market move.',
+    href: '/macro',
+    stat: '12+',
+    statLabel: 'macro data streams tracked',
+    accent: '#c9a96e',
+    accentDim: 'rgba(201,169,110,0.08)',
+    accentBdr: 'rgba(201,169,110,0.18)',
+    subsections: ['Economic Calendar', 'Energy Markets', 'Labor Markets', 'The Consumer', 'Real Estate'],
+  },
+  {
+    id: 'calculators',
+    icon: BarChart2,
+    label: 'Planning Calculators',
+    tagline: 'Run the numbers before you decide.',
+    desc: 'Compound growth, retirement projections, tax drag, insurance needs, mortgage analysis — every planning calculation in one place.',
+    href: '/Calculators',
+    stat: '20+',
+    statLabel: 'interactive financial calculators',
+    accent: '#c9a96e',
+    accentDim: 'rgba(201,169,110,0.08)',
+    accentBdr: 'rgba(201,169,110,0.18)',
+    subsections: ['Compound Growth', 'Retirement Savings', 'Tax Drag Cost', 'Insurance Needs', 'Mortgage Analysis', 'Net Worth'],
+  },
+  {
+    id: 'advisor',
+    icon: Users,
+    label: 'Wealth Counsel',
+    tagline: 'Find the right advisor for your goals.',
+    desc: 'Browse verified CFP professionals matched to your goals — transparent fees, real credentials, wealth counsel on your terms.',
+    href: '/wealth-counsel',
+    stat: 'Wealth Counsel',
+    statLabel: 'advisor marketplace',
+    accent: '#00B4C6',
+    accentDim: 'rgba(0,180,198,0.08)',
+    accentBdr: 'rgba(0,180,198,0.18)',
+    subsections: ['Verified CFPs', 'Fee-Only Advisors', 'Goals Matching', 'Fiduciary Standard', 'Free to Browse', 'Wealth Planning'],
+  },
+  {
+    id: 'fun',
+    icon: BookOpen,
+    label: 'FUN — Financial Understanding Network',
+    tagline: 'Learn what they never taught you.',
+    desc: 'Nine interactive modules covering every financial concept — budgeting, debt, investing, retirement, insurance, estate, and more. Each module combines education, calculators, and real frameworks you can act on today.',
+    href: '/education-hub',
+    stat: '66%',
+    statLabel: 'of Americans are financially illiterate — FUN changes that',
+    accent: '#818cf8',
+    accentDim: 'rgba(129,140,248,0.08)',
+    accentBdr: 'rgba(129,140,248,0.18)',
+    subsections: ['Budgeting & Foundations', 'Debt & Credit', 'Investing Fundamentals', 'Retirement Concepts', 'Insurance Planning', 'Estate & Wills', 'Major Purchases', 'Life Events', 'Resource Directory'],
+    wide: true,
+  },
+]
+
+function PlannerSectionCard({ section, inView, delay }) {
+  const navigate = useNavigate()
+  const Icon = section.icon
+  const [hovered, setHovered] = useState(false)
+
+  const baseCard = {
+    background: hovered ? '#271f18' : '#231c16',
+    border: `1px solid ${hovered ? section.accentBdr : '#2a2018'}`,
+    borderRadius: 16,
+    padding: 0,
+    textAlign: 'left',
+    cursor: 'pointer',
+    width: '100%',
+    overflow: 'hidden',
+    transform: hovered ? 'translateY(-3px)' : 'none',
+    boxShadow: hovered ? `0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px ${section.accentBdr}` : '0 2px 12px rgba(0,0,0,0.2)',
+    transition: 'all 0.22s cubic-bezier(0.32,0.72,0,1)',
+  }
+
+  if (section.wide) {
+    return (
+      <motion.button
+        variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE, delay } } }}
+        onClick={() => navigate(section.href)}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{ ...baseCard, display: 'flex', flexDirection: 'column', gridColumn: '1 / -1' }}
+      >
+        <div style={{ height: 2, background: hovered ? `linear-gradient(90deg, ${section.accent}, transparent 50%)` : 'transparent', transition: 'background 0.22s ease' }} />
+        <div style={{ padding: '1.75rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', alignItems: 'center' }} className="fun-wide-inner">
+          {/* Left */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: section.accentDim, border: `1px solid ${section.accentBdr}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Icon size={16} color={section.accent} />
+                </div>
+                <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.9375rem', fontWeight: 700, color: '#f0e8d8' }}>{section.label}</div>
+              </div>
+              <ArrowUpRight size={14} color={hovered ? section.accent : '#6b5540'} style={{ transition: 'color 0.2s', flexShrink: 0 }} />
+            </div>
+            <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '0.8125rem', fontStyle: 'italic', color: section.accent, marginBottom: 10, lineHeight: 1.4 }}>{section.tagline}</div>
+            <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.8125rem', color: '#a89070', lineHeight: 1.65, marginBottom: '1.25rem' }}>{section.desc}</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, paddingTop: '1rem', borderTop: '1px solid #2a2018' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '1.0625rem', fontWeight: 700, color: section.accent }}>{section.stat}</span>
+              <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.6875rem', color: '#6b5540', lineHeight: 1.4 }}>{section.statLabel}</span>
+            </div>
+          </div>
+          {/* Right — pills grid */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+            {section.subsections.map(s => (
+              <span key={s} style={{
+                fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.6875rem', fontWeight: 600,
+                color: section.accent, background: section.accentDim,
+                border: `1px solid ${section.accentBdr}`,
+                borderRadius: 6, padding: '5px 10px', whiteSpace: 'nowrap',
+              }}>{s}</span>
+            ))}
+          </div>
+        </div>
+      </motion.button>
+    )
+  }
+
+  return (
+    <motion.button
+      variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE, delay } } }}
+      onClick={() => navigate(section.href)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ ...baseCard, display: 'flex', flexDirection: 'column' }}
+    >
+      {/* Top accent bar */}
+      <div style={{ height: 2, background: hovered ? `linear-gradient(90deg, ${section.accent}, transparent)` : 'transparent', transition: 'background 0.22s ease' }} />
+
+      <div style={{ padding: '1.5rem' }}>
+        {/* Icon + arrow */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.125rem' }}>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: section.accentDim, border: `1px solid ${section.accentBdr}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Icon size={16} color={section.accent} />
+          </div>
+          <ArrowUpRight size={14} color={hovered ? section.accent : '#6b5540'} style={{ transition: 'color 0.2s' }} />
+        </div>
+
+        {/* Label + tagline */}
+        <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.9375rem', fontWeight: 700, color: '#f0e8d8', marginBottom: 6 }}>{section.label}</div>
+        <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '0.8125rem', fontStyle: 'italic', color: section.accent, marginBottom: 10, lineHeight: 1.4 }}>{section.tagline}</div>
+        <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.8125rem', color: '#a89070', lineHeight: 1.65, marginBottom: '1.25rem' }}>{section.desc}</div>
+
+        {/* Sub-section pills */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: '1.25rem' }}>
+          {section.subsections.map(s => (
+            <span key={s} style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.625rem', fontWeight: 600, color: '#6b5540', background: '#2d2419', border: '1px solid #2a2018', borderRadius: 5, padding: '2px 7px', whiteSpace: 'nowrap' }}>{s}</span>
+          ))}
+        </div>
+
+        {/* Stat footer */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, paddingTop: '0.875rem', borderTop: '1px solid #2a2018' }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '1.0625rem', fontWeight: 700, color: section.accent }}>{section.stat}</span>
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.6875rem', color: '#6b5540', lineHeight: 1.4 }}>{section.statLabel}</span>
+        </div>
+      </div>
+    </motion.button>
+  )
+}
+
+function PlannerSections() {
+  const ref    = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
+  return (
+    <section ref={ref} style={{ background: '#1a1410', borderTop: '1px solid #2a2018', padding: '100px 40px' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: EASE }}
+          style={{ marginBottom: 56 }}
+        >
+          <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#6b5540', fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 600, marginBottom: 12 }}>
+            Explore the platform
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(26px,3.2vw,42px)', fontWeight: 700, color: '#f0e8d8', margin: 0, letterSpacing: '-0.02em' }}>
+              Seven disciplines.<em style={{ fontStyle: 'italic', color: '#c9a96e' }}> One ecosystem.</em>
+            </h2>
+            <p style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.875rem', color: '#6b5540', maxWidth: 380, lineHeight: 1.7, margin: 0 }}>
+              Each section explains what it covers, why it matters, and gives you the tools to act on it. Click any card to go deeper.
+            </p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+          initial="hidden"
+          animate={inView ? 'show' : 'hidden'}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.125rem' }}
+          className="planner-sections-grid"
+        >
+          {PLANNER_SECTIONS.map((s, i) => (
+            <PlannerSectionCard key={s.id} section={s} inView={inView} delay={i * 0.06} />
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          style={{ marginTop: 40, display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'center' }}
+        >
+          <div style={{ width: 1, height: 20, background: '#2a2018' }} />
+          <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontSize: '0.75rem', color: '#6b5540' }}>
+            Press <strong style={{ color: '#a89070', fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>P</strong> inside the platform to navigate between all sections
+          </span>
+          <div style={{ width: 1, height: 20, background: '#2a2018' }} />
+        </motion.div>
+      </div>
+
+      <style>{`
+        @media (max-width: 900px) { .planner-sections-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 580px) { .planner-sections-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px) { .fun-wide-inner { grid-template-columns: 1fr !important; } }
+      `}</style>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FEATURED INSIGHT — rotating educational content with concept sidebar
+// ─────────────────────────────────────────────────────────────────────────────
+function FeaturedInsight() {
+  const [active, setActive] = useState(0)
+  const ref    = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const insight = INSIGHTS[active]
+
+  return (
+    <section ref={ref} style={{ background: '#231c16', borderTop: '1px solid #2a2018', padding: '100px 40px' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: EASE }}
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 48, flexWrap: 'wrap', gap: 16 }}
+        >
+          <div>
+            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#6b5540', fontFamily: UI, fontWeight: 600, marginBottom: 10 }}>
+              Featured Insight
+            </div>
+            <h2 style={{ fontFamily: DISPLAY, fontSize: 'clamp(24px,3vw,38px)', fontWeight: 700, color: '#f0e8d8', margin: 0, letterSpacing: '-0.02em' }}>
+              Learn from the principles,<br />not the headlines.
+            </h2>
+          </div>
+
+          {/* Tab selectors */}
+          <div style={{ display: 'flex', gap: 8 }}>
+            {INSIGHTS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                style={{
+                  background: i === active ? '#c9a96e' : 'transparent',
+                  border: `1px solid ${i === active ? '#c9a96e' : '#3d3028'}`,
+                  borderRadius: 8, padding: '6px 14px',
+                  fontSize: 11, fontFamily: UI, fontWeight: 600,
+                  color: i === active ? '#1a1410' : '#6b5540',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s cubic-bezier(0.32,0.72,0,1)',
+                }}
+              >
+                0{i + 1}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.45, ease: EASE }}
+            style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 48, alignItems: 'start' }}
+            className="planora-insight-grid"
+          >
+            {/* Left */}
+            <div>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                background: 'rgba(201,169,110,0.08)', border: '1px solid rgba(201,169,110,0.2)',
+                borderRadius: 6, padding: '4px 10px', marginBottom: 20,
+              }}>
+                <span style={{ fontSize: 10, color: '#c9a96e', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: UI }}>
+                  {insight.category}
+                </span>
+              </div>
+
+              <h3 style={{
+                fontFamily: DISPLAY, fontSize: 'clamp(22px,2.5vw,32px)',
+                fontWeight: 700, color: '#f0e8d8',
+                lineHeight: 1.25, margin: '0 0 20px', letterSpacing: '-0.02em',
+              }}>
+                {insight.headline}
+              </h3>
+
+              <p style={{
+                fontSize: 15, color: '#a89070', lineHeight: 1.8,
+                margin: '0 0 28px', fontFamily: UI, maxWidth: 560,
+              }}>
+                {insight.excerpt}
+              </p>
+
+              {/* Quote */}
+              <div style={{ borderLeft: '2px solid #c9a96e50', paddingLeft: 20, marginBottom: 32 }}>
+                <p style={{ fontFamily: DISPLAY, fontSize: 16, fontStyle: 'italic', color: '#a89070', margin: '0 0 8px', lineHeight: 1.55 }}>
+                  &ldquo;{insight.quote}&rdquo;
+                </p>
+                <span style={{ fontSize: 11, color: '#6b5540', fontFamily: UI }}>— {insight.quoteAttr}</span>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button
+                  onClick={() => { window.location.href = insight.href }}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    background: 'transparent', border: '1px solid rgba(201,169,110,0.3)',
+                    borderRadius: 9, padding: '10px 18px',
+                    color: '#c9a96e', fontSize: 13, fontWeight: 600, fontFamily: UI,
+                    cursor: 'pointer',
+                    transition: 'all 0.25s cubic-bezier(0.32,0.72,0,1)',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,169,110,0.08)'; e.currentTarget.style.borderColor = 'rgba(201,169,110,0.5)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent';             e.currentTarget.style.borderColor = 'rgba(201,169,110,0.3)' }}
+                >
+                  Explore this topic <ArrowRight size={13} />
+                </button>
+                <span style={{ fontSize: 11, color: '#6b5540', fontFamily: UI }}>{insight.readTime}</span>
+              </div>
+            </div>
+
+            {/* Right — concept card */}
+            <div style={{
+              background: '#2d2419', border: '1px solid #3d3028',
+              borderRadius: 16, padding: 28,
+              boxShadow: 'inset 0 1px 0 var(--elevated)',
+            }}>
+              <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#6b5540', fontFamily: UI, marginBottom: 12 }}>
+                Core Concept
+              </div>
+              <div style={{ fontFamily: DISPLAY, fontSize: 20, fontWeight: 700, color: '#c9a96e', margin: '0 0 12px', letterSpacing: '-0.01em' }}>
+                {insight.concept}
+              </div>
+              <p style={{ fontSize: 13, color: '#a89070', lineHeight: 1.7, margin: '0 0 24px', fontFamily: UI }}>
+                {insight.definition}
+              </p>
+
+              <div style={{ height: 1, background: '#3d3028', marginBottom: 20 }} />
+
+              <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#6b5540', fontFamily: UI, marginBottom: 12 }}>
+                Further Reading
+              </div>
+              {insight.books.map(book => (
+                <div key={book} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <div style={{ width: 3, height: 3, borderRadius: '50%', background: '#6b5540', flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: '#6b5540', fontFamily: UI, fontStyle: 'italic' }}>{book}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .planora-insight-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          section { padding-left: 24px !important; padding-right: 24px !important; }
+        }
+      `}</style>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FOOTER
+// ─────────────────────────────────────────────────────────────────────────────
+const FOOTER_COLS = [
+  {
+    heading: 'Terminal',
+    links: [
+      { label: 'Market Overview',   href: '/dashboard'        },
+      { label: 'Risk Analysis',     href: '/risk-analysis'    },
+      { label: 'Sector Analysis',   href: '/sectors'          },
+      { label: 'Portfolio Tools',   href: '/dashboard'        },
+    ],
+  },
+  {
+    heading: 'Markets',
+    links: [
+      { label: 'Market History',    href: '/MarketHistory'    },
+      { label: 'Market News',       href: '/market-news'      },
+      { label: 'Economic Calendar', href: '/economic-calendar'},
+      { label: 'Top Performers',    href: '/top-performers'   },
+    ],
+  },
+  {
+    heading: 'Macro',
+    links: [
+      { label: 'Energy Markets',    href: '/energy'           },
+      { label: 'Labor Markets',     href: '/labor'            },
+      { label: 'Consumer Market',   href: '/consumer'         },
+      { label: 'Real Estate',       href: '/real-estate'      },
+    ],
+  },
+  {
+    heading: 'Plan',
+    links: [
+      { label: 'Tax Planning',      href: '/tax-planning'      },
+      { label: 'Retirement',        href: '/retirement-planning'},
+      { label: 'Wealth Counsel',    href: '/wealth-counsel'    },
+      { label: 'Estate Planning',   href: '/FuturePlanning'    },
+    ],
+  },
+  {
+    heading: 'Education',
+    links: [
+      { label: 'FUN Platform',      href: '/fun'              },
+      { label: 'Calculators',       href: '/calculators'      },
+      { label: 'AI Advisor',        href: '/ai-advisor'       },
+    ],
+  },
+]
+
+function Footer() {
+  const navigate = useNavigate()
+  return (
+    <footer style={{ background: '#0f0c09', borderTop: '1px solid #2a2018' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '64px 40px 48px' }}>
+        {/* Top row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 80, marginBottom: 56 }} className="planora-footer-main">
+          {/* Brand */}
+          <div>
+            <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'block', marginBottom: 10 }}>
+              <span style={{ fontFamily: DISPLAY, fontSize: 22, fontWeight: 700, color: '#c9a96e' }}>Planora</span>
+            </button>
+            <p style={{ fontSize: 13, color: '#6b5540', lineHeight: 1.7, maxWidth: 200, margin: '0 0 20px', fontFamily: UI }}>
+              Institutional Intelligence. Personal Impact.
+            </p>
+            <p style={{ fontSize: 11, color: '#3d3028', lineHeight: 1.6, fontFamily: UI }}>
+              For educational purposes only.<br />Not financial advice.
+            </p>
+          </div>
+
+          {/* Nav columns */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 24 }} className="planora-footer-nav">
+            {FOOTER_COLS.map(col => (
+              <div key={col.heading}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: '#6b5540', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 16, fontFamily: UI }}>
+                  {col.heading}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {col.links.map(l => (
+                    <button
+                      key={l.href}
+                      onClick={() => navigate(l.href)}
+                      style={{
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        fontSize: 12, color: '#6b5540', fontFamily: UI,
+                        textAlign: 'left', padding: 0, lineHeight: 1.4,
+                        transition: 'color 0.2s',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#a89070')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#6b5540')}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: '#2a2018', marginBottom: 28 }} />
+
+        {/* Bottom */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
+          <p style={{ fontSize: 11, color: '#3d3028', maxWidth: 600, lineHeight: 1.7, margin: 0, fontFamily: UI }}>
+            Planora is an educational and research platform only. Nothing on this site constitutes
+            financial, investment, tax, legal, or accounting advice. All data is provided for
+            informational purposes. Consult a qualified professional for your specific situation.
+            Past performance does not guarantee future results.
+          </p>
+          <p style={{ fontSize: 11, color: '#3d3028', whiteSpace: 'nowrap', margin: 0, fontFamily: UI }}>
+            &copy; {new Date().getFullYear()} Planora
           </p>
         </div>
-
-        <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:24, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <div style={{ fontSize:11, color:C.textMuted }}>© 2026 Planora Technologies, Inc. All rights reserved.</div>
-          <div style={{ display:'flex', gap:20 }}>
-            {[
-              { label:'Privacy Policy', href:'/privacy' },
-              { label:'Terms of Service', href:'/terms' },
-              { label:'Disclosure', href:'/terms' },
-            ].map(({ label, href }) => (
-              <span key={label} style={{ fontSize:11, color:C.textMuted, cursor:'pointer', transition:'color 0.15s' }}
-                onMouseEnter={e => e.currentTarget.style.color = C.text}
-                onMouseLeave={e => e.currentTarget.style.color = C.textMuted}
-                onClick={() => window.location.href = href}
-              >{label}</span>
-            ))}
-          </div>
-        </div>
       </div>
-    </motion.footer>
-  );
+
+      <style>{`
+        @media (max-width: 1024px) {
+          .planora-footer-main { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .planora-footer-nav  { grid-template-columns: repeat(3,1fr) !important; }
+        }
+        @media (max-width: 640px) {
+          .planora-footer-nav  { grid-template-columns: repeat(2,1fr) !important; }
+        }
+      `}</style>
+    </footer>
+  )
 }
 
-/* ─── DISCLAIMER BANNER ──────────────────────────────────────────── */
-function DisclaimerBanner() {
-  const [visible, setVisible] = useState(() => !localStorage.getItem('planora_disclaimer_dismissed'));
-  if (!visible) return null;
-  return (
-    <div style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:9999, background:'rgba(10,10,15,0.96)', borderTop:`1px solid rgba(245,166,35,0.3)`, padding:'12px 24px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:16, backdropFilter:'blur(12px)' }}>
-      <p style={{ margin:0, fontSize:11, color:'#94a3b8', lineHeight:1.6, flex:1 }}>
-        <span style={{ color:'rgba(245,166,35,0.9)', fontWeight:700 }}>DISCLAIMER: </span>
-        Planora is for educational and informational purposes only. Nothing here constitutes financial, investment, or legal advice. Always consult a licensed financial advisor before making investment decisions.
-      </p>
-      <button
-        onClick={() => { localStorage.setItem('planora_disclaimer_dismissed','1'); setVisible(false); }}
-        style={{ background:'rgba(245,166,35,0.15)', border:`1px solid rgba(245,166,35,0.3)`, borderRadius:6, padding:'6px 14px', color:'#F5A623', fontSize:11, fontWeight:600, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0 }}
-      >Got it</button>
-    </div>
-  );
-}
-
-/* ─── LANDING — MAIN ORCHESTRATOR ────────────────────────────────── */
+// ─────────────────────────────────────────────────────────────────────────────
+// LANDING PAGE — root export
+// ─────────────────────────────────────────────────────────────────────────────
 export default function Landing() {
-  const navigate    = useNavigate();
-  const heroRef     = useRef(null);
-  const [bootDone, setBootDone] = useState(() => sessionStorage.getItem('planora_booted') === '1');
-
-  // Global scroll Y
-  const { scrollY } = useScroll();
-
-  // Hero section scroll progress (0 = at top, 1 = hero fully scrolled out)
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // ── 5-layer parallax ──────────────────────────────────────────────
-  // Layer 1 (particles — deepest): compensate 80% → stays most behind
-  const layer1Y = useTransform(heroProgress, [0,1], [0, 120]);
-  // Layer 2 (orbs): compensate 65%
-  const layer2Y = useTransform(heroProgress, [0,1], [0, 80]);
-  // Layer 3 (dashboard): compensate 40%
-  const layer3Y = useTransform(heroProgress, [0,1], [0, 50]);
-  // Layer 4 (text): compensate 15%
-  const layer4Y = useTransform(heroProgress, [0,1], [0, 20]);
-  // Layer 5 (grid — foreground): slightly ahead of scroll
-  const layer5Y = useTransform(heroProgress, [0,1], [0, -20]);
-
-  // Background zoom: 1.0 → 1.15 over first 30% of hero scroll
-  const bgScale = useTransform(heroProgress, [0, 0.3], [1, 1.15]);
-
-  // Dashboard exit — scale + fade as user scrolls hero
-  const dashOpacity = useTransform(heroProgress, [0.25, 0.65], [1, 0]);
-  const dashScale   = useTransform(heroProgress, [0, 0.65], [1, 0.88]);
-
-  // ── Mouse parallax for dashboard tilt ────────────────────────────
-  const mouseXVal = useMotionValue(0);
-  const mouseYVal = useMotionValue(0);
-  const springX   = useSpring(mouseXVal, { stiffness:80, damping:20 });
-  const springY   = useSpring(mouseYVal, { stiffness:80, damping:20 });
-  const dashRotateX = useTransform(springY, [-1,1], [4, -4]);
-  const dashRotateY = useTransform(springX, [-1,1], [-8, 8]);
-
-  const handleHeroMouse = useCallback((e) => {
-    const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    mouseXVal.set((e.clientX - rect.left) / rect.width  * 2 - 1);
-    mouseYVal.set((e.clientY - rect.top)  / rect.height * 2 - 1);
-  }, [mouseXVal, mouseYVal]);
-
-  const handleBootComplete = useCallback(() => {
-    sessionStorage.setItem('planora_booted', '1');
-    setBootDone(true);
-  }, []);
-
-  const trust = [
-    { icon: <Activity size={12} color={C.gold}/>, label:'Live Market Data'       },
-    { icon: <Shield   size={12} color={C.gold}/>, label:'Bank-Grade Security'    },
-    { icon: <Users    size={12} color={C.gold}/>, label:'Advisor & Client Tools' },
-    { icon: <BookOpen size={12} color={C.gold}/>, label:'Education & Planning'   },
-  ];
-
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, fontFamily:"'Inter', -apple-system, sans-serif", color:C.text, overflowX:'hidden' }}>
-      <style>{GLOBAL_CSS}</style>
-
-      {!bootDone && <BootOverlay onComplete={handleBootComplete}/>}
-      <DisclaimerBanner/>
-
-      <Nav onEnter={() => navigate('/dashboard')} visible={bootDone} scrollY={scrollY}/>
-
-      {/* ══ SCENE 1 — HERO ══════════════════════════════════════════ */}
-      <section
-        ref={heroRef}
-        onMouseMove={handleHeroMouse}
-        style={{ height:'100vh', position:'relative', overflow:'hidden', display:'flex', alignItems:'center' }}
-      >
-        {/* Layer 1 — Particles (deepest, slowest) */}
-        <motion.div style={{ position:'absolute', inset:0, y:layer1Y, zIndex:0 }}>
-          <ParticleCanvas count={280}/>
-        </motion.div>
-
-        {/* Layer 0 — Zooming background */}
-        <motion.div style={{ position:'absolute', inset:'-8%', scale:bgScale, zIndex:0, background:`radial-gradient(ellipse 70% 60% at 60% 40%, ${C.gold}07 0%, transparent 55%), radial-gradient(ellipse 50% 70% at 80% 70%, ${C.teal}06 0%, transparent 55%), ${C.bg}` }}/>
-
-        {/* Layer 2 — Ambient orbs */}
-        <motion.div style={{ position:'absolute', inset:0, y:layer2Y, zIndex:1, pointerEvents:'none' }}>
-          <div className="orb" style={{ width:700, height:700, background:`radial-gradient(circle, ${C.gold}08 0%, transparent 60%)`, top:'-15%', right:'18%' }}/>
-          <div className="orb" style={{ width:500, height:500, background:`radial-gradient(circle, ${C.teal}07 0%, transparent 60%)`, bottom:'-12%', left:'28%', animationDelay:'-15s' }}/>
-        </motion.div>
-
-        {/* Layer 5 — Grid (foreground, slightly faster) */}
-        <motion.div style={{ position:'absolute', inset:0, y:layer5Y, zIndex:1, pointerEvents:'none', backgroundImage:`linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px)`, backgroundSize:'56px 56px' }}/>
-
-        {/* Layer 4 — Hero text content */}
-        <motion.div style={{ position:'relative', y:layer4Y, zIndex:3, width:'100%' }}>
-          <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 32px' }}>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1.1fr', gap:72, alignItems:'center' }}>
-
-              {/* Left — headline + CTAs */}
-              <motion.div
-                initial="hidden"
-                animate={bootDone ? 'show' : 'hidden'}
-                variants={{ hidden:{}, show:{ transition:{ staggerChildren:0.12, delayChildren:0.1 } } }}
-              >
-                {/* Eyebrow */}
-                <motion.div
-                  variants={{ hidden:{ opacity:0, x:-24 }, show:{ opacity:1, x:0, transition:{ duration:0.65, ease:[0.22,1,0.36,1] } } }}
-                  style={{ display:'inline-flex', alignItems:'center', gap:8, background:`${C.gold}12`, border:`1px solid ${C.gold}30`, borderRadius:100, padding:'6px 16px', marginBottom:28 }}
-                >
-                  <div style={{ width:5, height:5, borderRadius:'50%', background:C.gold, boxShadow:`0 0 8px ${C.gold}` }}/>
-                  <span style={{ fontSize:11, fontWeight:700, color:C.gold, letterSpacing:'0.1em', textTransform:'uppercase' }}>Three Platforms. One Ecosystem.</span>
-                </motion.div>
-
-                {/* Headline */}
-                <motion.h1
-                  variants={{ hidden:{ opacity:0, y:40 }, show:{ opacity:1, y:0, transition:{ type:'spring', stiffness:120, damping:20 } } }}
-                  style={{ fontSize:56, fontWeight:900, letterSpacing:'-0.035em', color:C.text, lineHeight:1.08, marginBottom:22 }}
-                >
-                  The Future of<br/>
-                  Wealth Management,<br/>
-                  <span style={{ color:C.gold, textShadow:`0 0 40px ${C.gold}40` }}>Unified.</span>
-                </motion.h1>
-
-                {/* Subheading */}
-                <motion.p
-                  variants={{ hidden:{ opacity:0, y:24 }, show:{ opacity:1, y:0, transition:{ duration:0.7, ease:[0.22,1,0.36,1] } } }}
-                  style={{ fontSize:16, color:C.textSec, lineHeight:1.78, maxWidth:460, marginBottom:38 }}
-                >
-                  Planora unifies institutional-grade market intelligence, advisor collaboration, and financial education in one connected ecosystem built for the next generation of wealth management.
-                </motion.p>
-
-                {/* CTAs */}
-                <motion.div
-                  variants={{ hidden:{ opacity:0, y:18, scale:0.95 }, show:{ opacity:1, y:0, scale:1, transition:{ type:'spring', stiffness:200, damping:20 } } }}
-                  style={{ display:'flex', gap:14, marginBottom:48 }}
-                >
-                  <button
-                    onClick={() => navigate('/dashboard')}
-                    style={{ background:C.gold, color:'#0a0a0f', border:'none', borderRadius:11, padding:'15px 30px', fontSize:14, fontWeight:800, cursor:'pointer', display:'flex', alignItems:'center', gap:8, fontFamily:'inherit', boxShadow:`0 0 32px ${C.gold}40, inset 0 1px 1px rgba(255,255,255,0.25)`, letterSpacing:'0.01em', transition:'transform 0.15s, box-shadow 0.2s' }}
-                    onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow=`0 0 52px ${C.gold}65, inset 0 1px 1px rgba(255,255,255,0.25)`; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow=`0 0 32px ${C.gold}40, inset 0 1px 1px rgba(255,255,255,0.25)`; }}
-                  >Enter Platform <ArrowRight size={15}/></button>
-                  <button
-                    onClick={() => navigate('/fun')}
-                    style={{ background:'rgba(255,255,255,0.04)', backdropFilter:'blur(8px)', color:C.text, border:`1px solid ${C.border}`, borderRadius:11, padding:'15px 30px', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'border-color 0.2s, background 0.2s, box-shadow 0.2s' }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor=`${C.teal}60`; e.currentTarget.style.boxShadow=`0 0 20px ${C.teal}20`; e.currentTarget.style.background=`rgba(0,180,198,0.06)`; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.boxShadow='none'; e.currentTarget.style.background='rgba(255,255,255,0.04)'; }}
-                  >Explore Solutions</button>
-                </motion.div>
-
-                {/* Trust badges */}
-                <motion.div
-                  variants={{ hidden:{ opacity:0 }, show:{ opacity:1, transition:{ duration:0.6, delay:0.1 } } }}
-                  style={{ display:'flex', gap:0, borderTop:`1px solid ${C.border}`, paddingTop:24 }}
-                >
-                  {trust.map((b,i) => (
-                    <div key={b.label} style={{ display:'flex', alignItems:'center', gap:6, paddingRight:18, marginRight:18, borderRight: i < 3 ? `1px solid ${C.border}` : 'none' }}>
-                      {b.icon}
-                      <span style={{ fontSize:11, color:C.textSec, whiteSpace:'nowrap' }}>{b.label}</span>
-                    </div>
-                  ))}
-                </motion.div>
-              </motion.div>
-
-              {/* Right — empty column placeholder so grid aligns */}
-              <div/>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Layer 3 — Dashboard (mid-depth, exits as hero scrolls) */}
-        <motion.div
-          style={{ position:'absolute', right:'4%', top:'50%', translateY:'-50%', y:layer3Y, zIndex:2, opacity:dashOpacity, scale:dashScale, willChange:'transform, opacity' }}
-        >
-          <HeroDashboard rotateX={dashRotateX} rotateY={dashRotateY} opacity={dashOpacity} scale={dashScale}/>
-        </motion.div>
-
-        {/* Scene bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:130, background:`linear-gradient(to bottom, transparent, ${C.bg})`, pointerEvents:'none', zIndex:5 }}/>
-      </section>
-
-      {/* ══ SCENE 2 — THREE PLATFORMS ═══════════════════════════════ */}
-      <PlatformCards navigate={navigate}/>
-
-      {/* Scene transition */}
-      <div style={{ height:1, background:C.border }}/>
-
-      {/* ══ SCENE 3 — FEATURE STRIP ═════════════════════════════════ */}
-      <FeatureStrip/>
-
-      {/* Scene transition gradient */}
-      <div style={{ height:60, background:`linear-gradient(to bottom, ${C.elevated}, ${C.bg})` }}/>
-
-      {/* ══ SCENE 4 — DASHBOARD PREVIEW ═════════════════════════════ */}
-      <DashboardPreview/>
-
-      {/* ══ SCENE 5 — FOOTER ════════════════════════════════════════ */}
-      <Footer/>
+    <div style={{ background: '#1a1410', minHeight: '100dvh', fontFamily: UI }}>
+      <Nav />
+      <Hero />
+      <QuoteSection />
+      <SectionPreview />
+      <PlannerSections />
+      <FeaturedInsight />
+      <Footer />
     </div>
-  );
+  )
 }

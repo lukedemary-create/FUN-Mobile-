@@ -203,7 +203,7 @@ Explain in 2-3 paragraphs why this is best for their situation.`,
                   <div>
                     <h4 className="text-base font-semibold text-white">{trust.name}</h4>
                     {isRecommended && (
-                      <span className="text-xs text-[#8b5cf6] font-semibold">✨ Recommended</span>
+                      <span className="text-xs text-[#8b5cf6] font-semibold">Recommended</span>
                     )}
                   </div>
                 </div>

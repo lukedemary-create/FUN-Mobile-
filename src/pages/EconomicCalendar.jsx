@@ -20,7 +20,7 @@ const IMPORTANCE_COLORS = { HIGH: "var(--red)", MEDIUM: "var(--gold)", LOW: "var
 const IMPORTANCE_BG = { HIGH: "var(--red-dim)", MEDIUM: "var(--gold-dim)", LOW: "rgba(122,136,153,0.08)" };
 const IMPORTANCE_BORDER = {
   HIGH: "rgba(255,59,92,0.25)",
-  MEDIUM: "rgba(201,168,76,0.25)",
+  MEDIUM: "rgba(201,169,110,0.25)",
   LOW: "rgba(122,136,153,0.15)"
 };
 
@@ -273,14 +273,14 @@ function EarningsCalendar() {
                 {upcoming.map(e => (
                   <tr key={e.ticker}>
                     <td><span style={{ fontFamily: "monospace", fontSize: 12 }}>{e.date.slice(5)}</span></td>
-                    <td><span style={{ fontSize: 11, padding: "2px 7px", borderRadius: 10, background: e.time === "Pre-Market" ? "rgba(45,212,164,0.1)" : "rgba(201,168,76,0.1)", color: e.time === "Pre-Market" ? "var(--teal)" : "var(--gold)" }}>{e.time}</span></td>
+                    <td><span style={{ fontSize: 11, padding: "2px 7px", borderRadius: 10, background: e.time === "Pre-Market" ? "rgba(45,212,164,0.1)" : "rgba(201,169,110,0.1)", color: e.time === "Pre-Market" ? "var(--teal)" : "var(--gold)" }}>{e.time}</span></td>
                     <td>
                       <span style={{ fontWeight: 700, color: "var(--gold)" }}>{e.ticker}</span>
                       <span style={{ marginLeft: 8, color: "var(--text-2)", fontSize: 12 }}>{e.company}</span>
                     </td>
                     <td style={{ fontFamily: "monospace" }}>{e.epsEst}</td>
                     <td style={{ fontFamily: "monospace" }}>{e.revEst}</td>
-                    <td><span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: "rgba(255,255,255,0.04)", color: "var(--text-3)", border: "1px solid var(--border-c)" }}>Pending</span></td>
+                    <td><span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: "var(--border-c)", color: "var(--text-3)", border: "1px solid var(--border-c)" }}>Pending</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -330,7 +330,7 @@ function IPOCalendar() {
   const upcoming = IPOS.filter(i => i.status === "upcoming" || i.status === "filed");
   const priced = IPOS.filter(i => i.status === "priced");
   const statusColor = { upcoming: "var(--gold)", filed: "var(--teal)", priced: "var(--up)" };
-  const statusBg = { upcoming: "rgba(201,168,76,0.1)", filed: "rgba(45,212,164,0.1)", priced: "rgba(45,212,164,0.08)" };
+  const statusBg = { upcoming: "rgba(201,169,110,0.1)", filed: "rgba(45,212,164,0.1)", priced: "rgba(45,212,164,0.08)" };
 
   const Section = ({ title, items }) => (
     <div style={{ marginBottom: 24 }}>
@@ -354,7 +354,7 @@ function IPOCalendar() {
                 <td style={{ fontSize: 12, color: "var(--text-3)" }}>{ipo.exchange}</td>
                 <td style={{ fontFamily: "monospace" }}>{ipo.priceRange}</td>
                 <td style={{ fontWeight: 700, color: "var(--text-1)" }}>{ipo.estValuation}</td>
-                <td><span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: "rgba(255,255,255,0.04)", color: "var(--text-2)", border: "1px solid var(--border-c)" }}>{ipo.sector}</span></td>
+                <td><span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: "var(--border-c)", color: "var(--text-2)", border: "1px solid var(--border-c)" }}>{ipo.sector}</span></td>
                 <td><span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: statusBg[ipo.status], color: statusColor[ipo.status], fontWeight: 700, textTransform: "uppercase" }}>{ipo.status}</span></td>
                 {ipo.openChange && <td style={{ fontWeight: 700, color: ipo.openChange.startsWith("+") ? "var(--up)" : "var(--down)" }}>{ipo.openChange}</td>}
               </tr>
@@ -391,7 +391,7 @@ function FedWatchCalendar() {
                 <stop offset="100%" stopColor="var(--gold)" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
             <XAxis dataKey="term" tick={{ fontSize: 10, fill: "var(--text-3)" }} />
             <YAxis domain={[3.8, 4.7]} tick={{ fontSize: 10, fill: "var(--text-3)" }} tickFormatter={v => `${v}%`} />
             <Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 8, fontSize: 11, color: "var(--text-1)" }} itemStyle={{ color: "var(--text-1)" }} formatter={v => [`${v.toFixed(2)}%`, "Yield"]} />
@@ -430,7 +430,7 @@ function FedWatchCalendar() {
                     </>
                   )}
                   <td>
-                    {m.tone && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 10, background: "rgba(255,255,255,0.04)", color: toneColor[m.tone] || "var(--text-2)", border: "1px solid var(--border-c)" }}>{m.tone}</span>}
+                    {m.tone && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 10, background: "var(--border-c)", color: toneColor[m.tone] || "var(--text-2)", border: "1px solid var(--border-c)" }}>{m.tone}</span>}
                     {m.summary && <span style={{ fontSize: 11, color: "var(--text-3)", marginLeft: 6 }}>{m.summary.slice(0, 60)}…</span>}
                   </td>
                 </tr>
@@ -475,7 +475,7 @@ function DividendCalendar() {
           <button key={v} onClick={() => setSortBy(v)} style={{
             padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer",
             border: `1px solid ${sortBy === v ? "var(--gold)" : "var(--border-c)"}`,
-            background: sortBy === v ? "rgba(201,168,76,0.1)" : "transparent",
+            background: sortBy === v ? "rgba(201,169,110,0.1)" : "transparent",
             color: sortBy === v ? "var(--gold)" : "var(--text-3)",
           }}>{l}</button>
         ))}
@@ -496,7 +496,7 @@ function DividendCalendar() {
                 <td style={{ fontFamily: "monospace", fontSize: 12 }}>{d.payDate.slice(5)}</td>
                 <td style={{ fontFamily: "monospace", fontWeight: 600 }}>{d.amount}</td>
                 <td><span style={{ fontWeight: 700, color: parseFloat(d.yield) > 4 ? "var(--up)" : "var(--text-1)" }}>{d.yield}</span></td>
-                <td><span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 10, background: d.frequency === "Monthly" ? "rgba(45,212,164,0.1)" : "rgba(255,255,255,0.04)", color: d.frequency === "Monthly" ? "var(--teal)" : "var(--text-3)", border: "1px solid var(--border-c)" }}>{d.frequency}</span></td>
+                <td><span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 10, background: d.frequency === "Monthly" ? "rgba(45,212,164,0.1)" : "var(--border-c)", color: d.frequency === "Monthly" ? "var(--teal)" : "var(--text-3)", border: "1px solid var(--border-c)" }}>{d.frequency}</span></td>
                 <td>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ width: Math.min(d.yrsGrowth * 1.5, 60), height: 4, borderRadius: 2, background: d.yrsGrowth >= 25 ? "var(--up)" : d.yrsGrowth >= 10 ? "var(--gold)" : "var(--text-3)" }} />
@@ -605,16 +605,18 @@ export default function EconomicCalendar() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -622,12 +624,15 @@ export default function EconomicCalendar() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <CalendarDays size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>ECONOMIC CALENDAR</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                ECONOMIC{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Calendar</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Stay ahead of market-moving events. Track Federal Reserve meetings, inflation reports, employment data, and GDP releases that drive market volatility.
@@ -637,8 +642,8 @@ export default function EconomicCalendar() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -659,8 +664,8 @@ export default function EconomicCalendar() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -676,23 +681,16 @@ export default function EconomicCalendar() {
       </div>
 
       {/* ── Calendar Type Tabs ──────────────────────────────────── */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid var(--border-c)", paddingBottom: 0 }}>
-        {CAL_TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setCalType(tab.id)}
-            style={{
-              display: "flex", alignItems: "center", gap: 6,
-              padding: "9px 16px", background: "transparent", border: "none",
-              borderBottom: `2px solid ${calType === tab.id ? "var(--gold)" : "transparent"}`,
-              color: calType === tab.id ? "var(--gold)" : "var(--text-3)",
-              fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s", marginBottom: -1,
-            }}
-          >
-            <tab.icon size={13} />
-            {tab.label}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: 20 }}>
+        {CAL_TABS.map(tab => {
+          const active = calType === tab.id;
+          return (
+            <button key={tab.id} onClick={() => setCalType(tab.id)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}>
+              <tab.icon size={13} />
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Non-economic tabs render here */}
@@ -717,7 +715,7 @@ export default function EconomicCalendar() {
                 style={filter === f ? {
                   background: f === "HIGH" ? "var(--red-dim)" : f === "MEDIUM" ? "var(--gold-dim)" : f === "LOW" ? "rgba(122,136,153,0.12)" : "var(--elevated)",
                   color: f === "HIGH" ? "var(--red)" : f === "MEDIUM" ? "var(--gold)" : f === "LOW" ? "var(--text-2)" : "var(--text-1)",
-                  borderColor: f === "HIGH" ? "rgba(255,59,92,0.2)" : f === "MEDIUM" ? "rgba(201,168,76,0.2)" : "var(--border-alt)"
+                  borderColor: f === "HIGH" ? "rgba(255,59,92,0.2)" : f === "MEDIUM" ? "rgba(201,169,110,0.2)" : "var(--border-alt)"
                 } : {}}
               >
                 {f}
@@ -818,7 +816,7 @@ export default function EconomicCalendar() {
                         borderRight: "1px solid var(--border-c)",
                         borderBottom: "1px solid var(--border-c)",
                         cursor: dateStr ? "pointer" : "default",
-                        background: isSelected ? "var(--elevated)" : isToday ? "rgba(201,168,76,0.04)" : "transparent",
+                        background: isSelected ? "var(--elevated)" : isToday ? "rgba(201,169,110,0.04)" : "transparent",
                         transition: "background 0.1s",
                         position: "relative"
                       }}
@@ -942,8 +940,9 @@ export default function EconomicCalendar() {
                       const isPast = e.date < TODAY;
                       return (
                         <tr key={i} style={{
-                          borderLeft: isToday ? "2px solid var(--gold)" : "2px solid transparent",
-                          background: isToday ? "rgba(201,168,76,0.03)" : undefined
+                          background: isToday ? "rgba(201,169,110,0.05)" : undefined,
+                          outline: isToday ? "1px solid rgba(201,169,110,0.2)" : undefined,
+                          outlineOffset: "-1px",
                         }}>
                           <td>
                             <span style={{
@@ -1077,7 +1076,7 @@ export default function EconomicCalendar() {
             ))}
           </div>
 
-          <div className="t-card t-card-p" style={{ borderColor: "rgba(201,168,76,0.12)" }}>
+          <div className="t-card t-card-p" style={{ borderColor: "rgba(201,169,110,0.12)" }}>
             <div className="t-label" style={{ marginBottom: 8 }}>NEXT HIGH IMPACT</div>
             {(() => {
               const next = events.find(e => e.importance === "HIGH" && e.date >= TODAY);

@@ -11,7 +11,7 @@ const moreItems = [
   { label: "The Analyst", icon: BarChart3, path: "/TheAnalyst", color: "#00d4aa" },
   { label: "Budget Planner", icon: DollarSign, path: "/BudgetPlanner", color: "#06b6d4" },
   { label: "Calculators", icon: Calculator, path: "/Calculators", color: "#f59e0b" },
-  { label: "Future Planning", icon: FileText, path: "/FuturePlanning", color: "#8b5cf6" },
+  { label: "Estate Planning", icon: FileText, path: "/FuturePlanning", color: "#8b5cf6" },
   { label: "Market History", icon: History, path: "/MarketHistory", color: "#f59e0b" },
   { label: "The Fed & Rates", icon: Landmark, path: "/FedRates", color: "#8b5cf6" },
   { label: "Politics & Economy", icon: Vote, path: "/PoliticsEconomy", color: "#ef4444" },

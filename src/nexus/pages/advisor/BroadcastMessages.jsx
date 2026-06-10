@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Header } from '../../components/shared/Header'
 import { clients, broadcastMessages, fmt } from '../../data/demoData'
+import { Mail } from 'lucide-react'
 
 const TEMPLATES = {
   'Q1 Market Update': {
@@ -222,7 +223,7 @@ export default function BroadcastMessages() {
                   </>
                 ) : (
                   <div className="empty-state" style={{ padding: 32 }}>
-                    <span style={{ fontSize: 28 }}>✉</span>
+                    <Mail size={28} color="var(--text-tertiary)" />
                     <div>Start typing to preview the message</div>
                   </div>
                 )}

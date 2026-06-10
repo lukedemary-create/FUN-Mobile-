@@ -6,8 +6,57 @@ import {
   ChevronRight, AlertTriangle,
 } from "lucide-react";
 
-/* ─── Hardcoded News Stories ──────────────────────────────────────── */
-const STORIES = [
+/* ─── News Helpers ────────────────────────────────────────────────── */
+function getRelativeTime(ms) {
+  const diff = Date.now() - ms;
+  const h = Math.floor(diff / 3600000);
+  if (h < 1) return "< 1h ago";
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
+
+function categorizeHeadline(headline = "", category = "") {
+  const h = headline.toLowerCase();
+  if (category === "crypto" || /bitcoin|crypto|ethereum|btc|eth/i.test(h)) return "Crypto";
+  if (/\bfed\b|fomc|interest rate|inflation|powell|cpi|ppi|\bgdp\b|stagflation|recession/i.test(h)) return "Fed & Macro";
+  if (/earning|revenue|\beps\b|profit|guidance|quarter|\bq[1-4]\b/i.test(h)) return "Earnings";
+  if (/tariff|trade war|senate|congress|white house|trump|legislation|debt ceiling/i.test(h)) return "Politics";
+  if (/\boil\b|\bopec\b|crude|natural gas|\bev\b|electric vehicle|solar|wind|renewabl/i.test(h)) return "Energy";
+  if (/nvidia|apple|meta|microsoft|google|openai|\bai\b|chip|semiconductor|software/i.test(h)) return "Tech";
+  return "Markets";
+}
+
+function mapFinnhubToStory(item, index) {
+  return {
+    id: item.id || index,
+    category: categorizeHeadline(item.headline, item.category),
+    headline: item.headline,
+    summary: item.summary || item.headline,
+    tickers: item.related ? item.related.split(",").map(s => s.trim()).filter(Boolean).slice(0, 4) : [],
+    time: getRelativeTime(item.datetime * 1000),
+    date: new Date(item.datetime * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    impact: "Neutral",
+    featured: index === 0,
+    source: item.source,
+    url: item.url,
+  };
+}
+
+function getFreshStories() {
+  const now = Date.now();
+  return STORIES_RAW.map((s, i) => {
+    const hoursBack = (i < 4 ? (i + 1) * 2 : i < 8 ? (i + 1) * 3 : (i + 1) * 4);
+    const ts = now - hoursBack * 3600000;
+    return {
+      ...s,
+      date: new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      time: getRelativeTime(ts),
+    };
+  });
+}
+
+/* ─── Hardcoded Fallback Stories ──────────────────────────────────── */
+const STORIES_RAW = [
   {
     id: 1,
     category: "Fed & Macro",
@@ -231,7 +280,7 @@ const IMPACT_CONFIG = {
 
 const CAT_COLORS = {
   "Markets":    { color: "var(--teal)", bg: "rgba(77,208,196,0.12)"  },
-  "Fed & Macro":{ color: "var(--gold)", bg: "rgba(201,168,76,0.12)"  },
+  "Fed & Macro":{ color: "var(--gold)", bg: "rgba(201,169,110,0.12)"  },
   "Earnings":   { color: "#9b6cdb",     bg: "rgba(155,108,219,0.12)" },
   "Tech":       { color: "#4c9cf0",     bg: "rgba(76,156,240,0.12)"  },
   "Energy":     { color: "#4caf7d",     bg: "rgba(76,175,125,0.12)"  },
@@ -273,8 +322,8 @@ function TickerPill({ ticker }) {
   return (
     <span style={{
       padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 700,
-      color: "var(--gold)", background: "rgba(201,168,76,0.12)",
-      border: "1px solid rgba(201,168,76,0.25)", letterSpacing: "0.04em",
+      color: "var(--gold)", background: "rgba(201,169,110,0.12)",
+      border: "1px solid rgba(201,169,110,0.25)", letterSpacing: "0.04em",
       fontFamily: "var(--font-mono, monospace)",
     }}>
       {ticker}
@@ -304,10 +353,16 @@ function FeaturedCard({ story }) {
             <Clock size={12} /> {story.time}
           </span>
         </div>
-        <h2 style={{
-          fontSize: 20, fontWeight: 700, color: "var(--text-1)", lineHeight: 1.35,
-          marginBottom: 12, margin: "0 0 12px 0",
-        }}>
+        <h2
+          onClick={() => story.url && window.open(story.url, "_blank", "noopener,noreferrer")}
+          style={{
+            fontSize: 20, fontWeight: 700, color: "var(--text-1)", lineHeight: 1.35,
+            marginBottom: 12, margin: "0 0 12px 0",
+            cursor: story.url ? "pointer" : "default",
+          }}
+          onMouseEnter={e => { if (story.url) e.currentTarget.style.color = "var(--gold)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-1)"; }}
+        >
           {story.headline}
         </h2>
         <p style={{
@@ -322,6 +377,19 @@ function FeaturedCard({ story }) {
           {story.tickers.map(t => <TickerPill key={t} ticker={t} />)}
           <span style={{ flex: 1 }} />
           <span style={{ fontSize: 12, color: "var(--text-3)" }}>{story.date}</span>
+          {story.url && (
+            <a
+              href={story.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: 12, fontWeight: 700, color: "var(--gold)",
+                textDecoration: "none", letterSpacing: "0.04em",
+              }}
+            >
+              READ MORE →
+            </a>
+          )}
         </div>
       </div>
     </div>
@@ -336,7 +404,7 @@ function ArticleCard({ story }) {
       transition: "border-color 0.2s",
       cursor: "default",
     }}
-      onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,168,76,0.35)"}
+      onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,169,110,0.35)"}
       onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border-c)"}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
@@ -347,10 +415,15 @@ function ArticleCard({ story }) {
           <Clock size={11} /> {story.time}
         </span>
       </div>
-      <h3 style={{
-        fontSize: 15, fontWeight: 700, color: "var(--text-1)", lineHeight: 1.4,
-        margin: "0 0 8px 0",
-      }}>
+      <h3
+        onClick={() => story.url && window.open(story.url, "_blank", "noopener,noreferrer")}
+        style={{
+          fontSize: 15, fontWeight: 700, color: "var(--text-1)", lineHeight: 1.4,
+          margin: "0 0 8px 0", cursor: story.url ? "pointer" : "default",
+        }}
+        onMouseEnter={e => { if (story.url) e.currentTarget.style.color = "var(--gold)"; }}
+        onMouseLeave={e => { e.currentTarget.style.color = "var(--text-1)"; }}
+      >
         {story.headline}
       </h3>
       <p style={{
@@ -363,13 +436,27 @@ function ArticleCard({ story }) {
       </p>
       <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
         {story.tickers && story.tickers.length > 0 && story.tickers.map(t => <TickerPill key={t} ticker={t} />)}
+        <span style={{ flex: 1 }} />
         {story.source && (
           <span style={{
-            marginLeft: "auto", fontSize: 10, color: "var(--text-3)",
+            fontSize: 10, color: "var(--text-3)",
             fontStyle: "italic", flexShrink: 0,
           }}>
             via {story.source}
           </span>
+        )}
+        {story.url && (
+          <a
+            href={story.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: 11, fontWeight: 700, color: "var(--gold)",
+              textDecoration: "none", letterSpacing: "0.04em", flexShrink: 0,
+            }}
+          >
+            READ →
+          </a>
         )}
       </div>
     </div>
@@ -444,22 +531,38 @@ function SentimentMeter({ stories }) {
 /* ─── Main Component ───────────────────────────────────────────────── */
 export default function MarketNews() {
   const [activeTab, setActiveTab] = useState("All");
-  const [stories, setStories]     = useState(STORIES);
+  const [stories, setStories]     = useState(getFreshStories);
   const [loading, setLoading]     = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch("http://localhost:3001/api/news")
-      .then(r => r.ok ? r.json() : Promise.reject(r.status))
-      .then(data => {
-        if (cancelled) return;
-        if (Array.isArray(data) && data.length > 0) {
-          setStories(data);
-        }
-      })
-      .catch(() => { /* server offline — keep hardcoded fallback */ })
-      .finally(() => { if (!cancelled) setLoading(false); });
+
+    const finnhubKey = import.meta.env.VITE_FINNHUB_KEY;
+
+    if (finnhubKey) {
+      fetch(`https://finnhub.io/api/v1/news?category=general&token=${finnhubKey}`)
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          if (cancelled) return;
+          if (Array.isArray(data) && data.length > 0) {
+            const mapped = data
+              .filter(item => item.headline && item.summary && item.summary.length > 40)
+              .slice(0, 20)
+              .map(mapFinnhubToStory);
+            if (mapped.length > 0) {
+              mapped[0].featured = true;
+              setStories(mapped);
+            }
+          }
+        })
+        .catch(() => { /* Finnhub unavailable — keep fresh hardcoded fallback */ })
+        .finally(() => { if (!cancelled) setLoading(false); });
+    } else {
+      // No API key configured — show fresh hardcoded stories
+      setLoading(false);
+    }
+
     return () => { cancelled = true; };
   }, []);
 
@@ -472,40 +575,32 @@ export default function MarketNews() {
   const listStories   = filteredStories.filter(s => s.id !== featuredStory?.id);
 
   return (
-    <div style={{ padding: "24px 28px", maxWidth: 1400, margin: "0 auto" }}>
+    <div style={{ maxWidth: 1400 }}>
 
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
-        background: "var(--surface)", border: "1px solid var(--border-c)",
-        borderRadius: 14, padding: "28px 32px", marginBottom: 24,
-        position: "relative", overflow: "hidden",
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem", marginBottom: 24,
+        position: "relative", overflow: "hidden", backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        {/* Subtle background glow */}
-        <div style={{
-          position: "absolute", top: -60, right: -60,
-          width: 280, height: 280, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 20, flexWrap: "wrap" }}>
-          {/* Icon + Title */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 240 }}>
-            <div style={{
-              width: 56, height: 56, borderRadius: 14,
-              background: "rgba(201,168,76,0.12)", border: "1px solid rgba(201,168,76,0.3)",
-              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-            }}>
-              <Newspaper size={28} color="var(--gold)" />
-            </div>
-            <div>
-              <h1 className="t-page-title" style={{ margin: 0, fontSize: 26, lineHeight: 1.2 }}>
-                Market News
-              </h1>
-              <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "var(--text-3)" }}>
-                Live from Bloomberg, Reuters, MarketWatch, CNBC & FT · refreshed hourly
-              </p>
-            </div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 20, flexWrap: "wrap", position: "relative" }}>
+          {/* Title */}
+          <div style={{ flex: 1, minWidth: 240 }}>
+            <p style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 0.625rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ display: "inline-block", width: 18, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+              Market Intelligence
+            </p>
+            <h1 style={{ margin: "0 0 0.375rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+              Market{" "}
+              <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>News</em>
+            </h1>
+            <p style={{ margin: 0, fontSize: 13, color: "var(--text-3)", lineHeight: 1.65 }}>
+              Financial headlines curated daily · powered by Finnhub when configured
+            </p>
           </div>
 
           {/* Stat boxes */}
@@ -540,7 +635,7 @@ export default function MarketNews() {
       <div style={{
         display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 20,
         background: "var(--surface)", border: "1px solid var(--border-c)",
-        borderRadius: 10, padding: 6,
+        borderRadius: 10, padding: 6, backdropFilter: "blur(12px)",
       }}>
         {CATEGORIES.map(cat => {
           const isActive = activeTab === cat;
@@ -553,7 +648,7 @@ export default function MarketNews() {
                 padding: "7px 16px", borderRadius: 7, border: "none", cursor: "pointer",
                 fontSize: 13, fontWeight: isActive ? 700 : 500,
                 background: isActive
-                  ? (cfg ? cfg.bg : "rgba(201,168,76,0.12)")
+                  ? (cfg ? cfg.bg : "rgba(201,169,110,0.12)")
                   : "transparent",
                 color: isActive
                   ? (cfg ? cfg.color : "var(--gold)")
@@ -561,7 +656,7 @@ export default function MarketNews() {
                 transition: "all 0.15s",
                 outline: isActive ? `1px solid ${cfg ? cfg.color : "var(--gold)"}` : "none",
               }}
-              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--border-c)"; }}
               onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
             >
               {cat}
@@ -582,12 +677,12 @@ export default function MarketNews() {
             }}>
               <div style={{
                 width: 32, height: 32, borderRadius: "50%",
-                border: "3px solid rgba(201,168,76,0.15)", borderTopColor: "var(--gold)",
+                border: "3px solid rgba(201,169,110,0.15)", borderTopColor: "var(--gold)",
                 animation: "tSpin 0.7s linear infinite", margin: "0 auto 14px",
               }} />
               <style>{`@keyframes tSpin { to { transform: rotate(360deg); } }`}</style>
               <p style={{ color: "var(--text-3)", fontSize: 13, margin: 0 }}>
-                Fetching live news from Bloomberg, Reuters, MarketWatch, CNBC & FT…
+                Fetching latest market news…
               </p>
             </div>
           ) : filteredStories.length === 0 ? (

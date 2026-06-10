@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Header } from '../../components/shared/Header'
 import { useApp } from '../../context/AppContext'
 import { advisor, fmt } from '../../data/demoData'
+import { ClipboardList } from 'lucide-react'
 
 export default function MeetingAgenda() {
   const { selectedClientId, getClientData, toggleAgendaItem, addAgendaItem } = useApp()
@@ -120,7 +121,7 @@ export default function MeetingAgenda() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {agendaItems.length === 0 && (
               <div className="empty-state" style={{ padding: 24 }}>
-                <span style={{ fontSize: 28 }}>📋</span>
+                <ClipboardList size={28} color="var(--text-tertiary)" />
                 <div>No agenda items yet. Add something to discuss with Marcus.</div>
               </div>
             )}
@@ -214,8 +215,8 @@ const styles = {
     display: 'flex',
     gap: 0,
     background: 'var(--bg-surface)',
-    border: '1px solid var(--border)',
-    borderLeft: '3px solid var(--gold)',
+    border: '1px solid rgba(201,169,110,0.25)',
+    borderTop: '2px solid var(--gold)',
     borderRadius: 12,
     overflow: 'hidden',
     marginBottom: 16,

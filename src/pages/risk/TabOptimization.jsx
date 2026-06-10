@@ -26,7 +26,7 @@ function corrColor(val) {
   if (val >= 0.8) return { bg:"rgba(239,68,68,0.3)",   text:RED };
   if (val >= 0.5) return { bg:"rgba(249,115,22,0.2)",   text:"#f97316" };
   if (val >= 0.2) return { bg:"rgba(234,179,8,0.15)",   text:YELLOW };
-  if (val >= -0.1)return { bg:"rgba(255,255,255,0.04)", text:"var(--text-3)" };
+  if (val >= -0.1)return { bg:"var(--border-c)", text:"var(--text-3)" };
   return            { bg:"rgba(34,197,94,0.15)",        text:GREEN };
 }
 
@@ -94,7 +94,7 @@ function RebalancingAnalyzer({ portfolio }) {
         {drift5 && (
           <div style={{ fontSize:"0.625rem",color:YELLOW,background:"rgba(234,179,8,0.08)",
             border:"1px solid rgba(234,179,8,0.2)",borderRadius:5,padding:"3px 8px" }}>
-            ⚠ Drift detected — consider rebalancing
+            Drift detected — consider rebalancing
           </div>
         )}
       </div>
@@ -119,7 +119,7 @@ function RebalancingAnalyzer({ portfolio }) {
               const action = Math.abs(diff)<2?"Hold":diff>0?"Trim":"Add";
               const actionColor = action==="Hold"?GREEN:action==="Trim"?YELLOW:RED;
               return (
-                <tr key={i} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                <tr key={i} style={{ borderBottom:"1px solid var(--border-c)" }}>
                   <td style={{ padding:"7px 8px",color:"var(--text-1)",fontWeight:600 }}>{a.name}</td>
                   <td style={{ padding:"7px 8px",color:"var(--text-2)",fontFamily:"monospace" }}>{fmt(curVal)}</td>
                   <td style={{ padding:"7px 8px",color:"var(--text-2)" }}>{curPct.toFixed(1)}%</td>
@@ -190,7 +190,7 @@ export default function TabOptimization() {
         </div>
         <ResponsiveContainer width="100%" height={340}>
           <ScatterChart margin={{ left:0,right:20,top:10,bottom:0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
             <XAxis type="number" dataKey="risk" name="Volatility"
               tickFormatter={v=>v+"%"} tick={{ fill:"var(--text-3)",fontSize:10 }}
               label={{ value:"Volatility (Risk)", position:"insideBottom", offset:-4, fill:"var(--text-3)", fontSize:10 }}
@@ -291,8 +291,8 @@ export default function TabOptimization() {
           <div style={{ fontSize:"0.625rem",color:"var(--text-3)",marginBottom:"0.75rem",lineHeight:1.5 }}>
             The portfolio with the best risk-adjusted return per unit of volatility.
           </div>
-          <div style={{ padding:"0.75rem",background:"rgba(201,168,76,0.06)",
-            border:"1px solid rgba(201,168,76,0.15)",borderRadius:7 }}>
+          <div style={{ padding:"0.75rem",background:"rgba(201,169,110,0.06)",
+            border:"1px solid rgba(201,169,110,0.15)",borderRadius:7 }}>
             <div style={{ fontWeight:800,color:"var(--text-1)",marginBottom:4 }}>{maxSharpe.name}</div>
             <div style={{ fontSize:"1.25rem",fontWeight:900,color:GOLD }}>{maxSharpe.sharpe}</div>
             <div style={{ fontSize:"0.5rem",color:"var(--text-3)" }}>Sharpe Ratio</div>
@@ -380,7 +380,7 @@ export default function TabOptimization() {
             ["≥ 0.80 Highly Correlated",RED,"rgba(239,68,68,0.3)"],
             ["0.50–0.79 Moderate",      "#f97316","rgba(249,115,22,0.2)"],
             ["0.20–0.49 Low",           YELLOW,"rgba(234,179,8,0.15)"],
-            ["-0.10–0.19 Minimal",      "var(--text-3)","rgba(255,255,255,0.04)"],
+            ["-0.10–0.19 Minimal",      "var(--text-3)","var(--border-c)"],
             ["< -0.10 Negative",        GREEN,"rgba(34,197,94,0.15)"],
           ].map(([l,c,bg])=>(
             <div key={l} style={{ display:"flex",alignItems:"center",gap:5,fontSize:"0.5rem",color:"var(--text-3)" }}>

@@ -10,9 +10,17 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 const LIGHT = '#5BC8E2';
-const BG    = '#F4F7FA';
 
 /* ── Shared primitives ────────────────────────────────────────────── */
 function fmt(n)  { return '$' + Math.round(Math.abs(n)).toLocaleString(); }
@@ -20,11 +28,11 @@ function fmtR(n) { return n.toFixed(2); }
 
 function SectionCard({ title, subtitle, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
       {(title || subtitle) && (
         <div style={{ marginBottom:'1.25rem' }}>
           {title && <h3 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
-          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{subtitle}</p>}
+          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:T3, lineHeight:1.65, fontFamily:UI }}>{subtitle}</p>}
         </div>
       )}
       {children}
@@ -36,7 +44,7 @@ function InfoBox({ children, color = TEAL }) {
   return (
     <div style={{ display:'flex', gap:10, padding:'0.75rem 0.875rem', background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:10, marginTop:'0.875rem' }}>
       <Info size={14} color={color} style={{ flexShrink:0, marginTop:2 }}/>
-      <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{children}</p>
+      <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{children}</p>
     </div>
   );
 }
@@ -44,25 +52,25 @@ function InfoBox({ children, color = TEAL }) {
 function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1, hint, small }) {
   return (
     <div style={{ marginBottom: small ? '0.5rem' : '1rem' }}>
-      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>{label}</label>}
+      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>{label}</label>}
       <div style={{ position:'relative', display:'flex', alignItems:'center' }}>
-        {prefix && <span style={{ position:'absolute', left:10, color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
+        {prefix && <span style={{ position:'absolute', left:10, color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
         <input
           type="number" value={value} min={min} step={step}
           onChange={e => onChange(Number(e.target.value))}
           style={{
             width:'100%', padding:`${small?'5px':'9px'} ${suffix?'2.5rem':'0.75rem'} ${small?'5px':'9px'} ${prefix?'1.5rem':'0.75rem'}`,
-            border:'1.5px solid #e5e7eb', borderRadius:9,
+            border:`1.5px solid ${B2}`, borderRadius:9,
             fontSize: small ? '0.875rem' : '1rem',
-            fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600,
-            background:'#fafafa', boxSizing:'border-box',
+            fontFamily:UI, color:NAVY, fontWeight:600,
+            background:RAISE, boxSizing:'border-box',
           }}
           onFocus={e => e.target.style.borderColor = TEAL}
           onBlur={e  => e.target.style.borderColor = '#e5e7eb'}
         />
-        {suffix && <span style={{ position:'absolute', right:10, color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
+        {suffix && <span style={{ position:'absolute', right:10, color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
       </div>
-      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:T3, fontFamily:UI }}>{hint}</p>}
     </div>
   );
 }
@@ -120,7 +128,7 @@ function CreditScoreVisual() {
   const [open, setOpen] = useState(null);
   return (
     <div>
-      <p style={{ fontSize:'0.875rem', color:'#6b7280', marginBottom:'1.25rem', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ fontSize:'0.875rem', color:T3, marginBottom:'1.25rem', lineHeight:1.7, fontFamily:UI }}>
         Your <strong style={{ color:NAVY }}>FICO® Score</strong> (the most widely used credit score) is calculated from five factors. Each carries a different weight — knowing this lets you prioritize what to improve.
       </p>
 
@@ -132,8 +140,8 @@ function CreditScoreVisual() {
         <div style={{ display:'flex' }}>
           {SCORE_RANGES.map(s => (
             <div key={s.label} style={{ flex:1, textAlign:'center' }}>
-              <div style={{ fontSize:'0.6875rem', fontWeight:700, color:s.color, fontFamily:"'DM Sans',sans-serif" }}>{s.label}</div>
-              <div style={{ fontSize:'0.625rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{s.range}</div>
+              <div style={{ fontSize:'0.6875rem', fontWeight:700, color:s.color, fontFamily:UI }}>{s.label}</div>
+              <div style={{ fontSize:'0.625rem', color:T3, fontFamily:UI }}>{s.range}</div>
             </div>
           ))}
         </div>
@@ -148,8 +156,8 @@ function CreditScoreVisual() {
               style={{ width:'100%', background:'none', border:'none', cursor:'pointer', textAlign:'left', padding:0 }}
             >
               <div style={{ display:'flex', alignItems:'center', gap:'0.75rem', marginBottom:5 }}>
-                <span style={{ fontSize:'0.875rem', fontWeight:600, color:NAVY, flex:1, fontFamily:"'DM Sans',sans-serif" }}>{f.label}</span>
-                <span style={{ fontSize:'0.875rem', fontWeight:800, color:f.color, fontFamily:"'DM Sans',sans-serif", width:36, textAlign:'right' }}>{f.pct}%</span>
+                <span style={{ fontSize:'0.875rem', fontWeight:600, color:NAVY, flex:1, fontFamily:UI }}>{f.label}</span>
+                <span style={{ fontSize:'0.875rem', fontWeight:800, color:f.color, fontFamily:UI, width:36, textAlign:'right' }}>{f.pct}%</span>
               </div>
               <div style={{ height:8, background:'#f0f0f0', borderRadius:99, overflow:'hidden' }}>
                 <div style={{ height:'100%', width:`${f.pct / 35 * 100}%`, background:f.color, borderRadius:99, transition:'width 0.6s ease' }}/>
@@ -157,10 +165,10 @@ function CreditScoreVisual() {
             </button>
             {open === i && (
               <div style={{ marginTop:'0.5rem', padding:'0.75rem 0.875rem', background:`${f.color}08`, border:`1px solid ${f.color}20`, borderRadius:9 }}>
-                <p style={{ margin:'0 0 0.5rem', fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{f.desc}</p>
+                <p style={{ margin:'0 0 0.5rem', fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{f.desc}</p>
                 <div style={{ display:'flex', gap:7, alignItems:'flex-start' }}>
                   <Award size={12} color={f.color} style={{ flexShrink:0, marginTop:2 }}/>
-                  <p style={{ margin:0, fontSize:'0.775rem', color:'#4b5563', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}><strong>Pro tip:</strong> {f.tip}</p>
+                  <p style={{ margin:0, fontSize:'0.775rem', color:'#4b5563', lineHeight:1.6, fontFamily:UI }}><strong>Pro tip:</strong> {f.tip}</p>
                 </div>
               </div>
             )}
@@ -186,31 +194,31 @@ function MethodCard({ method, order, color, badge, tagline, pro, con }) {
     <div style={{ flex:1, border:`1.5px solid ${color}30`, borderRadius:14, overflow:'hidden' }}>
       <div style={{ padding:'0.875rem 1rem', background:`${color}0c`, borderBottom:`1px solid ${color}20` }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
-          <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:700, color:NAVY }}>{method}</span>
-          <span style={{ padding:'2px 10px', background:`${color}18`, border:`1px solid ${color}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color, fontFamily:"'DM Sans',sans-serif" }}>{badge}</span>
+          <span style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:700, color:NAVY }}>{method}</span>
+          <span style={{ padding:'2px 10px', background:`${color}18`, border:`1px solid ${color}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color, fontFamily:UI }}>{badge}</span>
         </div>
-        <p style={{ margin:0, fontSize:'0.8125rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>{tagline}</p>
+        <p style={{ margin:0, fontSize:'0.8125rem', color:T3, fontFamily:UI }}>{tagline}</p>
       </div>
       <div style={{ padding:'0.875rem 1rem' }}>
-        <div style={{ fontSize:'0.75rem', fontWeight:700, color:'#9ca3af', letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:'0.625rem', fontFamily:"'DM Sans',sans-serif" }}>Payment order</div>
+        <div style={{ fontSize:'0.75rem', fontWeight:700, color:T3, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:'0.625rem', fontFamily:UI }}>Payment order</div>
         {order.map((d, i) => (
           <div key={i} style={{ display:'flex', alignItems:'center', gap:'0.625rem', marginBottom:'0.5rem' }}>
-            <div style={{ width:22, height:22, borderRadius:'50%', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.6875rem', fontWeight:800, flexShrink:0, fontFamily:"'DM Sans',sans-serif" }}>{i+1}</div>
+            <div style={{ width:22, height:22, borderRadius:'50%', background:color, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.6875rem', fontWeight:800, flexShrink:0, fontFamily:UI }}>{i+1}</div>
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:'0.8125rem', fontWeight:600, color:NAVY, fontFamily:"'DM Sans',sans-serif" }}>{d.name}</div>
-              <div style={{ fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>${d.balance.toLocaleString()} @ {d.rate}% APR</div>
+              <div style={{ fontSize:'0.8125rem', fontWeight:600, color:NAVY, fontFamily:UI }}>{d.name}</div>
+              <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>${d.balance.toLocaleString()} @ {d.rate}% APR</div>
             </div>
-            {i === 0 && <span style={{ fontSize:'0.6875rem', fontWeight:700, color, background:`${color}15`, padding:'2px 7px', borderRadius:100, fontFamily:"'DM Sans',sans-serif" }}>First target</span>}
+            {i === 0 && <span style={{ fontSize:'0.6875rem', fontWeight:700, color, background:`${color}15`, padding:'2px 7px', borderRadius:100, fontFamily:UI }}>First target</span>}
           </div>
         ))}
         <div style={{ borderTop:'1px solid #f0f0f0', marginTop:'0.75rem', paddingTop:'0.75rem', display:'flex', flexDirection:'column', gap:'0.375rem' }}>
           <div style={{ display:'flex', gap:7, alignItems:'flex-start' }}>
             <CheckCircle2 size={13} color='#22c55e' style={{ flexShrink:0, marginTop:1 }}/>
-            <span style={{ fontSize:'0.8125rem', color:'#374151', fontFamily:"'DM Sans',sans-serif" }}>{pro}</span>
+            <span style={{ fontSize:'0.8125rem', color:T2, fontFamily:UI }}>{pro}</span>
           </div>
           <div style={{ display:'flex', gap:7, alignItems:'flex-start' }}>
             <AlertCircle size={13} color='#f59e0b' style={{ flexShrink:0, marginTop:1 }}/>
-            <span style={{ fontSize:'0.8125rem', color:'#374151', fontFamily:"'DM Sans',sans-serif" }}>{con}</span>
+            <span style={{ fontSize:'0.8125rem', color:T2, fontFamily:UI }}>{con}</span>
           </div>
         </div>
       </div>
@@ -223,7 +231,7 @@ function AvalancheVsSnowball() {
   const avalancheOrder = [...EXAMPLE_DEBTS].sort((a, b) => b.rate - a.rate);
   return (
     <div>
-      <p style={{ fontSize:'0.875rem', color:'#6b7280', marginBottom:'1.25rem', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ fontSize:'0.875rem', color:T3, marginBottom:'1.25rem', lineHeight:1.7, fontFamily:UI }}>
         Both strategies use the same total monthly payment — the difference is <em>which debt you attack first</em>.
         Using the same three example debts below, see how the order changes depending on your goal.
       </p>
@@ -275,7 +283,7 @@ function StudentLoans() {
             padding:'0.5rem 1rem', background:'none', border:'none',
             borderBottom:`2px solid ${activeTab===t.id ? TEAL : 'transparent'}`,
             cursor:'pointer', fontSize:'0.8125rem', fontWeight:activeTab===t.id?700:500,
-            color:activeTab===t.id ? TEAL : '#6b7280', fontFamily:"'DM Sans',sans-serif",
+            color:activeTab===t.id ? TEAL : '#6b7280', fontFamily:UI,
             transition:'color 0.13s', whiteSpace:'nowrap', marginBottom:-1,
           }}>{t.label}</button>
         ))}
@@ -310,13 +318,13 @@ function StudentLoans() {
             ].map(s => (
               <div key={s.title} style={{ border:`1.5px solid ${s.color}25`, borderRadius:12, overflow:'hidden' }}>
                 <div style={{ padding:'0.75rem 0.875rem', background:`${s.color}0c`, borderBottom:`1px solid ${s.color}18` }}>
-                  <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{s.title}</span>
+                  <span style={{ fontFamily:DISP, fontSize:'0.9375rem', fontWeight:700, color:NAVY }}>{s.title}</span>
                 </div>
                 <div style={{ padding:'0.625rem 0.875rem' }}>
                   {s.points.map((p, i) => (
                     <div key={i} style={{ display:'flex', gap:7, alignItems:'flex-start', marginBottom:'0.4rem' }}>
                       <div style={{ width:6, height:6, borderRadius:'50%', background:s.color, flexShrink:0, marginTop:5 }}/>
-                      <span style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>{p}</span>
+                      <span style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.6, fontFamily:UI }}>{p}</span>
                     </div>
                   ))}
                 </div>
@@ -329,7 +337,7 @@ function StudentLoans() {
 
       {activeTab === 'ibr' && (
         <div>
-          <p style={{ fontSize:'0.875rem', color:'#6b7280', marginBottom:'1rem', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+          <p style={{ fontSize:'0.875rem', color:T3, marginBottom:'1rem', lineHeight:1.7, fontFamily:UI }}>
             Income-Driven Repayment plans cap your monthly payment as a percentage of discretionary income and forgive remaining balances after 20–25 years.
           </p>
           <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem' }}>
@@ -339,13 +347,13 @@ function StudentLoans() {
               { name:'IBR (Income-Based Repayment)', pct:'10–15%', forgive:'20–25 years', note:'Available to almost all federal borrowers. 10% if new borrower, 15% if older loans.' },
               { name:'ICR (Income-Contingent Repayment)', pct:'20%', forgive:'25 years', note:'The original IDR plan. Less favorable but available for Parent PLUS loans after consolidation.' },
             ].map((p, i) => (
-              <div key={i} style={{ padding:'0.875rem 1rem', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:10 }}>
-                <div style={{ fontWeight:700, color:NAVY, fontSize:'0.875rem', marginBottom:6, fontFamily:"'DM Sans',sans-serif" }}>{p.name}</div>
-                <div style={{ display:'grid', gridTemplateColumns:'auto auto 1fr', gap:'0.25rem 1rem', fontSize:'0.8125rem', fontFamily:"'DM Sans',sans-serif" }}>
-                  <span style={{ color:'#9ca3af' }}>Payment cap</span><span style={{ fontWeight:600, color:TEAL }}>{p.pct} of discretionary income</span><span/>
-                  <span style={{ color:'#9ca3af' }}>Forgiveness</span><span style={{ fontWeight:600, color:NAVY }}>{p.forgive}</span><span/>
+              <div key={i} style={{ padding:'0.875rem 1rem', background:RAISE, border:`1px solid ${B1}`, borderRadius:10 }}>
+                <div style={{ fontWeight:700, color:NAVY, fontSize:'0.875rem', marginBottom:6, fontFamily:UI }}>{p.name}</div>
+                <div style={{ display:'grid', gridTemplateColumns:'auto auto 1fr', gap:'0.25rem 1rem', fontSize:'0.8125rem', fontFamily:UI }}>
+                  <span style={{ color:T3 }}>Payment cap</span><span style={{ fontWeight:600, color:TEAL }}>{p.pct} of discretionary income</span><span/>
+                  <span style={{ color:T3 }}>Forgiveness</span><span style={{ fontWeight:600, color:NAVY }}>{p.forgive}</span><span/>
                 </div>
-                <p style={{ margin:'0.5rem 0 0', fontSize:'0.775rem', color:'#6b7280', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>{p.note}</p>
+                <p style={{ margin:'0.5rem 0 0', fontSize:'0.775rem', color:T3, lineHeight:1.6, fontFamily:UI }}>{p.note}</p>
               </div>
             ))}
           </div>
@@ -355,7 +363,7 @@ function StudentLoans() {
 
       {activeTab === 'pslf' && (
         <div>
-          <p style={{ fontSize:'0.875rem', color:'#6b7280', marginBottom:'1rem', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+          <p style={{ fontSize:'0.875rem', color:T3, marginBottom:'1rem', lineHeight:1.7, fontFamily:UI }}>
             <strong style={{ color:NAVY }}>Public Service Loan Forgiveness (PSLF)</strong> forgives remaining federal loan balances after 10 years (120 payments) of qualifying employment and payments. Unlike IDR forgiveness, PSLF is <strong>tax-free</strong>.
           </p>
           <div style={{ display:'flex', flexDirection:'column', gap:'0.625rem', marginBottom:'1rem' }}>
@@ -369,8 +377,8 @@ function StudentLoans() {
               <div key={i} style={{ display:'flex', gap:'0.75rem', alignItems:'flex-start', padding:'0.625rem 0.875rem', background:'rgba(0,180,198,0.05)', borderRadius:9, border:'1px solid rgba(0,180,198,0.15)' }}>
                 <CheckCircle2 size={15} color={TEAL} style={{ flexShrink:0, marginTop:1 }}/>
                 <div>
-                  <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2, fontFamily:"'DM Sans',sans-serif" }}>{r.title}</div>
-                  <div style={{ fontSize:'0.8125rem', color:'#4b5563', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>{r.detail}</div>
+                  <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2, fontFamily:UI }}>{r.title}</div>
+                  <div style={{ fontSize:'0.8125rem', color:'#4b5563', lineHeight:1.6, fontFamily:UI }}>{r.detail}</div>
                 </div>
               </div>
             ))}
@@ -458,54 +466,54 @@ function DebtPayoffCalc() {
     <div>
       {/* Debt list */}
       <div style={{ marginBottom:'1rem' }}>
-        <div style={{ fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.625rem', fontFamily:"'DM Sans',sans-serif" }}>Your Debts</div>
+        <div style={{ fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.625rem', fontFamily:UI }}>Your Debts</div>
         {debts.map(d => (
           <div key={d.id} style={{ display:'grid', gridTemplateColumns:'1.5fr 90px 80px 90px 32px', gap:'0.5rem', alignItems:'end', marginBottom:'0.625rem' }}>
             <div>
-              <label style={{ display:'block', fontSize:'0.6875rem', color:'#9ca3af', fontWeight:600, marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>Name</label>
+              <label style={{ display:'block', fontSize:'0.6875rem', color:T3, fontWeight:600, marginBottom:3, fontFamily:UI }}>Name</label>
               <input
                 value={d.name}
                 onChange={e => updateDebt(d.id,'name',e.target.value)}
-                style={{ width:'100%', padding:'6px 8px', border:'1.5px solid #e5e7eb', borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa', boxSizing:'border-box' }}
+                style={{ width:'100%', padding:'6px 8px', border:`1.5px solid ${B2}`, borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:UI, background:RAISE, boxSizing:'border-box' }}
                 onFocus={e => e.target.style.borderColor = TEAL}
                 onBlur={e  => e.target.style.borderColor = '#e5e7eb'}
               />
             </div>
             <div>
-              <label style={{ display:'block', fontSize:'0.6875rem', color:'#9ca3af', fontWeight:600, marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>Balance</label>
+              <label style={{ display:'block', fontSize:'0.6875rem', color:T3, fontWeight:600, marginBottom:3, fontFamily:UI }}>Balance</label>
               <div style={{ position:'relative' }}>
-                <span style={{ position:'absolute', left:7, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.8125rem' }}>$</span>
+                <span style={{ position:'absolute', left:7, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.8125rem' }}>$</span>
                 <input type="number" min={0} value={d.balance} onChange={e => updateDebt(d.id,'balance',Number(e.target.value))}
-                  style={{ width:'100%', padding:'6px 6px 6px 18px', border:'1.5px solid #e5e7eb', borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa', boxSizing:'border-box' }}
+                  style={{ width:'100%', padding:'6px 6px 6px 18px', border:`1.5px solid ${B2}`, borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:UI, background:RAISE, boxSizing:'border-box' }}
                   onFocus={e => e.target.style.borderColor = TEAL} onBlur={e => e.target.style.borderColor = '#e5e7eb'}/>
               </div>
             </div>
             <div>
-              <label style={{ display:'block', fontSize:'0.6875rem', color:'#9ca3af', fontWeight:600, marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>APR %</label>
+              <label style={{ display:'block', fontSize:'0.6875rem', color:T3, fontWeight:600, marginBottom:3, fontFamily:UI }}>APR %</label>
               <div style={{ position:'relative' }}>
                 <input type="number" min={0} step={0.1} value={d.rate} onChange={e => updateDebt(d.id,'rate',Number(e.target.value))}
-                  style={{ width:'100%', padding:'6px 20px 6px 8px', border:'1.5px solid #e5e7eb', borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa', boxSizing:'border-box' }}
+                  style={{ width:'100%', padding:'6px 20px 6px 8px', border:`1.5px solid ${B2}`, borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:UI, background:RAISE, boxSizing:'border-box' }}
                   onFocus={e => e.target.style.borderColor = TEAL} onBlur={e => e.target.style.borderColor = '#e5e7eb'}/>
-                <span style={{ position:'absolute', right:7, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.8125rem' }}>%</span>
+                <span style={{ position:'absolute', right:7, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.8125rem' }}>%</span>
               </div>
             </div>
             <div>
-              <label style={{ display:'block', fontSize:'0.6875rem', color:'#9ca3af', fontWeight:600, marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>Min. Payment</label>
+              <label style={{ display:'block', fontSize:'0.6875rem', color:T3, fontWeight:600, marginBottom:3, fontFamily:UI }}>Min. Payment</label>
               <div style={{ position:'relative' }}>
-                <span style={{ position:'absolute', left:7, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.8125rem' }}>$</span>
+                <span style={{ position:'absolute', left:7, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.8125rem' }}>$</span>
                 <input type="number" min={0} value={d.minPayment} onChange={e => updateDebt(d.id,'minPayment',Number(e.target.value))}
-                  style={{ width:'100%', padding:'6px 6px 6px 18px', border:'1.5px solid #e5e7eb', borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa', boxSizing:'border-box' }}
+                  style={{ width:'100%', padding:'6px 6px 6px 18px', border:`1.5px solid ${B2}`, borderRadius:8, fontSize:'0.8125rem', color:NAVY, fontFamily:UI, background:RAISE, boxSizing:'border-box' }}
                   onFocus={e => e.target.style.borderColor = TEAL} onBlur={e => e.target.style.borderColor = '#e5e7eb'}/>
               </div>
             </div>
             <button onClick={() => removeDebt(d.id)} disabled={debts.length <= 1}
-              style={{ height:32, width:32, border:'1px solid #fee2e2', borderRadius:8, background:'#fff', cursor:debts.length>1?'pointer':'default', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:1 }}>
+              style={{ height:32, width:32, border:'1px solid #fee2e2', borderRadius:8, background:SURF, cursor:debts.length>1?'pointer':'default', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:1 }}>
               <Trash2 size={13} color={debts.length>1?'#ef4444':'#d1d5db'}/>
             </button>
           </div>
         ))}
         {debts.length < 8 && (
-          <button onClick={addDebt} style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 14px', background:'none', border:`1.5px dashed ${TEAL}50`, borderRadius:9, cursor:'pointer', fontSize:'0.8125rem', color:TEAL, fontWeight:600, fontFamily:"'DM Sans',sans-serif" }}>
+          <button onClick={addDebt} style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 14px', background:'none', border:`1.5px dashed ${TEAL}50`, borderRadius:9, cursor:'pointer', fontSize:'0.8125rem', color:TEAL, fontWeight:600, fontFamily:UI }}>
             <Plus size={13}/> Add another debt
           </button>
         )}
@@ -519,16 +527,16 @@ function DebtPayoffCalc() {
           { label:'Snowball', data:snowball, color:'#8b5cf6', sub:'Lowest balance first' },
           { label:'Avalanche', data:avalanche, color:TEAL, sub:'Highest rate first' },
         ].map(m => (
-          <div key={m.label} style={{ background:'#fff', border:`1.5px solid ${m.color}25`, borderRadius:12, padding:'1rem', boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize:'0.75rem', fontWeight:700, color:m.color, textTransform:'uppercase', letterSpacing:'0.06em', fontFamily:"'DM Sans',sans-serif", marginBottom:3 }}>{m.label}</div>
-            <div style={{ fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginBottom:'0.75rem' }}>{m.sub}</div>
+          <div key={m.label} style={{ background:SURF, border:`1.5px solid ${m.color}25`, borderRadius:12, padding:'1rem', boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize:'0.75rem', fontWeight:700, color:m.color, textTransform:'uppercase', letterSpacing:'0.06em', fontFamily:UI, marginBottom:3 }}>{m.label}</div>
+            <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI, marginBottom:'0.75rem' }}>{m.sub}</div>
             <div style={{ marginBottom:'0.5rem' }}>
-              <div style={{ fontSize:'0.6875rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>Payoff time</div>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.375rem', fontWeight:700, color:NAVY }}>{m.data.months} months <span style={{ fontSize:'0.875rem', color:'#9ca3af', fontWeight:400 }}>({(m.data.months/12).toFixed(1)} yrs)</span></div>
+              <div style={{ fontSize:'0.6875rem', color:T3, fontFamily:UI }}>Payoff time</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.375rem', fontWeight:700, color:NAVY }}>{m.data.months} months <span style={{ fontSize:'0.875rem', color:T3, fontWeight:400 }}>({(m.data.months/12).toFixed(1)} yrs)</span></div>
             </div>
             <div>
-              <div style={{ fontSize:'0.6875rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>Total interest paid</div>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.375rem', fontWeight:700, color:m.color }}>{fmt(m.data.totalInterest)}</div>
+              <div style={{ fontSize:'0.6875rem', color:T3, fontFamily:UI }}>Total interest paid</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.375rem', fontWeight:700, color:m.color }}>{fmt(m.data.totalInterest)}</div>
             </div>
           </div>
         ))}
@@ -538,11 +546,11 @@ function DebtPayoffCalc() {
       <div style={{ height:180, marginBottom:'0.875rem' }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} barSize={48}>
-            <XAxis dataKey="name" tick={{ fontFamily:"'DM Sans',sans-serif", fontSize:12, fill:'#6b7280' }} axisLine={false} tickLine={false}/>
+            <XAxis dataKey="name" tick={{ fontFamily:UI, fontSize:12, fill:'#6b7280' }} axisLine={false} tickLine={false}/>
             <YAxis hide/>
             <RechartsTip
               formatter={(v) => [`$${Math.round(v).toLocaleString()}`, 'Total Interest']}
-              contentStyle={{ fontFamily:"'DM Sans',sans-serif", fontSize:12, borderRadius:8, border:'1px solid #e5e7eb' }}
+              contentStyle={{ fontFamily:UI, fontSize:12, borderRadius:8, border:`1px solid ` }}
             />
             <Bar dataKey="interest" radius={[6,6,0,0]}>
               <Cell fill="#8b5cf6"/>
@@ -555,13 +563,13 @@ function DebtPayoffCalc() {
       {saved > 0 && (
         <div style={{ padding:'1rem 1.125rem', background:'rgba(0,180,198,0.07)', border:'1.5px solid rgba(0,180,198,0.2)', borderRadius:12, display:'flex', gap:'1.25rem', flexWrap:'wrap', alignItems:'center', justifyContent:'center' }}>
           <div style={{ textAlign:'center' }}>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.5rem', fontWeight:700, color:TEAL }}>{fmt(saved)}</div>
-            <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>saved using Avalanche vs Snowball</div>
+            <div style={{ fontFamily:DISP, fontSize:'1.5rem', fontWeight:700, color:TEAL }}>{fmt(saved)}</div>
+            <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>saved using Avalanche vs Snowball</div>
           </div>
           {monthSaved > 0 && (
             <div style={{ textAlign:'center' }}>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.5rem', fontWeight:700, color:NAVY }}>{monthSaved} mo</div>
-              <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>faster debt-free with Avalanche</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.5rem', fontWeight:700, color:NAVY }}>{monthSaved} mo</div>
+              <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>faster debt-free with Avalanche</div>
             </div>
           )}
         </div>
@@ -608,9 +616,9 @@ function CreditCardCalc() {
       </div>
 
       <div style={{ marginBottom:'1.25rem' }}>
-        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>
           Monthly Payment — <span style={{ color:TEAL }}>{fmt(payment)}/mo</span>
-          <span style={{ fontWeight:400, color:'#9ca3af', fontSize:'0.75rem', marginLeft:8 }}>minimum ≈ {fmt(minPay)}/mo</span>
+          <span style={{ fontWeight:400, color:T3, fontSize:'0.75rem', marginLeft:8 }}>minimum ≈ {fmt(minPay)}/mo</span>
         </label>
         <input type="range" min={Math.ceil(minPay)} max={Math.max(balance, payment*2)} step={5} value={payment}
           onChange={e => setPayment(Number(e.target.value))}
@@ -620,7 +628,7 @@ function CreditCardCalc() {
       {!payable ? (
         <div style={{ padding:'0.875rem 1rem', background:'#fef2f2', border:'1px solid #fee2e2', borderRadius:10, display:'flex', gap:8 }}>
           <AlertCircle size={15} color="#ef4444" style={{ flexShrink:0, marginTop:1 }}/>
-          <p style={{ margin:0, fontSize:'0.8125rem', color:'#991b1b', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+          <p style={{ margin:0, fontSize:'0.8125rem', color:'#991b1b', lineHeight:1.65, fontFamily:UI }}>
             At {fmt(payment)}/month, you'll <strong>never pay off this balance</strong> — the interest each month exceeds your payment. Increase your payment to at least {fmt(Math.ceil(balance * monthlyRate) + 1)}/mo to make progress.
           </p>
         </div>
@@ -628,23 +636,23 @@ function CreditCardCalc() {
         <>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'0.625rem', marginBottom:'0.875rem' }}>
             <div style={{ textAlign:'center', padding:'0.875rem 0.5rem', background:'rgba(0,180,198,0.07)', border:'1px solid rgba(0,180,198,0.18)', borderRadius:11 }}>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.375rem', fontWeight:700, color:TEAL }}>{withPayment.months}</div>
-              <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>months to payoff</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.375rem', fontWeight:700, color:TEAL }}>{withPayment.months}</div>
+              <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>months to payoff</div>
             </div>
             <div style={{ textAlign:'center', padding:'0.875rem 0.5rem', background:'rgba(239,68,68,0.06)', border:'1px solid rgba(239,68,68,0.18)', borderRadius:11 }}>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.375rem', fontWeight:700, color:'#ef4444' }}>{fmt(withPayment.interest)}</div>
-              <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>total interest</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.375rem', fontWeight:700, color:'#ef4444' }}>{fmt(withPayment.interest)}</div>
+              <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>total interest</div>
             </div>
             <div style={{ textAlign:'center', padding:'0.875rem 0.5rem', background:'rgba(10,31,68,0.05)', border:'1px solid rgba(10,31,68,0.12)', borderRadius:11 }}>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.375rem', fontWeight:700, color:NAVY }}>{fmt(balance + withPayment.interest)}</div>
-              <div style={{ fontSize:'0.75rem', color:'#6b7280', fontFamily:"'DM Sans',sans-serif" }}>total paid</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.375rem', fontWeight:700, color:NAVY }}>{fmt(balance + withPayment.interest)}</div>
+              <div style={{ fontSize:'0.75rem', color:T3, fontFamily:UI }}>total paid</div>
             </div>
           </div>
 
           {interestSaved !== null && interestSaved > 0 && (
             <div style={{ padding:'0.75rem 0.875rem', background:'rgba(34,197,94,0.07)', border:'1px solid rgba(34,197,94,0.2)', borderRadius:10, display:'flex', gap:8, alignItems:'flex-start' }}>
               <CheckCircle2 size={14} color="#22c55e" style={{ flexShrink:0, marginTop:1 }}/>
-              <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+              <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.65, fontFamily:UI }}>
                 By paying <strong>{fmt(payment)}/mo</strong> instead of the minimum (<strong>{fmt(minPay)}/mo</strong>), you save <strong style={{ color:'#22c55e' }}>{fmt(interestSaved)}</strong> in interest and pay off the card <strong>{withMin.months - withPayment.months} months</strong> sooner.
               </p>
             </div>
@@ -698,24 +706,24 @@ function ResourcesTab() {
     <div>
       <div style={{ padding:'0.875rem 1rem', background:'rgba(0,180,198,0.06)', border:'1px solid rgba(0,180,198,0.2)', borderRadius:12, marginBottom:'1.25rem', display:'flex', gap:10, alignItems:'flex-start' }}>
         <Info size={15} color={TEAL} style={{ flexShrink:0, marginTop:1 }}/>
-        <p style={{ margin:0, fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:0, fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>
           <strong>You're entitled to one free credit report from each bureau per year</strong> at AnnualCreditReport.com (the only federally mandated free report site). Review all three — Equifax, Experian, and TransUnion — for errors.
         </p>
       </div>
       <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
         {RESOURCES.map((r, i) => (
-          <div key={i} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:14, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
+          <div key={i} style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:14, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.05)' }}>
             <div style={{ padding:'0.875rem 1.125rem', borderBottom:'1px solid #f0f0f0', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:700, color:NAVY }}>{r.name}</span>
-                <span style={{ padding:'2px 10px', background:`${r.badgeColor}15`, border:`1px solid ${r.badgeColor}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:r.badgeColor, fontFamily:"'DM Sans',sans-serif", letterSpacing:'0.03em' }}>{r.badge}</span>
+                <span style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:700, color:NAVY }}>{r.name}</span>
+                <span style={{ padding:'2px 10px', background:`${r.badgeColor}15`, border:`1px solid ${r.badgeColor}35`, borderRadius:100, fontSize:'0.6875rem', fontWeight:700, color:r.badgeColor, fontFamily:UI, letterSpacing:'0.03em' }}>{r.badge}</span>
               </div>
             </div>
             <div style={{ padding:'0.875rem 1.125rem' }}>
-              <p style={{ margin:'0 0 0.75rem', fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{r.desc}</p>
-              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'0.25rem 0.75rem', fontSize:'0.8125rem', fontFamily:"'DM Sans',sans-serif" }}>
-                <span style={{ color:'#9ca3af', fontWeight:600 }}>Best for</span><span style={{ color:'#374151' }}>{r.best}</span>
-                <span style={{ color:'#9ca3af', fontWeight:600 }}>Cost</span><span style={{ color:'#374151' }}>{r.cost}</span>
+              <p style={{ margin:'0 0 0.75rem', fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{r.desc}</p>
+              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'0.25rem 0.75rem', fontSize:'0.8125rem', fontFamily:UI }}>
+                <span style={{ color:T3, fontWeight:600 }}>Best for</span><span style={{ color:T2 }}>{r.best}</span>
+                <span style={{ color:T3, fontWeight:600 }}>Cost</span><span style={{ color:T2 }}>{r.cost}</span>
               </div>
             </div>
           </div>
@@ -739,19 +747,19 @@ export default function DebtCredit() {
   const [tab, setTab] = useState('learn');
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
       {/* Header */}
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 0' }}>
-        <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6, fontFamily:"'DM Sans',sans-serif" }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
+      <div style={{ background:SURF, borderBottom:`1px solid `, padding:'2rem 2.5rem 0' }}>
+        <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6, fontFamily:UI }}>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
           <span>Debt & Credit</span>
         </div>
         <h1 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Debt & Credit
         </h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Understand your credit score, build a strategic payoff plan, and break free from high-interest debt faster than you think.
         </p>
         <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
@@ -763,7 +771,7 @@ export default function DebtCredit() {
                 display:'flex', alignItems:'center', gap:7,
                 padding:'0.75rem 1.25rem', background:'none', border:'none',
                 borderBottom:`2px solid ${active ? TEAL : 'transparent'}`,
-                cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem',
+                cursor:'pointer', fontFamily:UI, fontSize:'0.875rem',
                 fontWeight: active ? 700 : 500, color: active ? TEAL : 'rgba(255,255,255,0.45)',
                 marginBottom:-1, transition:'color 0.15s', whiteSpace:'nowrap',
               }}>
@@ -805,16 +813,16 @@ export default function DebtCredit() {
         {tab === 'resources' && <ResourcesTab/>}
 
         {/* Next section */}
-        <div onClick={() => navigate('/fun/investing')} style={{ marginTop:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'1rem 1.25rem', background:NAVY, borderRadius:12, cursor:'pointer', transition:'opacity 0.15s' }}
+        <div onClick={() => navigate('/fun/investing')} style={{ marginTop:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'1rem 1.25rem', background:RAISE, borderRadius:12, cursor:'pointer', transition:'opacity 0.15s' }}
           onMouseEnter={e => e.currentTarget.style.opacity='0.88'} onMouseLeave={e => e.currentTarget.style.opacity='1'}>
           <div>
-            <div style={{ fontSize:'0.6875rem', color:'rgba(255,255,255,0.4)', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>Next section</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:600, color:'#fff' }}>Investing & Accounts</div>
+            <div style={{ fontSize:'0.6875rem', color:'rgba(255,255,255,0.4)', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:3, fontFamily:UI }}>Next section</div>
+            <div style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:600, color:'#fff' }}>Investing & Accounts</div>
           </div>
           <ArrowRight size={18} color={TEAL}/>
         </div>
 
-        <p style={{ marginTop:'2rem', fontSize:'0.6875rem', color:'#d1d5db', textAlign:'center', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ marginTop:'2rem', fontSize:'0.6875rem', color:T3, textAlign:'center', lineHeight:1.6, fontFamily:UI }}>
           For educational purposes only — not financial, tax, or legal advice.
         </p>
       </div>

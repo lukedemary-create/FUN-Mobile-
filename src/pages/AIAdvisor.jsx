@@ -16,7 +16,7 @@ const REPORTS = [
     name: 'Wealth Diagnostic',
     tagline: 'Complete financial health score & roadmap',
     icon: BarChart3,
-    color: '#c9a84c',
+    color: '#c9a96e',
     category: 'Comprehensive',
     steps: [
       {
@@ -864,7 +864,7 @@ function renderMarkdown(text) {
 
     if (line.startsWith('## ')) {
       if (inBullet) { html += '</ul>'; inBullet = false; }
-      html += `<h2 style="font-size:0.9375rem;font-weight:800;color:var(--gold);letter-spacing:0.06em;text-transform:uppercase;margin:1.75rem 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(201,168,76,0.2)">${line.slice(3)}</h2>`;
+      html += `<h2 style="font-size:0.9375rem;font-weight:800;color:var(--gold);letter-spacing:0.06em;text-transform:uppercase;margin:1.75rem 0 0.75rem;padding-bottom:0.5rem;border-bottom:1px solid rgba(201,169,110,0.2)">${line.slice(3)}</h2>`;
     } else if (line.startsWith('### ')) {
       if (inBullet) { html += '</ul>'; inBullet = false; }
       html += `<h3 style="font-size:0.8125rem;font-weight:700;color:var(--text-1);letter-spacing:0.04em;margin:1.25rem 0 0.5rem;">${line.slice(4)}</h3>`;
@@ -947,24 +947,24 @@ function buildDownloadHTML(reportName, reportContent, formData) {
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #07080a; color: #e8eaed; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.6; padding: 0; }
   .page { max-width: 860px; margin: 0 auto; padding: 2rem; }
-  .header { display: flex; align-items: flex-start; justify-content: space-between; padding: 2rem; background: #0f1117; border-bottom: 2px solid #c9a84c; margin: -2rem -2rem 2rem; }
+  .header { display: flex; align-items: flex-start; justify-content: space-between; padding: 2rem; background: #0f1117; border-bottom: 2px solid #c9a96e; margin: -2rem -2rem 2rem; }
   .logo-block { display: flex; align-items: center; gap: 0.75rem; }
-  .logo-p { width: 36px; height: 36px; background: #c9a84c; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 900; color: #07080a; flex-shrink: 0; }
+  .logo-p { width: 36px; height: 36px; background: #c9a96e; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 900; color: #07080a; flex-shrink: 0; }
   .logo-text { font-weight: 900; font-size: 0.875rem; letter-spacing: 0.18em; color: #e8eaed; text-transform: uppercase; }
-  .logo-sub { font-size: 0.5rem; font-weight: 700; letter-spacing: 0.22em; color: #c9a84c; text-transform: uppercase; margin-top: 2px; }
+  .logo-sub { font-size: 0.5rem; font-weight: 700; letter-spacing: 0.22em; color: #c9a96e; text-transform: uppercase; margin-top: 2px; }
   .header-right { text-align: right; }
-  .report-name { font-size: 1.25rem; font-weight: 800; color: #c9a84c; letter-spacing: -0.01em; }
+  .report-name { font-size: 1.25rem; font-weight: 800; color: #c9a96e; letter-spacing: -0.01em; }
   .report-date { font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; }
   .report-type { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; color: #4b5563; text-transform: uppercase; margin-top: 0.25rem; }
-  .disclaimer-banner { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.15); border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; font-size: 0.6875rem; color: #9ca3af; line-height: 1.5; }
-  .disclaimer-banner strong { color: #c9a84c; }
-  h2 { font-size: 0.875rem; font-weight: 800; color: #c9a84c; letter-spacing: 0.06em; text-transform: uppercase; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(201,168,76,0.2); }
+  .disclaimer-banner { background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.15); border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; font-size: 0.6875rem; color: #9ca3af; line-height: 1.5; }
+  .disclaimer-banner strong { color: #c9a96e; }
+  h2 { font-size: 0.875rem; font-weight: 800; color: #c9a96e; letter-spacing: 0.06em; text-transform: uppercase; margin: 2rem 0 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(201,169,110,0.2); }
   h3 { font-size: 0.8125rem; font-weight: 700; color: #e8eaed; margin: 1.25rem 0 0.5rem; }
   p { font-size: 0.8125rem; color: #9ca3af; line-height: 1.65; margin: 0.25rem 0; }
   p strong { color: #e8eaed; }
   ul { list-style: none; padding-left: 0; margin: 0.5rem 0; }
   ul li { padding: 0.375rem 0 0.375rem 1.25rem; position: relative; font-size: 0.8125rem; color: #9ca3af; line-height: 1.6; }
-  ul li::before { content: '◈'; position: absolute; left: 0; color: #c9a84c; }
+  ul li::before { content: '◈'; position: absolute; left: 0; color: #c9a96e; }
   .numbered { padding-left: 1.5rem; font-size: 0.8125rem; color: #9ca3af; margin: 0.4rem 0; }
   hr { border: none; border-top: 1px solid #1e2435; margin: 1.5rem 0; }
   .spacer { height: 0.5rem; }
@@ -1187,7 +1187,7 @@ function LoadingView() {
       <div style={{ position: 'relative' }}>
         <div style={{
           width: 72, height: 72,
-          border: '3px solid rgba(201,168,76,0.1)',
+          border: '3px solid rgba(201,169,110,0.1)',
           borderTopColor: 'var(--gold)',
           borderRadius: '50%',
           animation: 'tSpin 0.9s linear infinite',
@@ -1238,7 +1238,7 @@ function ReportView({ report, content, formData, onClose, onRegenerate }) {
 
   const handleDownload = () => {
     const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    const scoreColor = (content.score || 0) >= 75 ? '#10b981' : (content.score || 0) >= 55 ? '#c9a84c' : '#ef4444';
+    const scoreColor = (content.score || 0) >= 75 ? '#10b981' : (content.score || 0) >= 55 ? '#c9a96e' : '#ef4444';
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1249,27 +1249,27 @@ function ReportView({ report, content, formData, onClose, onRegenerate }) {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #07080a; color: #e8eaed; font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; line-height: 1.6; }
 .page { max-width: 900px; margin: 0 auto; padding: 2rem; }
-.header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.5rem 2rem; background: #0f1117; border-bottom: 2px solid #c9a84c; margin: -2rem -2rem 2rem; }
-.logo-p { width: 36px; height: 36px; background: #c9a84c; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 900; color: #07080a; display: inline-flex; }
-.report-name { font-size: 1.25rem; font-weight: 800; color: #c9a84c; }
+.header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.5rem 2rem; background: #0f1117; border-bottom: 2px solid #c9a96e; margin: -2rem -2rem 2rem; }
+.logo-p { width: 36px; height: 36px; background: #c9a96e; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 900; color: #07080a; display: inline-flex; }
+.report-name { font-size: 1.25rem; font-weight: 800; color: #c9a96e; }
 .score-hero { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: #0f1117; border: 1px solid #1e2435; border-radius: 8px; margin-bottom: 1.5rem; }
 .score-circle { width: 80px; height: 80px; border-radius: 50%; border: 3px solid ${scoreColor}; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .scorecard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
 .metric { background: #0f1117; border: 1px solid #1e2435; border-radius: 6px; padding: 0.75rem; }
-.metric-val { font-size: 1.125rem; font-weight: 800; color: #c9a84c; }
+.metric-val { font-size: 1.125rem; font-weight: 800; color: #c9a96e; }
 .metric-label { font-size: 0.625rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; }
 .section { margin-bottom: 1.5rem; }
-.section-title { font-size: 0.8125rem; font-weight: 800; color: #c9a84c; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid rgba(201,168,76,0.2); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
+.section-title { font-size: 0.8125rem; font-weight: 800; color: #c9a96e; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid rgba(201,169,110,0.2); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
 p { font-size: 0.8125rem; color: #9ca3af; line-height: 1.65; margin: 0.5rem 0; }
 p strong { color: #e8eaed; }
 table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; margin: 0.75rem 0; }
 th { background: #0f1117; color: #6b7280; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.5rem 0.75rem; text-align: left; }
 td { padding: 0.5rem 0.75rem; color: #9ca3af; border-bottom: 1px solid #1e2435; }
-tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
-.action { padding: 0.75rem; border-radius: 6px; margin: 0.5rem 0; border-left: 3px solid; }
-.action-CRITICAL { background: rgba(239,68,68,0.08); border-color: #ef4444; }
-.action-HIGH { background: rgba(201,168,76,0.08); border-color: #c9a84c; }
-.action-MEDIUM { background: rgba(16,185,129,0.08); border-color: #10b981; }
+tr:nth-child(even) td { background: var(--surface); }
+.action { padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0; }
+.action-CRITICAL { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
+.action-HIGH { background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.25); }
+.action-MEDIUM { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.22); }
 .disclaimer { font-size: 0.6875rem; color: #4b5563; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #1e2435; }
 @media print { body { background: white; color: #1a1a1a; } }
 </style>
@@ -1279,7 +1279,7 @@ tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
 <div class="header">
   <div style="display:flex;align-items:center;gap:0.75rem">
     <div class="logo-p">P</div>
-    <div><div style="font-weight:900;font-size:0.875rem;letter-spacing:0.18em;text-transform:uppercase">PLANORA</div><div style="font-size:0.5rem;font-weight:700;letter-spacing:0.22em;color:#c9a84c;text-transform:uppercase">TERMINAL</div></div>
+    <div><div style="font-weight:900;font-size:0.875rem;letter-spacing:0.18em;text-transform:uppercase">PLANORA</div><div style="font-size:0.5rem;font-weight:700;letter-spacing:0.22em;color:#c9a96e;text-transform:uppercase">TERMINAL</div></div>
   </div>
   <div style="text-align:right"><div class="report-name">${report.name}</div><div style="font-size:0.75rem;color:#6b7280">Generated ${date}</div></div>
 </div>
@@ -1289,7 +1289,7 @@ tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
 </div>
 ${content.scorecard ? `<div class="scorecard">${content.scorecard.map(m => `<div class="metric"><div class="metric-val">${m.value}</div><div class="metric-label">${m.label}</div><div style="font-size:0.625rem;color:#4b5563">${m.sub || ''}</div></div>`).join('')}</div>` : ''}
 ${(content.sections || []).map(s => `<div class="section"><div class="section-title">${s.title}</div>${s.content ? `<p>${s.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>` : ''}${s.table ? `<table><thead><tr>${s.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${s.table.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>` : ''}</div>`).join('')}
-${content.actions ? `<div class="section"><div class="section-title">Action Plan</div>${content.actions.map(a => `<div class="action action-${a.priority}"><strong style="color:${a.priority === 'CRITICAL' ? '#ef4444' : a.priority === 'HIGH' ? '#c9a84c' : '#10b981'}">[${a.priority}]</strong> ${a.action} · ${a.timeline} · Impact: ${a.impact}</div>`).join('')}</div>` : ''}
+${content.actions ? `<div class="section"><div class="section-title">Action Plan</div>${content.actions.map(a => `<div class="action action-${a.priority}"><strong style="color:${a.priority === 'CRITICAL' ? '#ef4444' : a.priority === 'HIGH' ? '#c9a96e' : '#10b981'}">[${a.priority}]</strong> ${a.action} · ${a.timeline} · Impact: ${a.impact}</div>`).join('')}</div>` : ''}
 <div class="disclaimer">This report is for educational purposes only and does not constitute financial, tax, legal, or investment advice. Consult qualified licensed professionals. Generated by Planora Terminal · ${date}</div>
 </div>
 </body>
@@ -1343,8 +1343,8 @@ ${content.actions ? `<div class="section"><div class="section-title">Action Plan
       {/* Disclaimer */}
       <div style={{
         margin: '1rem 1.25rem 0',
-        background: 'rgba(201,168,76,0.05)',
-        border: '1px solid rgba(201,168,76,0.15)',
+        background: 'rgba(201,169,110,0.05)',
+        border: '1px solid rgba(201,169,110,0.15)',
         borderRadius: '6px',
         padding: '0.625rem 0.875rem',
         fontSize: '0.6875rem',
@@ -1513,7 +1513,7 @@ const EXAMPLE_REPORT_DATA = {
       title: 'ASSET ALLOCATION',
       type: 'donut',
       data: [
-        { name: 'US Equities',       value: 44, color: '#c9a84c' },
+        { name: 'US Equities',       value: 44, color: '#c9a96e' },
         { name: 'Intl Equities',     value: 18, color: '#3b82f6' },
         { name: 'Fixed Income',      value: 22, color: '#10b981' },
         { name: 'Real Estate (REIT)',value: 9,  color: '#8b5cf6' },
@@ -1532,7 +1532,7 @@ const EXAMPLE_REPORT_DATA = {
       ],
       lines: [
         { key: 'conservative', label: 'Conservative',  color: '#ef4444' },
-        { key: 'base',         label: 'Base Case',     color: '#c9a84c' },
+        { key: 'base',         label: 'Base Case',     color: '#c9a96e' },
         { key: 'optimistic',   label: 'Optimistic',    color: '#10b981' },
       ],
     },
@@ -1543,7 +1543,7 @@ const EXAMPLE_REPORT_DATA = {
       title: 'Net Worth Breakdown',
       icon: '◈',
       bigNumbers: [
-        { value: '$1.24M', label: 'Total Net Worth',    sub: 'as of April 2026',    color: '#c9a84c' },
+        { value: '$1.24M', label: 'Total Net Worth',    sub: 'as of April 2026',    color: '#c9a96e' },
         { value: '$412k',  label: 'Retirement Accounts', sub: '401k + Roth IRA',    color: '#10b981' },
         { value: '$588k',  label: 'Home Equity',         sub: '$820k value / $232k mortgage', color: '#3b82f6' },
         { value: '$241k',  label: 'Taxable Brokerage',   sub: '$94k unrealized gains', color: '#8b5cf6' },
@@ -1557,7 +1557,7 @@ const EXAMPLE_REPORT_DATA = {
       title: 'Retirement Savings Analysis',
       icon: '◈',
       bars: [
-        { label: 'John — 401(k) Contribution Rate',  pct: 9,  color: '#c9a84c', showValue: '9% / 15% target' },
+        { label: 'John — 401(k) Contribution Rate',  pct: 9,  color: '#c9a96e', showValue: '9% / 15% target' },
         { label: 'Sarah — Roth IRA Funded (2025)',    pct: 100, color: '#10b981', showValue: 'Maxed $7,000' },
         { label: 'Overall Retirement Pace Score',     pct: 74, color: '#3b82f6', showValue: '74 / 100' },
       ],
@@ -1642,7 +1642,7 @@ function ExampleReportModal({ onClose }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{
               width: 36, height: 36, borderRadius: '8px',
-              background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.25)',
+              background: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.25)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <Sparkles size={16} color="var(--gold)" />
@@ -1660,8 +1660,8 @@ function ExampleReportModal({ onClose }) {
             <span style={{
               fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.08em',
               textTransform: 'uppercase', color: 'var(--gold)',
-              background: 'rgba(201,168,76,0.10)',
-              border: '1px solid rgba(201,168,76,0.25)',
+              background: 'rgba(201,169,110,0.10)',
+              border: '1px solid rgba(201,169,110,0.25)',
               borderRadius: '4px', padding: '3px 8px',
             }}>
               DEMO · NOT REAL DATA
@@ -1678,8 +1678,8 @@ function ExampleReportModal({ onClose }) {
         {/* Disclaimer strip */}
         <div style={{
           padding: '0.5rem 1.25rem',
-          background: 'rgba(201,168,76,0.05)',
-          borderBottom: '1px solid rgba(201,168,76,0.12)',
+          background: 'rgba(201,169,110,0.05)',
+          borderBottom: '1px solid rgba(201,169,110,0.12)',
           fontSize: '0.6875rem', color: 'var(--text-3)', lineHeight: 1.5,
           flexShrink: 0,
         }}>
@@ -1773,21 +1773,23 @@ export default function BreakdownReports() {
   const categories = [...new Set(REPORTS.map((r) => r.category))];
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1100 }}>
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -1795,12 +1797,15 @@ export default function BreakdownReports() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Sparkles size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>AI BREAKDOWN REPORTS</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                AI BREAKDOWN{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Reports</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Get institutional-quality financial analysis tailored to you. Our AI synthesizes your portfolio, tax situation, and goals into clear, actionable breakdown reports.
@@ -1810,8 +1815,8 @@ export default function BreakdownReports() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1832,8 +1837,8 @@ export default function BreakdownReports() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -1864,7 +1869,7 @@ export default function BreakdownReports() {
       </div>
 
       {/* How it works */}
-      <div className="t-card t-card-p" style={{ marginBottom: '2rem', borderLeft: '3px solid var(--gold)' }}>
+      <div className="t-card t-card-p" style={{ marginBottom: '2rem', border: "1px solid rgba(201,169,110,0.25)" }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.875rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             HOW IT WORKS
@@ -1873,8 +1878,8 @@ export default function BreakdownReports() {
             onClick={() => setShowExample(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.375rem',
-              background: 'rgba(201,168,76,0.10)',
-              border: '1px solid rgba(201,168,76,0.3)',
+              background: 'rgba(201,169,110,0.10)',
+              border: '1px solid rgba(201,169,110,0.3)',
               color: 'var(--gold)',
               borderRadius: '6px',
               padding: '0.375rem 0.875rem',
@@ -1883,8 +1888,8 @@ export default function BreakdownReports() {
               textTransform: 'uppercase',
               transition: 'background 0.2s',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(201,168,76,0.18)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(201,168,76,0.10)'}
+            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(201,169,110,0.18)'}
+            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(201,169,110,0.10)'}
           >
             <Sparkles size={12} /> See Example Report
           </button>
@@ -1896,7 +1901,7 @@ export default function BreakdownReports() {
             { step: '03', title: 'Get Your Report', desc: 'Receive a comprehensive AI-generated report you can download as HTML or print as PDF.' },
           ].map((item) => (
             <div key={item.step} style={{ display: 'flex', gap: '0.75rem' }}>
-              <span className="t-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: 'rgba(201,168,76,0.25)', lineHeight: 1, flexShrink: 0 }}>{item.step}</span>
+              <span className="t-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: 'rgba(201,169,110,0.25)', lineHeight: 1, flexShrink: 0 }}>{item.step}</span>
               <div>
                 <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-1)', marginBottom: '0.25rem' }}>{item.title}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-3)', lineHeight: 1.5 }}>{item.desc}</div>
@@ -1926,7 +1931,7 @@ export default function BreakdownReports() {
       </div>
 
       {/* Disclaimer */}
-      <div className="t-card t-card-p" style={{ borderLeft: '3px solid rgba(107,114,128,0.4)' }}>
+      <div className="t-card t-card-p" style={{ border: "1px solid rgba(100,116,139,0.15)", background: "rgba(100,116,139,0.03)" }}>
         <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--text-3)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
           IMPORTANT DISCLAIMER
         </div>

@@ -84,7 +84,7 @@ function ScoreGauge({ score, size = 140 }) {
       <div style={{ position: "relative", width: size, height: viewH, margin: "0 auto" }}>
         <svg width={size} height={viewH} viewBox={`0 0 ${size} ${viewH}`}>
           {/* Track */}
-          <path d={arcPath} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={sw} strokeLinecap="round" />
+          <path d={arcPath} fill="none" stroke="var(--border-c)" strokeWidth={sw} strokeLinecap="round" />
           {/* Progress */}
           <path d={arcPath} fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round"
             strokeDasharray={`${filled} ${arcLen}`}
@@ -263,7 +263,7 @@ function TabDashboard({ profile, policies }) {
       )}
 
       {/* Quick recommendation */}
-      <div className="t-card" style={{ padding: "1.25rem", borderLeft: `3px solid ${BLUE}` }}>
+      <div className="t-card" style={{ padding: "1.25rem", border: `1px solid ${BLUE}35` }}>
         <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--text-1)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.6rem" }}>Quick Recommendation</div>
         <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
           {[
@@ -328,7 +328,7 @@ function TabCalculator({ profile, setProfile }) {
     <div key="debt" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       <div style={{ fontSize: "0.78rem", color: "var(--text-2)", lineHeight: 1.5 }}>Enter all debts that would need to be paid off. This includes credit cards, auto loans, student loans, and any other obligations.</div>
       <F label="Total Debt (excluding mortgage) ($)" field="totalDebts" />
-      <div style={{ padding: "0.75rem 1rem", background: BLUE + "18", borderRadius: 8, borderLeft: `3px solid ${BLUE}` }}>
+      <div style={{ padding: "0.75rem 1rem", background: BLUE + "18", borderRadius: 8, border: `1px solid ${BLUE}38` }}>
         <div style={{ fontSize: "0.72rem", color: BLUE, fontWeight: 700 }}>DIME Step 1 — Debt</div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.4rem", fontWeight: 900, color: BLUE }}>{fc(debt)}</div>
       </div>
@@ -347,7 +347,7 @@ function TabCalculator({ profile, setProfile }) {
         <input type="range" min={5} max={30} value={years} onChange={e => setProfile(p => ({ ...p, incomeYears: Number(e.target.value) }))} style={{ width: "100%" }} />
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.65rem", color: "var(--text-3)" }}><span>5 yrs</span><span>30 yrs</span></div>
       </div>
-      <div style={{ padding: "0.75rem 1rem", background: GREEN + "18", borderRadius: 8, borderLeft: `3px solid ${GREEN}` }}>
+      <div style={{ padding: "0.75rem 1rem", background: GREEN + "18", borderRadius: 8, border: `1px solid ${GREEN}38` }}>
         <div style={{ fontSize: "0.72rem", color: GREEN, fontWeight: 700 }}>DIME Step 2 — Income Replacement (inflation-adjusted)</div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.4rem", fontWeight: 900, color: GREEN }}>{fc(inflatedIncome)}</div>
       </div>
@@ -357,7 +357,7 @@ function TabCalculator({ profile, setProfile }) {
     <div key="mort" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       <div style={{ fontSize: "0.78rem", color: "var(--text-2)", lineHeight: 1.5 }}>Enter the remaining balance on your mortgage so your family can stay in their home without financial stress.</div>
       <F label="Remaining Mortgage Balance ($)" field="mortgage" />
-      <div style={{ padding: "0.75rem 1rem", background: TEAL + "18", borderRadius: 8, borderLeft: `3px solid ${TEAL}` }}>
+      <div style={{ padding: "0.75rem 1rem", background: TEAL + "18", borderRadius: 8, border: `1px solid ${TEAL}38` }}>
         <div style={{ fontSize: "0.72rem", color: TEAL, fontWeight: 700 }}>DIME Step 3 — Mortgage</div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.4rem", fontWeight: 900, color: TEAL }}>{fc(mortgage)}</div>
       </div>
@@ -370,7 +370,7 @@ function TabCalculator({ profile, setProfile }) {
         <F label="Number of Children" field="children" />
         <F label="Est. Education Cost Per Child ($)" field="costPerChild" />
       </div>
-      <div style={{ padding: "0.75rem 1rem", background: PURPLE + "18", borderRadius: 8, borderLeft: `3px solid ${PURPLE}` }}>
+      <div style={{ padding: "0.75rem 1rem", background: PURPLE + "18", borderRadius: 8, border: `1px solid ${PURPLE}38` }}>
         <div style={{ fontSize: "0.72rem", color: PURPLE, fontWeight: 700 }}>DIME Step 4 — Education</div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.4rem", fontWeight: 900, color: PURPLE }}>{fc(educationNeed)}</div>
       </div>
@@ -384,7 +384,7 @@ function TabCalculator({ profile, setProfile }) {
         <F label="Estate Settlement Costs ($)" field="estateSettlement" />
       </div>
       <F label="Existing Life Insurance Coverage ($)" field="existingCoverage" />
-      <div style={{ padding: "0.75rem 1rem", background: ORANGE + "18", borderRadius: 8, borderLeft: `3px solid ${ORANGE}` }}>
+      <div style={{ padding: "0.75rem 1rem", background: ORANGE + "18", borderRadius: 8, border: `1px solid ${ORANGE}38` }}>
         <div style={{ fontSize: "0.72rem", color: ORANGE, fontWeight: 700 }}>Final Expenses</div>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.4rem", fontWeight: 900, color: ORANGE }}>{fc(funeral + estateSettlement)}</div>
       </div>
@@ -580,7 +580,7 @@ function TabPolicyExplorer() {
           </div>
         </div>
         <div style={{ marginTop: "0.75rem", padding: "0.75rem 1rem", background: ORANGE + "18", border: `1px solid ${ORANGE}44`, borderRadius: 8 }}>
-          <div style={{ fontSize: "0.72rem", color: ORANGE, fontWeight: 700 }}>⚠ Important Warning</div>
+          <div style={{ fontSize: "0.72rem", color: ORANGE, fontWeight: 700, display: "flex", alignItems: "center", gap: 5 }}><AlertTriangle size={12} /> Important Warning</div>
           <div style={{ fontSize: "0.72rem", color: "var(--text-2)", marginTop: "0.2rem" }}>Universal life policies have lapsed on millions of policyholders who didn't pay enough premiums. Always run an in-force illustration before reducing payments.</div>
         </div>
       </ExpandCard>
@@ -1089,7 +1089,7 @@ function TabCashValue() {
                 { label: "Term + Invest overtakes Whole Life", data: breakEvenWhole, refColor: GOLD },
                 { label: "Term + Invest overtakes IUL",        data: breakEvenIUL,   refColor: GREEN },
               ].map(({ label, data, refColor }) => (
-                <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.6rem 0.75rem", background: "var(--elevated)", borderRadius: 6, borderLeft: `3px solid ${data ? BLUE : refColor}` }}>
+                <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.6rem 0.75rem", background: "var(--elevated)", borderRadius: 6, border: `1px solid ${data ? BLUE : refColor}30` }}>
                   <span style={{ fontSize: "0.75rem", color: "var(--text-2)" }}>{label}</span>
                   <span style={{ fontFamily: "var(--font-mono)", fontWeight: 900, color: data ? BLUE : refColor, fontSize: "0.82rem" }}>
                     {data ? `Year ${data.year} (age ${data.age})` : `Not within ${projYears} yrs`}
@@ -1098,10 +1098,10 @@ function TabCashValue() {
               ))}
             </div>
             <div style={{ marginTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <div style={{ padding: "0.75rem 1rem", background: BLUE + "18", borderRadius: 8, borderLeft: `3px solid ${BLUE}`, fontSize: "0.72rem", color: "var(--text-2)", lineHeight: 1.5 }}>
+              <div style={{ padding: "0.75rem 1rem", background: BLUE + "18", borderRadius: 8, border: `1px solid ${BLUE}38`, fontSize: "0.72rem", color: "var(--text-2)", lineHeight: 1.5 }}>
                 <strong style={{ color: BLUE }}>If you invest the difference:</strong> Term + investing typically wins long-term at market returns. This works best for disciplined investors who will actually invest every month.
               </div>
-              <div style={{ padding: "0.75rem 1rem", background: GOLD + "18", borderRadius: 8, borderLeft: `3px solid ${GOLD}`, fontSize: "0.72rem", color: "var(--text-2)", lineHeight: 1.5 }}>
+              <div style={{ padding: "0.75rem 1rem", background: GOLD + "18", borderRadius: 8, border: `1px solid ${GOLD}38`, fontSize: "0.72rem", color: "var(--text-2)", lineHeight: 1.5 }}>
                 <strong style={{ color: GOLD }}>If you won't invest the difference:</strong> Whole life acts as forced savings. The guaranteed cash value is better than nothing invested — which is what most people actually do.
               </div>
             </div>
@@ -1305,32 +1305,32 @@ function TabRiders() {
 function TabEducation() {
   const TOPICS = [
     {
-      title: "How Underwriting Works", color: BLUE, icon: "🔍",
+      title: "How Underwriting Works", color: BLUE, badge: "PROCESS",
       steps: ["Submit application with health and lifestyle info", "Insurance company orders medical records", "Possible medical exam (blood draw, height/weight, blood pressure)", "Underwriter reviews all information", "Health classification assigned (Preferred Plus → Substandard)", "Policy issued with your rate", "30-day free-look period to review and cancel"],
       insight: "Being honest on your application is critical — misrepresentation can void your policy. Contestability periods typically last 2 years."
     },
     {
-      title: "Tax Benefits of Life Insurance", color: GREEN, icon: "💰",
+      title: "Tax Benefits of Life Insurance", color: GREEN, badge: "TAXES",
       steps: ["Death benefit paid income-tax-free to beneficiaries (IRC §101)", "Cash value grows on a tax-deferred basis", "Policy loans are income-tax-free (not a withdrawal)", "LIRP strategy: fund policy to MEC limits for retirement income", "No RMDs required unlike IRA/401(k)", "Used in estate planning to pay estate taxes tax-efficiently"],
       insight: "Life insurance is one of the last remaining tax-advantaged vehicles. The death benefit bypass of income tax is one of the most powerful wealth transfer tools available."
     },
     {
-      title: "Buy Term and Invest the Difference", color: GOLD, icon: "📊",
+      title: "Buy Term and Invest the Difference", color: GOLD, badge: "BTID",
       steps: ["Buy the largest term policy you can afford", "Calculate savings vs whole life premium", "Invest the difference in index funds (e.g., S&P 500)", "Over 20-30 years, investment account may dwarf whole life cash value", "At end of term, may be self-insured from accumulated wealth", "This strategy works best for disciplined investors"],
       insight: "Dave Ramsey famously advocates this approach. The math often favors 'BTID' for those who will actually invest the difference. Those who won't invest need to consider whole life as forced savings."
     },
     {
-      title: "Life Insurance as Retirement Income (LIRP)", color: PURPLE, icon: "🏦",
+      title: "Life Insurance as Retirement Income (LIRP)", color: PURPLE, badge: "LIRP",
       steps: ["Overfund a permanent policy (IUL or whole life) without making it a MEC", "Cash value accumulates tax-deferred", "In retirement, take tax-free loans against cash value", "Loans don't count as income — no effect on Social Security taxation", "No contribution limits unlike IRA or 401(k)", "Death benefit repays loans at death"],
       insight: "LIRPs are powerful for high earners who have maxed tax-advantaged accounts. Complexity and fees make them unsuitable for most people — consult a fee-only financial advisor."
     },
     {
-      title: "Business Life Insurance Uses", color: ORANGE, icon: "🏢",
+      title: "Business Life Insurance Uses", color: ORANGE, badge: "BUSINESS",
       steps: ["Key Man Insurance: protects business if a critical employee dies", "Buy-Sell Agreement Funding: funds buyout of deceased partner's share", "Executive Bonus Plan: business pays premium as deductible compensation", "Group Term Life: employee benefit, up to $50K tax-free", "COLI: company-owned life insurance for deferred compensation funding"],
       insight: "Business uses of life insurance can be highly tax-efficient. Key man and buy-sell policies protect business continuity and are essential for any business with partners or key employees."
     },
     {
-      title: "Life Insurance Mistakes to Avoid", color: RED, icon: "⚠️",
+      title: "Life Insurance Mistakes to Avoid", color: RED, badge: "CAUTION",
       steps: ["Buying too little coverage (underinsuring to save on premiums)", "Not buying early enough (premiums double every 10 years)", "Naming a minor as direct beneficiary (court-appointed guardian controls)", "Forgetting to update beneficiaries after major life events", "Letting a policy lapse before replacement is in force", "Purchasing a policy with high surrender charges without reading terms", "Buying only employer-provided group term (non-portable, inadequate)"],
       insight: "The biggest mistake is having no coverage at all. Even a small policy is better than nothing. Review your coverage every 3–5 years or after any major life event."
     },
@@ -1340,7 +1340,7 @@ function TabEducation() {
     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       <div style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--text-1)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Education Center</div>
       {TOPICS.map(t => (
-        <ExpandCard key={t.title} title={t.title} color={t.color} badge={t.icon} summary="">
+        <ExpandCard key={t.title} title={t.title} color={t.color} badge={t.badge} summary="">
           <div style={{ marginTop: "0.75rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "0.75rem" }}>
               {t.steps.map((s, i) => (
@@ -1350,7 +1350,7 @@ function TabEducation() {
                 </div>
               ))}
             </div>
-            <div style={{ padding: "0.75rem 1rem", background: t.color + "18", borderRadius: 8, borderLeft: `3px solid ${t.color}` }}>
+            <div style={{ padding: "0.75rem 1rem", background: t.color + "18", borderRadius: 8, border: `1px solid ${t.color}38` }}>
               <div style={{ fontSize: "0.7rem", fontWeight: 700, color: t.color, marginBottom: "0.25rem" }}>Key Insight</div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-2)", lineHeight: 1.5 }}>{t.insight}</div>
             </div>
@@ -1372,11 +1372,11 @@ function TabActionPlan({ profile, policies }) {
   const gap = Math.max(0, income * 10 - totalCoverage);
 
   const LIFE_STAGES = [
-    { age: "25–34", icon: "🎓", label: "Early Career", coverage: "5–7× income", why: "Starting out, may have student debt and first dependents. Cheapest time to buy." },
-    { age: "35–44", icon: "👨‍👩‍👧", label: "Family Building", coverage: "10–12× income", why: "Peak dependency years. Mortgage, children's education, spouse income replacement all at maximum need." },
-    { age: "45–54", icon: "🏠", label: "Wealth Accumulation", coverage: "8–10× income", why: "Debts declining, wealth building. Consider permanent coverage for estate planning." },
-    { age: "55–64", icon: "📈", label: "Pre-Retirement", coverage: "5–8× income", why: "Final working years. Focus on ensuring retirement isn't derailed if you die prematurely." },
-    { age: "65+", icon: "🌅", label: "Retirement", coverage: "Final expense + estate", why: "If self-insured, small final expense policy or permanent policy for estate transfer may be all that's needed." },
+    { age: "25–34", abbr: "EC", label: "Early Career", coverage: "5–7× income", why: "Starting out, may have student debt and first dependents. Cheapest time to buy." },
+    { age: "35–44", abbr: "FB", label: "Family Building", coverage: "10–12× income", why: "Peak dependency years. Mortgage, children's education, spouse income replacement all at maximum need." },
+    { age: "45–54", abbr: "WA", label: "Wealth Accumulation", coverage: "8–10× income", why: "Debts declining, wealth building. Consider permanent coverage for estate planning." },
+    { age: "55–64", abbr: "PR", label: "Pre-Retirement", coverage: "5–8× income", why: "Final working years. Focus on ensuring retirement isn't derailed if you die prematurely." },
+    { age: "65+", abbr: "RE", label: "Retirement", coverage: "Final expense + estate", why: "If self-insured, small final expense policy or permanent policy for estate transfer may be all that's needed." },
   ];
 
   const steps = [
@@ -1399,7 +1399,7 @@ function TabActionPlan({ profile, policies }) {
     <tr><th>Coverage Gap</th><td colspan="3" style="color:${gap > 0 ? "#e05c5c" : "#4caf7d"}">${fc(gap)}</td></tr></table>
     <h2>Action Steps</h2>${steps.map(s => `<p class="${s.p.toLowerCase()}"><strong>[${s.p}]</strong> ${s.text}<br><small>${s.detail}</small></p>`).join("")}
     <h2>Coverage by Life Stage</h2><table><tr><th>Age</th><th>Stage</th><th>Recommended Coverage</th><th>Why</th></tr>
-    ${LIFE_STAGES.map(s => `<tr><td>${s.age}</td><td>${s.icon} ${s.label}</td><td>${s.coverage}</td><td>${s.why}</td></tr>`).join("")}</table>
+    ${LIFE_STAGES.map(s => `<tr><td>${s.age}</td><td>${s.label}</td><td>${s.coverage}</td><td>${s.why}</td></tr>`).join("")}</table>
     <p style="margin-top:40px;font-size:11px;color:#666">For educational purposes only. Not insurance advice. Work with a licensed insurance professional.</p></body></html>`;
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([html], { type: "text/html" })); a.download = "life-insurance-action-plan.html"; a.click();
   };
@@ -1413,7 +1413,7 @@ function TabActionPlan({ profile, policies }) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
         {steps.map((s, i) => (
-          <div key={i} style={{ display: "flex", gap: "1rem", padding: "0.85rem 1.1rem", background: "var(--elevated)", borderRadius: 8, borderLeft: `3px solid ${s.color}` }}>
+          <div key={i} style={{ display: "flex", gap: "1rem", padding: "0.85rem 1.1rem", background: s.color + "0c", borderRadius: 8, border: `1px solid ${s.color}28` }}>
             <Badge label={s.p} color={s.color} />
             <div>
               <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-1)", marginBottom: "0.2rem" }}>{s.text}</div>
@@ -1431,7 +1431,7 @@ function TabActionPlan({ profile, policies }) {
             const inStage = (age >= parseInt(s.age) && age <= parseInt(s.age.split("–")[1] || "99"));
             return (
               <div key={s.age} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", position: "relative", zIndex: 1 }}>
-                <div style={{ width: 38, height: 38, borderRadius: "50%", background: inStage ? GOLD + "33" : "var(--elevated)", border: `2px solid ${inStage ? GOLD : "var(--border-c)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem" }}>{s.icon}</div>
+                <div style={{ width: 38, height: 38, borderRadius: "50%", background: inStage ? GOLD + "33" : "var(--elevated)", border: `2px solid ${inStage ? GOLD : "var(--border-c)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.6rem", fontWeight: 800, color: inStage ? GOLD : "var(--text-3)", letterSpacing: "0.04em" }}>{s.abbr}</div>
                 <div style={{ textAlign: "center" }}>
                   <div style={{ fontSize: "0.65rem", fontWeight: 700, color: inStage ? GOLD : "var(--text-3)" }}>{s.age}</div>
                   <div style={{ fontSize: "0.62rem", color: inStage ? "var(--text-1)" : "var(--text-3)", fontWeight: inStage ? 700 : 400 }}>{s.label}</div>
@@ -1493,15 +1493,17 @@ export default function LifeInsurance() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -1509,12 +1511,15 @@ export default function LifeInsurance() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <HeartPulse size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>LIFE INSURANCE</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                LIFE{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Insurance</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Understand exactly how much life insurance you need and what it should cost. Compare policy types, calculate your coverage gap, and get a clear picture of your family's protection.
@@ -1524,8 +1529,8 @@ export default function LifeInsurance() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1546,8 +1551,8 @@ export default function LifeInsurance() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -1562,11 +1567,11 @@ export default function LifeInsurance() {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: "0.2rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 8, border: "1px solid var(--border-c)", overflowX: "auto" }}>
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)" }}>
         {TABS.map(t => {
           const active = tab === t.key;
           return (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{ display: "flex", alignItems: "center", gap: "0.35rem", padding: "0.4rem 0.75rem", borderRadius: 6, border: "none", cursor: "pointer", background: active ? GOLD : "none", color: active ? "#07080a" : "var(--text-3)", fontWeight: active ? 800 : 500, fontSize: "0.72rem", whiteSpace: "nowrap", transition: "all 0.15s", flexShrink: 0 }}>
+            <button key={t.key} onClick={() => setTab(t.key)} style={{ display: "flex", alignItems: "center", gap: "0.35rem", padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", transition: "all 0.15s", flexShrink: 0 }}>
               <t.icon size={12} />{t.label}
             </button>
           );

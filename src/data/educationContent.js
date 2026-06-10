@@ -2,7 +2,7 @@ export const EDUCATION_CONTENT = {
   taxes: {
     id: 'taxes',
     title: 'Taxes',
-    icon: '🧾',
+    icon: 'Receipt',
     color: '#c9a84c',
     description: 'Master the US tax system — income taxes, capital gains, deductions, and strategies to legally minimize what you owe.',
     chapters: [
@@ -153,7 +153,7 @@ export const EDUCATION_CONTENT = {
   insurance: {
     id: 'insurance',
     title: 'Insurance',
-    icon: '🛡️',
+    icon: 'ShieldCheck',
     color: '#1a9fd8',
     description: 'Understand how to protect your income, health, family, and assets with the right insurance at the right price.',
     chapters: [
@@ -282,7 +282,7 @@ export const EDUCATION_CONTENT = {
   estate: {
     id: 'estate',
     title: 'Estate Planning',
-    icon: '📜',
+    icon: 'ScrollText',
     color: '#00b899',
     description: 'Protect your family, minimize taxes, and ensure your wishes are honored with a comprehensive estate plan.',
     chapters: [
@@ -411,7 +411,7 @@ export const EDUCATION_CONTENT = {
   trust: {
     id: 'trust',
     title: 'Trusts & Wealth',
-    icon: '🏛️',
+    icon: 'Landmark',
     color: '#7c3aed',
     description: 'Learn how trusts protect assets, reduce taxes, and build generational wealth — the cornerstone of sophisticated estate planning.',
     chapters: [
@@ -551,7 +551,7 @@ export const EDUCATION_CONTENT = {
   retirement: {
     id: 'retirement',
     title: 'Retirement',
-    icon: '🏖️',
+    icon: 'Sunrise',
     color: '#f59e0b',
     description: 'Build a retirement income plan — from compounding and savings vehicles to Social Security, Medicare, and safe withdrawal strategies.',
     chapters: [
@@ -714,7 +714,7 @@ export const EDUCATION_CONTENT = {
   financial_planning: {
     id: 'financial_planning',
     title: 'Financial Planning',
-    icon: '📊',
+    icon: 'BarChart2',
     color: '#10b981',
     description: 'Build a complete financial plan — budgeting, debt management, investing, credit, and the path to financial independence.',
     chapters: [

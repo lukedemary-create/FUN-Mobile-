@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import {
   Receipt, Calculator, TrendingDown, Shield, DollarSign,
-  AlertCircle, CheckCircle, Info, ChevronDown, ChevronUp,
+  AlertCircle, CheckCircle, Info, ChevronDown, ChevronUp, Calendar, RefreshCw,
 } from "lucide-react";
 
 const G = "var(--gold)";
@@ -160,7 +160,7 @@ function CapGainsTab() {
               <button key={v} onClick={() => setFiling(v)} style={{
                 padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer",
                 border: `1px solid ${filing === v ? G : B}`,
-                background: filing === v ? "rgba(201,168,76,0.1)" : "transparent",
+                background: filing === v ? "rgba(201,169,110,0.1)" : "transparent",
                 color: filing === v ? G : TX3,
               }}>{l}</button>
             ))}
@@ -210,7 +210,7 @@ function CapGainsTab() {
             { label: "Effective Tax Rate", value: fmtPct(effectiveRate), isPct: true, color: G },
             { label: "Marginal Rate (top bracket)", value: fmtPct(marginalRate), isPct: true, color: TX2 },
           ].map(({ label, value, color, bold, isPct }) => (
-            <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+            <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid var(--border-c)` }}>
               <span style={{ fontSize: 12, color: TX2, fontWeight: bold ? 700 : 400 }}>{label}</span>
               <span style={{ fontSize: 12, fontWeight: bold ? 800 : 600, color: color || TX1, fontFamily: "monospace" }}>
                 {isPct ? value : (typeof value === "number" ? (value < 0 ? `-${fmt(-value)}` : fmt(value)) : value)}
@@ -270,7 +270,7 @@ function BracketsTab() {
               <button key={v} onClick={() => setFiling(v)} style={{
                 padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer",
                 border: `1px solid ${filing === v ? G : B}`,
-                background: filing === v ? "rgba(201,168,76,0.1)" : "transparent",
+                background: filing === v ? "rgba(201,169,110,0.1)" : "transparent",
                 color: filing === v ? G : TX3,
               }}>{l}</button>
             ))}
@@ -299,7 +299,7 @@ function BracketsTab() {
                 ? (Math.min(taxableIncome, b.max === Infinity ? taxableIncome : b.max) - b.min) * b.rate
                 : 0;
               return (
-                <tr key={i} style={{ background: isActive ? "rgba(201,168,76,0.06)" : "transparent" }}>
+                <tr key={i} style={{ background: isActive ? "rgba(201,169,110,0.06)" : "transparent" }}>
                   <td style={{ padding: "7px 8px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       <div style={{ width: 10, height: 10, borderRadius: 2, background: BRACKET_COLORS[i], flexShrink: 0 }} />
@@ -336,7 +336,7 @@ function BracketsTab() {
         </div>
 
         {roomLeft !== Infinity && (
-          <div style={{ padding: "12px 16px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.2)`, borderRadius: 10 }}>
+          <div style={{ padding: "12px 16px", background: "rgba(201,169,110,0.06)", border: `1px solid rgba(201,169,110,0.2)`, borderRadius: 10 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: G, marginBottom: 4 }}>Room Left in Current Bracket</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: TX1, fontFamily: "monospace" }}>{fmt(roomLeft)}</div>
             <div style={{ fontSize: 11, color: TX2, marginTop: 4 }}>You can earn {fmt(roomLeft)} more before hitting the {fmtPct(getMarginalRate(taxableIncome + 1, filing))} bracket</div>
@@ -347,7 +347,7 @@ function BracketsTab() {
           <div style={{ fontSize: 12, fontWeight: 700, color: TX1, marginBottom: 4 }}>Standard Deduction (2025)</div>
           <div style={{ fontSize: 10, color: TX3, marginBottom: 12 }}>Applied before calculating taxable income</div>
           {[["single","Single / MFS","$15,000"],["mfj","Married Filing Jointly","$30,000"],["hoh","Head of Household","$22,500"]].map(([k,l,v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: `1px solid var(--border-c)` }}>
               <span style={{ fontSize: 12, color: TX2 }}>{l}</span>
               <span style={{ fontSize: 12, fontWeight: 700, color: UP, fontFamily: "monospace" }}>{v}</span>
             </div>
@@ -395,7 +395,7 @@ function RothTab() {
               <button key={v} onClick={() => setFiling(v)} style={{
                 padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer",
                 border: `1px solid ${filing === v ? G : B}`,
-                background: filing === v ? "rgba(201,168,76,0.1)" : "transparent",
+                background: filing === v ? "rgba(201,169,110,0.1)" : "transparent",
                 color: filing === v ? G : TX3,
               }}>{l}</button>
             ))}
@@ -461,7 +461,7 @@ function RothTab() {
           <div style={{ fontSize: 12, fontWeight: 700, color: TX1, marginBottom: 12 }}>Converted Amount Growth Projection</div>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={projData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
               <XAxis dataKey="year" tick={{ fontSize: 10, fill: TX3 }} />
               <YAxis tick={{ fontSize: 10, fill: TX3 }} tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
               <Tooltip contentStyle={{ background: S, border: `1px solid ${B}`, borderRadius: 8, fontSize: 11, color: "var(--text-1)" }} itemStyle={{ color: "var(--text-1)" }} formatter={v => [fmt(v)]} />
@@ -504,7 +504,7 @@ function RMDTab() {
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
       <div className="t-card t-card-p">
         <div style={{ fontSize: 13, fontWeight: 700, color: TX1, marginBottom: 16 }}>RMD Calculator</div>
-        <div style={{ padding: "10px 14px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.2)`, borderRadius: 8, marginBottom: 16, fontSize: 11, color: TX2, lineHeight: 1.6 }}>
+        <div style={{ padding: "10px 14px", background: "rgba(201,169,110,0.06)", border: `1px solid rgba(201,169,110,0.2)`, borderRadius: 8, marginBottom: 16, fontSize: 11, color: TX2, lineHeight: 1.6 }}>
           <Info size={11} style={{ color: G, marginRight: 4 }} />
           Required Minimum Distributions begin at age 73 (SECURE 2.0 Act). Missing your RMD triggers a 25% penalty on the amount not withdrawn.
         </div>
@@ -536,7 +536,7 @@ function RMDTab() {
             <button key={v} onClick={() => setFiling(v)} style={{
               padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer",
               border: `1px solid ${filing === v ? G : B}`,
-              background: filing === v ? "rgba(201,168,76,0.1)" : "transparent",
+              background: filing === v ? "rgba(201,169,110,0.1)" : "transparent",
               color: filing === v ? G : TX3,
             }}>{l}</button>
           ))}
@@ -568,7 +568,7 @@ function RMDTab() {
           </thead>
           <tbody>
             {futureRMDs.map((row, i) => (
-              <tr key={row.age} style={{ background: i === 0 ? "rgba(201,168,76,0.04)" : "transparent" }}>
+              <tr key={row.age} style={{ background: i === 0 ? "rgba(201,169,110,0.04)" : "transparent" }}>
                 <td style={{ padding: "7px 8px", fontSize: 12, fontWeight: i === 0 ? 700 : 400, color: i === 0 ? G : TX2 }}>{row.age}{i === 0 ? " (now)" : ""}</td>
                 <td style={{ padding: "7px 8px", textAlign: "right", fontSize: 12, fontFamily: "monospace" }}>{fmt(row.balance)}</td>
                 <td style={{ padding: "7px 8px", textAlign: "right", fontSize: 12, fontFamily: "monospace", color: DOWN, fontWeight: 600 }}>{fmt(row.rmd)}</td>
@@ -577,7 +577,7 @@ function RMDTab() {
             ))}
           </tbody>
         </table>
-        <div style={{ padding: "10px 12px", background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8, fontSize: 11, color: TX2, lineHeight: 1.6 }}>
+        <div style={{ padding: "10px 12px", background: "rgba(201,169,110,0.06)", border: `1px solid rgba(201,169,110,0.15)`, borderRadius: 8, fontSize: 11, color: TX2, lineHeight: 1.6 }}>
           <b style={{ color: G }}>Strategy:</b> Converting IRA funds to Roth before age 73 reduces future RMDs and can lower your lifetime tax burden significantly.
         </div>
       </div>
@@ -632,7 +632,7 @@ function HarvestTab() {
               <button key={v} onClick={() => setFiling(v)} style={{
                 padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer",
                 border: `1px solid ${filing === v ? G : B}`,
-                background: filing === v ? "rgba(201,168,76,0.1)" : "transparent",
+                background: filing === v ? "rgba(201,169,110,0.1)" : "transparent",
                 color: filing === v ? G : TX3,
               }}>{l}</button>
             ))}
@@ -655,13 +655,13 @@ function HarvestTab() {
         <div className="t-card t-card-p">
           <div style={{ fontSize: 13, fontWeight: 700, color: TX1, marginBottom: 12 }}>Key Rules</div>
           {[
-            { icon: "⚠️", title: "Wash-Sale Rule", body: "You cannot repurchase the same or substantially identical security within 30 days before or after the sale. Violating this disallows the loss." },
-            { icon: "📅", title: "30-Day Window", body: "The wash-sale window is 61 days total: 30 days before the sale, the day of sale, and 30 days after. Plan your repurchase accordingly." },
-            { icon: "💸", title: "$3,000 Annual Limit", body: "Losses exceeding your capital gains can offset up to $3,000 of ordinary income per year. Excess losses carry forward indefinitely." },
-            { icon: "🔄", title: "Carry Forward", body: "Unused losses carry forward to future tax years indefinitely until fully used. Track this on Schedule D." },
-          ].map(({ icon, title, body }) => (
+            { icon: AlertCircle, title: "Wash-Sale Rule", body: "You cannot repurchase the same or substantially identical security within 30 days before or after the sale. Violating this disallows the loss." },
+            { icon: Calendar, title: "30-Day Window", body: "The wash-sale window is 61 days total: 30 days before the sale, the day of sale, and 30 days after. Plan your repurchase accordingly." },
+            { icon: DollarSign, title: "$3,000 Annual Limit", body: "Losses exceeding your capital gains can offset up to $3,000 of ordinary income per year. Excess losses carry forward indefinitely." },
+            { icon: RefreshCw, title: "Carry Forward", body: "Unused losses carry forward to future tax years indefinitely until fully used. Track this on Schedule D." },
+          ].map(({ icon: Icon, title, body }) => (
             <div key={title} style={{ marginBottom: 12, paddingBottom: 12, borderBottom: `1px solid ${B}` }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: TX1, marginBottom: 4 }}>{icon} {title}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: TX1, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 5 }}><Icon size={12} color={G} /> {title}</div>
               <div style={{ fontSize: 11, color: TX2, lineHeight: 1.6 }}>{body}</div>
             </div>
           ))}
@@ -702,56 +702,51 @@ export default function TaxPlanning() {
     <div>
       {/* Hero Banner */}
       <div style={{
-        background: "linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(45,212,164,0.04) 100%)",
-        border: "1px solid rgba(201,168,76,0.15)", borderRadius: 14, padding: "24px 28px",
-        marginBottom: 24, position: "relative", overflow: "hidden",
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: 24, position: "relative", overflow: "hidden", backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{ position: "absolute", top: 0, right: 0, width: 280, height: "100%", background: "radial-gradient(ellipse at right, rgba(201,168,76,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20 }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Receipt size={18} color={G} />
-                </div>
-                <div>
-                  <div className="t-label" style={{ color: G, marginBottom: 1 }}>Wealth · Planning</div>
-                  <h1 className="t-page-title" style={{ margin: 0, fontSize: "1.35rem" }}>Tax Planning Center</h1>
-                </div>
+          <p style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 0.625rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ display: "inline-block", width: 18, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+            Wealth · Planning
+          </p>
+          <h1 style={{ margin: "0 0 0.75rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            Tax Planning{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Center</em>
+          </h1>
+          <p style={{ fontSize: 13, color: TX2, lineHeight: 1.7, maxWidth: 600, margin: "0 0 1.25rem" }}>
+            Optimize your tax strategy across capital gains, retirement accounts, and investment decisions. Taxes are the single largest drag on long-term wealth — mastering them is as important as picking the right investments.
+          </p>
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+            {[
+              { label: "Top Federal Rate", value: "37%" },
+              { label: "Max LTCG Rate", value: "20%" },
+              { label: "2025 Std Deduction", value: "$15K" },
+              { label: "Annual Gift Exclusion", value: "$18K" },
+            ].map(({ label, value }) => (
+              <div key={label} style={{ background: "rgba(201,169,110,0.08)", border: "1px solid rgba(201,169,110,0.2)", borderRadius: 8, padding: "0.5rem 0.875rem" }}>
+                <div className="t-mono" style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--gold)", lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 10, color: TX3, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", marginTop: 4 }}>{label}</div>
               </div>
-              <p style={{ fontSize: 13, color: TX2, lineHeight: 1.7, maxWidth: 600, margin: "0 0 18px" }}>
-                Optimize your tax strategy across capital gains, retirement accounts, and investment decisions. Taxes are the single largest drag on long-term wealth — mastering them is as important as picking the right investments.
-              </p>
-              <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                {[
-                  { label: "Top Federal Rate", value: "37%" },
-                  { label: "Max LTCG Rate", value: "20%" },
-                  { label: "2025 Std Deduction (Single)", value: "$15,000" },
-                  { label: "Annual Gift Exclusion", value: "$18,000" },
-                ].map(({ label, value }) => (
-                  <div key={label}>
-                    <div className="t-mono" style={{ fontSize: 18, fontWeight: 800, color: G }}>{value}</div>
-                    <div style={{ fontSize: 10, color: TX3, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: `1px solid ${B}`, paddingBottom: 0 }}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{
-            padding: "9px 18px", background: "transparent", border: "none",
-            borderBottom: `2px solid ${tab === t.id ? G : "transparent"}`,
-            color: tab === t.id ? G : TX3, fontSize: 13, fontWeight: 600,
-            cursor: "pointer", transition: "all 0.15s", marginBottom: -1,
-          }}>
-            {t.label}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: 20 }}>
+        {TABS.map(t => {
+          const active = tab === t.id;
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}>
+              {t.label}
+            </button>
+          );
+        })}
       </div>
 
       {tab === "capgains" && <CapGainsTab />}

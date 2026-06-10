@@ -2,13 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
 const C = {
-  bg: '#0a0a0f', surface: '#111318', border: '#1e2028',
-  text: '#f1f5f9', textSec: '#94a3b8', textMuted: '#64748b', gold: '#F5A623',
+  bg: '#1a1410', surface: '#231c16', border: '#2a2018',
+  text: '#f0e8d8', textSec: '#a89070', textMuted: '#6b5540', gold: '#c9a96e',
 };
 
 const Section = ({ title, children }) => (
   <div style={{ marginBottom: 36 }}>
-    <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 12, borderLeft: `3px solid ${C.gold}`, paddingLeft: 12 }}>{title}</h2>
+    <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 12, borderBottom: `1px solid rgba(201,169,110,0.25)`, paddingBottom: 10 }}>{title}</h2>
     <div style={{ fontSize: 14, color: C.textSec, lineHeight: 1.8 }}>{children}</div>
   </div>
 );
@@ -29,9 +29,9 @@ export default function Terms() {
           <p style={{ color: C.textMuted, fontSize: 13 }}>Last updated: May 2026</p>
         </div>
 
-        <div style={{ background: 'rgba(245,166,35,0.07)', border: `1px solid rgba(245,166,35,0.25)`, borderRadius: 10, padding: '16px 20px', marginBottom: 40 }}>
-          <p style={{ margin: 0, fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>
-            <strong style={{ color: '#F5A623' }}>IMPORTANT DISCLAIMER:</strong> Planora is an educational and informational platform only. Nothing on this platform constitutes financial, investment, legal, or tax advice. All market data, analyses, projections, and AI-generated content are for informational purposes only. Past performance does not guarantee future results. Always consult a licensed financial advisor, attorney, or tax professional before making any financial decisions.
+        <div style={{ background: 'rgba(201,169,110,0.07)', border: `1px solid rgba(201,169,110,0.25)`, borderRadius: 10, padding: '16px 20px', marginBottom: 40 }}>
+          <p style={{ margin: 0, fontSize: 13, color: '#a89070', lineHeight: 1.7 }}>
+            <strong style={{ color: '#c9a96e' }}>IMPORTANT DISCLAIMER:</strong> Planora is an educational and informational platform only. Nothing on this platform constitutes financial, investment, legal, or tax advice. All market data, analyses, projections, and AI-generated content are for informational purposes only. Past performance does not guarantee future results. Always consult a licensed financial advisor, attorney, or tax professional before making any financial decisions.
           </p>
         </div>
 

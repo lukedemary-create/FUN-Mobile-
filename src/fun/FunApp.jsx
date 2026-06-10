@@ -2,7 +2,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import {
   LayoutDashboard, Wallet, CreditCard, TrendingUp, Shield,
-  ScrollText, Clock, Home, Calendar, BookOpen,
+  ScrollText, Clock, Home, Calendar, BookOpen, GraduationCap,
   ChevronLeft, Menu, X,
 } from 'lucide-react';
 
@@ -15,12 +15,29 @@ const Estate         = lazy(() => import('./pages/Estate'));
 const Retirement     = lazy(() => import('./pages/Retirement'));
 const MajorPurchases = lazy(() => import('./pages/MajorPurchases'));
 const LifeEvents     = lazy(() => import('./pages/LifeEvents'));
-const Resources      = lazy(() => import('./pages/Resources'));
-const FunComingSoon  = lazy(() => import('./pages/FunComingSoon'));
+const Resources         = lazy(() => import('./pages/Resources'));
+const LearnersLibrary   = lazy(() => import('../pages/Education'));
+const LearnersLibraryTopic = lazy(() => import('../pages/EducationTopic'));
 
-const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
-const LIGHT = '#5BC8E2';
+// Arche warm dark tokens
+const C = {
+  bg:      '#1a1410',
+  surface: '#231c16',
+  b1:      '#2a2018',
+  b2:      '#3d3028',
+  gold:    '#c9a96e',
+  goldDim: 'rgba(201,169,110,0.08)',
+  goldBdr: 'rgba(201,169,110,0.20)',
+  teal:    '#00B4C6',
+  tealDim: 'rgba(0,180,198,0.09)',
+  tealBdr: 'rgba(0,180,198,0.22)',
+  t1:      '#f0e8d8',
+  t2:      '#a89070',
+  t3:      '#6b5540',
+};
+
+const UI      = "'Inter', system-ui, sans-serif";
+const DISPLAY = "'Playfair Display', Georgia, serif";
 
 const NAV = [
   { path: '',                label: 'Dashboard',                  icon: LayoutDashboard },
@@ -32,27 +49,34 @@ const NAV = [
   { path: 'retirement',      label: 'Retirement Planning',        icon: Clock           },
   { path: 'major-purchases', label: 'Major Purchases',            icon: Home            },
   { path: 'life-events',     label: 'Life Events',                icon: Calendar        },
-  { path: 'resources',       label: 'Resource Directory',         icon: BookOpen        },
+  { path: 'resources',         label: 'Resource Directory',         icon: BookOpen        },
+  { path: 'learners-library', label: "Learner's Library",          icon: GraduationCap   },
 ];
 
 function FunLogo() {
   return (
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-      <circle cx="18" cy="18" r="17" stroke={TEAL} strokeWidth="1.5" fill="none" opacity="0.6"/>
-      <circle cx="18" cy="6"  r="4" fill={TEAL}/>
-      <circle cx="6"  cy="27" r="4" fill={TEAL} opacity="0.85"/>
-      <circle cx="30" cy="27" r="4" fill={TEAL} opacity="0.85"/>
-      <line x1="18" y1="10" x2="6"  y2="23" stroke={LIGHT} strokeWidth="1.5" opacity="0.7"/>
-      <line x1="18" y1="10" x2="30" y2="23" stroke={LIGHT} strokeWidth="1.5" opacity="0.7"/>
-      <line x1="6"  y1="27" x2="30" y2="27" stroke={LIGHT} strokeWidth="1.5" opacity="0.7"/>
+    <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" stroke={C.teal} strokeWidth="1.5" fill="none" opacity="0.5"/>
+      <circle cx="18" cy="6"  r="4" fill={C.teal}/>
+      <circle cx="6"  cy="27" r="4" fill={C.teal} opacity="0.8"/>
+      <circle cx="30" cy="27" r="4" fill={C.teal} opacity="0.8"/>
+      <line x1="18" y1="10" x2="6"  y2="23" stroke={C.teal} strokeWidth="1.5" opacity="0.65"/>
+      <line x1="18" y1="10" x2="30" y2="23" stroke={C.teal} strokeWidth="1.5" opacity="0.65"/>
+      <line x1="6"  y1="27" x2="30" y2="27" stroke={C.teal} strokeWidth="1.5" opacity="0.65"/>
     </svg>
   );
 }
 
 function Loader() {
   return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'40vh' }}>
-      <div style={{ width:28, height:28, border:`3px solid rgba(0,180,198,0.2)`, borderTopColor:TEAL, borderRadius:'50%', animation:'funSpin 0.7s linear infinite' }}/>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'40vh', background: C.bg }}>
+      <div style={{
+        width: 28, height: 28,
+        border: `2px solid ${C.b2}`,
+        borderTopColor: C.gold,
+        borderRadius: '50%',
+        animation: 'funSpin 0.7s linear infinite',
+      }}/>
       <style>{`@keyframes funSpin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
@@ -61,47 +85,45 @@ function Loader() {
 function Sidebar({ collapsed, onToggle }) {
   const navigate  = useNavigate();
   const { pathname } = useLocation();
-
-  // Derive active segment from /fun/xxx
   const segment = pathname.replace(/^\/fun\/?/, '').split('/')[0];
 
   return (
     <div style={{
-      width: collapsed ? 60 : 256,
+      width: collapsed ? 56 : 248,
       minHeight: '100vh',
-      background: NAVY,
+      background: C.surface,
       display: 'flex',
       flexDirection: 'column',
       flexShrink: 0,
       transition: 'width 0.22s ease',
-      borderRight: '1px solid rgba(255,255,255,0.06)',
+      borderRight: `1px solid ${C.b1}`,
       position: 'relative',
       zIndex: 10,
     }}>
       {/* Header */}
       <div style={{
-        padding: collapsed ? '18px 12px' : '20px 18px',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        padding: collapsed ? '16px 14px' : '18px 16px',
+        borderBottom: `1px solid ${C.b1}`,
         display: 'flex',
         alignItems: 'center',
         gap: 10,
-        minHeight: 72,
+        minHeight: 68,
       }}>
         <div style={{ flexShrink: 0 }}><FunLogo /></div>
         {!collapsed && (
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: '1.1875rem',
+              fontFamily: DISPLAY,
+              fontSize: '1.0625rem',
               fontWeight: 700,
-              color: '#fff',
+              color: C.t1,
               letterSpacing: '-0.01em',
               lineHeight: 1.1,
             }}>FUN</div>
             <div style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: UI,
               fontSize: '0.5625rem',
-              color: TEAL,
+              color: C.teal,
               fontWeight: 600,
               letterSpacing: '0.07em',
               textTransform: 'uppercase',
@@ -113,23 +135,26 @@ function Sidebar({ collapsed, onToggle }) {
         <button
           onClick={onToggle}
           style={{
-            background: 'rgba(255,255,255,0.06)',
-            border: 'none',
+            background: 'rgba(240,232,216,0.04)',
+            border: `1px solid ${C.b2}`,
             borderRadius: 7,
             padding: '5px 6px',
             cursor: 'pointer',
-            color: 'rgba(255,255,255,0.45)',
+            color: C.t3,
             display: 'flex',
             alignItems: 'center',
             flexShrink: 0,
+            transition: 'all 0.15s ease',
           }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = C.b2; e.currentTarget.style.color = C.t2; }}
+          onMouseLeave={e => { e.currentTarget.style.color = C.t3; }}
         >
-          {collapsed ? <Menu size={15}/> : <X size={15}/>}
+          {collapsed ? <Menu size={14}/> : <X size={14}/>}
         </button>
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: '10px 0', overflowY: 'auto', overflowX: 'hidden' }}>
+      <nav style={{ flex: 1, padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' }}>
         {NAV.map(item => {
           const Icon = item.icon;
           const isActive = segment === item.path;
@@ -141,29 +166,30 @@ function Sidebar({ collapsed, onToggle }) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 11,
+                gap: 10,
                 width: '100%',
-                padding: collapsed ? '11px 18px' : '10px 18px',
-                background: isActive ? 'rgba(0,180,198,0.1)' : 'transparent',
+                padding: collapsed ? '11px 16px' : '9px 16px',
+                background: isActive ? C.tealDim : 'transparent',
                 border: 'none',
-                borderLeft: `3px solid ${isActive ? TEAL : 'transparent'}`,
+                borderLeft: `2px solid ${isActive ? C.teal : 'transparent'}`,
                 cursor: 'pointer',
                 textAlign: 'left',
-                transition: 'background 0.13s',
+                transition: 'all 0.13s ease',
                 whiteSpace: 'nowrap',
               }}
-              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(240,232,216,0.03)'; }}
               onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
             >
-              <Icon size={16} color={isActive ? TEAL : 'rgba(255,255,255,0.45)'} style={{ flexShrink: 0 }}/>
+              <Icon size={15} color={isActive ? C.teal : C.t3} style={{ flexShrink: 0 }}/>
               {!collapsed && (
                 <span style={{
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: UI,
                   fontSize: '0.8125rem',
                   fontWeight: isActive ? 600 : 400,
-                  color: isActive ? '#fff' : 'rgba(255,255,255,0.5)',
+                  color: isActive ? C.t1 : C.t2,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
+                  letterSpacing: '0.005em',
                 }}>{item.label}</span>
               )}
             </button>
@@ -172,36 +198,76 @@ function Sidebar({ collapsed, onToggle }) {
       </nav>
 
       {/* Back to Planora */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '8px 0' }}>
+      <div style={{ borderTop: `1px solid ${C.b1}`, padding: '6px 0' }}>
         <button
           onClick={() => navigate('/')}
           title={collapsed ? 'Back to Planora' : undefined}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 11,
+            gap: 10,
             width: '100%',
-            padding: collapsed ? '11px 18px' : '10px 18px',
+            padding: collapsed ? '11px 16px' : '9px 16px',
             background: 'transparent',
             border: 'none',
-            borderLeft: '3px solid transparent',
             cursor: 'pointer',
             whiteSpace: 'nowrap',
+            transition: 'background 0.13s ease',
           }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(240,232,216,0.03)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
-          <ChevronLeft size={16} color="rgba(255,255,255,0.28)" style={{ flexShrink: 0 }}/>
+          <ChevronLeft size={15} color={C.t3} style={{ flexShrink: 0 }}/>
           {!collapsed && (
             <span style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: UI,
               fontSize: '0.8125rem',
-              color: 'rgba(255,255,255,0.28)',
+              color: C.t3,
+              letterSpacing: '0.005em',
             }}>Back to Planora</span>
           )}
         </button>
       </div>
     </div>
+  );
+}
+
+function PButton() {
+  const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={() => navigate('/')}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      title="Back to Planora"
+      style={{
+        position: 'fixed',
+        top: 16,
+        right: 20,
+        zIndex: 100,
+        width: 36,
+        height: 36,
+        borderRadius: 9,
+        background: hovered ? C.gold : C.surface,
+        border: `1px solid ${hovered ? C.gold : C.b2}`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        boxShadow: hovered ? '0 4px 16px rgba(201,169,110,0.25)' : '0 2px 8px rgba(0,0,0,0.3)',
+        transition: 'all 0.18s ease',
+      }}
+    >
+      <span style={{
+        fontFamily: DISPLAY,
+        fontSize: '0.9375rem',
+        fontWeight: 900,
+        color: hovered ? C.bg : C.gold,
+        lineHeight: 1,
+        transition: 'color 0.18s ease',
+      }}>P</span>
+    </button>
   );
 }
 
@@ -214,15 +280,16 @@ export default function FunApp() {
       const link = document.createElement('link');
       link.id = id;
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap';
+      link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap';
       document.head.appendChild(link);
     }
   }, []);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#F4F7FA' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)}/>
-      <main style={{ flex: 1, overflowY: 'auto', minHeight: '100vh' }}>
+      <main style={{ flex: 1, overflowY: 'auto', minHeight: '100vh', position: 'relative' }}>
+        <PButton />
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route index                  element={<FunDashboard />} />
@@ -234,7 +301,9 @@ export default function FunApp() {
             <Route path="retirement"      element={<Retirement />} />
             <Route path="major-purchases" element={<MajorPurchases />} />
             <Route path="life-events"     element={<LifeEvents />} />
-            <Route path="resources"       element={<Resources />} />
+            <Route path="resources"                     element={<Resources />} />
+            <Route path="learners-library"              element={<LearnersLibrary />} />
+            <Route path="learners-library/:topicId"     element={<LearnersLibraryTopic />} />
           </Routes>
         </Suspense>
       </main>

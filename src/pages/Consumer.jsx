@@ -124,11 +124,11 @@ const GAS_FALLBACK = {
 
 /* ─── Food items definition ──────────────────────────────────────── */
 const FOOD_ITEMS = [
-  { id: 'APU0000708111', label: 'Eggs (dozen)', unit: '/doz', icon: '🥚', color: '#f59e0b' },
-  { id: 'APU0000703112', label: 'Ground Beef (lb)', unit: '/lb',  icon: '🥩', color: '#ef4444' },
-  { id: 'APU0000706111', label: 'Chicken (lb)',     unit: '/lb',  icon: '🍗', color: '#f97316' },
-  { id: 'APU0000709112', label: 'Whole Milk (gal)', unit: '/gal', icon: '🥛', color: '#60a5fa' },
-  { id: 'APU0000702111', label: 'White Bread (lb)', unit: '/lb',  icon: '🍞', color: '#a78bfa' },
+  { id: 'APU0000708111', label: 'Eggs (dozen)', unit: '/doz', color: '#f59e0b' },
+  { id: 'APU0000703112', label: 'Ground Beef (lb)', unit: '/lb',  color: '#ef4444' },
+  { id: 'APU0000706111', label: 'Chicken (lb)',     unit: '/lb',  color: '#f97316' },
+  { id: 'APU0000709112', label: 'Whole Milk (gal)', unit: '/gal', color: '#60a5fa' },
+  { id: 'APU0000702111', label: 'White Bread (lb)', unit: '/lb',  color: '#a78bfa' },
 ];
 
 /* ─── CPI components ─────────────────────────────────────────────── */
@@ -224,13 +224,13 @@ function Card({ children, style = {} }) {
 function SectionTitle({ icon: Icon, title, subtitle, badge }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '1.25rem' }}>
-      <div style={{ width: 38, height: 38, background: 'rgba(201,168,76,0.1)', border: `1px solid rgba(201,168,76,0.2)`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ width: 38, height: 38, background: 'rgba(201,169,110,0.1)', border: `1px solid rgba(201,169,110,0.2)`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <Icon size={17} color={GOLD} />
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: T1, letterSpacing: '-0.01em' }}>{title}</span>
-          {badge && <span style={{ fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.1em', color: GOLD, background: 'rgba(201,168,76,0.1)', border: `1px solid rgba(201,168,76,0.2)`, borderRadius: 4, padding: '2px 6px', textTransform: 'uppercase' }}>{badge}</span>}
+          {badge && <span style={{ fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.1em', color: GOLD, background: 'rgba(201,169,110,0.1)', border: `1px solid rgba(201,169,110,0.2)`, borderRadius: 4, padding: '2px 6px', textTransform: 'uppercase' }}>{badge}</span>}
         </div>
         {subtitle && <div style={{ fontSize: '0.75rem', color: T3, marginTop: 2 }}>{subtitle}</div>}
       </div>
@@ -245,7 +245,7 @@ function MetricCard({ label, value, unit = '', change, changeLabel = 'YoY', sub,
     <Card>
       <div style={{ fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.1em', color: T3, textTransform: 'uppercase', marginBottom: '0.75rem' }}>{label}</div>
       {loading ? (
-        <div style={{ height: 36, background: 'rgba(255,255,255,0.04)', borderRadius: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ height: 36, background: 'var(--border-c)', borderRadius: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
       ) : (
         <>
           <div style={{ fontSize: '1.625rem', fontWeight: 800, color: T1, letterSpacing: '-0.03em', lineHeight: 1 }}>
@@ -268,7 +268,7 @@ function MetricCard({ label, value, unit = '', change, changeLabel = 'YoY', sub,
 function Spinner() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 160 }}>
-      <div style={{ width: 28, height: 28, border: '2.5px solid rgba(201,168,76,0.15)', borderTopColor: GOLD, borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+      <div style={{ width: 28, height: 28, border: '2.5px solid rgba(201,169,110,0.15)', borderTopColor: GOLD, borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}} @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.8}}`}</style>
     </div>
   );
@@ -339,7 +339,7 @@ function ConsumerPulseSection({ fredData, loading }) {
             <span style={{ fontSize: '0.6875rem', color: T3, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Consumer Stress Indicator</span>
             <span style={{ fontSize: '0.875rem', fontWeight: 700, color: stressColor }}>{stressLabel}</span>
           </div>
-          <div style={{ height: 8, background: 'rgba(255,255,255,0.06)', borderRadius: 999, overflow: 'hidden' }}>
+          <div style={{ height: 8, background: 'var(--border-c)', borderRadius: 999, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${stressScore}%`, background: `linear-gradient(90deg, ${UP}, ${GOLD} 50%, ${DOWN})`, borderRadius: 999, transition: 'width 0.8s ease' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
@@ -405,7 +405,7 @@ function CPILineChart({ fredData }) {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={merged} margin={{ top: 4, right: 4, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
         <XAxis dataKey="label" tick={{ fill: T3, fontSize: 9 }} tickLine={false} interval="preserveStartEnd" />
         <YAxis tick={{ fill: T3, fontSize: 9 }} tickLine={false} tickFormatter={v => `${v.toFixed(1)}%`} />
         <Tooltip content={<ChartTip suffix="%" decimals={2} />} />
@@ -513,7 +513,7 @@ function HousingSection({ fredData, loading }) {
         <MetricCard label="Case-Shiller National HPI" value={fmt(lastVal(hpi), 1)} unit="idx" change={getPeriodChange(hpi, Math.min(12, (hpi?.length || 0) - 1))} changeLabel="1yr" sub="Base Jan 2000 = 100" loading={loading} />
         <Card>
           <div style={{ fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.1em', color: T3, textTransform: 'uppercase', marginBottom: '0.75rem' }}>Monthly Payment Est.</div>
-          {loading ? <div style={{ height: 36, background: 'rgba(255,255,255,0.04)', borderRadius: 6 }} /> : (
+          {loading ? <div style={{ height: 36, background: 'var(--border-c)', borderRadius: 6 }} /> : (
             <>
               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: T1, letterSpacing: '-0.03em', lineHeight: 1 }}>
                 ${medPrice && mort30v ? Math.round((medPrice * 0.8) * (mort30v / 100 / 12) / (1 - Math.pow(1 + mort30v / 100 / 12, -360))).toLocaleString() : '—'}
@@ -536,7 +536,7 @@ function HousingSection({ fredData, loading }) {
                 onChange={e => setCityInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && searchCity()}
                 placeholder="e.g. Chicago, Phoenix, California..."
-                style={{ width: '100%', paddingLeft: 30, padding: '0.5rem 0.75rem 0.5rem 30px', background: 'rgba(255,255,255,0.04)', border: `1px solid ${BDR}`, borderRadius: 7, color: T1, fontSize: '0.8125rem', outline: 'none', boxSizing: 'border-box' }}
+                style={{ width: '100%', paddingLeft: 30, padding: '0.5rem 0.75rem 0.5rem 30px', background: 'var(--border-c)', border: `1px solid ${BDR}`, borderRadius: 7, color: T1, fontSize: '0.8125rem', outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
             <button
@@ -553,7 +553,7 @@ function HousingSection({ fredData, loading }) {
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.875rem', flexWrap: 'wrap' }}>
           {['5yr', '10yr', '30yr'].map(h => (
             <button key={h} onClick={() => setHorizon(h)}
-              style={{ padding: '4px 12px', borderRadius: 6, border: `1px solid ${horizon === h ? GOLD : BDR}`, background: horizon === h ? 'rgba(201,168,76,0.1)' : 'transparent', color: horizon === h ? GOLD : T3, fontSize: '0.6875rem', fontWeight: 600, cursor: 'pointer' }}>
+              style={{ padding: '4px 12px', borderRadius: 6, border: `1px solid ${horizon === h ? GOLD : BDR}`, background: horizon === h ? 'rgba(201,169,110,0.1)' : 'transparent', color: horizon === h ? GOLD : T3, fontSize: '0.6875rem', fontWeight: 600, cursor: 'pointer' }}>
               {h}
             </button>
           ))}
@@ -564,7 +564,7 @@ function HousingSection({ fredData, loading }) {
         {cityLoading ? <Spinner /> : (
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={mergedChart} margin={{ top: 4, right: 4, bottom: 0, left: -8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
               <XAxis dataKey="label" tick={{ fill: T3, fontSize: 9 }} tickLine={false} interval="preserveStartEnd" />
               <YAxis tick={{ fill: T3, fontSize: 9 }} tickLine={false} tickFormatter={v => `${v > 0 ? '+' : ''}${v.toFixed(0)}%`} />
               <Tooltip content={<ChartTip prefix="" suffix="%" decimals={1} />} />
@@ -578,7 +578,7 @@ function HousingSection({ fredData, loading }) {
         )}
 
         {cityResult && cityPctChange != null && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.75rem', padding: '0.75rem', background: 'rgba(201,168,76,0.05)', borderRadius: 8, border: `1px solid rgba(201,168,76,0.15)` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.75rem', padding: '0.75rem', background: 'rgba(201,169,110,0.05)', borderRadius: 8, border: `1px solid rgba(201,169,110,0.15)` }}>
             <div>
               <div style={{ fontSize: '0.625rem', color: T3, marginBottom: 2 }}>SELECTED AREA</div>
               <div style={{ fontSize: '0.875rem', fontWeight: 700, color: T1 }}>{cityResult.name}</div>
@@ -627,7 +627,7 @@ function MedianPriceChart({ data }) {
             <stop offset="100%" stopColor={GOLD} stopOpacity={0.01} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
         <XAxis dataKey="label" tick={{ fill: T3, fontSize: 9 }} tickLine={false} interval="preserveStartEnd" />
         <YAxis tick={{ fill: T3, fontSize: 9 }} tickLine={false} tickFormatter={v => `$${v}K`} />
         <Tooltip content={<ChartTip prefix="$" suffix="K" decimals={1} />} />
@@ -707,7 +707,7 @@ function GasSection({ fredData, loading }) {
                   <stop offset="100%" stopColor="#f97316" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
               <XAxis dataKey="label" tick={{ fill: T3, fontSize: 9 }} tickLine={false} interval="preserveStartEnd" />
               <YAxis tick={{ fill: T3, fontSize: 9 }} tickLine={false} tickFormatter={v => `$${v.toFixed(2)}`} domain={['auto', 'auto']} />
               <Tooltip content={<ChartTip prefix="$" decimals={3} />} />
@@ -723,7 +723,7 @@ function GasSection({ fredData, loading }) {
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: T1 }}>State-by-State Regular Gas Prices</span>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             {!stateGas && !gasLoading && (
-              <span style={{ fontSize: '0.5625rem', color: GOLD, background: 'rgba(201,168,76,0.08)', border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 4, padding: '2px 6px' }}>EIA Est. — Apr 2026</span>
+              <span style={{ fontSize: '0.5625rem', color: GOLD, background: 'rgba(201,169,110,0.08)', border: `1px solid rgba(201,169,110,0.15)`, borderRadius: 4, padding: '2px 6px' }}>EIA Est. — Apr 2026</span>
             )}
             <button onClick={() => setSortDir(s => s === 'desc' ? 'asc' : 'desc')}
               style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', background: 'transparent', border: `1px solid ${BDR}`, borderRadius: 6, color: T3, fontSize: '0.625rem', cursor: 'pointer' }}>
@@ -738,10 +738,10 @@ function GasSection({ fredData, loading }) {
               const diff = s.price - nationalAvg;
               const pct = (s.price / Math.max(...stateTable.map(x => x.price))) * 100;
               return (
-                <div key={s.abbr} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.625rem', background: 'rgba(255,255,255,0.02)', borderRadius: 7, border: `1px solid ${BDR}` }}>
+                <div key={s.abbr} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.625rem', background: 'var(--surface)', borderRadius: 7, border: `1px solid ${BDR}` }}>
                   <span style={{ fontSize: '0.5625rem', fontWeight: 700, color: T3, width: 20, flexShrink: 0 }}>{s.abbr}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 999, overflow: 'hidden' }}>
+                    <div style={{ height: 4, background: 'var(--border-c)', borderRadius: 999, overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${pct}%`, background: s.price > 4 ? DOWN : s.price < 3 ? UP : '#f97316', borderRadius: 999 }} />
                     </div>
                   </div>
@@ -781,14 +781,14 @@ function FoodSection({ foodData, foodLoading }) {
           return (
             <Card key={item.id}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />
                 <div>
                   <div style={{ fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.08em', color: T3, textTransform: 'uppercase' }}>{item.label}</div>
                   <div style={{ fontSize: '0.5625rem', color: T3 }}>national average</div>
                 </div>
               </div>
               {foodLoading ? (
-                <div style={{ height: 50, background: 'rgba(255,255,255,0.04)', borderRadius: 6 }} />
+                <div style={{ height: 50, background: 'var(--border-c)', borderRadius: 6 }} />
               ) : current != null ? (
                 <>
                   <div style={{ fontSize: '1.625rem', fontWeight: 800, color: T1, letterSpacing: '-0.03em', lineHeight: 1 }}>
@@ -838,7 +838,7 @@ function FoodSection({ foodData, foodLoading }) {
                   <stop offset="100%" stopColor="#34d399" stopOpacity={0.01} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
               <XAxis dataKey="label" tick={{ fill: T3, fontSize: 9 }} tickLine={false} interval="preserveStartEnd" />
               <YAxis tick={{ fill: T3, fontSize: 9 }} tickLine={false} />
               <Tooltip content={<ChartTip decimals={1} />} />
@@ -907,7 +907,7 @@ function CPIBreakdownSection({ fredData, loading }) {
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr key={i} style={{ borderBottom: `1px solid rgba(255,255,255,0.03)` }}>
+                <tr key={i} style={{ borderBottom: `1px solid var(--elevated)` }}>
                   <td style={{ padding: '0.625rem 0.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <div style={{ width: 8, height: 8, borderRadius: 2, background: row.color, flexShrink: 0 }} />
@@ -934,7 +934,7 @@ function CPIBreakdownSection({ fredData, loading }) {
 
       {/* Analyst commentary */}
       {analyst && (
-        <Card style={{ borderLeft: `3px solid ${GOLD}`, paddingLeft: '1.25rem' }}>
+        <Card style={{ border: `1px solid ${GOLD}28` }}>
           <div style={{ fontSize: '0.625rem', fontWeight: 700, color: GOLD, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.625rem' }}>Analyst Commentary</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {analyst.map((line, i) => (
@@ -978,21 +978,23 @@ export default function Consumer() {
   }, []);
 
   return (
-    <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1280 }}>
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -1000,12 +1002,15 @@ export default function Consumer() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <ShoppingCart size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>THE CONSUMER</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                THE{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Consumer</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Monitor the American consumer — the engine of the US economy. Track retail spending, consumer confidence, credit conditions, and personal savings trends.
@@ -1015,8 +1020,8 @@ export default function Consumer() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1037,8 +1042,8 @@ export default function Consumer() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />

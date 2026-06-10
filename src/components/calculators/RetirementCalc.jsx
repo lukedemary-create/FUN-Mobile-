@@ -4,7 +4,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine,
   ResponsiveContainer, Legend, Cell,
 } from "recharts";
-import { AlertTriangle, CheckCircle, TrendingUp, Wallet, Target, Clock, Info } from "lucide-react";
+import { AlertTriangle, CheckCircle, TrendingUp, Wallet, Target, Clock, Info, Sparkles } from "lucide-react";
 
 /* ─── Constants ──────────────────────────────────────────────────── */
 const INFLATION = 0.03;
@@ -424,8 +424,8 @@ export default function RetirementCalc() {
             suffix="yrs" note="How long your money needs to last" />
 
           <div style={{
-            background: "rgba(201,168,76,0.05)", borderRadius: 6, padding: "0.625rem 0.75rem",
-            border: "1px solid rgba(201,168,76,0.2)", marginTop: "0.5rem",
+            background: "rgba(201,169,110,0.05)", borderRadius: 6, padding: "0.625rem 0.75rem",
+            border: "1px solid rgba(201,169,110,0.2)", marginTop: "0.5rem",
           }}>
             <div style={{ fontSize: "0.5625rem", color: "var(--text-3)", marginBottom: 2 }}>Planning window</div>
             <div style={{ display: "flex", gap: "1rem" }}>
@@ -757,7 +757,7 @@ export default function RetirementCalc() {
 
           {/* ── AI Analysis ── */}
           <div style={{
-            background: "rgba(201,168,76,0.04)", border: "1px solid rgba(201,168,76,0.2)",
+            background: "rgba(201,169,110,0.04)", border: "1px solid rgba(201,169,110,0.2)",
             borderRadius: 10, padding: "1.25rem", marginBottom: "1.25rem",
           }}>
             {aiLoading && (
@@ -780,7 +780,7 @@ export default function RetirementCalc() {
             {!aiLoading && aiAnalysis && (
               <>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.875rem" }}>
-                  <span style={{ fontSize: "1rem" }}>✨</span>
+                  <Sparkles size={16} color={GOLD} />
                   <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em",
                     textTransform: "uppercase", color: GOLD }}>
                     Planora AI Recommendation
@@ -789,8 +789,8 @@ export default function RetirementCalc() {
 
                 {/* Recommended scenario summary */}
                 <div style={{
-                  background: "rgba(201,168,76,0.08)", borderRadius: 8, padding: "0.75rem 1rem",
-                  border: "1px solid rgba(201,168,76,0.25)", marginBottom: "0.875rem",
+                  background: "rgba(201,169,110,0.08)", borderRadius: 8, padding: "0.75rem 1rem",
+                  border: "1px solid rgba(201,169,110,0.25)", marginBottom: "0.875rem",
                 }}>
                   <div style={{ fontSize: "0.6875rem", color: "var(--text-2)", lineHeight: 1.6 }}>
                     {aiAnalysis.recommended === 'income' && (
@@ -1179,7 +1179,7 @@ function SensitivityTable({ inputs, baseAccum, baseRetire }) {
         </thead>
         <tbody>
           {rows.map(({ label, accum, retire, isBase, r }) => (
-            <tr key={label} style={{ background: isBase ? "rgba(201,168,76,0.06)" : "transparent" }}>
+            <tr key={label} style={{ background: isBase ? "rgba(201,169,110,0.06)" : "transparent" }}>
               <td style={{ padding: "8px 12px", fontSize: "0.6875rem", fontWeight: isBase ? 700 : 400,
                 color: isBase ? GOLD : "var(--text-2)", borderBottom: "1px solid var(--border-c)" }}>
                 {label}{isBase && " ★"}

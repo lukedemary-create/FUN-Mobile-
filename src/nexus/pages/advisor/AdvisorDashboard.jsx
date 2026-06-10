@@ -164,7 +164,7 @@ export default function AdvisorDashboard() {
                     onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface-2)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <div style={styles.eventEmoji}>{categoryIcon[ev.category] || '📌'}</div>
+                    <div style={{ ...styles.eventEmoji, fontSize: '0.5rem', fontWeight: 800, letterSpacing: '0.05em' }}>{categoryIcon[ev.category] || 'EVT'}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                         <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.3 }}>
@@ -265,8 +265,8 @@ const styles = {
     alignItems: 'center',
     gap: 28,
     background: 'var(--bg-surface)',
-    border: '1px solid var(--border)',
-    borderLeft: '3px solid var(--gold)',
+    border: '1px solid rgba(201,169,110,0.25)',
+    borderTop: '2px solid var(--gold)',
     borderRadius: 12,
     padding: '18px 24px',
     marginBottom: 20,

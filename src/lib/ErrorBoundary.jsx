@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ export default class ErrorBoundary extends Component {
     return (
       <div style={{
         minHeight: '100vh',
-        background: '#0a0a0f',
+        background: '#1a1410',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -32,11 +33,11 @@ export default class ErrorBoundary extends Component {
       }}>
         <div style={{ textAlign: 'center', maxWidth: 480 }}>
           <div style={{
-            width: 56, height: 56, background: 'rgba(201,168,76,0.1)',
-            border: '1px solid rgba(201,168,76,0.3)', borderRadius: 12,
+            width: 56, height: 56, background: 'rgba(201,169,110,0.1)',
+            border: '1px solid rgba(201,169,110,0.3)', borderRadius: 12,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 24px', fontSize: 24,
-          }}>⚠</div>
+            margin: '0 auto 24px',
+          }}><AlertTriangle size={24} color="rgba(201,169,110,0.8)" /></div>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9', margin: '0 0 12px' }}>
             Something went wrong
           </h1>
@@ -46,7 +47,7 @@ export default class ErrorBoundary extends Component {
           <button
             onClick={() => window.location.reload()}
             style={{
-              background: '#F5A623', color: '#0a0a0f', border: 'none',
+              background: '#c9a96e', color: '#1a1410', border: 'none',
               borderRadius: 8, padding: '10px 24px', fontSize: 14,
               fontWeight: 700, cursor: 'pointer',
             }}

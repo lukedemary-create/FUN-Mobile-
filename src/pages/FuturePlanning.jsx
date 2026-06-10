@@ -4,6 +4,7 @@ import {
   Plus, Trash2, ChevronDown, ChevronUp, CheckCircle, Circle,
   AlertTriangle, TrendingUp, FileText, GraduationCap, Flag,
   LineChart, Target, DollarSign, BarChart2,
+  Landmark, Zap, ShieldCheck, Scale, UserCheck,
 } from "lucide-react";
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
@@ -435,7 +436,7 @@ function ChecklistItem({ item, checked, onToggle }) {
         {/* Checkbox */}
         <button onClick={() => onToggle(item.key)} style={{
           width: 22, height: 22, borderRadius: "50%", border: "none",
-          background: checked ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.05)",
+          background: checked ? "rgba(34,197,94,0.15)" : "var(--border-c)",
           cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           {checked
@@ -641,7 +642,7 @@ function TabLearn() {
         Click any topic to expand. Educational content — not legal advice.
       </div>
 
-      <Accordion title="What Is Estate Planning & Why Does It Matter?" icon="🏛️">
+      <Accordion title="What Is Estate Planning & Why Does It Matter?" icon={<Landmark size={16} color={GOLD} />}>
         <P>Estate planning is deciding in advance what happens to your money, property, and medical care when you die or become incapacitated. Without a plan, a court decides — and the outcome often surprises families.</P>
         <P>Estate planning is not just for the wealthy. Anyone with assets, dependents, or strong opinions about their medical care needs at least a basic plan.</P>
         <Callout color={RED} label="The cost of doing nothing">
@@ -653,7 +654,7 @@ function TabLearn() {
         <Bullet>Review your plan after every major life event: marriage, divorce, birth of a child, death of a beneficiary, major asset purchase, or moving to a new state.</Bullet>
       </Accordion>
 
-      <Accordion title="The 5 Essential Documents" icon="📄">
+      <Accordion title="The 5 Essential Documents" icon={<FileText size={16} color={GOLD} />}>
         <P>Most people need five core documents to have a complete basic estate plan. Here's what each one does and why it exists.</P>
         {[
           { title: "1. Last Will & Testament", color: RED, desc: "Directs how your probate assets are distributed after death. Names an executor (who manages the process), a guardian for minor children, and beneficiaries for each asset. Does NOT cover assets with beneficiary designations (401k, IRA, life insurance) — those pass automatically to named beneficiaries regardless of your will." },
@@ -666,7 +667,7 @@ function TabLearn() {
         ))}
       </Accordion>
 
-      <Accordion title="How Beneficiary Designations Work (& Why They Override Your Will)" icon="⚡">
+      <Accordion title="How Beneficiary Designations Work (& Why They Override Your Will)" icon={<Zap size={16} color={GOLD} />}>
         <P>This is the most misunderstood concept in estate planning. Beneficiary designations on financial accounts pass assets <strong>directly to the named person — completely bypassing your will.</strong></P>
         <Callout color={RED} label="Real example">
           A man remarries but never updates his 401k beneficiary from his ex-wife. He dies. His current wife and children get nothing from his $400K retirement account — his ex-wife legally inherits it all. His will says "everything to my current wife" — doesn't matter. The beneficiary designation wins.
@@ -683,7 +684,7 @@ function TabLearn() {
         </Callout>
       </Accordion>
 
-      <Accordion title="Trusts — What They Are & When You Need One" icon="🛡️">
+      <Accordion title="Trusts — What They Are & When You Need One" icon={<ShieldCheck size={16} color={GOLD} />}>
         <P>A trust is a legal arrangement where one party (the trustee) holds and manages assets for the benefit of another (the beneficiary). Trusts are more flexible and powerful than wills, but more complex and expensive to set up.</P>
         <Callout color={GOLD} label="The most common: Revocable Living Trust">
           You create a trust, transfer assets into it, and you remain the trustee (in control) while alive. When you die, assets pass to beneficiaries instantly — no probate court, no public record, no delay.
@@ -701,7 +702,7 @@ function TabLearn() {
         <Bullet color="var(--text-3)">You can't afford to fund it — an unfunded trust is useless</Bullet>
       </Accordion>
 
-      <Accordion title="Probate — What It Is & How to Avoid It" icon="⚖️">
+      <Accordion title="Probate — What It Is & How to Avoid It" icon={<Scale size={16} color={GOLD} />}>
         <P>Probate is the court-supervised process of validating your will and distributing your estate. It is public, slow, and expensive — typically 6–18 months and 2–5% of estate value in legal fees.</P>
         <Callout color={RED} label="What goes through probate">
           Assets in your name alone with no beneficiary designation and not held in a trust. This includes: solely-owned real estate, bank accounts without TOD, cars, personal property, and business interests — unless transferred to a trust.
@@ -716,7 +717,7 @@ function TabLearn() {
         </Callout>
       </Accordion>
 
-      <Accordion title="Estate Taxes — Do You Need to Worry?" icon="💰">
+      <Accordion title="Estate Taxes — Do You Need to Worry?" icon={<DollarSign size={16} color={GOLD} />}>
         <P>In 2024, the federal estate tax exemption is $13.61 million per person ($27.22 million for married couples). Only estates above this threshold owe federal estate tax at 40%.</P>
         <Callout color={GREEN} label="The reality for most people">
           Less than 0.2% of estates owe federal estate tax. If your net worth is under $10 million, federal estate tax is not your primary concern.
@@ -731,7 +732,7 @@ function TabLearn() {
         </Callout>
       </Accordion>
 
-      <Accordion title="When to Hire an Estate Attorney" icon="👨‍⚖️">
+      <Accordion title="When to Hire an Estate Attorney" icon={<UserCheck size={16} color={GOLD} />}>
         <P>Online services like Trust & Will, LegalZoom, or Willing can handle simple situations for $100–$400. An estate attorney costs $1,500–$5,000+ for a full plan but is worth it when the situation is complex.</P>
         <P>Use an online service if:</P>
         <Bullet color={GREEN}>Single or married with straightforward assets</Bullet>
@@ -766,16 +767,18 @@ export default function FuturePlanning() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -783,12 +786,15 @@ export default function FuturePlanning() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <LineChart size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>FUTURE PLANNING</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                ESTATE{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Planning</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Map out your financial future with precision. Project your net worth, retirement readiness, and progress toward major life goals with interactive timelines.
@@ -798,8 +804,8 @@ export default function FuturePlanning() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -820,8 +826,8 @@ export default function FuturePlanning() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -837,22 +843,12 @@ export default function FuturePlanning() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: "flex", gap: 2, marginBottom: "1.25rem",
-        background: "var(--surface)", borderRadius: 8, padding: 4,
-        border: "1px solid var(--border-c)" }}>
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: "1.25rem" }}>
         {TABS.map(tab => {
           const active = activeTab === tab.key;
           const Icon = tab.icon;
           return (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
-              display: "flex", alignItems: "center", gap: "0.375rem",
-              padding: "0.5rem 1rem", borderRadius: 6, border: "none", cursor: "pointer",
-              fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.02em",
-              whiteSpace: "nowrap", transition: "all 0.15s",
-              background: active ? "rgba(201,168,76,0.12)" : "transparent",
-              color: active ? GOLD : "var(--text-3)",
-              borderBottom: active ? `2px solid ${GOLD}` : "2px solid transparent",
-            }}>
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{ display: "flex", alignItems: "center", gap: "0.375rem", padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}>
               <Icon size={13} />
               {tab.label}
             </button>

@@ -110,15 +110,27 @@ function Skeleton({ w, h, style }) {
 /* Section Label */
 function SectionLabel({ children, sub }) {
   return (
-    <div style={{ marginBottom: "0.625rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <div style={{ width: 2, height: 14, borderRadius: 1, background: "var(--gold)", flexShrink: 0 }} />
-        <span style={{
-          fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em",
-          textTransform: "uppercase", color: "var(--text-2)",
-        }}>{children}</span>
+    <div style={{ marginBottom: "1.125rem" }}>
+      <div style={{
+        display: "flex", alignItems: "center", gap: 8, marginBottom: sub ? 4 : 0,
+      }}>
+        <div style={{ width: 3, height: 16, borderRadius: 2, background: "var(--gold)", flexShrink: 0 }} />
+        <div style={{
+          fontSize: "1rem", fontWeight: 800, color: "var(--text-1)",
+          letterSpacing: "-0.025em", fontFamily: "'Inter', system-ui, sans-serif",
+        }}>
+          {children}
+        </div>
       </div>
-      {sub && <div style={{ fontSize: "0.625rem", color: "var(--text-3)", marginTop: 2, paddingLeft: 10 }}>{sub}</div>}
+      {sub && (
+        <div style={{
+          fontSize: "0.6875rem", color: "var(--text-3)",
+          marginTop: 2, letterSpacing: "0.01em", paddingLeft: 11,
+          fontFamily: "'Inter', system-ui, sans-serif",
+        }}>
+          {sub}
+        </div>
+      )}
     </div>
   );
 }
@@ -132,8 +144,9 @@ function TickerBar({ indices }) {
       borderTop: "1px solid var(--border-c)",
       borderBottom: "1px solid var(--border-c)",
       overflow: "hidden",
-      height: 38,
+      height: 40,
       position: "relative",
+      borderRadius: 12,
     }}>
       <div style={{
         display: "flex", alignItems: "center",
@@ -178,65 +191,49 @@ function IndexCard({ index, i }) {
 
   return (
     <motion.div variants={FADE_UP} style={{
-      background: "var(--surface)",
-      border: "1px solid var(--border-c)",
-      borderRadius: 12,
-      padding: "1.125rem 1.25rem 0.75rem",
-      display: "flex", flexDirection: "column", gap: "0.25rem",
+      background: `linear-gradient(145deg, ${colorHex}08 0%, #0c0e15 55%)`,
+      border: `1px solid ${colorHex}20`,
+      borderRadius: 20,
+      padding: "1.375rem 1.375rem 0",
+      display: "flex", flexDirection: "column",
       position: "relative", overflow: "hidden",
-      transition: "border-color 0.18s",
+      transition: "all 0.2s",
+      boxShadow: `0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)`,
     }}
-      onMouseEnter={e => e.currentTarget.style.borderColor = `${colorHex}40`}
-      onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border-c)"}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = `${colorHex}40`; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 16px 48px rgba(0,0,0,0.45), 0 0 0 1px ${colorHex}22, inset 0 1px 0 rgba(201,169,110,0.06)`; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = `${colorHex}20`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)"; }}
     >
-      {/* Subtle accent glow top-right */}
-      <div style={{
-        position: "absolute", top: -30, right: -30,
-        width: 120, height: 120,
-        background: `radial-gradient(circle, ${colorHex}10 0%, transparent 70%)`,
-        pointerEvents: "none",
-      }} />
+      {/* Ambient orb */}
+      <div style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160, background: `radial-gradient(circle, ${colorHex}14 0%, transparent 70%)`, pointerEvents: "none" }} />
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", marginBottom: "0.5rem" }}>
         <div>
-          <div style={{
-            fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em",
-            textTransform: "uppercase", color: "var(--text-3)", marginBottom: 3,
-          }}>{index.symbol}</div>
-          <div style={{ fontSize: "0.75rem", color: "var(--text-2)", fontWeight: 500, maxWidth: 130, lineHeight: 1.3 }}>{index.name}</div>
+          <div style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-3)", marginBottom: 4 }}>{index.symbol}</div>
+          <div style={{ fontSize: "0.6875rem", color: "var(--text-3)", fontWeight: 400, maxWidth: 130, lineHeight: 1.3 }}>{index.name}</div>
         </div>
-        <div style={{
-          display: "flex", alignItems: "center", gap: 4,
-          background: up ? "rgba(0,184,153,0.1)" : "rgba(255,59,92,0.1)",
-          border: `1px solid ${up ? "rgba(0,184,153,0.2)" : "rgba(255,59,92,0.2)"}`,
-          borderRadius: 6, padding: "3px 8px",
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, background: up ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)", border: `1px solid ${colorHex}30`, borderRadius: 8, padding: "4px 8px" }}>
           {up ? <ArrowUpRight size={11} color={colorHex} /> : <ArrowDownRight size={11} color={colorHex} />}
-          <span style={{ fontFamily: "'JetBrains Mono','Fira Code',monospace", fontSize: "0.6875rem", fontWeight: 700, color }}>
+          <span style={{ fontFamily: "'JetBrains Mono','Fira Code',monospace", fontSize: "0.75rem", fontWeight: 800, color }}>
             {fmtPct(Math.abs(index.changePercent))}
           </span>
         </div>
       </div>
 
-      <div style={{
-        fontFamily: "'JetBrains Mono','Fira Code',monospace",
-        fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.04em",
-        color: "var(--text-1)", lineHeight: 1, margin: "0.375rem 0 0.625rem",
-      }}>
+      <div style={{ fontFamily: "'JetBrains Mono','Fira Code',monospace", fontSize: "2rem", fontWeight: 900, letterSpacing: "-0.05em", color: "var(--text-1)", lineHeight: 1, margin: "0.25rem 0 0.875rem", position: "relative" }}>
         {fmt(index.price)}
       </div>
 
-      {/* Full-width area sparkline */}
-      <div style={{ margin: "0 -1.25rem -0.75rem", height: 52 }}>
+      {/* Full-width area sparkline flush to bottom */}
+      <div style={{ margin: "0 -1.375rem", height: 56 }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={sparkData} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id={`g-${index.symbol}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={colorHex} stopOpacity={0.25} />
+                <stop offset="0%" stopColor={colorHex} stopOpacity={0.3} />
                 <stop offset="100%" stopColor={colorHex} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <Area type="monotone" dataKey="price" stroke={colorHex} strokeWidth={1.5} fill={`url(#g-${index.symbol})`} dot={false} />
+            <Area type="monotone" dataKey="price" stroke={colorHex} strokeWidth={2} fill={`url(#g-${index.symbol})`} dot={false} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -257,13 +254,13 @@ function SectorCell({ sector }) {
   return (
     <div style={{
       background: bg, border: `1px solid ${borderColor}`,
-      borderRadius: 8, padding: "0.5rem 0.375rem",
+      borderRadius: 6, padding: "0.5rem 0.375rem",
       display: "flex", flexDirection: "column", alignItems: "center",
       textAlign: "center", cursor: "default",
-      transition: "transform 0.12s",
+      transition: "filter 0.12s",
     }}
-      onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
-      onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+      onMouseEnter={e => e.currentTarget.style.filter = "brightness(1.18)"}
+      onMouseLeave={e => e.currentTarget.style.filter = "brightness(1)"}
     >
       <div style={{ fontSize: "0.625rem", fontWeight: 800, color: "var(--text-1)", letterSpacing: "0.06em" }}>{sector.symbol}</div>
       <div style={{ fontSize: "0.5rem", color: "var(--text-3)", margin: "2px 0 4px", lineHeight: 1.2 }}>
@@ -309,12 +306,14 @@ function FearGreedGauge({ vix }) {
 
   return (
     <div style={{
-      background: "var(--surface)", border: "1px solid var(--border-c)",
-      borderRadius: 12, padding: "1rem 1.125rem",
+      background: "var(--surface)",
+      border: "1px solid var(--border-c)",
+            borderRadius: 20, padding: "1.25rem",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: "0.75rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: "0.875rem" }}>
         <Gauge size={13} color="var(--gold)" />
-        <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-2)" }}>Fear &amp; Greed</span>
+        <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-3)" }}>Fear &amp; Greed</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <svg viewBox="12 14 136 72" width="176" height="92">
@@ -368,13 +367,15 @@ function MarketClock() {
 
   return (
     <div style={{
-      background: "var(--surface)", border: "1px solid var(--border-c)",
-      borderRadius: 12, padding: "1rem 1.125rem",
-      display: "flex", flexDirection: "column", gap: "0.75rem",
+      background: "var(--surface)",
+      border: "1px solid var(--border-c)",
+            borderRadius: 20, padding: "1.25rem 1.375rem",
+      display: "flex", flexDirection: "column", gap: "0.875rem",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <Clock size={13} color="var(--gold)" />
-        <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-2)" }}>Market Clock</span>
+        <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-3)" }}>Market Clock</span>
       </div>
 
       {/* Status */}
@@ -450,13 +451,15 @@ function KeyLevels({ spx }) {
 
   return (
     <div style={{
-      background: "var(--surface)", border: "1px solid var(--border-c)",
-      borderRadius: 12, padding: "1rem 1.125rem",
+      background: "var(--surface)",
+      border: "1px solid var(--border-c)",
+            borderRadius: 20, padding: "1.25rem 1.375rem",
       display: "flex", flexDirection: "column", gap: "0.5rem",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: "0.25rem" }}>
         <BarChart2 size={13} color="var(--gold)" />
-        <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-2)" }}>S&amp;P 500 Key Levels</span>
+        <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-3)" }}>S&amp;P 500 Key Levels</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         {levels.map((l, i) => (
@@ -494,13 +497,15 @@ function VixCard({ vix }) {
 
   return (
     <div style={{
-      background: "var(--surface)", border: "1px solid var(--border-c)",
-      borderRadius: 12, padding: "1rem 1.125rem",
-      display: "flex", flexDirection: "column", gap: "0.75rem",
+      background: "var(--surface)",
+      border: "1px solid var(--border-c)",
+            borderRadius: 20, padding: "1.25rem 1.375rem",
+      display: "flex", flexDirection: "column", gap: "0.875rem",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <Activity size={13} color="var(--gold)" />
-        <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-2)" }}>Volatility (VIX)</span>
+        <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-3)" }}>Volatility (VIX)</span>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
@@ -569,9 +574,10 @@ function MoverRow({ mover, rank, isGainer }) {
       display: "flex", alignItems: "center", gap: "0.75rem",
       padding: "0.625rem 1rem",
       borderBottom: "1px solid var(--border-c)",
-      transition: "background 0.12s",
+      borderRadius: 6,
+      transition: "background 0.1s",
     }}
-      onMouseEnter={e => e.currentTarget.style.background = "var(--elevated)"}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(201,169,110,0.04)"}
       onMouseLeave={e => e.currentTarget.style.background = "transparent"}
     >
       {/* Rank */}
@@ -617,19 +623,21 @@ function MoverRow({ mover, rank, isGainer }) {
 function MoversPanel({ movers }) {
   return (
     <div style={{
-      background: "var(--surface)", border: "1px solid var(--border-c)",
-      borderRadius: 12, overflow: "hidden",
+      background: "var(--surface)",
+      border: "1px solid var(--border-c)",
+            borderRadius: 20, overflow: "hidden",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
     }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
         {/* Gainers */}
         <div style={{ borderRight: "1px solid var(--border-c)" }}>
           <div style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "0.75rem 1rem", borderBottom: "1px solid var(--border-c)",
-            background: "var(--elevated)",
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "0.875rem 1.25rem", borderBottom: "1px solid var(--border-c)",
+            background: "rgba(16,185,129,0.05)",
           }}>
             <TrendingUp size={13} color="var(--up)" />
-            <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--up)" }}>Top Gainers</span>
+            <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--up)" }}>Top Gainers</span>
           </div>
           {movers?.gainers?.map((m, i) => <MoverRow key={m.symbol} mover={m} rank={i + 1} isGainer={true} />)}
         </div>
@@ -637,12 +645,12 @@ function MoversPanel({ movers }) {
         {/* Losers */}
         <div>
           <div style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "0.75rem 1rem", borderBottom: "1px solid var(--border-c)",
-            background: "var(--elevated)",
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "0.875rem 1.25rem", borderBottom: "1px solid var(--border-c)",
+            background: "rgba(239,68,68,0.05)",
           }}>
             <TrendingDown size={13} color="var(--down)" />
-            <span style={{ fontSize: "0.6875rem", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--down)" }}>Top Losers</span>
+            <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--down)" }}>Top Losers</span>
           </div>
           {movers?.losers?.map((m, i) => <MoverRow key={m.symbol} mover={m} rank={i + 1} isGainer={false} />)}
         </div>
@@ -700,112 +708,72 @@ export default function Dashboard() {
 
       {/* ── Hero Banner ─────────────────────────────────────────────── */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         style={{
           background: "var(--surface)",
           border: "1px solid var(--border-c)",
-          borderRadius: 16,
-          padding: "1.75rem 2rem",
-          marginBottom: "1rem",
+          borderRadius: 24,
+          padding: "2.5rem 2.5rem 2rem",
+          marginBottom: "1.25rem",
           position: "relative",
           overflow: "hidden",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
         }}
       >
-        {/* Background radial */}
-        <div style={{
-          position: "absolute", top: -80, right: -60,
-          width: 360, height: 360,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute", bottom: -40, left: "30%",
-          width: 200, height: 200,
-          background: "radial-gradient(circle, rgba(0,180,198,0.04) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
+        {/* Ambient glow */}
+        <div style={{ position: "absolute", top: -100, right: -80, width: 400, height: 400, background: "radial-gradient(circle, rgba(201,169,110,0.08) 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -60, left: "20%", width: 300, height: 300, background: "radial-gradient(circle, rgba(0,180,198,0.04) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            {/* Label */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.75rem" }}>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 6,
-                background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)",
-                borderRadius: 6, padding: "4px 10px",
-              }}>
-                <Zap size={11} color="var(--gold)" />
-                <span style={{ fontSize: "0.5625rem", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--gold)" }}>
-                  Live Markets
-                </span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{
-                  width: 6, height: 6, borderRadius: "50%",
-                  background: marketOpen ? "var(--up)" : "var(--down)",
-                  boxShadow: marketOpen ? "0 0 5px var(--up)" : "none",
-                }} />
-                <span style={{ fontSize: "0.625rem", color: marketOpen ? "var(--up)" : "var(--text-3)", fontWeight: 700 }}>
-                  Market {marketOpen ? "Open" : "Closed"}
-                </span>
-              </div>
-            </div>
-
-            <h1 style={{
-              margin: "0 0 0.625rem",
-              fontSize: "1.625rem", fontWeight: 900,
-              letterSpacing: "-0.03em", color: "var(--text-1)", lineHeight: 1.1,
-            }}>
-              Markets <span style={{ color: "var(--gold)" }}>Overview</span>
-            </h1>
-            <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 500, margin: "0 0 1.25rem" }}>
-              Institutional-grade market intelligence. Live index levels, sector rotation, top movers, and sentiment — refreshed every 60 seconds.
-            </p>
-
-            {/* Feature pills */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
-              {["Real-Time Data", "4 Major Indices", "11 Sectors", "Live Fear & Greed", "Top Movers"].map(label => (
-                <span key={label} style={{
-                  fontSize: "0.5875rem", fontWeight: 700, padding: "3px 9px",
-                  borderRadius: 99, letterSpacing: "0.04em",
-                  background: "var(--elevated)", border: "1px solid var(--border-c)",
-                  color: "var(--text-2)",
-                }}>{label}</span>
-              ))}
-            </div>
+        {/* Status row */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <div style={{ width: 16, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+            <span style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--gold)" }}>Markets</span>
           </div>
-
-          {/* Stat grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", flexShrink: 0 }}>
-            {[
-              { icon: Gauge,     label: "Live Indices",     sub: "S&P, Dow, NASDAQ, Russell", color: "#3b82f6" },
-              { icon: TrendingUp,label: "Market Movers",    sub: "Top gainers & losers",      color: "var(--gold)" },
-              { icon: Map,       label: "Sector Heat Map",  sub: "All 11 GICS sectors",       color: "var(--teal)" },
-              { icon: Activity,  label: "Fear & Greed",     sub: "VIX-derived sentiment",     color: "#f59e0b" },
-            ].map(({ icon: Icon, label, sub, color }) => (
-              <div key={label} style={{
-                display: "flex", alignItems: "center", gap: "0.625rem",
-                padding: "0.625rem 0.875rem",
-                background: "var(--elevated)", border: "1px solid var(--border-c)",
-                borderRadius: 10, minWidth: 160,
-              }}>
-                <div style={{
-                  width: 28, height: 28, borderRadius: 7, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 12%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 22%, transparent)`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <Icon size={13} style={{ color }} />
-                </div>
-                <div>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-1)", lineHeight: 1 }}>{label}</div>
-                  <div style={{ fontSize: "0.5625rem", color: "var(--text-3)", marginTop: 2, lineHeight: 1.3 }}>{sub}</div>
-                </div>
-              </div>
-            ))}
+          <div style={{ width: 1, height: 12, background: "var(--border-alt)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: marketOpen ? "var(--up)" : "var(--down)", boxShadow: marketOpen ? "0 0 8px var(--up)" : "none", animation: marketOpen ? "tLivePulse 2s ease-in-out infinite" : "none" }} />
+            <span style={{ fontSize: "0.625rem", color: marketOpen ? "var(--up)" : "var(--text-3)", fontWeight: 700, letterSpacing: "0.06em" }}>
+              {marketOpen ? "OPEN" : "CLOSED"}
+            </span>
           </div>
+          <div style={{ marginLeft: "auto", fontSize: "0.625rem", color: "var(--text-3)", fontFamily: "'JetBrains Mono','Fira Code',monospace", letterSpacing: "0.04em" }}>
+            {currentTime.toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", second: "2-digit" })} ET
+          </div>
+        </div>
+
+        {/* Headline */}
+        <h1 style={{
+          fontSize: "clamp(1.75rem, 3vw, 2.5rem)", fontWeight: 800,
+          letterSpacing: "-0.04em", color: "var(--text-1)",
+          lineHeight: 1.05, margin: "0 0 0.75rem", position: "relative",
+          fontFamily: "'Inter', system-ui, sans-serif",
+        }}>
+          Markets <em style={{ fontStyle: 'italic', color: "var(--gold)", fontFamily: "'Playfair Display', Georgia, serif" }}>Overview</em>
+        </h1>
+        <p style={{
+          fontSize: "0.875rem", color: "var(--text-3)", lineHeight: 1.75,
+          maxWidth: 540, margin: "0 0 2rem", position: "relative",
+          fontFamily: "'Inter', system-ui, sans-serif",
+        }}>
+          Institutional-grade market intelligence. Live index levels, sector rotation, top movers, and sentiment — refreshed every 60 seconds.
+        </p>
+
+        {/* Quick-access pills */}
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", position: "relative" }}>
+          {[
+            { icon: Gauge,      label: "4 Major Indices" },
+            { icon: TrendingUp, label: "Gainers & Losers" },
+            { icon: Map,        label: "11 Sector Heat Map" },
+            { icon: Activity,   label: "Fear & Greed" },
+          ].map(({ icon: Icon, label }) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, background: "var(--elevated)", border: "1px solid var(--border-c)", borderRadius: 10, padding: "6px 14px" }}>
+              <Icon size={11} color="var(--gold)" />
+              <span style={{ fontSize: "0.6875rem", fontWeight: 500, color: "var(--text-3)", letterSpacing: "0.02em" }}>{label}</span>
+            </div>
+          ))}
         </div>
       </motion.div>
 
@@ -838,10 +806,10 @@ export default function Dashboard() {
       )}
 
       {/* ─── Main Grid: 2/3 + 1/3 ────────────────────────────────────── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 308px", gap: "1rem", alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 308px", gap: "1.25rem", alignItems: "start" }}>
 
         {/* ════════ LEFT ════════ */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", minWidth: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.75rem", minWidth: 0 }}>
 
           {/* Major Indices */}
           <div>
@@ -878,20 +846,22 @@ export default function Dashboard() {
 
           {/* Sector Heatmap */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.625rem" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
               <SectionLabel sub="Day-over-day performance across all 11 GICS sectors">Sector Performance</SectionLabel>
               <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-                {[{ label: "Positive", color: "rgba(0,184,153,0.45)" }, { label: "Negative", color: "rgba(255,59,92,0.45)" }].map(({ label, color }) => (
+                {[{ label: "Positive", color: "rgba(16,185,129,0.5)" }, { label: "Negative", color: "rgba(239,68,68,0.5)" }].map(({ label, color }) => (
                   <div key={label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                    <div style={{ width: 8, height: 8, background: color, borderRadius: 2 }} />
+                    <div style={{ width: 8, height: 8, background: color, borderRadius: 3 }} />
                     <span style={{ fontSize: "0.5625rem", color: "var(--text-3)", fontWeight: 600 }}>{label}</span>
                   </div>
                 ))}
               </div>
             </div>
             <div style={{
-              background: "var(--surface)", border: "1px solid var(--border-c)",
-              borderRadius: 12, padding: "0.875rem",
+              background: "var(--surface)",
+              border: "1px solid var(--border-c)",
+                            borderRadius: 20, padding: "1rem",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
             }}>
               {loadingSectors ? (
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: "0.375rem" }}>
@@ -936,8 +906,10 @@ export default function Dashboard() {
             <div>
               <SectionLabel>All Tracked Indices</SectionLabel>
               <div style={{
-                background: "var(--surface)", border: "1px solid var(--border-c)",
-                borderRadius: 12, overflow: "hidden",
+                background: "var(--surface)",
+                border: "1px solid var(--border-c)",
+                                borderRadius: 20, overflow: "hidden",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(201,169,110,0.04)",
               }}>
                 <div style={{ maxHeight: 280, overflowY: "auto" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -973,7 +945,7 @@ export default function Dashboard() {
         {/* ════════ END LEFT ════════ */}
 
         {/* ════════ RIGHT SIDEBAR ════════ */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem", minWidth: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: 0 }}>
           <FearGreedGauge vix={vixValue ?? (indices ? 18.5 : null)} />
           <MarketClock />
           <KeyLevels spx={spx} />

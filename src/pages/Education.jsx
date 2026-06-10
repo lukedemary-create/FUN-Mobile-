@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EDUCATION_CONTENT } from '../data/educationContent';
-import { GraduationCap, BookOpen, PiggyBank, Receipt, BarChart2 } from 'lucide-react';
+import {
+  GraduationCap, BookOpen, PiggyBank, Receipt, BarChart2,
+  ShieldCheck, ScrollText, Landmark, Sunrise, Diamond,
+} from 'lucide-react';
+
+const TOPIC_ICON_MAP = {
+  Receipt:    Receipt,
+  ShieldCheck: ShieldCheck,
+  ScrollText:  ScrollText,
+  Landmark:    Landmark,
+  Sunrise:     Sunrise,
+  BarChart2:   BarChart2,
+};
 
 /* ─── Progress helpers ───────────────────────────────────────────── */
 const getProgress = (topicId) => {
@@ -28,27 +40,29 @@ function TopicCard({ topic, onClick }) {
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
-        gap: '0.875rem',
-        padding: '1.25rem',
+        gap: '0.625rem',
+        padding: '0.875rem',
       }}
     >
       {/* Icon circle */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div
           style={{
-            width: 48,
-            height: 48,
+            width: 36,
+            height: 36,
             borderRadius: '50%',
-            background: `${topic.color}26`,
-            border: `1px solid ${topic.color}33`,
+            background: `${topic.color}20`,
+            border: `1px solid ${topic.color}30`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.375rem',
             flexShrink: 0,
           }}
         >
-          {topic.icon}
+          {(() => {
+            const Icon = TOPIC_ICON_MAP[topic.icon];
+            return Icon ? <Icon size={15} color={topic.color} /> : null;
+          })()}
         </div>
         {completedCount === totalChapters && totalChapters > 0 && (
           <span
@@ -157,11 +171,11 @@ function StatCard({ value, label }) {
       <div
         className="t-mono"
         style={{
-          fontSize: '1.75rem',
+          fontSize: '1.35rem',
           fontWeight: 700,
           color: 'var(--gold)',
           lineHeight: 1.1,
-          marginBottom: '0.25rem',
+          marginBottom: '0.2rem',
         }}
       >
         {value}
@@ -187,21 +201,23 @@ export default function Education() {
   }, []);
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1100, padding: '0 1.5rem 2rem' }}>
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
-        marginBottom: "1.25rem",
+        borderRadius: 20,
+        padding: "1.25rem 1.75rem",
+        marginBottom: "1rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -209,14 +225,17 @@ export default function Education() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <GraduationCap size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>FINANCIAL EDUCATION</h1>
+              <h1 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                FINANCIAL{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.2rem" }}>Education</em>
+              </h1>
             </div>
-            <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
+            <p style={{ fontSize: "0.8125rem", color: "var(--text-2)", lineHeight: 1.6, maxWidth: 560, margin: "0 0 0.75rem" }}>
               Build real financial literacy from the ground up. Structured lessons covering investing, retirement, taxes, and market fundamentals — written for clarity, not complexity.
             </p>
             <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
@@ -224,8 +243,8 @@ export default function Education() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -240,14 +259,14 @@ export default function Education() {
             ].map(({ icon: Icon, label, sub, color }) => (
               <div key={label} style={{
                 display: "flex", alignItems: "center", gap: "0.625rem",
-                padding: "0.625rem 0.875rem",
+                padding: "0.5rem 0.75rem",
                 background: "var(--bg)", border: "1px solid var(--border-c)",
-                borderRadius: 10, minWidth: 170,
+                borderRadius: 10, minWidth: 150,
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -267,8 +286,8 @@ export default function Education() {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '0.75rem',
-          marginBottom: '2rem',
+          gap: '0.5rem',
+          marginBottom: '1.25rem',
         }}
       >
         <StatCard value="6"   label="Topics" />
@@ -285,15 +304,15 @@ export default function Education() {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '1rem',
-          marginBottom: '2.5rem',
+          gap: '0.75rem',
+          marginBottom: '1.75rem',
         }}
       >
         {topics.map((topic) => (
           <TopicCard
             key={topic.id}
             topic={topic}
-            onClick={() => navigate(`/education/${topic.id}`)}
+            onClick={() => navigate(`/fun/learners-library/${topic.id}`)}
           />
         ))}
       </div>
@@ -302,7 +321,7 @@ export default function Education() {
       <div
         className="t-card t-card-p"
         style={{
-          borderLeft: '3px solid var(--gold)',
+          border: '1px solid rgba(201,169,110,0.25)',
           borderRadius: '8px',
         }}
       >
@@ -327,30 +346,26 @@ export default function Education() {
         >
           {[
             {
-              icon: '◈',
               title: 'Protect Your Wealth',
               body: 'Understanding taxes, insurance, and estate planning can save you tens of thousands of dollars over a lifetime — money that compounds in your favor instead of going to avoidable costs.',
             },
             {
-              icon: '◈',
               title: 'Make Informed Decisions',
               body: 'Financial literacy empowers you to evaluate advisors, products, and strategies on their merits — not marketing. Educated investors avoid the most common and costly mistakes.',
             },
             {
-              icon: '◈',
               title: 'Plan with Confidence',
               body: 'From retirement timelines to trust structures, knowing the rules gives you the confidence to act decisively rather than defer decisions that compound over time.',
             },
             {
-              icon: '◈',
               title: 'Build Generational Wealth',
               body: 'The families who sustain wealth across generations do so through intentional planning — wills, trusts, tax-efficient transfers, and consistent financial habits taught early.',
             },
           ].map((pt, i) => (
             <div key={i} style={{ display: 'flex', gap: '0.75rem' }}>
-              <span style={{ color: 'var(--gold)', fontSize: '0.875rem', marginTop: '1px', flexShrink: 0 }}>
-                {pt.icon}
-              </span>
+              <div style={{ color: 'var(--gold)', marginTop: '2px', flexShrink: 0 }}>
+                <Diamond size={12} fill="var(--gold)" />
+              </div>
               <div>
                 <div
                   style={{

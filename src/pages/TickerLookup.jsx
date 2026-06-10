@@ -6,7 +6,7 @@ import BondTab from "../components/tickerlookup/BondTab";
 import MutualFundTab from "../components/tickerlookup/MutualFundTab";
 import SectorExplorer from "../components/tickerlookup/SectorExplorer";
 
-const ACCENT = "#3b82f6";
+const ACCENT = "#c9a96e";
 
 const TABS = [
   { value: "stocks", label: "Stocks" },
@@ -27,39 +27,50 @@ export default function TickerLookup() {
 
   return (
     <div style={{ maxWidth: 1200 }}>
-      {/* Header */}
-      <div className="t-card t-card-p" style={{ padding: "1.5rem", marginBottom: "1.25rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem" }}>
-          <div style={{ width: 44, height: 44, borderRadius: "12px", background: `${ACCENT}18`, border: `1px solid ${ACCENT}30`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <TrendingUp size={20} style={{ color: ACCENT }} />
-          </div>
-          <div>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 800, letterSpacing: "-0.025em", color: "var(--text-1)" }}>
-              Ticker <span style={{ color: ACCENT }}>Lookup</span>
-            </h1>
-            <p style={{ fontSize: "0.8125rem", color: "var(--text-3)", marginTop: 2 }}>Stocks, ETFs, bonds, mutual funds, and sector exploration</p>
+      {/* Hero Banner */}
+      <div style={{
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "1.75rem 2.25rem", marginBottom: "1.25rem",
+        position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
+      }}>
+        <div style={{ position: "absolute", top: -50, right: -30, width: 260, height: 260, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+          <p style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: "0 0 0.625rem", fontFamily: "'Inter', system-ui, sans-serif", fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--gold)" }}>
+            <span style={{ display: "inline-block", width: 20, height: 1, background: "var(--gold)", opacity: 0.7 }} />
+            Markets · Research
+          </p>
+          <h1 style={{ margin: "0 0 0.625rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            TICKER{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Lookup</em>
+          </h1>
+          <p style={{ margin: "0 0 1rem", color: "var(--text-2)", fontSize: "0.875rem", lineHeight: 1.65, maxWidth: 520 }}>
+            Deep research on stocks, ETFs, bonds, and mutual funds. Fundamental data, analyst targets, and sector exploration in one tool.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+            {["Stocks", "ETFs", "Bonds", "Mutual Funds", "Sector Explorer"].map(tag => (
+              <span key={tag} style={{ fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px", borderRadius: 99, letterSpacing: "0.04em", background: "rgba(201,169,110,0.10)", border: "1px solid rgba(201,169,110,0.25)", color: "var(--gold)" }}>{tag}</span>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.25rem", overflowX: "auto", paddingBottom: "0.25rem" }}>
-        {TABS.map(t => (
-          <button
-            key={t.value}
-            onClick={() => setActiveTab(t.value)}
-            style={{
-              padding: "0.5rem 1rem", borderRadius: "0.5rem", whiteSpace: "nowrap",
-              border: `1px solid ${activeTab === t.value ? `${ACCENT}40` : "var(--border-c)"}`,
-              background: activeTab === t.value ? `${ACCENT}12` : "var(--surface)",
-              color: activeTab === t.value ? ACCENT : "var(--text-2)",
-              fontSize: "0.875rem", fontWeight: 600, cursor: "pointer",
-              transition: "all 0.15s"
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: "1.25rem" }}>
+        {TABS.map(t => {
+          const active = activeTab === t.value;
+          return (
+            <button
+              key={t.value}
+              onClick={() => setActiveTab(t.value)}
+              style={{ padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}
+            >
+              {t.label}
+            </button>
+          );
+        })}
       </div>
 
       {activeTab === "stocks" && <StockTab prefilledTicker={selectedTicker} onTickerAnalyzed={() => setSelectedTicker(null)} />}

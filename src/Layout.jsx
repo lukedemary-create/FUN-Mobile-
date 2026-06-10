@@ -1,80 +1,116 @@
 // ─────────────────────────────────────────────────────────────────────
 // Layout.jsx — Planora Terminal · Command Rail Navigation
-// Redesigned from scratch · Dark #0a0a0f · Gold #F5A623
+// Arche warm-dark design language · Inter · #c9a96e warm gold
 // ─────────────────────────────────────────────────────────────────────
 import React, { useState, useEffect, useCallback } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain, LayoutDashboard, CalendarDays, ShieldAlert, Wallet, Settings,
-  MonitorDot, History, PieChart, TrendingUp, SlidersHorizontal, Coins,
+  MonitorDot, History, PieChart, TrendingUp,
   Newspaper, Zap, Users, ShoppingCart, Home, Star, BarChart2, Landmark,
   Eye, Sparkles, LineChart, Calculator, GraduationCap, HeartPulse,
   BookUser, BookOpen, Target, Receipt, ShieldCheck, X, ChevronRight,
-  Menu,
+  Menu, Sunrise, ClipboardList,
 } from "lucide-react";
 
 const RAIL_W  = 56;
-const PANEL_W = 248;
+const PANEL_W = 256;
+
+const FONT = "'Inter', system-ui, sans-serif";
+const MONO = "'JetBrains Mono', 'Courier New', monospace";
+const DISPLAY = "'Playfair Display', Georgia, serif";
+
+// Arche easing
+const EASE_OUT    = [0.32, 0.72, 0, 1];
+const EASE_DRAWER = [0.32, 0.72, 0, 1];
+
+// Arche warm-dark palette
+const C = {
+  bg:          "#1a1410",        // warm black
+  surface:     "#231c16",        // warm surface
+  elevated:    "#2d2419",        // elevated card
+  border:      "#2a2018",        // default border
+  borderSub:   "#3d3028",        // slightly lighter
+  gold:        "#c9a96e",        // warm tan/gold
+  goldDim:     "rgba(201,169,110,0.10)",
+  goldBorder:  "rgba(201,169,110,0.20)",
+  textPrimary: "#f0e8d8",
+  textSec:     "#a89070",
+  textMuted:   "#6b5540",
+  success:     "#4a7c59",
+  rail:        "rgba(22,17,12,0.98)",
+  flyout:      "rgba(24,18,13,0.98)",
+};
 
 // ── Nav data ───────────────────────────────────────────────────────────
 const SECTIONS = [
   {
     id: "ai", label: "Planora AI", icon: Brain,
-    items: [{ label: "Planora AI", icon: Brain, path: "/planora-ai" }],
+    desc: "AI-powered financial analysis and research",
+    items: [{ label: "Planora AI", icon: Brain, path: "/planora-ai", desc: "Intelligent research assistant" }],
   },
   {
     id: "markets", label: "Markets", icon: LayoutDashboard,
+    desc: "Live market data, charts, and intelligence",
     items: [
-      { label: "Dashboard",      icon: LayoutDashboard,   path: "/dashboard"      },
-      { label: "Terminal",       icon: MonitorDot,        path: "/terminal"       },
-      { label: "Market History", icon: History,           path: "/MarketHistory"  },
-      { label: "Sectors",        icon: PieChart,          path: "/sectors"        },
-      { label: "Top Performers", icon: TrendingUp,        path: "/top-performers" },
-      { label: "Stock Screener", icon: SlidersHorizontal, path: "/stock-screener" },
-      { label: "Crypto Markets", icon: Coins,             path: "/crypto"         },
-      { label: "Market News",    icon: Newspaper,         path: "/market-news"    },
+      { label: "Dashboard",      icon: LayoutDashboard, path: "/dashboard",      desc: "Portfolio and market overview" },
+      { label: "Terminal",       icon: MonitorDot,      path: "/terminal",       desc: "Bloomberg-style data terminal" },
+      { label: "Market History", icon: History,         path: "/MarketHistory",  desc: "Historical price and index data" },
+      { label: "Sectors",        icon: PieChart,        path: "/sectors",        desc: "Sector performance heatmaps" },
+      { label: "Top Performers", icon: TrendingUp,      path: "/top-performers", desc: "Leaders and laggards daily" },
+      { label: "Market News",    icon: Newspaper,       path: "/market-news",    desc: "Real-time financial news feed" },
     ],
   },
   {
     id: "macro", label: "Macro", icon: CalendarDays,
+    desc: "Economic indicators and macro intelligence",
     items: [
-      { label: "Economic Calendar", icon: CalendarDays, path: "/economic-calendar" },
-      { label: "Energy Markets",    icon: Zap,          path: "/energy"           },
-      { label: "Labor Markets",     icon: Users,        path: "/labor"            },
-      { label: "The Consumer",      icon: ShoppingCart, path: "/consumer"         },
-      { label: "Real Estate",       icon: Home,         path: "/real-estate"      },
+      { label: "Economic Calendar", icon: CalendarDays, path: "/economic-calendar", desc: "Fed meetings, CPI, jobs reports" },
+      { label: "Energy Markets",    icon: Zap,          path: "/energy",            desc: "Oil, gas, and commodity trends" },
+      { label: "Labor Markets",     icon: Users,        path: "/labor",             desc: "Employment and wage data" },
+      { label: "The Consumer",      icon: ShoppingCart, path: "/consumer",          desc: "Spending, sentiment, retail" },
+      { label: "Real Estate",       icon: Home,         path: "/real-estate",       desc: "Housing market and mortgage data" },
     ],
   },
   {
     id: "analysis", label: "Analysis", icon: ShieldAlert,
+    desc: "Deep research, risk, and intelligence tools",
     items: [
-      { label: "Risk Analysis",          icon: ShieldAlert, path: "/RiskAnalysis"     },
-      { label: "Watchlist",              icon: Star,        path: "/watchlist"         },
-      { label: "Market Breadth",         icon: BarChart2,   path: "/market-breadth"   },
-      { label: "Political Intelligence", icon: Landmark,    path: "/PoliticsEconomy"  },
-      { label: "Insider Trading",        icon: Eye,         path: "/insider-trading"  },
+      { label: "Risk Analysis",          icon: ShieldAlert, path: "/RiskAnalysis",    desc: "Portfolio risk and stress testing" },
+      { label: "Watchlist",              icon: Star,        path: "/watchlist",        desc: "Track your securities" },
+      { label: "Market Breadth",         icon: BarChart2,   path: "/market-breadth",  desc: "Advance/decline and internals" },
+      { label: "Political Intelligence", icon: Landmark,    path: "/PoliticsEconomy", desc: "Policy and geopolitical impact" },
+      { label: "Insider Trading",        icon: Eye,         path: "/insider-trading", desc: "SEC Form 4 filings and flows" },
+    ],
+  },
+  {
+    id: "planning", label: "Planning", icon: ClipboardList,
+    desc: "Personal finance and future planning tools",
+    items: [
+      { label: "Budget Planner",      icon: Wallet,        path: "/BudgetPlanner",       desc: "Income, expenses, and cash flow" },
+      { label: "Net Worth Tracker",   icon: Target,        path: "/net-worth",           desc: "Assets, liabilities, and growth" },
+      { label: "Estate Planning",      icon: LineChart,     path: "/FuturePlanning",      desc: "Wills, trusts, and estate strategy" },
+      { label: "Retirement Planning", icon: Sunrise,       path: "/retirement-planning", desc: "Monte Carlo retirement projections" },
+      { label: "Life Insurance",      icon: HeartPulse,    path: "/life-insurance",      desc: "Coverage needs analysis" },
+      { label: "Tax Planning",        icon: Receipt,       path: "/tax-planning",        desc: "Tax-efficiency strategies" },
+      { label: "Social Security",     icon: ShieldCheck,   path: "/social-security",     desc: "Benefits and claiming strategy" },
+      { label: "Calculators",         icon: Calculator,    path: "/Calculators",         desc: "TVM, compound growth, more" },
     ],
   },
   {
     id: "wealth", label: "Wealth", icon: Wallet,
+    desc: "Wealth management education and guidance",
     items: [
-      { label: "Breakdown Reports", icon: Sparkles,      path: "/AIAdvisor"      },
-      { label: "Budget Planner",    icon: Wallet,        path: "/BudgetPlanner"  },
-      { label: "Future Planning",   icon: LineChart,     path: "/FuturePlanning" },
-      { label: "Calculators",       icon: Calculator,    path: "/Calculators"    },
-      { label: "Education",         icon: GraduationCap, path: "/education"      },
-      { label: "Life Insurance",    icon: HeartPulse,    path: "/life-insurance" },
-      { label: "Wealth Counsel",    icon: BookUser,      path: "/WealthCounsel"  },
-      { label: "Brokerage Guide",   icon: BookOpen,      path: "/brokerage-guide"},
-      { label: "Net Worth Tracker", icon: Target,        path: "/net-worth"      },
-      { label: "Tax Planning",      icon: Receipt,       path: "/tax-planning"   },
-      { label: "Social Security",   icon: ShieldCheck,   path: "/social-security"},
+      { label: "Wealth Counsel",    icon: BookUser,      path: "/WealthCounsel",   desc: "Private wealth strategies" },
+      { label: "Breakdown Reports", icon: Sparkles,      path: "/AIAdvisor",       desc: "AI-generated investment briefs" },
+      { label: "Brokerage Guide",   icon: BookOpen,      path: "/brokerage-guide", desc: "Platform comparison and selection" },
     ],
   },
   {
     id: "settings", label: "Settings", icon: Settings,
-    items: [{ label: "Settings", icon: Settings, path: "/Settings" }],
+    desc: "Preferences and platform configuration",
+    items: [{ label: "Settings", icon: Settings, path: "/Settings", desc: "Account and display settings" }],
   },
 ];
 
@@ -92,9 +128,217 @@ function usePageTitle() {
   return ALL_ITEMS.find(i => pathname === i.path || pathname.startsWith(i.path + "/"))?.label ?? "Planora";
 }
 
-// ── Individual nav item (handles hover state internally) ───────────────
+// ── Rail icon button ───────────────────────────────────────────────────
+function RailButton({ section, isActive, isOpen, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  const Icon = section.icon;
+  const showTooltip = hovered && !isOpen;
+
+  return (
+    <div
+      style={{ position: "relative", width: "100%" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Active pip */}
+      {isActive && (
+        <motion.div
+          layoutId="rail-active-pip"
+          style={{
+            position: "absolute", left: 0, top: 10, bottom: 10,
+            width: 2,
+            background: C.gold,
+            borderRadius: "0 2px 2px 0",
+            boxShadow: `2px 0 8px rgba(201,169,110,0.45)`,
+          }}
+          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+        />
+      )}
+
+      <motion.button
+        onClick={() => onClick(section.id)}
+        whileTap={{ scale: 0.92 }}
+        title={section.label}
+        style={{
+          width: "100%", height: 44,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          border: "none", cursor: "pointer",
+          background: isOpen
+            ? "rgba(201,169,110,0.12)"
+            : isActive
+            ? "rgba(201,169,110,0.06)"
+            : hovered
+            ? "rgba(240,232,216,0.03)"
+            : "transparent",
+          transition: "background 0.18s ease",
+          position: "relative",
+        }}
+      >
+        <motion.div
+          animate={{
+            color: isActive || isOpen ? C.gold : hovered ? C.textSec : C.textMuted,
+          }}
+          transition={{ duration: 0.18 }}
+        >
+          <Icon size={16} />
+        </motion.div>
+      </motion.button>
+
+      {/* Tooltip */}
+      <AnimatePresence>
+        {showTooltip && (
+          <motion.div
+            initial={{ opacity: 0, x: -6, scale: 0.97 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -4, scale: 0.97 }}
+            transition={{ duration: 0.14, ease: EASE_OUT }}
+            style={{
+              position: "absolute", left: RAIL_W + 8, top: "50%", transform: "translateY(-50%)",
+              zIndex: 11000,
+              background: C.elevated,
+              border: `1px solid ${C.borderSub}`,
+              borderRadius: 8,
+              padding: "6px 10px",
+              whiteSpace: "nowrap",
+              pointerEvents: "none",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+            }}
+          >
+            <span style={{
+              fontSize: 11.5, fontWeight: 600, color: C.textPrimary,
+              fontFamily: FONT, letterSpacing: "0.01em",
+            }}>
+              {section.label}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ── Icon Rail ──────────────────────────────────────────────────────────
+function Rail({ activeSection, openSectionId, onSectionClick }) {
+  const navigate = useNavigate();
+  const mainSections = SECTIONS.filter(s => s.id !== "settings");
+  const settingsSection = SECTIONS.find(s => s.id === "settings");
+
+  return (
+    <div
+      id="planora-rail"
+      style={{
+        position: "fixed", top: 0, left: 0, bottom: 0,
+        width: RAIL_W,
+        background: C.rail,
+        borderRight: `1px solid ${C.border}`,
+        display: "flex", flexDirection: "column", alignItems: "center",
+        zIndex: 10000,
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+      }}
+    >
+      {/* Logo mark */}
+      <motion.button
+        onClick={() => navigate("/hub")}
+        title="Planora Hub"
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.94 }}
+        style={{
+          width: RAIL_W, height: 52, flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: "none", border: "none", cursor: "pointer",
+          borderBottom: `1px solid ${C.border}`,
+        }}
+      >
+        <div
+          style={{
+            width: 28, height: 28,
+            background: C.gold,
+            borderRadius: 7,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 2px 12px rgba(201,169,110,0.25)",
+          }}
+        >
+          <span style={{
+            fontSize: 13, fontWeight: 800, color: "#1a1410", lineHeight: 1,
+            fontFamily: DISPLAY,
+          }}>
+            P
+          </span>
+        </div>
+      </motion.button>
+
+      {/* Section icons */}
+      <nav style={{
+        flex: 1, width: "100%",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        padding: "8px 0", gap: 1,
+      }}>
+        {mainSections.map(section => (
+          <RailButton
+            key={section.id}
+            section={section}
+            isActive={activeSection?.id === section.id}
+            isOpen={openSectionId === section.id}
+            onClick={onSectionClick}
+          />
+        ))}
+      </nav>
+
+      {/* Bottom controls */}
+      <div style={{
+        width: "100%",
+        borderTop: `1px solid ${C.border}`,
+        padding: "6px 0",
+      }}>
+        <RailButton
+          section={settingsSection}
+          isActive={activeSection?.id === "settings"}
+          isOpen={openSectionId === "settings"}
+          onClick={onSectionClick}
+        />
+
+        <div style={{ position: "relative" }}>
+          <HomeButton navigate={navigate} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomeButton({ navigate }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.button
+      onClick={() => navigate("/")}
+      title="Back to Home"
+      whileTap={{ scale: 0.93 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: "100%", height: 38,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: hovered ? "rgba(240,232,216,0.03)" : "transparent",
+        border: "none", cursor: "pointer",
+        transition: "background 0.18s ease",
+      }}
+    >
+      <svg width="14" height="14" viewBox="0 0 52 52" fill="none">
+        <polygon
+          points="26,3 49,14 49,38 26,49 3,38 3,14"
+          fill="none"
+          stroke={hovered ? C.textMuted : C.border}
+          strokeWidth="4"
+          style={{ transition: "stroke 0.18s" }}
+        />
+        <circle cx="26" cy="26" r="6" fill={hovered ? C.textMuted : C.border} style={{ transition: "fill 0.18s" }} />
+      </svg>
+    </motion.button>
+  );
+}
+
+// ── Nav Item in flyout ─────────────────────────────────────────────────
 function NavItem({ item, onClose }) {
-  const [hov, setHov] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const Icon = item.icon;
@@ -106,162 +350,54 @@ function NavItem({ item, onClose }) {
   }
 
   return (
-    <div
+    <motion.div
       onClick={handleClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
+      whileHover={{ x: 2 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
       style={{
         display: "flex", alignItems: "center", gap: 10,
-        padding: "9px 16px",
+        padding: "7px 12px",
+        margin: "1px 8px",
         cursor: "pointer",
-        background: isActive ? "rgba(245,166,35,0.09)" : hov ? "rgba(255,255,255,0.04)" : "transparent",
-        borderLeft: `2px solid ${isActive ? "#F5A623" : "transparent"}`,
-        color: isActive ? "#F5A623" : "#94a3b8",
-        fontSize: 13,
-        fontWeight: isActive ? 600 : 400,
-        fontFamily: "'Inter', -apple-system, sans-serif",
-        transition: "background 0.12s",
-        letterSpacing: "-0.01em",
+        background: isActive ? "rgba(201,169,110,0.07)" : "transparent",
+        border: `1px solid ${isActive ? "rgba(201,169,110,0.18)" : "transparent"}`,
+        borderRadius: 9,
       }}
     >
-      <Icon size={14} style={{ flexShrink: 0 }}/>
-      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.label}</span>
-    </div>
-  );
-}
-
-// ── Icon Rail ──────────────────────────────────────────────────────────
-function Rail({ activeSection, openSectionId, onSectionClick }) {
-  const navigate = useNavigate();
-  const mainSections = SECTIONS.filter(s => s.id !== "settings");
-
-  return (
-    <div
-      id="planora-rail"
-      style={{
-        position: "fixed", top: 0, left: 0, bottom: 0,
-        width: RAIL_W,
-        background: "#0a0a0f",
-        borderRight: "1px solid #1e2028",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        zIndex: 60,
-      }}
-    >
-      {/* Logo mark */}
-      <button
-        onClick={() => navigate("/hub")}
-        title="Planora Hub"
-        style={{
-          width: RAIL_W, height: 52, flexShrink: 0,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: "none", border: "none", cursor: "pointer",
-          borderBottom: "1px solid #1e2028",
-        }}
-      >
-        <motion.div
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-          style={{
-            width: 28, height: 28, background: "#F5A623", borderRadius: 7,
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}
-        >
-          <span style={{ fontSize: 13, fontWeight: 900, color: "#0a0a0f", lineHeight: 1 }}>P</span>
-        </motion.div>
-      </button>
-
-      {/* Section icons */}
-      <nav style={{ flex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 0", gap: 1 }}>
-        {mainSections.map(section => {
-          const Icon = section.icon;
-          const isActive  = activeSection?.id === section.id;
-          const isOpen    = openSectionId === section.id;
-
-          return (
-            <div key={section.id} style={{ position: "relative", width: "100%" }}>
-              {/* Active gold pip */}
-              {isActive && (
-                <motion.div
-                  layoutId="rail-active-pip"
-                  style={{
-                    position: "absolute", left: 0, top: 6, bottom: 6,
-                    width: 2, background: "#F5A623", borderRadius: "0 2px 2px 0",
-                  }}
-                />
-              )}
-              <button
-                onClick={() => onSectionClick(section.id)}
-                title={section.label}
-                style={{
-                  width: "100%", height: 44,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  background: isOpen
-                    ? "rgba(245,166,35,0.12)"
-                    : isActive
-                    ? "rgba(245,166,35,0.06)"
-                    : "transparent",
-                  border: "none", cursor: "pointer",
-                  transition: "background 0.15s",
-                  position: "relative",
-                }}
-                onMouseEnter={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-                onMouseLeave={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "transparent"; }}
-              >
-                <Icon
-                  size={17}
-                  color={isActive || isOpen ? "#F5A623" : "#4a5568"}
-                  style={{ transition: "color 0.15s" }}
-                />
-              </button>
-            </div>
-          );
-        })}
-      </nav>
-
-      {/* Bottom controls */}
-      <div style={{ width: "100%", borderTop: "1px solid #1e2028", padding: "6px 0" }}>
-        {/* Settings */}
-        {(() => {
-          const s = SECTIONS.find(x => x.id === "settings");
-          const isActive = activeSection?.id === "settings";
-          const isOpen   = openSectionId === "settings";
-          return (
-            <button
-              onClick={() => onSectionClick("settings")}
-              title="Settings"
-              style={{
-                width: "100%", height: 40,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: isOpen || isActive ? "rgba(245,166,35,0.08)" : "transparent",
-                border: "none", cursor: "pointer", transition: "background 0.15s",
-              }}
-              onMouseEnter={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-              onMouseLeave={e => { if (!isOpen && !isActive) e.currentTarget.style.background = "transparent"; }}
-            >
-              <Settings size={16} color={isActive || isOpen ? "#F5A623" : "#4a5568"}/>
-            </button>
-          );
-        })()}
-
-        {/* Home */}
-        <button
-          onClick={() => navigate("/")}
-          title="Back to Home"
-          style={{
-            width: "100%", height: 38,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: "transparent", border: "none", cursor: "pointer", transition: "background 0.15s",
-          }}
-          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
-          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-        >
-          <svg width="14" height="14" viewBox="0 0 52 52" fill="none">
-            <polygon points="26,3 49,14 49,38 26,49 3,38 3,14" fill="none" stroke="#4a5568" strokeWidth="4"/>
-            <circle cx="26" cy="26" r="6" fill="#4a5568"/>
-          </svg>
-        </button>
+      <div style={{
+        width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: isActive ? "rgba(201,169,110,0.10)" : "rgba(240,232,216,0.03)",
+        border: `1px solid ${isActive ? "rgba(201,169,110,0.20)" : C.border}`,
+        transition: "all 0.18s ease",
+      }}>
+        <Icon size={13} color={isActive ? C.gold : C.textMuted} />
       </div>
-    </div>
+      <div style={{ minWidth: 0 }}>
+        <div style={{
+          fontSize: 12.5, fontWeight: isActive ? 600 : 500,
+          color: isActive ? C.gold : C.textSec,
+          fontFamily: FONT,
+          letterSpacing: "0.01em",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          transition: "color 0.15s",
+        }}>
+          {item.label}
+        </div>
+        {item.desc && (
+          <div style={{
+            fontSize: 10.5, color: C.textMuted,
+            fontFamily: FONT,
+            letterSpacing: "0.01em",
+            marginTop: 1,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+          }}>
+            {item.desc}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
@@ -270,72 +406,127 @@ function FlyoutPanel({ section, onClose }) {
   return (
     <AnimatePresence>
       {section && (
-          <motion.div
-            key="panel"
-            onClick={e => e.stopPropagation()}
-            initial={{ x: -(PANEL_W + 10), opacity: 0 }}
-            animate={{ x: 0, opacity: 1, transition: { type: "spring", stiffness: 420, damping: 38, mass: 0.75 } }}
-            exit={{ x: -(PANEL_W + 10), opacity: 0, transition: { duration: 0.12, ease: "easeIn" } }}
-            style={{
-              position: "fixed", top: 0, left: RAIL_W, bottom: 0,
-              width: PANEL_W,
-              background: "#111318",
-              borderRight: "1px solid #1e2028",
-              zIndex: 56,
-              display: "flex", flexDirection: "column",
-              overflow: "hidden",
-              boxShadow: "8px 0 40px rgba(0,0,0,0.5)",
-            }}
-          >
-            {/* Panel header */}
+        <motion.div
+          key="panel"
+          id="planora-flyout"
+          initial={{ x: -(PANEL_W + 16), opacity: 0 }}
+          animate={{
+            x: 0, opacity: 1,
+            transition: { type: "spring", stiffness: 380, damping: 32, mass: 0.7 },
+          }}
+          exit={{
+            x: -(PANEL_W + 16), opacity: 0,
+            transition: { duration: 0.14, ease: EASE_DRAWER },
+          }}
+          style={{
+            position: "fixed", top: 0, left: RAIL_W, bottom: 0,
+            width: PANEL_W,
+            background: C.flyout,
+            borderRight: `1px solid ${C.border}`,
+            zIndex: 9999,
+            display: "flex", flexDirection: "column",
+            overflow: "hidden",
+            boxShadow: "16px 0 48px rgba(0,0,0,0.6), 1px 0 0 rgba(240,232,216,0.02)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+          }}
+        >
+          {/* Warm gold accent stripe at top */}
+          <div style={{
+            height: 1,
+            background: `linear-gradient(90deg, ${C.gold} 0%, rgba(201,169,110,0.15) 60%, transparent 100%)`,
+          }} />
+
+          {/* Panel header */}
+          <div style={{
+            height: 52, flexShrink: 0,
+            display: "flex", alignItems: "center",
+            padding: "0 12px 0 14px",
+            borderBottom: `1px solid ${C.border}`,
+            gap: 10,
+          }}>
             <div style={{
-              height: 52, flexShrink: 0,
-              display: "flex", alignItems: "center",
-              padding: "0 14px 0 16px",
-              borderBottom: "1px solid #1e2028",
-              gap: 8,
-            }}>
-              <div style={{ width: 2, height: 16, background: "#F5A623", borderRadius: 1, flexShrink: 0 }}/>
-              <span style={{
-                flex: 1, fontSize: 11, fontWeight: 700,
-                letterSpacing: "0.15em", textTransform: "uppercase",
-                color: "#f1f5f9",
-                fontFamily: "'Inter', sans-serif",
+              width: 3, height: 16,
+              background: C.gold,
+              borderRadius: 2, flexShrink: 0,
+              boxShadow: `0 0 6px rgba(201,169,110,0.4)`,
+            }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{
+                fontSize: 10, fontWeight: 700,
+                letterSpacing: "0.18em", textTransform: "uppercase",
+                color: C.textPrimary,
+                fontFamily: FONT,
               }}>
                 {section.label}
-              </span>
-              <button
-                onClick={(e) => { e.stopPropagation(); onClose(); }}
-                style={{
-                  background: "rgba(255,255,255,0.05)", border: "1px solid #1e2028",
-                  borderRadius: 6, cursor: "pointer",
-                  width: 26, height: 26,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: "#64748b",
-                }}
-              >
-                <X size={12}/>
-              </button>
+              </div>
+              {section.desc && (
+                <div style={{
+                  fontSize: 9.5, color: C.textMuted,
+                  fontFamily: FONT, marginTop: 1,
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                }}>
+                  {section.desc}
+                </div>
+              )}
             </div>
+            <motion.button
+              onClick={(e) => { e.stopPropagation(); onClose(); }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              style={{
+                background: "rgba(240,232,216,0.04)",
+                border: `1px solid ${C.border}`,
+                borderRadius: 6, cursor: "pointer",
+                width: 22, height: 22,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: C.textMuted,
+                flexShrink: 0,
+              }}
+            >
+              <X size={10} />
+            </motion.button>
+          </div>
 
-            {/* Items */}
-            <nav style={{ flex: 1, overflowY: "auto", padding: "6px 0" }}>
+          {/* Items with stagger reveal */}
+          <nav style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                visible: { transition: { staggerChildren: 0.04 } },
+              }}
+            >
               {section.items.map((item) => (
-                <NavItem key={item.path} item={item} onClose={onClose} />
+                <motion.div
+                  key={item.path}
+                  variants={{
+                    hidden: { opacity: 0, x: -8 },
+                    visible: { opacity: 1, x: 0, transition: { duration: 0.2, ease: EASE_OUT } },
+                  }}
+                >
+                  <NavItem item={item} onClose={onClose} />
+                </motion.div>
               ))}
-            </nav>
+            </motion.div>
+          </nav>
 
-            {/* Footer */}
-            <div style={{
-              padding: "10px 16px",
-              borderTop: "1px solid #1e2028",
-              flexShrink: 0,
+          {/* Footer */}
+          <div style={{
+            padding: "10px 14px",
+            borderTop: `1px solid ${C.border}`,
+            flexShrink: 0,
+          }}>
+            <p style={{
+              fontSize: 9.5, color: C.textMuted,
+              lineHeight: 1.6, margin: 0,
+              letterSpacing: "0.02em",
+              fontFamily: FONT,
             }}>
-              <p style={{ fontSize: 9.5, color: "#4a5568", lineHeight: 1.6, margin: 0, letterSpacing: "0.02em" }}>
-                For educational purposes only · Not financial advice
-              </p>
-            </div>
-          </motion.div>
+              Educational purposes only · Not financial advice
+            </p>
+          </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
@@ -364,14 +555,15 @@ function TopBar({ onMobileMenu }) {
       style={{
         position: "fixed", top: 0, left: RAIL_W, right: 0,
         height: 48,
-        background: "rgba(10,10,15,0.94)",
-        backdropFilter: "blur(20px)",
-        borderBottom: "1px solid #1e2028",
+        background: "rgba(22,17,12,0.96)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        borderBottom: `1px solid ${C.border}`,
         display: "flex", alignItems: "center",
         padding: "0 20px 0 16px",
-        gap: 10,
+        gap: 12,
         zIndex: 40,
-        fontFamily: "'Inter', -apple-system, sans-serif",
+        fontFamily: FONT,
       }}
     >
       {/* Mobile hamburger */}
@@ -380,23 +572,28 @@ function TopBar({ onMobileMenu }) {
         onClick={onMobileMenu}
         style={{
           display: "none", background: "none", border: "none",
-          cursor: "pointer", color: "#94a3b8", padding: 4,
+          cursor: "pointer", color: C.textSec, padding: 4,
           alignItems: "center", justifyContent: "center",
         }}
       >
-        <Menu size={18}/>
+        <Menu size={18} />
       </button>
 
       {/* Breadcrumb */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
         {activeSection && (
           <>
-            <span style={{ fontSize: 11, color: "#4a5568", fontWeight: 500 }}>{activeSection.label}</span>
-            <ChevronRight size={11} color="#1e2028"/>
+            <span style={{
+              fontSize: 11, color: C.textMuted, fontWeight: 500,
+              letterSpacing: "0.02em",
+            }}>
+              {activeSection.label}
+            </span>
+            <ChevronRight size={10} color={C.border} />
           </>
         )}
         <span style={{
-          fontSize: 13, fontWeight: 700, color: "#f1f5f9",
+          fontSize: 13, fontWeight: 700, color: C.textPrimary,
           letterSpacing: "-0.01em",
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
@@ -404,39 +601,45 @@ function TopBar({ onMobileMenu }) {
         </span>
       </div>
 
-      {/* Clock */}
-      <span style={{
-        fontSize: 12, color: "#64748b",
-        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-        fontVariantNumeric: "tabular-nums",
-        letterSpacing: "0.04em",
-        flexShrink: 0,
-      }}>
-        {clock}
-      </span>
-
-      {/* LIVE pill */}
-      <div style={{
-        display: "flex", alignItems: "center", gap: 5,
-        padding: "3px 9px",
-        background: "rgba(16,185,129,0.08)",
-        border: "1px solid rgba(16,185,129,0.2)",
-        borderRadius: 99,
-        flexShrink: 0,
-      }}>
-        <div style={{
-          width: 5, height: 5, borderRadius: "50%", background: "#10b981",
-          animation: "liveGlow 2s ease infinite",
-        }}/>
-        <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", color: "#10b981", textTransform: "uppercase" }}>
-          LIVE
+      {/* Right cluster */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+        {/* Clock */}
+        <span style={{
+          fontSize: 11.5, color: C.textMuted,
+          fontFamily: MONO,
+          fontVariantNumeric: "tabular-nums",
+          letterSpacing: "0.06em",
+        }}>
+          {clock}
         </span>
+
+        {/* LIVE pill */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 5,
+          padding: "3px 9px",
+          background: "rgba(74,124,89,0.10)",
+          border: "1px solid rgba(74,124,89,0.22)",
+          borderRadius: 99,
+        }}>
+          <div style={{
+            width: 5, height: 5, borderRadius: "50%", background: "#4a7c59",
+            animation: "liveGlow 2.4s ease infinite",
+          }} />
+          <span style={{
+            fontSize: 9, fontWeight: 700,
+            letterSpacing: "0.14em", color: "#4a7c59",
+            textTransform: "uppercase",
+            fontFamily: FONT,
+          }}>
+            LIVE
+          </span>
+        </div>
       </div>
 
       <style>{`
         @keyframes liveGlow {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
-          50%       { box-shadow: 0 0 0 4px rgba(16,185,129,0); }
+          0%, 100% { box-shadow: 0 0 0 0 rgba(74,124,89,0.5); }
+          50%       { box-shadow: 0 0 0 4px rgba(74,124,89,0); }
         }
         @media (max-width: 768px) {
           #planora-rail    { display: none !important; }
@@ -459,69 +662,87 @@ function MobileMenuOverlay({ open, onClose }) {
           initial={{ opacity: 0, x: -300 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -300 }}
-          transition={{ type: "spring", stiffness: 400, damping: 38 }}
+          transition={{ type: "spring", stiffness: 380, damping: 34 }}
           style={{
             position: "fixed", inset: 0, zIndex: 100,
-            background: "#111318",
+            background: "rgba(22,17,12,0.99)",
             overflowY: "auto",
             paddingBottom: 80,
+            fontFamily: FONT,
           }}
         >
           {/* Header */}
           <div style={{
             display: "flex", alignItems: "center", gap: 10,
             padding: "16px 20px",
-            borderBottom: "1px solid #1e2028",
+            borderBottom: `1px solid ${C.border}`,
           }}>
-            <div style={{ width: 28, height: 28, background: "#F5A623", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 13, fontWeight: 900, color: "#0a0a0f" }}>P</span>
+            <div style={{
+              width: 28, height: 28,
+              background: C.gold,
+              borderRadius: 7,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: "#1a1410", fontFamily: DISPLAY }}>P</span>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#f1f5f9" }}>PLANORA</div>
-              <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#F5A623", marginTop: 1 }}>TERMINAL</div>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: C.textPrimary, fontFamily: DISPLAY }}>PLANORA</div>
+              <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: C.gold, marginTop: 1 }}>TERMINAL</div>
             </div>
-            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
-              <X size={18}/>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: C.textMuted, padding: 4 }}>
+              <X size={18} />
             </button>
           </div>
+
           {/* All sections */}
           {SECTIONS.map(section => (
             <div key={section.id}>
-              <div style={{ padding: "12px 20px 4px", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#4a5568" }}>
+              <div style={{
+                padding: "14px 20px 6px",
+                fontSize: 10, fontWeight: 700,
+                letterSpacing: "0.18em", textTransform: "uppercase",
+                color: C.textMuted,
+              }}>
                 {section.label}
               </div>
               {section.items.map(item => {
                 const Icon = item.icon;
                 return (
-                  <button
+                  <motion.button
                     key={item.path}
                     onClick={() => { navigate(item.path); onClose(); }}
+                    whileTap={{ scale: 0.98 }}
                     style={{
                       display: "flex", alignItems: "center", gap: 10,
                       width: "100%", padding: "10px 20px",
                       background: "none", border: "none", cursor: "pointer",
-                      color: "#94a3b8", fontSize: 14, fontFamily: "inherit", textAlign: "left",
+                      color: C.textSec, fontSize: 13.5,
+                      fontFamily: FONT, textAlign: "left",
                     }}
                   >
-                    <Icon size={15}/>
+                    <Icon size={15} color={C.textMuted} />
                     {item.label}
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
           ))}
-          <div style={{ padding: "16px 20px", borderTop: "1px solid #1e2028", marginTop: 8 }}>
-            <button
+
+          <div style={{ padding: "16px 20px", borderTop: `1px solid ${C.border}`, marginTop: 8 }}>
+            <motion.button
               onClick={() => { navigate("/"); onClose(); }}
+              whileTap={{ scale: 0.97 }}
               style={{
                 display: "flex", alignItems: "center", gap: 8,
-                background: "none", border: "1px solid #1e2028",
+                background: "none",
+                border: `1px solid ${C.borderSub}`,
                 borderRadius: 8, padding: "10px 14px",
-                cursor: "pointer", color: "#64748b", fontSize: 13, fontFamily: "inherit",
+                cursor: "pointer", color: C.textMuted, fontSize: 13,
+                fontFamily: FONT,
               }}
             >
-              Switch to Home
-            </button>
+              Back to Home
+            </motion.button>
           </div>
         </motion.div>
       )}
@@ -534,7 +755,7 @@ const MOBILE_QUICK = [
   { label: "Markets",  icon: LayoutDashboard, path: "/dashboard"         },
   { label: "Macro",    icon: CalendarDays,    path: "/economic-calendar" },
   { label: "Analysis", icon: ShieldAlert,     path: "/RiskAnalysis"      },
-  { label: "Wealth",   icon: Wallet,          path: "/BudgetPlanner"     },
+  { label: "Planning", icon: ClipboardList,   path: "/BudgetPlanner"     },
   { label: "AI",       icon: Brain,           path: "/planora-ai"        },
 ];
 
@@ -546,9 +767,10 @@ function MobileNav() {
       style={{
         display: "none",
         position: "fixed", bottom: 0, left: 0, right: 0, height: 58,
-        background: "#111318",
-        borderTop: "1px solid #1e2028",
+        background: "rgba(22,17,12,0.99)",
+        borderTop: `1px solid ${C.border}`,
         zIndex: 50, flexDirection: "row",
+        fontFamily: FONT,
       }}
     >
       {MOBILE_QUICK.map(item => {
@@ -562,14 +784,18 @@ function MobileNav() {
               flex: 1, display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center", gap: 3,
               textDecoration: "none",
-              color: active ? "#F5A623" : "#4a5568",
-              borderTop: `2px solid ${active ? "#F5A623" : "transparent"}`,
+              color: active ? C.gold : C.textMuted,
+              borderTop: `2px solid ${active ? C.gold : "transparent"}`,
               paddingTop: 2,
-              fontFamily: "'Inter', sans-serif",
             }}
           >
-            <Icon size={17}/>
-            <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.label}</span>
+            <Icon size={17} />
+            <span style={{
+              fontSize: 9, fontWeight: 600,
+              letterSpacing: "0.07em", textTransform: "uppercase",
+            }}>
+              {item.label}
+            </span>
           </NavLink>
         );
       })}
@@ -579,13 +805,33 @@ function MobileNav() {
 }
 
 // ── Welcome Modal ──────────────────────────────────────────────────────
-const WELCOME_KEY  = "planora_welcome_seen";
+const WELCOME_KEY = "planora_welcome_seen";
 
 const FEATURE_CARDS = [
-  { icon: TrendingUp,  color: "#10b981", bg: "rgba(16,185,129,0.07)",  border: "rgba(16,185,129,0.18)",  title: "Markets",  desc: "Live dashboards, sector heatmaps, stock screener, crypto, top performers, and real-time market news." },
-  { icon: CalendarDays, color: "#F5A623", bg: "rgba(245,166,35,0.07)", border: "rgba(245,166,35,0.2)",   title: "Macro",    desc: "Economic calendar, Fed watch, labor markets, energy prices, consumer spending, and real estate trends." },
-  { icon: BarChart2,   color: "#818cf8", bg: "rgba(129,140,248,0.07)", border: "rgba(129,140,248,0.18)", title: "Analysis", desc: "Risk analysis, watchlist, market breadth, political intelligence, and insider trading filings." },
-  { icon: Sparkles,    color: "#00B4C6", bg: "rgba(0,180,198,0.07)",   border: "rgba(0,180,198,0.18)",   title: "Wealth",   desc: "Budget planner, calculators, future planning, tax strategy, net worth tracker, and brokerage guides." },
+  {
+    icon: TrendingUp, color: "#4a7c59",
+    bg: "rgba(74,124,89,0.07)", border: "rgba(74,124,89,0.18)",
+    title: "Markets",
+    desc: "Live dashboards, sector heatmaps, stock screener, crypto, top performers, and real-time news.",
+  },
+  {
+    icon: CalendarDays, color: C.gold,
+    bg: C.goldDim, border: C.goldBorder,
+    title: "Macro",
+    desc: "Economic calendar, Fed watch, labor markets, energy prices, and real estate trends.",
+  },
+  {
+    icon: BarChart2, color: "#818cf8",
+    bg: "rgba(129,140,248,0.06)", border: "rgba(129,140,248,0.16)",
+    title: "Analysis",
+    desc: "Risk analysis, watchlist, market breadth, political intelligence, and insider filings.",
+  },
+  {
+    icon: Sparkles, color: "#00B4C6",
+    bg: "rgba(0,180,198,0.06)", border: "rgba(0,180,198,0.16)",
+    title: "Wealth",
+    desc: "Budget planner, calculators, future planning, tax strategy, net worth, and brokerage guides.",
+  },
 ];
 
 function WelcomeModal({ onClose }) {
@@ -596,91 +842,147 @@ function WelcomeModal({ onClose }) {
       exit={{ opacity: 0 }}
       style={{
         position: "fixed", inset: 0, zIndex: 200,
-        background: "rgba(5,7,14,0.92)",
-        backdropFilter: "blur(16px)",
+        background: "rgba(16,12,9,0.92)",
+        backdropFilter: "blur(20px)",
         display: "flex", alignItems: "center", justifyContent: "center",
         padding: "1.5rem",
+        fontFamily: FONT,
       }}
     >
       <motion.div
-        initial={{ opacity: 0, y: 32, scale: 0.97 }}
+        initial={{ opacity: 0, y: 28, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: "spring", stiffness: 340, damping: 32, delay: 0.08 }}
+        transition={{ type: "spring", stiffness: 340, damping: 30, delay: 0.06 }}
         style={{
-          background: "#111318",
-          border: "1px solid #1e2028",
-          borderRadius: 18, width: "100%", maxWidth: 660,
+          background: C.surface,
+          border: `1px solid ${C.borderSub}`,
+          borderRadius: 20, width: "100%", maxWidth: 640,
           maxHeight: "90vh", overflowY: "auto",
-          boxShadow: "0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,166,35,0.06)",
+          boxShadow: "0 48px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,169,110,0.08)",
         }}
       >
-        {/* Gold top stripe */}
-        <div style={{ height: 2, background: "linear-gradient(90deg, #F5A623 0%, #00B4C6 60%, transparent 100%)", borderRadius: "18px 18px 0 0" }} />
+        {/* Warm gold stripe */}
+        <div style={{
+          height: 1.5,
+          background: `linear-gradient(90deg, ${C.gold} 0%, rgba(201,169,110,0.2) 55%, transparent 100%)`,
+          borderRadius: "20px 20px 0 0",
+        }} />
 
         <div style={{ padding: "2rem" }}>
           {/* Header */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.5rem" }}>
-            <div style={{ width: 44, height: 44, background: "#F5A623", borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 30px rgba(245,166,35,0.25)" }}>
-              <span style={{ fontSize: "1.375rem", fontWeight: 900, color: "#07080a", lineHeight: 1 }}>P</span>
+            <div style={{
+              width: 44, height: 44,
+              background: C.gold,
+              borderRadius: 11,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+              boxShadow: "0 0 28px rgba(201,169,110,0.2)",
+            }}>
+              <span style={{ fontSize: "1.375rem", fontWeight: 800, color: "#1a1410", lineHeight: 1, fontFamily: DISPLAY }}>P</span>
             </div>
             <div>
-              <div style={{ fontWeight: 900, fontSize: "1rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#f1f5f9", lineHeight: 1.1 }}>PLANORA</div>
-              <div style={{ fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "#F5A623", marginTop: 2 }}>FINANCIAL TERMINAL</div>
+              <div style={{
+                fontWeight: 700, fontSize: "1rem",
+                letterSpacing: "0.14em", textTransform: "uppercase",
+                color: C.textPrimary, lineHeight: 1.1,
+                fontFamily: DISPLAY,
+              }}>
+                PLANORA
+              </div>
+              <div style={{
+                fontSize: "0.5625rem", fontWeight: 700,
+                letterSpacing: "0.22em", textTransform: "uppercase",
+                color: C.gold, marginTop: 2,
+              }}>
+                FINANCIAL TERMINAL
+              </div>
             </div>
-            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 99 }}>
-              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#10b981", animation: "liveGlow 2s ease infinite" }}/>
-              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#10b981", textTransform: "uppercase" }}>LIVE</span>
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", background: "rgba(74,124,89,0.09)", border: "1px solid rgba(74,124,89,0.22)", borderRadius: 99 }}>
+              <div style={{ width: 5, height: 5, borderRadius: "50%", background: "#4a7c59", animation: "liveGlow 2.4s ease infinite" }} />
+              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#4a7c59", textTransform: "uppercase" }}>LIVE</span>
             </div>
           </div>
 
-          <h2 style={{ fontSize: "1.375rem", fontWeight: 800, color: "#f1f5f9", letterSpacing: "-0.03em", margin: "0 0 0.75rem 0", lineHeight: 1.25 }}>
-            Welcome to your personal<br/>
-            <span style={{ background: "linear-gradient(135deg, #F5A623, #d4a555)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-              financial intelligence hub.
-            </span>
+          <h2 style={{
+            fontSize: "1.375rem", fontWeight: 700, color: C.textPrimary,
+            letterSpacing: "-0.02em", margin: "0 0 0.5rem 0", lineHeight: 1.25,
+            fontFamily: DISPLAY,
+          }}>
+            Welcome to your personal financial intelligence hub.
           </h2>
+          <p style={{
+            fontSize: 13, color: C.gold, fontWeight: 600,
+            letterSpacing: "0.01em", margin: "0 0 1.25rem 0",
+          }}>
+            Institutional-grade tools. Built for everyone.
+          </p>
 
-          <p style={{ fontSize: "0.9375rem", color: "#94a3b8", lineHeight: 1.75, margin: "0 0 1.5rem 0" }}>
+          <p style={{
+            fontSize: "0.9375rem", color: C.textSec,
+            lineHeight: 1.8, margin: "0 0 1.5rem 0",
+          }}>
             Planora Terminal brings together tools, data, and education once reserved for Wall Street professionals — putting them directly in your hands. Track markets, plan for retirement, understand tax strategy, or start learning how money works.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem", marginBottom: "1.25rem" }}>
+          <div style={{
+            display: "grid", gridTemplateColumns: "1fr 1fr",
+            gap: "0.625rem", marginBottom: "1.25rem",
+          }}>
             {FEATURE_CARDS.map(card => {
               const Icon = card.icon;
               return (
-                <div key={card.title} style={{ background: card.bg, border: `1px solid ${card.border}`, borderRadius: 10, padding: "0.875rem 1rem" }}>
+                <div key={card.title} style={{
+                  background: card.bg,
+                  border: `1px solid ${card.border}`,
+                  borderRadius: 12, padding: "0.875rem 1rem",
+                }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                    <Icon size={14} color={card.color}/>
-                    <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: card.color, letterSpacing: "0.02em" }}>{card.title}</span>
+                    <Icon size={13} color={card.color} />
+                    <span style={{
+                      fontSize: "0.8125rem", fontWeight: 700,
+                      color: card.color, letterSpacing: "0.02em",
+                    }}>
+                      {card.title}
+                    </span>
                   </div>
-                  <p style={{ fontSize: "0.8125rem", color: "#94a3b8", lineHeight: 1.55, margin: 0 }}>{card.desc}</p>
+                  <p style={{ fontSize: "0.8125rem", color: C.textMuted, lineHeight: 1.6, margin: 0 }}>
+                    {card.desc}
+                  </p>
                 </div>
               );
             })}
           </div>
 
-          <div style={{ background: "rgba(245,166,35,0.05)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: 8, padding: "0.75rem 1rem", marginBottom: "1.5rem" }}>
-            <p style={{ fontSize: "0.8125rem", color: "#94a3b8", lineHeight: 1.6, margin: 0 }}>
-              <span style={{ color: "#F5A623", fontWeight: 700 }}>For educational purposes only.</span> Planora Terminal is designed to help you understand financial concepts, explore market data, and plan your personal finances. It is not a licensed financial advisor and nothing here constitutes investment, tax, or legal advice.
+          {/* Disclaimer */}
+          <div style={{
+            background: C.goldDim,
+            border: `1px solid ${C.goldBorder}`,
+            borderRadius: 10, padding: "0.75rem 1rem",
+            marginBottom: "1.5rem",
+          }}>
+            <p style={{ fontSize: "0.8125rem", color: C.textMuted, lineHeight: 1.6, margin: 0 }}>
+              <span style={{ color: C.gold, fontWeight: 700 }}>For educational purposes only.</span>{" "}
+              Planora Terminal is designed to help you understand financial concepts, explore market data, and plan your personal finances. It is not a licensed financial advisor and nothing here constitutes investment, tax, or legal advice.
             </p>
           </div>
 
           <motion.button
-            whileHover={{ filter: "brightness(1.1)", transform: "translateY(-1px)" }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ filter: "brightness(1.08)" }}
+            whileTap={{ scale: 0.97 }}
             onClick={onClose}
             style={{
               width: "100%", padding: "0.9375rem",
-              background: "linear-gradient(135deg, #F5A623 0%, #c8881e 100%)",
+              background: C.gold,
               border: "none", borderRadius: 10, cursor: "pointer",
-              fontSize: "0.9375rem", fontWeight: 800,
-              color: "#07080a", letterSpacing: "0.05em",
+              fontSize: "0.9375rem", fontWeight: 700,
+              color: "#1a1410", letterSpacing: "0.08em",
               textTransform: "uppercase",
-              fontFamily: "'Inter', sans-serif",
-              boxShadow: "0 0 30px rgba(245,166,35,0.3)",
+              fontFamily: DISPLAY,
+              boxShadow: "0 4px 24px rgba(201,169,110,0.22)",
             }}
           >
-            Enter Terminal →
+            Enter Terminal
           </motion.button>
         </div>
       </motion.div>
@@ -699,12 +1001,38 @@ export default function Layout({ children }) {
   // Close flyout on navigation
   useEffect(() => { setOpenSectionId(null); }, [pathname]);
 
+  // Close flyout on outside click or Escape
+  useEffect(() => {
+    if (!openSectionId) return;
+
+    const onPointer = (e) => {
+      const rail   = document.getElementById("planora-rail");
+      const flyout = document.getElementById("planora-flyout");
+      if (rail   && rail.contains(e.target))   return;
+      if (flyout && flyout.contains(e.target)) return;
+      setOpenSectionId(null);
+    };
+
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpenSectionId(null);
+      }
+    };
+
+    window.addEventListener("pointerdown", onPointer, true);
+    window.addEventListener("keydown",     onKey,     true);
+    return () => {
+      window.removeEventListener("pointerdown", onPointer, true);
+      window.removeEventListener("keydown",     onKey,     true);
+    };
+  }, [openSectionId]);
+
   const handleSectionClick = useCallback((id) => {
     setOpenSectionId(prev => (prev === id ? null : id));
   }, []);
 
-  const closeFlyout = useCallback(() => setOpenSectionId(null), []);
-
+  const closeFlyout  = useCallback(() => setOpenSectionId(null), []);
   const closeWelcome = useCallback(() => {
     sessionStorage.setItem(WELCOME_KEY, "1");
     setShowWelcome(false);
@@ -713,13 +1041,13 @@ export default function Layout({ children }) {
   const openSection = SECTIONS.find(s => s.id === openSectionId) ?? null;
 
   return (
-    <div style={{ background: "#0a0a0f", minHeight: "100vh", fontFamily: "'Inter', -apple-system, sans-serif" }}>
-      {/* Welcome */}
+    <div style={{ background: C.bg, minHeight: "100vh", fontFamily: FONT }}>
+      {/* Welcome modal */}
       <AnimatePresence>
         {showWelcome && <WelcomeModal onClose={closeWelcome} />}
       </AnimatePresence>
 
-      {/* Icon Rail (desktop) */}
+      {/* Icon Rail */}
       <Rail
         activeSection={activeSection}
         openSectionId={openSectionId}
@@ -738,19 +1066,18 @@ export default function Layout({ children }) {
       {/* Main content */}
       <main
         id="planora-main"
-        onClick={() => { if (openSectionId) closeFlyout(); }}
         style={{
           marginLeft: RAIL_W,
           paddingTop: 48,
           minHeight: "100vh",
-          background: "#0a0a0f",
+          background: C.bg,
         }}
       >
         <motion.div
           key={pathname}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
           style={{ padding: "1.25rem 1.25rem 2rem", maxWidth: 1400, margin: "0 auto" }}
         >
           {children}

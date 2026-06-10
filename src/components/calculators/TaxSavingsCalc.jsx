@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GlassCard from "../shared/GlassCard";
-import { Receipt, PiggyBank } from "lucide-react";
+import { Receipt, PiggyBank, Lightbulb } from "lucide-react";
 
 export default function TaxSavingsCalc() {
   const [income, setIncome] = useState("75000");
@@ -202,7 +202,7 @@ export default function TaxSavingsCalc() {
           </GlassCard>
 
           <GlassCard className="mt-4 bg-[#00d4aa]/5 border-[#00d4aa]/20">
-            <p className="text-xs text-[#00d4aa] font-semibold mb-2">💡 Tax Savings Tip</p>
+            <p className="text-xs text-[#00d4aa] font-semibold mb-2 flex items-center gap-1"><Lightbulb size={12} /> Tax Savings Tip</p>
             <p className="text-sm text-[#e2e8f0]">
               Every $1,000 you contribute to a pre-tax retirement account saves you approximately ${Math.round((parseFloat(result.effectiveRate) / 100) * 1000)} in taxes this year, 
               while also growing tax-deferred for retirement.

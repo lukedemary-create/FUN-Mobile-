@@ -7,17 +7,25 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
-const BG    = '#F4F7FA';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 
 /* ── Shared ───────────────────────────────────────────────────────── */
 function SectionCard({ title, subtitle, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
       {(title||subtitle) && (
         <div style={{ marginBottom:'1.25rem' }}>
-          {title && <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
-          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{subtitle}</p>}
+          {title && <h3 style={{ fontFamily:DISP, fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
+          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:T3, lineHeight:1.65, fontFamily:UI }}>{subtitle}</p>}
         </div>
       )}
       {children}
@@ -29,7 +37,7 @@ function InfoBox({ children, color = TEAL }) {
   return (
     <div style={{ display:'flex', gap:10, padding:'0.75rem 0.875rem', background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:10, marginTop:'0.875rem' }}>
       <Info size={14} color={color} style={{ flexShrink:0, marginTop:2 }}/>
-      <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{children}</p>
+      <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{children}</p>
     </div>
   );
 }
@@ -37,15 +45,15 @@ function InfoBox({ children, color = TEAL }) {
 function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=100, hint, max }) {
   return (
     <div style={{ marginBottom:'1rem' }}>
-      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>{label}</label>}
+      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>{label}</label>}
       <div style={{ position:'relative' }}>
-        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
+        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
         <input type="number" value={value} min={min} max={max} step={step} onChange={e => onChange(Number(e.target.value))}
-          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600, background:'#fafafa', boxSizing:'border-box' }}
-          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor='#e5e7eb'}/>
-        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
+          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'1rem', fontFamily:UI, color:NAVY, fontWeight:600, background:RAISE, boxSizing:'border-box' }}
+          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor=B2}/>
+        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
       </div>
-      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:T3, fontFamily:UI }}>{hint}</p>}
     </div>
   );
 }
@@ -53,8 +61,8 @@ function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=100,
 function ResultBox({ label, value, color = TEAL, size = 'md' }) {
   return (
     <div style={{ background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:12, padding: size==='lg'?'1.25rem':'0.875rem 1rem', textAlign:'center' }}>
-      <div style={{ fontFamily:"'Playfair Display',serif", fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
-      <div style={{ fontSize:'0.75rem', color:'#6b7280', marginTop:4, fontFamily:"'DM Sans',sans-serif", fontWeight:500 }}>{label}</div>
+      <div style={{ fontFamily:DISP, fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
+      <div style={{ fontSize:'0.75rem', color:T3, marginTop:4, fontFamily:UI, fontWeight:500 }}>{label}</div>
     </div>
   );
 }
@@ -94,15 +102,15 @@ function MarriageLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Marriage is one of the most significant financial events of your life. Getting the financial integration right early prevents conflicts and missed opportunities down the road.
       </p>
 
       <SectionCard title="Money Management Approaches">
         {approaches.map(a => (
-          <div key={a.name} style={{ padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:a.color, marginBottom:4 }}>{a.name}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#374151', lineHeight:1.65 }}>{a.desc}</div>
+          <div key={a.name} style={{ padding:'0.75rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:a.color, marginBottom:4 }}>{a.name}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T2, lineHeight:1.65 }}>{a.desc}</div>
           </div>
         ))}
         <InfoBox>There is no universally right answer. The best system is the one you'll both actually follow. Have the conversation before the wedding — discussing money openly is a relationship skill that pays dividends for decades.</InfoBox>
@@ -111,11 +119,11 @@ function MarriageLearn() {
       <SectionCard title="Financial To-Do List After Marriage">
         {tasks.map(t => (
           <div key={t.category} style={{ marginBottom:'1rem' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:t.color, marginBottom:'0.5rem', textTransform:'uppercase', letterSpacing:'0.04em' }}>{t.category}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:t.color, marginBottom:'0.5rem', textTransform:'uppercase', letterSpacing:'0.04em' }}>{t.category}</div>
             {t.items.map(item => (
               <div key={item} style={{ display:'flex', gap:8, alignItems:'flex-start', marginBottom:6 }}>
                 <CheckCircle2 size={13} color={t.color} style={{ flexShrink:0, marginTop:2 }}/>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color:'#374151', lineHeight:1.6 }}>{item}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.8375rem', color:T2, lineHeight:1.6 }}>{item}</div>
               </div>
             ))}
           </div>
@@ -129,9 +137,9 @@ function MarriageLearn() {
           { label:'Significant debt disparity', note:'If one partner has large student loans or other debt, a prenup can prevent that debt from becoming the other spouse\'s responsibility.' },
           { label:'Family inheritance expectations', note:'If you expect to inherit a family business or significant assets, a prenup protects those from being considered marital property.' },
         ].map(r => (
-          <div key={r.label} style={{ padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.label}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65 }}>{r.note}</div>
+          <div key={r.label} style={{ padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.label}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65 }}>{r.note}</div>
           </div>
         ))}
         <InfoBox color='#8b5cf6'>Prenups require independent legal counsel for both parties and full financial disclosure to be enforceable. They are not just for the wealthy — they're a financial planning tool.</InfoBox>
@@ -167,17 +175,17 @@ function BabyLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         A new child is one of the most joyful — and financially significant — events in life. The USDA estimates the average cost of raising a child to age 18 exceeds <strong>$310,000</strong>. Planning ahead makes the difference between thriving and just surviving.
       </p>
 
       <SectionCard title="First-Year & Ongoing Costs">
         {costs.map(c => (
-          <div key={c.item} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ minWidth:175, fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, paddingTop:1 }}>{c.item}</div>
+          <div key={c.item} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ minWidth:175, fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, paddingTop:1 }}>{c.item}</div>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:600, color:TEAL, marginBottom:2 }}>{c.range}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280', lineHeight:1.55 }}>{c.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:600, color:TEAL, marginBottom:2 }}>{c.range}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3, lineHeight:1.55 }}>{c.note}</div>
             </div>
           </div>
         ))}
@@ -185,9 +193,9 @@ function BabyLearn() {
 
       <SectionCard title="Financial Checklist: New Baby">
         {tasks.map(t => (
-          <div key={t} style={{ display:'flex', gap:8, alignItems:'flex-start', padding:'0.4375rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={t} style={{ display:'flex', gap:8, alignItems:'flex-start', padding:'0.4375rem 0', borderBottom:`1px solid ` }}>
             <CheckCircle2 size={13} color={TEAL} style={{ flexShrink:0, marginTop:2 }}/>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color:'#374151', lineHeight:1.6 }}>{t}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8375rem', color:T2, lineHeight:1.6 }}>{t}</div>
           </div>
         ))}
         <InfoBox color='#ec4899'>The 529 college savings plan is one of the most underutilized accounts in America. Contributions grow tax-free for education, and many states offer a deduction. Starting the day your child is born gives 18 full years of compounding.</InfoBox>
@@ -211,17 +219,17 @@ function JobLossLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Losing a job is a financial emergency. The first 72 hours matter — moving quickly on the right steps protects your credit, preserves your savings, and maximizes your options.
       </p>
 
       <SectionCard title="Immediate Steps (First Week)">
         {immediate.map((s, i) => (
-          <div key={s.step} style={{ display:'flex', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6', alignItems:'flex-start' }}>
-            <div style={{ width:26, height:26, borderRadius:'50%', background: i < 2 ? '#ef4444' : TEAL, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:"'DM Sans',sans-serif" }}>{i+1}</div>
+          <div key={s.step} style={{ display:'flex', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ${B2}`, alignItems:'flex-start' }}>
+            <div style={{ width:26, height:26, borderRadius:'50%', background: i < 2 ? '#ef4444' : TEAL, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:UI }}>{i+1}</div>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{s.step}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{s.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{s.step}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{s.note}</div>
             </div>
           </div>
         ))}
@@ -234,13 +242,13 @@ function JobLossLearn() {
           { option:'Spouse/Partner\'s Plan', timeframe:'Enroll within 30–60 days', cost:'Employer-sponsored rate', note:'Job loss is a qualifying life event for your partner\'s plan. Often the most affordable option.' },
           { option:'Medicaid', timeframe:'Anytime if income qualifies', cost:'Free or very low cost', note:'If your income drops below ~138% of the federal poverty level (in expansion states), you may qualify immediately.' },
         ].map(o => (
-          <div key={o.option} style={{ padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={o.option} style={{ padding:'0.75rem 0', borderBottom:`1px solid ` }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:4, marginBottom:4 }}>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{o.option}</span>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.75rem', color:'#6b7280' }}>{o.timeframe}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{o.option}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.75rem', color:T3 }}>{o.timeframe}</span>
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:600, color:TEAL, marginBottom:3 }}>{o.cost}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280', lineHeight:1.55 }}>{o.note}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:600, color:TEAL, marginBottom:3 }}>{o.cost}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3, lineHeight:1.55 }}>{o.note}</div>
           </div>
         ))}
       </SectionCard>
@@ -252,14 +260,14 @@ function JobLossLearn() {
           { action:'Roll into your new employer\'s 401(k)', recommended:true, note:'Makes sense if the new plan has good funds and you want simplicity. Consolidates accounts.' },
           { action:'Cash it out', recommended:false, note:'Lose 10% penalty + income taxes immediately. A $50,000 balance can become $32,000 after taxes and penalties. Almost never the right choice.' },
         ].map(a => (
-          <div key={a.action} style={{ display:'flex', gap:10, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6', alignItems:'flex-start' }}>
+          <div key={a.action} style={{ display:'flex', gap:10, padding:'0.625rem 0', borderBottom:`1px solid ${B2}`, alignItems:'flex-start' }}>
             {a.recommended
               ? <CheckCircle2 size={14} color='#22c55e' style={{ flexShrink:0, marginTop:2 }}/>
               : <AlertCircle size={14} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>
             }
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color: a.recommended ? NAVY : '#ef4444', marginBottom:2 }}>{a.action}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{a.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color: a.recommended ? NAVY : '#ef4444', marginBottom:2 }}>{a.action}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{a.note}</div>
             </div>
           </div>
         ))}
@@ -274,13 +282,13 @@ function JobLossLearn() {
 function InheritanceLearn() {
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Receiving an inheritance is often accompanied by grief. The financial decisions that follow can be life-changing — for better or worse. The single most important rule: <strong>slow down</strong>.
       </p>
 
       <div style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1.25rem', display:'flex', gap:10 }}>
         <AlertCircle size={16} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>
-        <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', color:'#374151', lineHeight:1.65 }}>
+        <div style={{ fontFamily:UI, fontSize:'0.875rem', color:T2, lineHeight:1.65 }}>
           <strong style={{ color:'#ef4444' }}>The 1-year rule:</strong> Do not make any major financial decisions — buying a house, quitting your job, giving large gifts — for at least 6–12 months after receiving an inheritance. Park the money in a HYSA and let the grief process first.
         </div>
       </div>
@@ -293,12 +301,12 @@ function InheritanceLearn() {
           { type:'Inherited brokerage account', rule:'Step-up in basis', detail:'The cost basis resets to the value at the date of death. Assets sold shortly after inherit may have little to no capital gains tax owed.' },
           { type:'Inherited real estate', rule:'Step-up in basis', detail:'Same step-up in basis. If you sell immediately, capital gains tax may be minimal. If you keep it, you inherit the maintenance and tax obligations.' },
         ].map(r => (
-          <div key={r.type} style={{ padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={r.type} style={{ padding:'0.75rem 0', borderBottom:`1px solid ` }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4, flexWrap:'wrap' }}>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{r.type}</span>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.75rem', fontWeight:700, color:TEAL, background:`${TEAL}15`, padding:'2px 8px', borderRadius:20 }}>{r.rule}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{r.type}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.75rem', fontWeight:700, color:TEAL, background:`${TEAL}15`, padding:'2px 8px', borderRadius:20 }}>{r.rule}</span>
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65 }}>{r.detail}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65 }}>{r.detail}</div>
           </div>
         ))}
       </SectionCard>
@@ -311,11 +319,11 @@ function InheritanceLearn() {
           { step:'4', label:'Invest the remainder', note:'In a low-cost index fund portfolio at a brokerage like Fidelity or Vanguard. Don\'t try to time the market — dollar-cost average over 12 months if the sum is large.', color:'#f59e0b' },
           { step:'5', label:'Consider a fee-only advisor', note:'For inheritances above $100K, a one-time consultation with a fiduciary CFP is worth the cost for tax planning and investment guidance.', color:'#ec4899' },
         ].map(row => (
-          <div key={row.step} style={{ display:'flex', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6', alignItems:'flex-start' }}>
-            <div style={{ width:26, height:26, borderRadius:'50%', background:row.color, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:"'DM Sans',sans-serif" }}>{row.step}</div>
+          <div key={row.step} style={{ display:'flex', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ${B2}`, alignItems:'flex-start' }}>
+            <div style={{ width:26, height:26, borderRadius:'50%', background:row.color, color:'#fff', fontWeight:700, fontSize:'0.8125rem', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:UI }}>{row.step}</div>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{row.label}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{row.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{row.label}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{row.note}</div>
             </div>
           </div>
         ))}
@@ -342,24 +350,24 @@ function DivorceLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Divorce is one of the most financially disruptive life events. The financial decisions made during and immediately after can have decade-long consequences. Knowledge and preparation protect your interests.
       </p>
 
       <SectionCard title="Financial Checklist: Divorce">
-        <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.75rem', color:'#9ca3af', marginBottom:'0.75rem' }}>
+        <div style={{ fontFamily:UI, fontSize:'0.75rem', color:T3, marginBottom:'0.75rem' }}>
           <span style={{ background:'#fef2f2', border:'1px solid #fecaca', borderRadius:4, padding:'2px 6px', color:'#ef4444', fontWeight:700, marginRight:8 }}>URGENT</span>
           Items marked urgent should be addressed within the first 30 days.
         </div>
         {tasks.map(t => (
-          <div key={t.label} style={{ display:'flex', gap:10, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6', alignItems:'flex-start' }}>
+          <div key={t.label} style={{ display:'flex', gap:10, padding:'0.625rem 0', borderBottom:`1px solid ${B2}`, alignItems:'flex-start' }}>
             {t.urgent
               ? <AlertCircle size={14} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>
               : <CheckCircle2 size={14} color={TEAL} style={{ flexShrink:0, marginTop:2 }}/>
             }
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color: t.urgent ? '#ef4444' : NAVY, marginBottom:2 }}>{t.label}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{t.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color: t.urgent ? '#ef4444' : NAVY, marginBottom:2 }}>{t.label}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{t.note}</div>
             </div>
           </div>
         ))}
@@ -372,9 +380,9 @@ function DivorceLearn() {
           { label:'Marital home', detail:'Options: one spouse buys out the other, sell and split proceeds, or defer sale (common when children are involved). Keeping the home when you can\'t afford it alone is a common financial mistake.' },
           { label:'Social Security benefits', detail:'If married 10+ years, you may be entitled to up to 50% of your ex\'s Social Security benefit at FRA, without reducing their benefit.' },
         ].map(r => (
-          <div key={r.label} style={{ padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.label}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.65 }}>{r.detail}</div>
+          <div key={r.label} style={{ padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.label}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.65 }}>{r.detail}</div>
           </div>
         ))}
         <InfoBox color='#8b5cf6'>A Certified Divorce Financial Analyst (CDFA) is a specialist who can model the long-term financial impact of different settlement options. This analysis often pays for itself many times over.</InfoBox>
@@ -408,7 +416,7 @@ function RunwayCalc() {
     <SectionCard title="Job Loss Runway Calculator" subtitle="How many months can you cover essential expenses with your current savings and unemployment benefits?">
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1.25rem' }}>
         <div>
-          <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.75rem' }}>Monthly Essential Expenses</div>
+          <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.75rem' }}>Monthly Essential Expenses</div>
           <NumInput label="Housing (rent/mortgage)" value={housing} onChange={setHousing} step={50}/>
           <NumInput label="Food & Groceries" value={food} onChange={setFood} step={50}/>
           <NumInput label="Transportation" value={transport} onChange={setTransport} step={50}/>
@@ -418,7 +426,7 @@ function RunwayCalc() {
           <NumInput label="Other Essentials" value={other} onChange={setOther} step={25}/>
         </div>
         <div>
-          <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.75rem' }}>Your Situation</div>
+          <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.75rem' }}>Your Situation</div>
           <NumInput label="Liquid Savings (emergency fund)" value={savings} onChange={setSavings} step={500}/>
           <NumInput label="Expected Unemployment Benefits ($/mo)" value={unemployment} onChange={setUnemployment} step={100} hint="Typically 40–50% of prior wages, up to state maximums"/>
         </div>
@@ -430,11 +438,11 @@ function RunwayCalc() {
         <ResultBox label="Months of Runway" value={runway >= 100 ? '∞' : `${runwayRounded}mo`} color={color} size="lg"/>
       </div>
 
-      <div style={{ background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:12, padding:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+      <div style={{ background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:12, padding:'1rem', fontFamily:UI }}>
         <div style={{ fontSize:'0.875rem', fontWeight:700, color, marginBottom:4 }}>
           {runway >= 6 ? 'Good runway — focus on your search' : runway >= 3 ? 'Limited runway — act quickly' : 'Critical — take action immediately'}
         </div>
-        <div style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.65 }}>
+        <div style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.65 }}>
           {runway >= 100
             ? 'Unemployment benefits cover your essential expenses. Your savings remain untouched — focus your full energy on the job search without financial panic.'
             : runway >= 6
@@ -512,7 +520,7 @@ function EventChecklist() {
     },
     divorce: {
       label: 'Going Through Divorce',
-      color: '#6b7280',
+      color: T3,
       items: [
         'Open individual checking and savings accounts immediately',
         'Pull credit reports and document all joint accounts',
@@ -540,7 +548,7 @@ function EventChecklist() {
           <button key={key} onClick={() => setActiveEvent(key)} style={{
             padding:'7px 14px', borderRadius:99, border:`1.5px solid ${activeEvent===key ? e.color : '#e5e7eb'}`,
             background: activeEvent===key ? e.color : '#fff', cursor:'pointer',
-            fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem',
+            fontFamily:UI, fontSize:'0.8125rem',
             fontWeight: activeEvent===key ? 700 : 500, color: activeEvent===key ? '#fff' : '#6b7280',
             transition:'all 0.15s', whiteSpace:'nowrap',
           }}>{e.label}</button>
@@ -551,18 +559,18 @@ function EventChecklist() {
         <div style={{ flex:1, background:'#f3f4f6', borderRadius:99, height:8, overflow:'hidden' }}>
           <div style={{ width:`${(doneCount/evt.items.length)*100}%`, background:evt.color, height:'100%', borderRadius:99, transition:'width 0.3s' }}/>
         </div>
-        <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, whiteSpace:'nowrap' }}>{doneCount} / {evt.items.length}</span>
+        <span style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, whiteSpace:'nowrap' }}>{doneCount} / {evt.items.length}</span>
       </div>
 
       {evt.items.map((item, i) => {
         const id = `${activeEvent}-${i}`;
         return (
           <div key={id} onClick={() => toggle(id)}
-            style={{ display:'flex', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6', cursor:'pointer', alignItems:'flex-start' }}>
+            style={{ display:'flex', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ${B2}`, cursor:'pointer', alignItems:'flex-start' }}>
             <div style={{ width:20, height:20, borderRadius:6, border:`2px solid ${checked[id] ? evt.color : '#d1d5db'}`, background: checked[id] ? evt.color : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:1, transition:'all 0.15s' }}>
               {checked[id] && <CheckCircle2 size={12} color='#fff'/>}
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8375rem', color: checked[id] ? '#9ca3af' : '#374151', lineHeight:1.6, textDecoration: checked[id] ? 'line-through' : 'none' }}>{item}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8375rem', color: checked[id] ? '#9ca3af' : '#374151', lineHeight:1.6, textDecoration: checked[id] ? 'line-through' : 'none' }}>{item}</div>
           </div>
         );
       })}
@@ -610,10 +618,10 @@ function ResourcesTab() {
         <SectionCard key={section.category} title={section.category}>
           {section.items.map(item => (
             <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer"
-              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6', textDecoration:'none' }}>
+              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ${B2}`, textDecoration:'none' }}>
               <div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.55 }}>{item.desc}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.55 }}>{item.desc}</div>
               </div>
               <ExternalLink size={14} color='#d1d5db' style={{ flexShrink:0, marginTop:3 }}/>
             </a>
@@ -666,18 +674,18 @@ export default function LifeEvents() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 0' }}>
+      <div style={{ background:SURF, borderBottom:`1px solid `, padding:'2rem 2.5rem 0' }}>
         <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
-          <span style={{ fontFamily:"'DM Sans',sans-serif" }}>Life Events</span>
+          <span style={{ fontFamily:UI }}>Life Events</span>
         </div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
+        <h1 style={{ fontFamily:DISP, fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Life Events Planning
         </h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Life doesn't follow a financial plan — but your finances can be ready for whatever life brings. Know the right moves for each major event before it happens.
         </p>
         <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
@@ -688,7 +696,7 @@ export default function LifeEvents() {
               <button key={t.id} onClick={() => setTab(t.id)} style={{
                 display:'flex', alignItems:'center', gap:7, padding:'0.75rem 1.25rem',
                 background:'none', border:'none', borderBottom:`2px solid ${active?TEAL:'transparent'}`,
-                cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem',
+                cursor:'pointer', fontFamily:UI, fontSize:'0.875rem',
                 fontWeight:active?700:500, color:active?TEAL:'rgba(255,255,255,0.45)',
                 marginBottom:-1, transition:'color 0.15s', whiteSpace:'nowrap',
               }}><Icon size={14}/>{t.label}</button>
@@ -710,7 +718,7 @@ export default function LifeEvents() {
                     display:'flex', alignItems:'center', gap:6, padding:'7px 14px',
                     borderRadius:99, border:`1.5px solid ${active ? TEAL : '#e5e7eb'}`,
                     background: active ? TEAL : '#fff', cursor:'pointer',
-                    fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem',
+                    fontFamily:UI, fontSize:'0.8125rem',
                     fontWeight: active ? 700 : 500, color: active ? '#fff' : '#6b7280',
                     transition:'all 0.15s', whiteSpace:'nowrap',
                   }}>

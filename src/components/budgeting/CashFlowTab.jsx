@@ -120,7 +120,7 @@ ${res.cash_allocation}
 ### Quick Wins (3 Monthly Optimizations)
 ${(res.optimizations || []).map((o, i) => `${i + 1}. ${o}`).join("\n")}
 
-${res.red_flags ? `### ⚠️ Red Flags\n${res.red_flags}` : ""}`;
+${res.red_flags ? `### Red Flags\n${res.red_flags}` : ""}`;
       setAiGuidance(guidance);
       onChange({ ...plan, ai_guidance: guidance });
     } catch (e) {

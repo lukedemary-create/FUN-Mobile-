@@ -7,17 +7,25 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
-const BG    = '#F4F7FA';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 
 /* ── Shared ───────────────────────────────────────────────────────── */
 function SectionCard({ title, subtitle, children }) {
   return (
-    <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
+    <div style={{ background:SURF, border:`1px solid ${B1}`, borderRadius:16, padding:'1.5rem', boxShadow:'0 1px 6px rgba(0,0,0,0.05)', marginBottom:'1.25rem' }}>
       {(title||subtitle) && (
         <div style={{ marginBottom:'1.25rem' }}>
-          {title && <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
-          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:'#6b7280', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>{subtitle}</p>}
+          {title && <h3 style={{ fontFamily:DISP, fontSize:'1.25rem', fontWeight:700, color:NAVY, margin:'0 0 0.25rem', letterSpacing:'-0.02em' }}>{title}</h3>}
+          {subtitle && <p style={{ margin:0, fontSize:'0.875rem', color:T3, lineHeight:1.65, fontFamily:UI }}>{subtitle}</p>}
         </div>
       )}
       {children}
@@ -29,7 +37,7 @@ function InfoBox({ children, color = TEAL }) {
   return (
     <div style={{ display:'flex', gap:10, padding:'0.75rem 0.875rem', background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:10, marginTop:'0.875rem' }}>
       <Info size={14} color={color} style={{ flexShrink:0, marginTop:2 }}/>
-      <p style={{ margin:0, fontSize:'0.8125rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{children}</p>
+      <p style={{ margin:0, fontSize:'0.8125rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{children}</p>
     </div>
   );
 }
@@ -37,15 +45,15 @@ function InfoBox({ children, color = TEAL }) {
 function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1000, hint, max }) {
   return (
     <div style={{ marginBottom:'1rem' }}>
-      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>{label}</label>}
+      {label && <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>{label}</label>}
       <div style={{ position:'relative' }}>
-        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
+        {prefix && <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{prefix}</span>}
         <input type="number" value={value} min={min} max={max} step={step} onChange={e => onChange(Number(e.target.value))}
-          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600, background:'#fafafa', boxSizing:'border-box' }}
-          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor='#e5e7eb'}/>
-        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:'#9ca3af', fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
+          style={{ width:'100%', padding:`9px ${suffix?'2.25rem':'0.75rem'} 9px ${prefix?'1.5rem':'0.75rem'}`, border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'1rem', fontFamily:UI, color:NAVY, fontWeight:600, background:RAISE, boxSizing:'border-box' }}
+          onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor=B2}/>
+        {suffix && <span style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', color:T3, fontSize:'0.875rem', pointerEvents:'none' }}>{suffix}</span>}
       </div>
-      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin:'0.25rem 0 0', fontSize:'0.75rem', color:T3, fontFamily:UI }}>{hint}</p>}
     </div>
   );
 }
@@ -53,15 +61,15 @@ function NumInput({ label, value, onChange, prefix='$', suffix, min=0, step=1000
 function ResultBox({ label, value, color = TEAL, size = 'md' }) {
   return (
     <div style={{ background:`${color}0d`, border:`1px solid ${color}25`, borderRadius:12, padding: size==='lg'?'1.25rem':'0.875rem 1rem', textAlign:'center' }}>
-      <div style={{ fontFamily:"'Playfair Display',serif", fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
-      <div style={{ fontSize:'0.75rem', color:'#6b7280', marginTop:4, fontFamily:"'DM Sans',sans-serif", fontWeight:500 }}>{label}</div>
+      <div style={{ fontFamily:DISP, fontSize: size==='lg'?'2rem':'1.375rem', fontWeight:700, color, letterSpacing:'-0.02em', lineHeight:1.1 }}>{value}</div>
+      <div style={{ fontSize:'0.75rem', color:T3, marginTop:4, fontFamily:UI, fontWeight:500 }}>{label}</div>
     </div>
   );
 }
 
 function Pill({ text, color = '#6b7280' }) {
   return (
-    <span style={{ display:'inline-block', padding:'2px 10px', borderRadius:20, background:`${color}15`, color, fontSize:'0.7rem', fontWeight:700, fontFamily:"'DM Sans',sans-serif", letterSpacing:'0.04em', textTransform:'uppercase' }}>{text}</span>
+    <span style={{ display:'inline-block', padding:'2px 10px', borderRadius:20, background:`${color}15`, color, fontSize:'0.7rem', fontWeight:700, fontFamily:UI, letterSpacing:'0.04em', textTransform:'uppercase' }}>{text}</span>
   );
 }
 
@@ -121,7 +129,7 @@ function HomeBuyingLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Buying a home is the largest purchase most people ever make. Understanding mortgage types, true costs, and how much house you can actually afford prevents the most common and costly mistakes.
       </p>
 
@@ -134,8 +142,8 @@ function HomeBuyingLearn() {
             { rule:'3–5× Income', color:'#f59e0b', desc:'A conservative rule of thumb: your home price should be no more than 3–5× your annual gross household income.' },
           ].map(r => (
             <div key={r.rule} style={{ background:`${r.color}0d`, border:`1px solid ${r.color}20`, borderRadius:10, padding:'0.75rem' }}>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:r.color, marginBottom:4 }}>{r.rule}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#374151', lineHeight:1.6 }}>{r.desc}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:r.color, marginBottom:4 }}>{r.rule}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T2, lineHeight:1.6 }}>{r.desc}</div>
             </div>
           ))}
         </div>
@@ -144,24 +152,24 @@ function HomeBuyingLearn() {
 
       <SectionCard title="Mortgage Types">
         {mortgageTypes.map(m => (
-          <div key={m.name} style={{ padding:'0.875rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={m.name} style={{ padding:'0.875rem 0', borderBottom:`1px solid ` }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{m.name}</span>
+              <span style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{m.name}</span>
               <Pill text={m.badge} color={m.color}/>
             </div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#374151', lineHeight:1.65, marginBottom:4 }}>{m.summary}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280' }}><strong style={{ color:m.color }}>Best for: </strong>{m.best}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T2, lineHeight:1.65, marginBottom:4 }}>{m.summary}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3 }}><strong style={{ color:m.color }}>Best for: </strong>{m.best}</div>
           </div>
         ))}
       </SectionCard>
 
       <SectionCard title="The Hidden Costs of Homeownership" subtitle="The mortgage is only the beginning. Budget for all of these.">
         {hiddenCosts.map(c => (
-          <div key={c.item} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ minWidth:160, fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, paddingTop:1 }}>{c.item}</div>
+          <div key={c.item} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ minWidth:160, fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, paddingTop:1 }}>{c.item}</div>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:600, color:TEAL, marginBottom:2 }}>{c.range}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280', lineHeight:1.55 }}>{c.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:600, color:TEAL, marginBottom:2 }}>{c.range}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3, lineHeight:1.55 }}>{c.note}</div>
             </div>
           </div>
         ))}
@@ -192,34 +200,34 @@ function RentVsBuyLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Renting vs. buying is one of the most personal financial decisions you'll make. Neither is universally better — it depends on your timeline, market, income, and lifestyle. The goal is to make the decision intentionally, not by default.
       </p>
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem', marginBottom:'1.25rem' }}>
         <div style={{ border:'1.5px solid rgba(0,180,198,0.3)', borderRadius:12, padding:'1rem' }}>
-          <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, color:TEAL, fontSize:'1rem', marginBottom:'0.875rem' }}>Consider Buying When...</div>
+          <div style={{ fontFamily:DISP, fontWeight:700, color:TEAL, fontSize:'1rem', marginBottom:'0.875rem' }}>Consider Buying When...</div>
           {buyFactors.map(f => (
             <div key={f.label} style={{ marginBottom:'0.625rem' }}>
               <div style={{ display:'flex', gap:7, alignItems:'flex-start' }}>
                 <CheckCircle2 size={13} color={TEAL} style={{ flexShrink:0, marginTop:2 }}/>
                 <div>
-                  <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:600, color:NAVY }}>{f.label}</div>
-                  <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.775rem', color:'#6b7280', lineHeight:1.55 }}>{f.note}</div>
+                  <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:600, color:NAVY }}>{f.label}</div>
+                  <div style={{ fontFamily:UI, fontSize:'0.775rem', color:T3, lineHeight:1.55 }}>{f.note}</div>
                 </div>
               </div>
             </div>
           ))}
         </div>
         <div style={{ border:'1.5px solid rgba(139,92,246,0.3)', borderRadius:12, padding:'1rem' }}>
-          <div style={{ fontFamily:"'Playfair Display',serif", fontWeight:700, color:'#8b5cf6', fontSize:'1rem', marginBottom:'0.875rem' }}>Consider Renting When...</div>
+          <div style={{ fontFamily:DISP, fontWeight:700, color:'#8b5cf6', fontSize:'1rem', marginBottom:'0.875rem' }}>Consider Renting When...</div>
           {rentFactors.map(f => (
             <div key={f.label} style={{ marginBottom:'0.625rem' }}>
               <div style={{ display:'flex', gap:7, alignItems:'flex-start' }}>
                 <CheckCircle2 size={13} color='#8b5cf6' style={{ flexShrink:0, marginTop:2 }}/>
                 <div>
-                  <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:600, color:NAVY }}>{f.label}</div>
-                  <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.775rem', color:'#6b7280', lineHeight:1.55 }}>{f.note}</div>
+                  <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:600, color:NAVY }}>{f.label}</div>
+                  <div style={{ fontFamily:UI, fontSize:'0.775rem', color:T3, lineHeight:1.55 }}>{f.note}</div>
                 </div>
               </div>
             </div>
@@ -242,12 +250,12 @@ function CarBuyingLearn() {
     { item:'Insurance', impact:'High', color:'#f59e0b', note:'Comprehensive coverage on a new car: $1,500–$3,000/year. Varies enormously by vehicle, age, and driving record.' },
     { item:'Fuel', impact:'Moderate', color:TEAL, note:'$1,500–$3,000+/year depending on MPG and miles driven. EVs reduce this but have higher upfront and insurance costs.' },
     { item:'Maintenance & repairs', impact:'Moderate', color:TEAL, note:'New cars: $500–$1,000/year. Older or high-mileage cars: $1,500–$3,000+. Luxury brands cost more to maintain.' },
-    { item:'Registration & taxes', impact:'Low', color:'#6b7280', note:'$100–$1,000/year depending on state and vehicle value. Often forgotten in car buying budgets.' },
+    { item:'Registration & taxes', impact:'Low', color:T3, note:'$100–$1,000/year depending on state and vehicle value. Often forgotten in car buying budgets.' },
   ];
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         The second-largest purchase most people make. Cars are depreciating assets — unlike homes, they lose value over time. The goal is to get reliable transportation at the lowest total cost.
       </p>
 
@@ -275,22 +283,22 @@ function CarBuyingLearn() {
             cons:['No warranty (usually)', 'Unknown history without Carfax/inspection', 'Financing harder or more expensive', 'Risk of inheriting problems'],
           },
         ].map(t => (
-          <div key={t.type} style={{ padding:'0.875rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={t.type} style={{ padding:'0.875rem 0', borderBottom:`1px solid ` }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-              <span style={{ fontFamily:"'DM Sans',sans-serif", fontWeight:700, color:NAVY, fontSize:'0.9375rem' }}>{t.type}</span>
+              <span style={{ fontFamily:UI, fontWeight:700, color:NAVY, fontSize:'0.9375rem' }}>{t.type}</span>
               <Pill text={t.badge} color={t.color}/>
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem', fontSize:'0.8rem', fontFamily:"'DM Sans',sans-serif" }}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem', fontSize:'0.8rem', fontFamily:UI }}>
               <div>
                 {t.pros.map(p => (
-                  <div key={p} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:'#374151' }}>
+                  <div key={p} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:T2 }}>
                     <CheckCircle2 size={12} color='#22c55e' style={{ flexShrink:0, marginTop:2 }}/>{p}
                   </div>
                 ))}
               </div>
               <div>
                 {t.cons.map(c => (
-                  <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:'#374151' }}>
+                  <div key={c} style={{ display:'flex', gap:6, alignItems:'flex-start', marginBottom:3, color:T2 }}>
                     <XCircle size={12} color='#ef4444' style={{ flexShrink:0, marginTop:2 }}/>{c}
                   </div>
                 ))}
@@ -302,11 +310,11 @@ function CarBuyingLearn() {
 
       <SectionCard title="True Cost of Car Ownership">
         {trueCosts.map(c => (
-          <div key={c.item} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
-            <div style={{ minWidth:150, fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, paddingTop:1 }}>{c.item}</div>
+          <div key={c.item} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.625rem 0', borderBottom:`1px solid ` }}>
+            <div style={{ minWidth:150, fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, paddingTop:1 }}>{c.item}</div>
             <div>
               <Pill text={c.impact} color={c.color}/>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8rem', color:'#6b7280', lineHeight:1.55, marginTop:4 }}>{c.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8rem', color:T3, lineHeight:1.55, marginTop:4 }}>{c.note}</div>
             </div>
           </div>
         ))}
@@ -321,11 +329,11 @@ function CarBuyingLearn() {
           { rule:'Check Carfax + get a pre-purchase inspection', note:'A $100–150 independent mechanic inspection on a used car can save thousands. Never skip this.' },
           { rule:'Avoid rolling negative equity', note:'Trading in a car you\'re underwater on and adding that balance to your new loan is a trap that compounds over time.' },
         ].map(r => (
-          <div key={r.rule} style={{ display:'flex', gap:10, alignItems:'flex-start', padding:'0.625rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={r.rule} style={{ display:'flex', gap:10, alignItems:'flex-start', padding:'0.625rem 0', borderBottom:`1px solid ` }}>
             <ArrowRight size={14} color={TEAL} style={{ flexShrink:0, marginTop:3 }}/>
             <div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.rule}</div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{r.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:2 }}>{r.rule}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{r.note}</div>
             </div>
           </div>
         ))}
@@ -349,27 +357,27 @@ function GoalFundingLearn() {
 
   return (
     <div>
-      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:'#374151', lineHeight:1.75, fontFamily:"'DM Sans',sans-serif" }}>
+      <p style={{ margin:'0 0 1.25rem', fontSize:'0.9375rem', color:T2, lineHeight:1.75, fontFamily:UI }}>
         Every major purchase should be funded intentionally — not impulsively charged to a credit card or financed at whatever rate the dealer offers. The framework is simple: set a goal, calculate the monthly savings needed, automate it, and keep it separate from daily spending.
       </p>
 
       <SectionCard title="The Sinking Fund Method">
-        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}25`, borderRadius:12, padding:'1rem 1.125rem', marginBottom:'1rem', fontFamily:UI }}>
           <div style={{ fontSize:'0.875rem', fontWeight:700, color:NAVY, marginBottom:6 }}>How it works</div>
-          <div style={{ fontSize:'0.8375rem', color:'#374151', lineHeight:1.65 }}>
+          <div style={{ fontSize:'0.8375rem', color:T2, lineHeight:1.65 }}>
             A sinking fund is a dedicated savings account for a specific goal. You calculate the total cost, divide by the number of months until you need it, and automatically transfer that amount each month. When it's time to spend, the money is already there — no debt, no stress.
           </div>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'0.5rem', fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'0.5rem', fontFamily:UI, fontSize:'0.8125rem' }}>
           {[
             { step:'1', label:'Set the goal', detail:'Define the exact cost and target date', color:'#22c55e' },
             { step:'2', label:'Calculate monthly', detail:'Total ÷ months = monthly savings needed', color:TEAL },
             { step:'3', label:'Automate it', detail:'Set up a recurring transfer on payday', color:'#8b5cf6' },
           ].map(s => (
             <div key={s.step} style={{ background:`${s.color}0d`, border:`1px solid ${s.color}20`, borderRadius:10, padding:'0.75rem', textAlign:'center' }}>
-              <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1.5rem', fontWeight:700, color:s.color, marginBottom:4 }}>{s.step}</div>
+              <div style={{ fontFamily:DISP, fontSize:'1.5rem', fontWeight:700, color:s.color, marginBottom:4 }}>{s.step}</div>
               <div style={{ fontWeight:700, color:NAVY, marginBottom:3 }}>{s.label}</div>
-              <div style={{ fontSize:'0.775rem', color:'#6b7280' }}>{s.detail}</div>
+              <div style={{ fontSize:'0.775rem', color:T3 }}>{s.detail}</div>
             </div>
           ))}
         </div>
@@ -377,15 +385,15 @@ function GoalFundingLearn() {
 
       <SectionCard title="Where to Keep Goal Savings">
         {goals.map(g => (
-          <div key={g.goal} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6' }}>
+          <div key={g.goal} style={{ display:'flex', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ` }}>
             <div style={{ minWidth:8, height:8, borderRadius:'50%', background:g.color, marginTop:6, flexShrink:0 }}/>
             <div style={{ flex:1 }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginBottom:3 }}>
-                <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{g.goal}</span>
+                <span style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:NAVY }}>{g.goal}</span>
                 <Pill text={g.timeline} color={g.color}/>
-                <span style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.775rem', color:'#6b7280' }}>→ {g.where}</span>
+                <span style={{ fontFamily:UI, fontSize:'0.775rem', color:T3 }}>→ {g.where}</span>
               </div>
-              <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.6 }}>{g.note}</div>
+              <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.6 }}>{g.note}</div>
             </div>
           </div>
         ))}
@@ -430,9 +438,9 @@ function MortgageCalc() {
         <NumInput label="Annual Gross Income" value={income} onChange={setIncome}/>
         <NumInput label="Home Price" value={homePrice} onChange={setHomePrice}/>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Down Payment: {downPct}%</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Down Payment: {downPct}%</label>
           <input type="range" min={3} max={50} step={1} value={downPct} onChange={e => setDownPct(Number(e.target.value))} style={{ width:'100%', accentColor:TEAL }}/>
-          <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.75rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif", marginTop:2 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.75rem', color:T3, fontFamily:UI, marginTop:2 }}>
             <span>3%</span><span style={{ fontWeight:700, color:TEAL }}>{fmt(down)}</span><span>50%</span>
           </div>
         </div>
@@ -440,10 +448,10 @@ function MortgageCalc() {
         <NumInput label="Property Tax Rate" value={propTaxPct} onChange={setPropTaxPct} prefix="" suffix="%" step={0.1} min={0} max={5}/>
         <NumInput label="Homeowners Insurance ($/mo)" value={insurance} onChange={setInsurance} step={25}/>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Loan Term</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Loan Term</label>
           <div style={{ display:'flex', gap:'0.5rem' }}>
             {[15,20,30].map(y => (
-              <button key={y} onClick={() => setTermYrs(y)} style={{ flex:1, padding:'9px', borderRadius:9, border:`1.5px solid ${termYrs===y?TEAL:'#e5e7eb'}`, background: termYrs===y?TEAL:'#fafafa', color: termYrs===y?'#fff':NAVY, fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, cursor:'pointer' }}>{y} yr</button>
+              <button key={y} onClick={() => setTermYrs(y)} style={{ flex:1, padding:'9px', borderRadius:9, border:`1.5px solid ${termYrs===y?TEAL:'#e5e7eb'}`, background: termYrs===y?TEAL:'#fafafa', color: termYrs===y?'#fff':NAVY, fontFamily:UI, fontSize:'0.875rem', fontWeight:700, cursor:'pointer' }}>{y} yr</button>
             ))}
           </div>
         </div>
@@ -456,16 +464,16 @@ function MortgageCalc() {
         <ResultBox label="Total Monthly" value={fmt(total)} color={NAVY} size="lg"/>
       </div>
 
-      <div style={{ background: affordable ? '#f0fdf4' : '#fef2f2', border:`1px solid ${affordable?'#bbf7d0':'#fecaca'}`, borderRadius:12, padding:'1rem', marginBottom:'1rem', fontFamily:"'DM Sans',sans-serif" }}>
+      <div style={{ background: affordable ? '#f0fdf4' : '#fef2f2', border:`1px solid ${affordable?'#bbf7d0':'#fecaca'}`, borderRadius:12, padding:'1rem', marginBottom:'1rem', fontFamily:UI }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
           <span style={{ fontSize:'0.875rem', fontWeight:700, color: affordable ? '#15803d' : '#ef4444' }}>
             {affordable ? 'Within the 28% guideline' : 'Above the 28% guideline'}
           </span>
-          <span style={{ fontSize:'1.125rem', fontWeight:700, fontFamily:"'Playfair Display',serif", color: affordable ? '#15803d' : '#ef4444' }}>
+          <span style={{ fontSize:'1.125rem', fontWeight:700, fontFamily:DISP, color: affordable ? '#15803d' : '#ef4444' }}>
             {(housingRatio*100).toFixed(1)}% of gross income
           </span>
         </div>
-        <div style={{ fontSize:'0.8125rem', color:'#374151', lineHeight:1.6 }}>
+        <div style={{ fontSize:'0.8125rem', color:T2, lineHeight:1.6 }}>
           {affordable
             ? `Your total housing payment of ${fmt(total)}/month is ${(housingRatio*100).toFixed(1)}% of your gross income — within the recommended 28% threshold.`
             : `Your total housing payment of ${fmt(total)}/month is ${(housingRatio*100).toFixed(1)}% of gross income — above the 28% guideline. Consider a lower price, larger down payment, or waiting for a better rate.`
@@ -535,10 +543,10 @@ function GoalCalc() {
     <SectionCard title="Goal Savings Planner" subtitle="Find out when you'll reach your savings goal, or how much you need to save monthly to hit it on time.">
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 1.25rem' }}>
         <div style={{ marginBottom:'1rem' }}>
-          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:"'DM Sans',sans-serif" }}>Goal Name</label>
+          <label style={{ display:'block', fontSize:'0.8125rem', fontWeight:600, color:NAVY, marginBottom:'0.375rem', fontFamily:UI }}>Goal Name</label>
           <input value={goalName} onChange={e => setGoalName(e.target.value)}
-            style={{ width:'100%', padding:'9px 0.75rem', border:'1.5px solid #e5e7eb', borderRadius:9, fontSize:'1rem', fontFamily:"'DM Sans',sans-serif", color:NAVY, fontWeight:600, background:'#fafafa', boxSizing:'border-box' }}
-            onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor='#e5e7eb'}/>
+            style={{ width:'100%', padding:'9px 0.75rem', border:`1.5px solid ${B2}`, borderRadius:9, fontSize:'1rem', fontFamily:UI, color:NAVY, fontWeight:600, background:RAISE, boxSizing:'border-box' }}
+            onFocus={e => e.target.style.borderColor=TEAL} onBlur={e => e.target.style.borderColor=B2}/>
         </div>
         <NumInput label="Goal Amount" value={goalAmount} onChange={setGoalAmount}/>
         <NumInput label="Already Saved" value={saved} onChange={setSaved}/>
@@ -552,12 +560,12 @@ function GoalCalc() {
         <ResultBox label="Interest Earned" value={interestEarned > 0 ? fmt(interestEarned) : '$0'} color={TEAL}/>
       </div>
 
-      <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.625rem' }}>Monthly savings needed to reach {goalName} in:</div>
+      <div style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:NAVY, marginBottom:'0.625rem' }}>Monthly savings needed to reach {goalName} in:</div>
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'0.5rem', marginBottom:'1.25rem' }}>
         {[12,24,36,60].map(mo => (
           <div key={mo} style={{ background:`${TEAL}0d`, border:`1px solid ${TEAL}20`, borderRadius:10, padding:'0.625rem 0.5rem', textAlign:'center' }}>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:700, color:TEAL }}>{fmt(Math.ceil(calcMonthly(mo)))}</div>
-            <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.7375rem', color:'#6b7280', marginTop:2 }}>{mo < 12 ? mo+'mo' : mo/12+'yr'}</div>
+            <div style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:700, color:TEAL }}>{fmt(Math.ceil(calcMonthly(mo)))}</div>
+            <div style={{ fontFamily:UI, fontSize:'0.7375rem', color:T3, marginTop:2 }}>{mo < 12 ? mo+'mo' : mo/12+'yr'}</div>
           </div>
         ))}
       </div>
@@ -607,10 +615,10 @@ function ResourcesTab() {
         <SectionCard key={section.category} title={section.category}>
           {section.items.map(item => (
             <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer"
-              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:'1px solid #f3f4f6', textDecoration:'none' }}>
+              style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, padding:'0.75rem 0', borderBottom:`1px solid ${B2}`, textDecoration:'none' }}>
               <div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
-                <div style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem', color:'#6b7280', lineHeight:1.55 }}>{item.desc}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.875rem', fontWeight:700, color:section.color, marginBottom:2 }}>{item.name}</div>
+                <div style={{ fontFamily:UI, fontSize:'0.8125rem', color:T3, lineHeight:1.55 }}>{item.desc}</div>
               </div>
               <ExternalLink size={14} color='#d1d5db' style={{ flexShrink:0, marginTop:3 }}/>
             </a>
@@ -660,18 +668,18 @@ export default function MajorPurchases() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
-      <div style={{ background:NAVY, padding:'2rem 2.5rem 0' }}>
+      <div style={{ background:SURF, borderBottom:`1px solid `, padding:'2rem 2.5rem 0' }}>
         <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6 }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>Dashboard</button>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>Dashboard</button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
-          <span style={{ fontFamily:"'DM Sans',sans-serif" }}>Major Purchases</span>
+          <span style={{ fontFamily:UI }}>Major Purchases</span>
         </div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
+        <h1 style={{ fontFamily:DISP, fontSize:'2rem', fontWeight:700, color:'#fff', margin:'0 0 0.5rem', letterSpacing:'-0.025em', lineHeight:1.2 }}>
           Major Purchases & Goal Funding
         </h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Homes, cars, and big goals are where financial plans succeed or fail. Learn to buy smart, avoid common traps, and save for what matters — without going into unnecessary debt.
         </p>
         <div style={{ display:'flex', gap:0, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
@@ -682,7 +690,7 @@ export default function MajorPurchases() {
               <button key={t.id} onClick={() => setTab(t.id)} style={{
                 display:'flex', alignItems:'center', gap:7, padding:'0.75rem 1.25rem',
                 background:'none', border:'none', borderBottom:`2px solid ${active?TEAL:'transparent'}`,
-                cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:'0.875rem',
+                cursor:'pointer', fontFamily:UI, fontSize:'0.875rem',
                 fontWeight:active?700:500, color:active?TEAL:'rgba(255,255,255,0.45)',
                 marginBottom:-1, transition:'color 0.15s', whiteSpace:'nowrap',
               }}><Icon size={14}/>{t.label}</button>
@@ -704,7 +712,7 @@ export default function MajorPurchases() {
                     display:'flex', alignItems:'center', gap:6, padding:'7px 14px',
                     borderRadius:99, border:`1.5px solid ${active ? TEAL : '#e5e7eb'}`,
                     background: active ? TEAL : '#fff', cursor:'pointer',
-                    fontFamily:"'DM Sans',sans-serif", fontSize:'0.8125rem',
+                    fontFamily:UI, fontSize:'0.8125rem',
                     fontWeight: active ? 700 : 500, color: active ? '#fff' : '#6b7280',
                     transition:'all 0.15s', whiteSpace:'nowrap',
                   }}>

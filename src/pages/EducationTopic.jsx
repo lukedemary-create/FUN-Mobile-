@@ -227,10 +227,10 @@ function QuizPanel({ chapter, onComplete }) {
           const isCorrect = idx === correctIdx;
           const isSelected = idx === selected;
 
-          let bg = 'rgba(255,255,255,0.02)';
+          let bg = 'var(--surface)';
           let border = '1px solid var(--border-c)';
           let textColor = 'var(--text-1)';
-          let letterBg = 'rgba(255,255,255,0.05)';
+          let letterBg = 'var(--border-c)';
           let letterColor = 'var(--text-2)';
 
           if (isAnswered) {
@@ -554,7 +554,7 @@ function ChapterSidebar({ chapters, activeId, progress, onSelect }) {
               alignItems: 'flex-start',
               gap: '0.625rem',
               padding: '0.625rem 0.75rem',
-              background: isActive ? 'rgba(201,168,76,0.07)' : 'transparent',
+              background: isActive ? 'rgba(201,169,110,0.07)' : 'transparent',
               border: 'none',
               borderLeft: isActive
                 ? '2px solid var(--gold)'
@@ -575,13 +575,13 @@ function ChapterSidebar({ chapters, activeId, progress, onSelect }) {
                 background: isDone
                   ? 'rgba(0,184,153,0.12)'
                   : isActive
-                  ? 'rgba(201,168,76,0.12)'
-                  : 'rgba(255,255,255,0.04)',
+                  ? 'rgba(201,169,110,0.12)'
+                  : 'var(--border-c)',
                 border: `1px solid ${
                   isDone
                     ? 'rgba(0,184,153,0.35)'
                     : isActive
-                    ? 'rgba(201,168,76,0.4)'
+                    ? 'rgba(201,169,110,0.4)'
                     : 'var(--border-c)'
                 }`,
                 display: 'flex',
@@ -835,7 +835,7 @@ function MobileChapterPills({ chapters, activeId, progress, onSelect }) {
               padding: '0.375rem 0.75rem',
               borderRadius: 99,
               border: isActive ? '1px solid var(--gold)' : '1px solid var(--border-c)',
-              background: isActive ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.03)',
+              background: isActive ? 'rgba(201,169,110,0.08)' : 'var(--elevated)',
               color: isActive ? 'var(--gold)' : isDone ? 'var(--up)' : 'var(--text-2)',
               fontSize: '0.75rem',
               fontWeight: isActive ? 600 : 400,
@@ -897,7 +897,7 @@ export default function EducationTopic() {
         <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-1)' }}>
           Topic not found
         </div>
-        <button className="t-btn" onClick={() => navigate('/education')}>
+        <button className="t-btn" onClick={() => navigate('/fun/learners-library')}>
           <ChevronLeft size={14} /> Back to Education
         </button>
       </div>
@@ -909,7 +909,7 @@ export default function EducationTopic() {
   const activeChapter = chapters.find((c) => c.id === activeChapterId) ?? chapters[0];
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1200 }}>
       {/* ── Top bar ── */}
       <div
         style={{
@@ -923,7 +923,7 @@ export default function EducationTopic() {
       >
         {/* Back button */}
         <button
-          onClick={() => navigate('/education')}
+          onClick={() => navigate('/fun/learners-library')}
           style={{
             display: 'flex',
             alignItems: 'center',

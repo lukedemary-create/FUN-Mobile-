@@ -38,7 +38,7 @@ function YearBars({ seriesKeys, activeColors }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data} margin={{ left:0,right:0,top:4,bottom:0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false}/>
         <XAxis dataKey="year" tick={{ fill:"var(--text-3)",fontSize:9 }}
           interval={4} tickLine={false}/>
         <YAxis tick={{ fill:"var(--text-3)",fontSize:10 }} tickFormatter={v=>v+"%"}/>
@@ -71,7 +71,7 @@ function GrowthChart({ seriesKeys, activeColors }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="year" tick={{ fill:"var(--text-3)",fontSize:9 }} interval={4} tickLine={false}/>
         <YAxis tickFormatter={v=>`$${(v/1000).toFixed(0)}K`} tick={{ fill:"var(--text-3)",fontSize:10 }}/>
         <Tooltip
@@ -108,7 +108,7 @@ function CalendarTable({ activeSeries }) {
         </thead>
         <tbody>
           {ANNUAL_RETURNS.years.map((yr,i)=>(
-            <tr key={yr} style={{ borderBottom:"1px solid rgba(255,255,255,0.03)",
+            <tr key={yr} style={{ borderBottom:"1px solid var(--elevated)",
               background: yr%2===0?"rgba(255,255,255,0.01)":"transparent" }}>
               <td style={{ padding:"5px 8px",color:"var(--text-3)",fontWeight:700 }}>{yr}</td>
               {activeSeries.map(s=>{
@@ -123,7 +123,7 @@ function CalendarTable({ activeSeries }) {
             </tr>
           ))}
           {/* Average row */}
-          <tr style={{ borderTop:"2px solid var(--border-c)",background:"rgba(201,168,76,0.04)" }}>
+          <tr style={{ borderTop:"2px solid var(--border-c)",background:"rgba(201,169,110,0.04)" }}>
             <td style={{ padding:"5px 8px",color:GOLD,fontWeight:800 }}>AVG</td>
             {activeSeries.map(s=>{
               const vals = ANNUAL_RETURNS[s.key]||[];
@@ -148,7 +148,7 @@ function DecadeChart() {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false}/>
         <XAxis dataKey="decade" tick={{ fill:"var(--text-3)",fontSize:10 }}/>
         <YAxis tickFormatter={v=>v+"%"} tick={{ fill:"var(--text-3)",fontSize:10 }}/>
         <ReferenceLine y={0} stroke="rgba(255,255,255,0.15)"/>
@@ -207,7 +207,7 @@ export default function TabHistorical() {
               ["calendar","Calendar Table"],["decade","Decade Analysis"]].map(([k,l])=>(
               <button key={k} onClick={()=>setView(k)} style={{
                 padding:"4px 10px",borderRadius:5,border:"none",cursor:"pointer",
-                background: view===k?"rgba(201,168,76,0.15)":"transparent",
+                background: view===k?"rgba(201,169,110,0.15)":"transparent",
                 color: view===k?GOLD:"var(--text-3)",fontSize:"0.5625rem",fontWeight:600,
               }}>{l}</button>
             ))}
@@ -283,7 +283,7 @@ export default function TabHistorical() {
                   ["Positive Years", `${positiveYrs}/${vals.length} (${Math.round(positiveYrs/vals.length*100)}%)`, GREEN],
                 ].map(([l,v,c])=>(
                   <div key={l} style={{ display:"flex",justifyContent:"space-between",
-                    padding:"3px 0",borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                    padding:"3px 0",borderBottom:"1px solid var(--border-c)" }}>
                     <span style={{ fontSize:"0.5625rem",color:"var(--text-3)" }}>{l}</span>
                     <span style={{ fontSize:"0.6875rem",fontWeight:700,color:c }}>{v}</span>
                   </div>

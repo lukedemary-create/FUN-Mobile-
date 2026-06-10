@@ -171,7 +171,7 @@ function Callout({ type, title, text }) {
   const c = colors[type] || BLUE;
   return (
     <div style={{
-      borderLeft: `3px solid ${c}`, borderRadius: '0 6px 6px 0',
+      border: `1px solid ${c}38`, borderTop: `2px solid ${c}`, borderRadius: 6,
       background: `${c}0d`, padding: '0.75rem 1rem', marginBottom: '0.625rem',
     }}>
       {title && <div style={{ fontSize: '0.6875rem', fontWeight: 800, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{title}</div>}
@@ -254,7 +254,7 @@ function SectionBlock({ section }) {
       <div style={{
         display: 'flex', alignItems: 'center', gap: '0.5rem',
         marginBottom: '1rem', paddingBottom: '0.625rem',
-        borderBottom: '1px solid rgba(201,168,76,0.15)',
+        borderBottom: '1px solid rgba(201,169,110,0.15)',
       }}>
         {section.icon && <span style={{ color: GOLD, fontSize: '0.875rem' }}>{section.icon}</span>}
         <h2 style={{ margin: 0, fontSize: '0.8125rem', fontWeight: 800, color: GOLD, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{section.title}</h2>
@@ -292,7 +292,7 @@ function ActionPlanSection({ actions }) {
   if (!actions?.length) return null;
   return (
     <div style={{ marginBottom: '2rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', paddingBottom: '0.625rem', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', paddingBottom: '0.625rem', borderBottom: '1px solid rgba(201,169,110,0.15)' }}>
         <span style={{ color: GOLD }}>◈</span>
         <h2 style={{ margin: 0, fontSize: '0.8125rem', fontWeight: 800, color: GOLD, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Action Plan</h2>
       </div>
@@ -300,7 +300,7 @@ function ActionPlanSection({ actions }) {
         {actions.map((a, i) => {
           const c = priorityColor(a.priority);
           return (
-            <div key={i} style={{ background: '#0f1117', border: `1px solid ${c}22`, borderLeft: `3px solid ${c}`, borderRadius: '0 8px 8px 0', padding: '0.875rem 1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+            <div key={i} style={{ background: '#0f1117', border: `1px solid ${c}38`, borderTop: `2px solid ${c}`, borderRadius: 8, padding: '0.875rem 1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
               <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                 <span style={{ fontSize: '0.5rem', fontWeight: 800, color: c, letterSpacing: '0.08em', textTransform: 'uppercase', background: `${c}18`, padding: '2px 6px', borderRadius: 3 }}>{a.priority}</span>
                 {a.timeline && <span style={{ fontSize: '0.5625rem', color: '#4b5563', whiteSpace: 'nowrap' }}>{a.timeline}</span>}
@@ -326,7 +326,7 @@ function ScenariosSection({ scenarios }) {
   const labels = ['Conservative', 'Base Case', 'Optimistic'];
   return (
     <div style={{ marginBottom: '2rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', paddingBottom: '0.625rem', borderBottom: '1px solid rgba(201,168,76,0.15)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', paddingBottom: '0.625rem', borderBottom: '1px solid rgba(201,169,110,0.15)' }}>
         <span style={{ color: GOLD }}>◈</span>
         <h2 style={{ margin: 0, fontSize: '0.8125rem', fontWeight: 800, color: GOLD, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Scenario Analysis</h2>
       </div>

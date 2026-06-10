@@ -3,7 +3,11 @@ import { defineConfig } from 'vite'
 import path from 'path'
 
 export default defineConfig({
-  logLevel: 'error',
+  logLevel: 'info',
+  server: {
+    port: 5174,
+    strictPort: false,
+  },
   plugins: [react()],
   resolve: {
     alias: {

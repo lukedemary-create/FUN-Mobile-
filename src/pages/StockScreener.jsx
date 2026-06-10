@@ -96,11 +96,11 @@ const MARKET_SNAPSHOT = [
 const SECTOR_COLORS = {
   Technology:   { bg: "rgba(26,159,216,0.10)",  color: "var(--blue)" },
   Healthcare:   { bg: "rgba(0,184,153,0.10)",   color: "var(--teal)" },
-  Financials:   { bg: "rgba(201,168,76,0.10)",  color: "var(--gold)" },
+  Financials:   { bg: "rgba(201,169,110,0.10)",  color: "var(--gold)" },
   Consumer:     { bg: "rgba(124,92,191,0.10)",  color: "var(--purple)" },
   Energy:       { bg: "rgba(255,59,92,0.10)",   color: "var(--down)" },
   Industrials:  { bg: "rgba(6,214,240,0.10)",   color: "var(--cyan)" },
-  "Real Estate":{ bg: "rgba(201,168,76,0.08)",  color: "#e8a94c" },
+  "Real Estate":{ bg: "rgba(201,169,110,0.08)",  color: "#e8a94c" },
   Utilities:    { bg: "rgba(0,184,153,0.08)",   color: "#4cc9b8" },
 };
 
@@ -231,8 +231,8 @@ function FilterRow({ label, options, value, onChange }) {
                 fontSize: "0.6875rem",
                 fontWeight: 700,
                 letterSpacing: "0.02em",
-                border: active ? "1px solid rgba(201,168,76,0.5)" : "1px solid var(--border-c)",
-                background: active ? "rgba(201,168,76,0.13)" : "var(--elevated)",
+                border: active ? "1px solid rgba(201,169,110,0.5)" : "1px solid var(--border-c)",
+                background: active ? "rgba(201,169,110,0.13)" : "var(--elevated)",
                 color: active ? "var(--gold)" : "var(--text-2)",
                 cursor: "pointer",
                 transition: "all 0.12s",
@@ -256,8 +256,8 @@ function FilterChip({ label, onRemove }) {
       padding: "3px 8px 3px 10px",
       borderRadius: 99,
       fontSize: "0.6875rem", fontWeight: 700,
-      background: "rgba(201,168,76,0.10)",
-      border: "1px solid rgba(201,168,76,0.25)",
+      background: "rgba(201,169,110,0.10)",
+      border: "1px solid rgba(201,169,110,0.25)",
       color: "var(--gold)",
     }}>
       {label}
@@ -341,17 +341,19 @@ export default function StockScreener() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: "1.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         {/* decorative glow */}
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 340, height: 340,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ position: "absolute", bottom: -80, left: "30%",
@@ -366,12 +368,15 @@ export default function StockScreener() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <SlidersHorizontal size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>STOCK SCREENER</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                STOCK{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Screener</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Filter and rank stocks by fundamentals. Screen across sectors, market caps, valuations, dividend yields, and 52-week price performance to surface opportunities matching your criteria.
@@ -381,8 +386,8 @@ export default function StockScreener() {
                 <span key={tag} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{tag}</span>
               ))}
@@ -405,8 +410,8 @@ export default function StockScreener() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -493,8 +498,8 @@ export default function StockScreener() {
                   display: "flex", alignItems: "center", justifyContent: "space-between",
                   width: "100%", padding: "0.375rem 0.625rem",
                   borderRadius: 5, border: "1px solid transparent",
-                  background: active ? "rgba(201,168,76,0.10)" : "transparent",
-                  borderColor: active ? "rgba(201,168,76,0.22)" : "transparent",
+                  background: active ? "rgba(201,169,110,0.10)" : "transparent",
+                  borderColor: active ? "rgba(201,169,110,0.22)" : "transparent",
                   color: active ? "var(--gold)" : "var(--text-2)",
                   cursor: "pointer", fontSize: "0.8125rem", fontWeight: active ? 700 : 500,
                   transition: "all 0.12s", marginBottom: 2,

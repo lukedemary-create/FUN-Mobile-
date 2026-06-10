@@ -474,12 +474,12 @@ export const engagementLabel = (score) => {
 }
 
 export const categoryIcon = {
-  family:    '👪',
-  career:    '💼',
-  financial: '📊',
-  health:    '❤️',
-  education: '🎓',
-  travel:    '✈️',
+  family:    'FAM',
+  career:    'CAR',
+  financial: 'FIN',
+  health:    'HLT',
+  education: 'EDU',
+  travel:    'TRV',
 }
 
 export const goalCategoryColor = {

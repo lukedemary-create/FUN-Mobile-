@@ -161,7 +161,7 @@ const Field = ({ label, value, onChange, placeholder, type="text", disabled=fals
       type={type} value={value} onChange={e => onChange(e.target.value)}
       placeholder={placeholder} disabled={disabled}
       style={{
-        background: disabled ? "rgba(255,255,255,0.02)" : "var(--elevated)",
+        background: disabled ? "var(--surface)" : "var(--elevated)",
         border: auto ? "1px solid rgba(34,197,94,0.25)" : "1px solid var(--border-c)",
         borderRadius:5, padding:"6px 9px",
         color: disabled ? "var(--text-3)" : "var(--text-1)",
@@ -382,7 +382,7 @@ export default function TabPortfolio() {
             ) : (
               <button onClick={() => { setShowForm(true); setLookupState("idle"); }} style={{
                 display:"flex",alignItems:"center",gap:6,padding:"6px 14px",
-                background:"rgba(201,168,76,0.12)",border:"1px solid rgba(201,168,76,0.3)",
+                background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.3)",
                 borderRadius:6,color:GOLD,fontSize:"0.75rem",fontWeight:700,cursor:"pointer",
               }}>
                 <Plus size={14}/> Add Holding
@@ -395,7 +395,7 @@ export default function TabPortfolio() {
           <>
             {/* ── Step 1: Ticker lookup ── */}
             <div style={{ marginBottom:"1rem",padding:"0.875rem",
-              background:"rgba(201,168,76,0.04)",border:"1px solid rgba(201,168,76,0.15)",borderRadius:8 }}>
+              background:"rgba(201,169,110,0.04)",border:"1px solid rgba(201,169,110,0.15)",borderRadius:8 }}>
               <div style={{ fontSize:"0.5rem",color:GOLD,letterSpacing:"0.12em",textTransform:"uppercase",
                 fontWeight:700,marginBottom:"0.625rem" }}>
                 Step 1 — Enter Ticker Symbol
@@ -430,8 +430,8 @@ export default function TabPortfolio() {
                   disabled={!form.ticker || lookupState === "loading"}
                   style={{
                     display:"flex",alignItems:"center",gap:6,padding:"7px 16px",
-                    background: lookupState==="done" ? "rgba(34,197,94,0.12)" : "rgba(201,168,76,0.12)",
-                    border: lookupState==="done" ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(201,168,76,0.3)",
+                    background: lookupState==="done" ? "rgba(34,197,94,0.12)" : "rgba(201,169,110,0.12)",
+                    border: lookupState==="done" ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(201,169,110,0.3)",
                     borderRadius:6,
                     color: lookupState==="done" ? GREEN : GOLD,
                     fontSize:"0.75rem",fontWeight:700,
@@ -562,7 +562,7 @@ export default function TabPortfolio() {
                 </thead>
                 <tbody>
                   {sorted.map(h => (
-                    <tr key={h.id} style={{ borderBottom:"1px solid rgba(255,255,255,0.03)" }}>
+                    <tr key={h.id} style={{ borderBottom:"1px solid var(--elevated)" }}>
                       <td style={{ padding:"7px 8px",fontWeight:800,color:GOLD,fontFamily:"monospace" }}>{h.ticker||"—"}</td>
                       <td style={{ padding:"7px 8px",color:"var(--text-1)",maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>{h.name||"—"}</td>
                       <td style={{ padding:"7px 8px",color:"var(--text-3)",fontSize:"0.5625rem",whiteSpace:"nowrap" }}>{h.assetClass}</td>
@@ -676,7 +676,7 @@ export default function TabPortfolio() {
               </div>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={top10} layout="vertical" margin={{left:10,right:30,top:0,bottom:0}}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false}/>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" horizontal={false}/>
                   <XAxis type="number" tick={{ fill:"var(--text-3)",fontSize:10 }} tickFormatter={v=>v+"%"}/>
                   <YAxis type="category" dataKey="name" width={60} tick={{ fill:"var(--text-2)",fontSize:11,fontWeight:600 }}/>
                   <Tooltip formatter={v=>[v+"%","Weight"]}

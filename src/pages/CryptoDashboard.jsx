@@ -241,25 +241,26 @@ export default function CryptoDashboard() {
     <div style={{ padding: "24px 28px", minHeight: "100vh", background: "var(--bg)" }}>
 
       {/* ── Hero Banner ───────────────────────────────────────────── */}
-      <div className="t-card" style={{
-        marginBottom: 22, padding: "20px 24px",
-        background: "linear-gradient(135deg, #1a1400 0%, var(--surface) 60%, #001a1a 100%)",
-        borderColor: "var(--gold)", borderWidth: 1,
+      <div style={{
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: 22, position: "relative", overflow: "hidden", backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
-          <div style={{
-            width: 52, height: 52, borderRadius: 12,
-            background: "var(--gold)22", border: "1.5px solid var(--gold)55",
-            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}>
-            <Coins size={26} style={{ color: "var(--gold)" }} />
-          </div>
-          <div>
-            <h1 className="t-page-title" style={{ margin: 0 }}>Crypto Markets</h1>
-            <p style={{ margin: "4px 0 0", color: "var(--text-3)", fontSize: 13 }}>
-              Real-time crypto market intelligence — prices, dominance, sentiment & sector performance
-            </p>
-          </div>
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", marginBottom: 20 }}>
+          <p style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 0.625rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ display: "inline-block", width: 18, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+            Market Intelligence
+          </p>
+          <h1 style={{ margin: "0 0 0.375rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            Crypto{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Markets</em>
+          </h1>
+          <p style={{ margin: 0, color: "var(--text-3)", fontSize: 13, lineHeight: 1.65 }}>
+            Real-time crypto market intelligence — prices, dominance, sentiment &amp; sector performance
+          </p>
         </div>
 
         {/* Hero stat boxes */}

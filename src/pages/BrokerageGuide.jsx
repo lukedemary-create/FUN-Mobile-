@@ -8,6 +8,8 @@ import {
   ChevronDown, ChevronUp, CheckCircle, XCircle, AlertCircle,
   Search, ArrowRight, BarChart2, PieChart, Target, Award,
   Filter, Sliders, ChevronRight, Info, ExternalLink,
+  Monitor, Cpu, Briefcase, Landmark, Umbrella, Wallet, Home,
+  Smile, Layers, FileText,
 } from "lucide-react";
 
 /* ── Design tokens ─────────────────────────────────────── */
@@ -1059,7 +1061,7 @@ function ScoreBar({ label, value, max = 5 }) {
         <span style={{ fontSize: 11, color: TX3 }}>{label}</span>
         <span style={{ fontSize: 11, color: TX2, fontWeight: 600 }}>{value}/{max}</span>
       </div>
-      <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
+      <div style={{ height: 4, background: "var(--border-c)", borderRadius: 2 }}>
         <div style={{ height: "100%", width: `${pct}%`, background: G, borderRadius: 2 }} />
       </div>
     </div>
@@ -1075,7 +1077,7 @@ function BrokerageCard({ b, expanded, onToggle, comparing, onToggleCompare }) {
       borderRadius: 12,
       overflow: "hidden",
       transition: "border-color 0.2s",
-      boxShadow: comparing ? `0 0 20px rgba(201,168,76,0.12)` : "none",
+      boxShadow: comparing ? `0 0 20px rgba(201,169,110,0.12)` : "none",
     }}>
       {/* Card Header */}
       <div
@@ -1097,7 +1099,7 @@ function BrokerageCard({ b, expanded, onToggle, comparing, onToggleCompare }) {
             <span style={{ fontSize: 14, fontWeight: 700, color: TX1 }}>{b.name}</span>
             <span style={{
               fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 20,
-              background: "rgba(201,168,76,0.1)", color: G, letterSpacing: "0.06em",
+              background: "rgba(201,169,110,0.1)", color: G, letterSpacing: "0.06em",
             }}>{b.tagline}</span>
           </div>
         </div>
@@ -1120,7 +1122,7 @@ function BrokerageCard({ b, expanded, onToggle, comparing, onToggleCompare }) {
           style={{
             padding: "5px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600,
             border: `1px solid ${comparing ? G : B}`,
-            background: comparing ? "rgba(201,168,76,0.1)" : "transparent",
+            background: comparing ? "rgba(201,169,110,0.1)" : "transparent",
             color: comparing ? G : TX3, cursor: "pointer", transition: "all 0.15s", flexShrink: 0,
           }}
         >
@@ -1174,7 +1176,7 @@ function BrokerageCard({ b, expanded, onToggle, comparing, onToggleCompare }) {
                   ["Options", b.optionTrades],
                   ["Min Deposit", b.minDeposit],
                 ].map(([l, v]) => (
-                  <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: `1px solid rgba(255,255,255,0.04)` }}>
+                  <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: `1px solid var(--border-c)` }}>
                     <span style={{ fontSize: 12, color: TX3 }}>{l}</span>
                     <span style={{ fontSize: 12, fontWeight: 600, color: v === "$0" ? "var(--up)" : TX1 }}>{v}</span>
                   </div>
@@ -1186,7 +1188,7 @@ function BrokerageCard({ b, expanded, onToggle, comparing, onToggleCompare }) {
                 <div style={{ fontSize: 11, fontWeight: 700, color: TX3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Account Types</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                   {b.accountTypes.map(a => (
-                    <span key={a} style={{ fontSize: 10, padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.04)", border: `1px solid ${B}`, color: TX2 }}>{a}</span>
+                    <span key={a} style={{ fontSize: 10, padding: "3px 8px", borderRadius: 20, background: "var(--border-c)", border: `1px solid ${B}`, color: TX2 }}>{a}</span>
                   ))}
                 </div>
               </div>
@@ -1218,13 +1220,13 @@ function BrokerageCard({ b, expanded, onToggle, comparing, onToggleCompare }) {
                 <div style={{ fontSize: 11, fontWeight: 700, color: TX3, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Best For</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                   {b.bestFor.map(f => (
-                    <span key={f} style={{ fontSize: 10, padding: "3px 8px", borderRadius: 20, background: "rgba(201,168,76,0.08)", border: `1px solid rgba(201,168,76,0.2)`, color: G }}>{f}</span>
+                    <span key={f} style={{ fontSize: 10, padding: "3px 8px", borderRadius: 20, background: "rgba(201,169,110,0.08)", border: `1px solid rgba(201,169,110,0.2)`, color: G }}>{f}</span>
                   ))}
                 </div>
               </div>
 
               {/* Verdict */}
-              <div style={{ background: "rgba(201,168,76,0.06)", border: `1px solid rgba(201,168,76,0.15)`, borderRadius: 8, padding: "10px 12px" }}>
+              <div style={{ background: "rgba(201,169,110,0.06)", border: `1px solid rgba(201,169,110,0.15)`, borderRadius: 8, padding: "10px 12px" }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: G, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Planora Verdict</div>
                 <p style={{ fontSize: 12, color: TX1, lineHeight: 1.6, margin: 0 }}>{b.verdict}</p>
               </div>
@@ -1281,7 +1283,7 @@ function OverviewTab() {
               style={{
                 padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600,
                 border: `1px solid ${category === cat.id ? G : B}`,
-                background: category === cat.id ? "rgba(201,168,76,0.12)" : "transparent",
+                background: category === cat.id ? "rgba(201,169,110,0.12)" : "transparent",
                 color: category === cat.id ? G : TX3, cursor: "pointer", transition: "all 0.15s",
               }}
             >
@@ -1320,7 +1322,7 @@ function OverviewTab() {
       {/* Compare notice */}
       {comparing.length > 0 && (
         <div style={{
-          background: "rgba(201,168,76,0.08)", border: `1px solid rgba(201,168,76,0.2)`,
+          background: "rgba(201,169,110,0.08)", border: `1px solid rgba(201,169,110,0.2)`,
           borderRadius: 8, padding: "10px 14px", marginBottom: 16,
           display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
@@ -1417,7 +1419,7 @@ function CompareTab() {
             <div style={{ fontSize: 13, fontWeight: 700, color: TX1, marginBottom: 16 }}>Platform Comparison Radar</div>
             <ResponsiveContainer width="100%" height={260}>
               <RadarChart data={radarData}>
-                <PolarGrid stroke="rgba(255,255,255,0.06)" />
+                <PolarGrid stroke="var(--border-c)" />
                 <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11, fill: TX2 }} />
                 {brokers.map((b, i) => (
                   <Radar
@@ -1452,7 +1454,7 @@ function CompareTab() {
               </thead>
               <tbody>
                 {METRICS.map(m => (
-                  <tr key={m.key} style={{ borderBottom: `1px solid rgba(255,255,255,0.03)` }}>
+                  <tr key={m.key} style={{ borderBottom: `1px solid var(--elevated)` }}>
                     <td style={{ padding: "10px 16px", fontSize: 12, color: TX2 }}>{m.label}</td>
                     {brokers.map(b => (
                       <td key={b.id} style={{ padding: "10px 16px", textAlign: "center" }}>
@@ -1475,7 +1477,7 @@ function CompareTab() {
                   </tr>
                 ))}
                 {/* Account types */}
-                <tr style={{ borderBottom: `1px solid rgba(255,255,255,0.03)` }}>
+                <tr style={{ borderBottom: `1px solid var(--elevated)` }}>
                   <td style={{ padding: "10px 16px", fontSize: 12, color: TX2 }}>Account Types</td>
                   {brokers.map(b => (
                     <td key={b.id} style={{ padding: "10px 16px", textAlign: "center" }}>
@@ -1508,10 +1510,10 @@ const QUESTIONS = [
     q: "How do you want to manage your investments?",
     sub: "This is the most important question — it shapes everything else.",
     options: [
-      { label: "100% Self-Directed — I make all my own decisions", value: "diy", icon: "🖥️" },
-      { label: "Robo-Advisor — Automate it, I don't want to think about it", value: "robo", icon: "🤖" },
-      { label: "Hybrid — Mostly self-directed but want advisor access occasionally", value: "hybrid", icon: "🤝" },
-      { label: "Dedicated 1-on-1 Human Financial Advisor — I want a real person managing my plan", value: "full_service", icon: "👔" },
+      { label: "100% Self-Directed — I make all my own decisions", value: "diy", icon: Monitor },
+      { label: "Robo-Advisor — Automate it, I don't want to think about it", value: "robo", icon: Cpu },
+      { label: "Hybrid — Mostly self-directed but want advisor access occasionally", value: "hybrid", icon: Users },
+      { label: "Dedicated 1-on-1 Human Financial Advisor — I want a real person managing my plan", value: "full_service", icon: Briefcase },
     ],
   },
   {
@@ -1519,40 +1521,40 @@ const QUESTIONS = [
     q: "What best describes your financial needs?",
     sub: "Be honest — the more complex your situation, the more guidance you may need.",
     options: [
-      { label: "Simple — I just want to buy stocks/ETFs/funds", value: "simple", icon: "📊" },
-      { label: "Retirement focused — 401k rollovers, IRAs, long-term growth", value: "retirement", icon: "🏖️" },
-      { label: "Active trading — options, margin, frequent buying & selling", value: "trading", icon: "⚡" },
-      { label: "Comprehensive — investments + insurance + taxes + estate planning all in one", value: "comprehensive", icon: "🏛️" },
+      { label: "Simple — I just want to buy stocks/ETFs/funds", value: "simple", icon: BarChart2 },
+      { label: "Retirement focused — 401k rollovers, IRAs, long-term growth", value: "retirement", icon: Umbrella },
+      { label: "Active trading — options, margin, frequent buying & selling", value: "trading", icon: Zap },
+      { label: "Comprehensive — investments + insurance + taxes + estate planning all in one", value: "comprehensive", icon: Landmark },
     ],
   },
   {
     id: "experience",
     q: "What's your investing experience level?",
     options: [
-      { label: "Complete Beginner — I'm just getting started", value: "beginner", icon: "🌱" },
-      { label: "Some Experience — 1 to 3 years of investing", value: "intermediate", icon: "📈" },
-      { label: "Experienced — 3 to 10 years, comfortable with markets", value: "experienced", icon: "💼" },
-      { label: "Professional / Expert — I know what I'm doing", value: "expert", icon: "🎯" },
+      { label: "Complete Beginner — I'm just getting started", value: "beginner", icon: TrendingUp },
+      { label: "Some Experience — 1 to 3 years of investing", value: "intermediate", icon: BarChart2 },
+      { label: "Experienced — 3 to 10 years, comfortable with markets", value: "experienced", icon: Briefcase },
+      { label: "Professional / Expert — I know what I'm doing", value: "expert", icon: Target },
     ],
   },
   {
     id: "amount",
     q: "How much are you starting with or currently have invested?",
     options: [
-      { label: "Under $5,000 — Just getting started", value: "small", icon: "💵" },
-      { label: "$5,000 – $50,000 — Building my portfolio", value: "medium", icon: "💰" },
-      { label: "$50,000 – $250,000 — Established investor", value: "large", icon: "💎" },
-      { label: "Over $250,000 — Significant wealth to manage", value: "xlarge", icon: "🏆" },
+      { label: "Under $5,000 — Just getting started", value: "small", icon: DollarSign },
+      { label: "$5,000 – $50,000 — Building my portfolio", value: "medium", icon: Wallet },
+      { label: "$50,000 – $250,000 — Established investor", value: "large", icon: Star },
+      { label: "Over $250,000 — Significant wealth to manage", value: "xlarge", icon: Award },
     ],
   },
   {
     id: "priority",
     q: "What matters most to you in a brokerage?",
     options: [
-      { label: "Lowest fees — I want to keep every dollar I earn", value: "fees", icon: "💲" },
-      { label: "Best research & tools — I want professional-grade data", value: "research", icon: "🔬" },
-      { label: "Simplicity — Easy to use, no complexity", value: "simplicity", icon: "✨" },
-      { label: "A long-term relationship with a trusted advisor I can call", value: "relationship", icon: "🤝" },
+      { label: "Lowest fees — I want to keep every dollar I earn", value: "fees", icon: DollarSign },
+      { label: "Best research & tools — I want professional-grade data", value: "research", icon: Search },
+      { label: "Simplicity — Easy to use, no complexity", value: "simplicity", icon: Star },
+      { label: "A long-term relationship with a trusted advisor I can call", value: "relationship", icon: Users },
     ],
   },
   {
@@ -1560,10 +1562,10 @@ const QUESTIONS = [
     q: "How complex is your overall financial picture?",
     sub: "Think beyond just investing — consider your full financial life.",
     options: [
-      { label: "Simple — Single income, no major assets beyond basic savings", value: "simple", icon: "😊" },
-      { label: "Moderate — Some retirement accounts, maybe a home or small business", value: "moderate", icon: "🏠" },
-      { label: "Complex — Multiple accounts, business income, estate concerns, insurance needs", value: "complex", icon: "🧩" },
-      { label: "Very complex — Multi-generational wealth, trusts, significant assets, tax strategy critical", value: "very_complex", icon: "🏰" },
+      { label: "Simple — Single income, no major assets beyond basic savings", value: "simple", icon: Smile },
+      { label: "Moderate — Some retirement accounts, maybe a home or small business", value: "moderate", icon: Home },
+      { label: "Complex — Multiple accounts, business income, estate concerns, insurance needs", value: "complex", icon: Layers },
+      { label: "Very complex — Multi-generational wealth, trusts, significant assets, tax strategy critical", value: "very_complex", icon: Landmark },
     ],
   },
 ];
@@ -1689,7 +1691,7 @@ function FindTab() {
     return (
       <div>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 24, marginBottom: 8 }}>🎯</div>
+          <div style={{ marginBottom: 8, display: "flex", justifyContent: "center" }}><Target size={28} color={G} /></div>
           <div style={{ fontSize: 20, fontWeight: 700, color: TX1, marginBottom: 6 }}>Your Top 4 Brokerages</div>
           <div style={{ fontSize: 13, color: TX3 }}>Based on your answers — listed in no particular order</div>
         </div>
@@ -1715,7 +1717,7 @@ function FindTab() {
               <p style={{ fontSize: 12, color: TX2, lineHeight: 1.6, marginBottom: 10 }}>{b.verdict}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                 {b.bestFor.slice(0, 3).map(f => (
-                  <span key={f} style={{ fontSize: 10, padding: "2px 7px", borderRadius: 20, background: "rgba(201,168,76,0.08)", border: `1px solid rgba(201,168,76,0.15)`, color: G }}>{f}</span>
+                  <span key={f} style={{ fontSize: 10, padding: "2px 7px", borderRadius: 20, background: "rgba(201,169,110,0.08)", border: `1px solid rgba(201,169,110,0.15)`, color: G }}>{f}</span>
                 ))}
               </div>
             </div>
@@ -1747,7 +1749,7 @@ function FindTab() {
           <span style={{ fontSize: 11, color: TX3 }}>Question {step + 1} of {QUESTIONS.length}</span>
           <span style={{ fontSize: 11, color: G, fontWeight: 600 }}>{Math.round(progress)}% Complete</span>
         </div>
-        <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
+        <div style={{ height: 4, background: "var(--border-c)", borderRadius: 2 }}>
           <div style={{ height: "100%", width: `${progress}%`, background: G, borderRadius: 2, transition: "width 0.3s" }} />
         </div>
       </div>
@@ -1766,13 +1768,13 @@ function FindTab() {
             onClick={() => handleAnswer(currentQ.id, opt.value)}
             style={{
               padding: "18px 16px", borderRadius: 10, textAlign: "left",
-              background: answers[currentQ.id] === opt.value ? "rgba(201,168,76,0.1)" : S,
+              background: answers[currentQ.id] === opt.value ? "rgba(201,169,110,0.1)" : S,
               border: `1px solid ${answers[currentQ.id] === opt.value ? G : B}`,
               cursor: "pointer", transition: "all 0.15s",
               display: "flex", flexDirection: "column", gap: 6,
             }}
           >
-            <span style={{ fontSize: 22 }}>{opt.icon}</span>
+            {(() => { const OIcon = opt.icon; return <OIcon size={22} color={answers[currentQ.id] === opt.value ? G : TX2} />; })()}
             <span style={{ fontSize: 13, fontWeight: 600, color: TX1 }}>{opt.label}</span>
           </button>
         ))}
@@ -1863,7 +1865,7 @@ function FeesTab() {
           <div style={{ fontSize: 11, color: TX3, marginBottom: 16 }}>Based on your trading profile</div>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={data} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: TX3 }} tickFormatter={v => `$${v}`} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: TX2 }} width={80} />
               <Tooltip
@@ -1896,7 +1898,7 @@ function FeesTab() {
               const maxAnnual = Math.max(...data.map(d => d.annual));
               const savings = maxAnnual - row.annual;
               return (
-                <tr key={row.name} style={{ borderBottom: `1px solid rgba(255,255,255,0.03)`, background: i === 0 ? "rgba(45,212,164,0.03)" : "transparent" }}>
+                <tr key={row.name} style={{ borderBottom: `1px solid var(--elevated)`, background: i === 0 ? "rgba(45,212,164,0.03)" : "transparent" }}>
                   <td style={{ padding: "10px 16px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       {i === 0 && <span style={{ fontSize: 9, background: "var(--up)", color: "#000", padding: "2px 6px", borderRadius: 10, fontWeight: 800 }}>CHEAPEST</span>}
@@ -1928,7 +1930,7 @@ function FeesTab() {
 const EDU_TOPICS = [
   {
     category: "Getting Started",
-    icon: "🌱",
+    icon: TrendingUp,
     articles: [
       { title: "What is a Brokerage Account?", time: "4 min", difficulty: "Beginner", summary: "A brokerage account is a taxable investment account where you can buy and sell securities like stocks, ETFs, and bonds. Unlike retirement accounts, you can withdraw money anytime — but you'll owe taxes on gains." },
       { title: "Taxable vs. Tax-Advantaged Accounts", time: "6 min", difficulty: "Beginner", summary: "IRAs and 401(k)s grow tax-deferred or tax-free. Taxable brokerage accounts have no tax advantages but have no contribution limits. Understanding when to use each is one of the most powerful wealth-building decisions you can make." },
@@ -1938,7 +1940,7 @@ const EDU_TOPICS = [
   },
   {
     category: "Account Types",
-    icon: "📋",
+    icon: FileText,
     articles: [
       { title: "Traditional IRA vs. Roth IRA", time: "7 min", difficulty: "Beginner", summary: "Traditional IRA: tax deduction now, pay taxes in retirement. Roth IRA: no deduction now, tax-free in retirement. Generally, if you're young or in a lower tax bracket, the Roth wins. The 2024 contribution limit is $7,000 ($8,000 if 50+)." },
       { title: "SEP IRA for Self-Employed", time: "5 min", difficulty: "Intermediate", summary: "A SEP IRA lets self-employed individuals contribute up to 25% of compensation or $69,000 (2024) — whichever is less. It's the simplest high-limit retirement account for freelancers and business owners." },
@@ -1948,7 +1950,7 @@ const EDU_TOPICS = [
   },
   {
     category: "Understanding Fees",
-    icon: "💲",
+    icon: DollarSign,
     articles: [
       { title: "The True Cost of Commissions", time: "5 min", difficulty: "Beginner", summary: "Before 2019, commissions of $4.95-$9.99 per trade were standard. On 10 trades/month, that's $1,200/year — before any gains. The zero-commission revolution changed everything. But other fees still exist." },
       { title: "Expense Ratios: The Silent Fee That Matters Most", time: "6 min", difficulty: "Beginner", summary: "Expense ratios compound silently. A 1% fee vs a 0.03% fee on $100K over 30 years = $600,000 difference. Vanguard's Total Market ETF (VTI) charges 0.03%. Many actively managed funds charge 0.5-1.5%." },
@@ -1958,7 +1960,7 @@ const EDU_TOPICS = [
   },
   {
     category: "Investment Vehicles",
-    icon: "📦",
+    icon: BarChart2,
     articles: [
       { title: "ETFs vs. Mutual Funds vs. Individual Stocks", time: "9 min", difficulty: "Beginner", summary: "ETFs trade like stocks, have low fees, and provide instant diversification. Mutual funds are priced once daily and may have minimums. Individual stocks offer upside and risk concentration. Most investors should hold mostly ETFs." },
       { title: "REITs: Real Estate in Your Brokerage Account", time: "7 min", difficulty: "Intermediate", summary: "Real Estate Investment Trusts trade on exchanges and must distribute 90% of income as dividends. They provide real estate exposure without owning property. Note: REIT dividends are typically taxed as ordinary income." },
@@ -1968,7 +1970,7 @@ const EDU_TOPICS = [
   },
   {
     category: "Tax Strategy",
-    icon: "📋",
+    icon: Shield,
     articles: [
       { title: "Tax-Loss Harvesting: Turn Losses Into Wins", time: "8 min", difficulty: "Intermediate", summary: "Selling positions at a loss to offset capital gains can save you thousands per year. Betterment and Wealthfront do this automatically. The wash-sale rule prevents buying the same security within 30 days." },
       { title: "Long-Term vs Short-Term Capital Gains", time: "6 min", difficulty: "Beginner", summary: "Holding a position for 12+ months qualifies you for long-term capital gains rates (0%, 15%, or 20% depending on income) vs. short-term rates (ordinary income, up to 37%). Holding one more day can save thousands." },
@@ -1993,13 +1995,13 @@ function EducationTab() {
               style={{
                 width: "100%", textAlign: "left", padding: "10px 14px",
                 borderRadius: 8, marginBottom: 4, cursor: "pointer",
-                background: activeCategory === i ? "rgba(201,168,76,0.1)" : "transparent",
+                background: activeCategory === i ? "rgba(201,169,110,0.1)" : "transparent",
                 border: `1px solid ${activeCategory === i ? G : "transparent"}`,
                 color: activeCategory === i ? G : TX2, fontSize: 12, fontWeight: 600,
                 display: "flex", alignItems: "center", gap: 8, transition: "all 0.15s",
               }}
             >
-              <span>{topic.icon}</span>
+              {(() => { const TIcon = topic.icon; return <TIcon size={13} />; })()}
               {topic.category}
             </button>
           ))}
@@ -2008,7 +2010,7 @@ function EducationTab() {
         {/* Articles */}
         <div>
           <div style={{ fontSize: 16, fontWeight: 700, color: TX1, marginBottom: 4 }}>
-            {EDU_TOPICS[activeCategory].icon} {EDU_TOPICS[activeCategory].category}
+            {(() => { const AIcon = EDU_TOPICS[activeCategory].icon; return <><AIcon size={15} style={{ marginRight: 6, verticalAlign: "middle" }} /> {EDU_TOPICS[activeCategory].category}</>; })()}
           </div>
           <div style={{ fontSize: 12, color: TX3, marginBottom: 16 }}>
             {EDU_TOPICS[activeCategory].articles.length} articles
@@ -2033,7 +2035,7 @@ function EducationTab() {
                       <span style={{ fontSize: 10, color: TX3 }}>⏱ {article.time} read</span>
                       <span style={{
                         fontSize: 10, padding: "1px 7px", borderRadius: 10,
-                        background: article.difficulty === "Beginner" ? "rgba(45,212,164,0.1)" : article.difficulty === "Advanced" ? "rgba(239,68,68,0.1)" : "rgba(201,168,76,0.1)",
+                        background: article.difficulty === "Beginner" ? "rgba(45,212,164,0.1)" : article.difficulty === "Advanced" ? "rgba(239,68,68,0.1)" : "rgba(201,169,110,0.1)",
                         color: article.difficulty === "Beginner" ? "var(--up)" : article.difficulty === "Advanced" ? "var(--down)" : G,
                         fontWeight: 600,
                       }}>
@@ -2072,72 +2074,47 @@ export default function BrokerageGuide() {
     <div>
       {/* ── Hero Banner ── */}
       <div style={{
-        background: "linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(45,212,164,0.04) 100%)",
-        border: `1px solid rgba(201,168,76,0.15)`,
-        borderRadius: 14,
-        padding: "24px 28px",
-        marginBottom: 24,
-        position: "relative",
-        overflow: "hidden",
+        background: "var(--surface)",
+        border: "1px solid var(--border-c)",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: 24, position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{ position: "absolute", top: 0, right: 0, width: 280, height: "100%", background: "radial-gradient(ellipse at right, rgba(201,168,76,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -40, width: 320, height: 320, background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20 }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <BookOpen size={18} color={G} />
-                </div>
-                <div>
-                  <div className="t-label" style={{ color: G, marginBottom: 1 }}>Wealth · Research Platform</div>
-                  <h1 className="t-page-title" style={{ margin: 0, fontSize: "1.35rem" }}>Brokerage Guide</h1>
-                </div>
+          <p style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 0.625rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ display: "inline-block", width: 18, height: 1, background: "var(--gold)", opacity: 0.6 }} />
+            Wealth · Research Platform
+          </p>
+          <h1 style={{ margin: "0 0 0.75rem", fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+            Brokerage{" "}
+            <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Guide</em>
+          </h1>
+          <p style={{ fontSize: 13, color: TX2, lineHeight: 1.7, maxWidth: 600, margin: "0 0 1.25rem" }}>
+            The most comprehensive brokerage research platform available to retail investors. Compare 27 brokerages across fees, tools, account types, and suitability. Find the right brokerage for your exact situation — or compare multiple side-by-side with our interactive tools.
+          </p>
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+            {stats.map(({ label, value }) => (
+              <div key={label} style={{ background: "rgba(201,169,110,0.08)", border: "1px solid rgba(201,169,110,0.2)", borderRadius: 8, padding: "0.5rem 0.875rem" }}>
+                <div className="t-mono" style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--gold)", lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 10, color: TX3, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", marginTop: 4 }}>{label}</div>
               </div>
-              <p style={{ fontSize: 13, color: TX2, lineHeight: 1.7, maxWidth: 600, margin: "0 0 18px" }}>
-                The most comprehensive brokerage research platform available to retail investors. Compare 27 brokerages across fees, tools, account types, and suitability. Find the right brokerage for your exact situation — or compare multiple side-by-side with our interactive tools.
-              </p>
-              <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                {stats.map(({ label, value }) => (
-                  <div key={label}>
-                    <div className="t-mono" style={{ fontSize: 18, fontWeight: 800, color: G }}>{value}</div>
-                    <div style={{ fontSize: 10, color: TX3, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ flexShrink: 0, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {[
-                { icon: <BarChart2 size={14} color={G} />, text: "Side-by-Side Compare" },
-                { icon: <Target size={14} color={T} />, text: "Find My Brokerage" },
-                { icon: <DollarSign size={14} color={G} />, text: "Fee Calculator" },
-                { icon: <BookOpen size={14} color={T} />, text: "Education Center" },
-              ].map(({ icon, text }) => (
-                <div key={text} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", background: "rgba(255,255,255,0.04)", border: `1px solid ${B}`, borderRadius: 7 }}>
-                  {icon}
-                  <span style={{ fontSize: 11, color: TX2, fontWeight: 500, whiteSpace: "nowrap" }}>{text}</span>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* ── Tabs ── */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: `1px solid ${B}`, paddingBottom: 0 }}>
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            style={{
-              padding: "9px 18px", background: "transparent", border: "none",
-              borderBottom: `2px solid ${tab === t.id ? G : "transparent"}`,
-              color: tab === t.id ? G : TX3, fontSize: 13, fontWeight: 600,
-              cursor: "pointer", transition: "all 0.15s", marginBottom: -1,
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: 20 }}>
+        {TABS.map(t => {
+          const active = tab === t.id;
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}>
+              {t.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* ── Tab Content ── */}

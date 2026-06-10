@@ -635,7 +635,7 @@ function PMISection() {
                 const chg = row.value - row.prior;
                 const c = pmiColor(row.value);
                 return (
-                  <tr key={row.country} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                  <tr key={row.country} style={{ borderBottom:"1px solid var(--border-c)" }}>
                     <td style={{ padding:"7px 10px",color:"var(--text-1)",fontWeight:600 }}>{row.country}</td>
                     <td style={{ padding:"7px 10px" }}>
                       <span style={{ fontWeight:800,color:c,fontFamily:"'JetBrains Mono',monospace" }}>
@@ -666,7 +666,7 @@ function PMISection() {
       </div>
 
       {/* PMI education note */}
-      <div style={{ background:"rgba(201,168,76,0.06)",border:"1px solid rgba(201,168,76,0.15)",
+      <div style={{ background:"rgba(201,169,110,0.06)",border:"1px solid rgba(201,169,110,0.15)",
         borderRadius:6,padding:"0.75rem 1rem",fontSize:"0.625rem",color:"var(--text-3)",lineHeight:1.7 }}>
         <strong style={{ color:"var(--gold)" }}>How to read PMI:</strong> A reading above 50 signals economic
         expansion; below 50 signals contraction. The ISM Manufacturing PMI surveys ~300 purchasing managers
@@ -825,7 +825,7 @@ function BuffettIndicator() {
       </div>
 
       {/* Education note */}
-      <div style={{ background:"rgba(201,168,76,0.06)",border:"1px solid rgba(201,168,76,0.15)",
+      <div style={{ background:"rgba(201,169,110,0.06)",border:"1px solid rgba(201,169,110,0.15)",
         borderRadius:6,padding:"0.75rem 1rem",fontSize:"0.625rem",color:"var(--text-3)",lineHeight:1.7 }}>
         <strong style={{ color:"var(--gold)" }}>Buffett on this indicator:</strong> "If the percentage relationship falls
         to the 70% or 80% area, buying stocks is likely to work very well for you. If the ratio approaches 200% —
@@ -965,21 +965,22 @@ export default function MarketBreadth() {
   ];
 
   return (
-    <div className="t-bg" style={{ padding: "1.5rem", minHeight: "100vh", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+    <div style={{ maxWidth: 1400, display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
-        marginBottom: "1.25rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -987,12 +988,15 @@ export default function MarketBreadth() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <BarChart2 size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>MARKET BREADTH & INTERNALS</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                MARKET BREADTH &amp;{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Internals</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Look beneath the surface of the market. Breadth indicators reveal whether a rally is broad-based or narrow — critical signals before major turning points.
@@ -1002,8 +1006,8 @@ export default function MarketBreadth() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1024,8 +1028,8 @@ export default function MarketBreadth() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />

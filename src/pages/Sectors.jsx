@@ -95,46 +95,49 @@ function MiniBar({ label, value, max = 5 }) {
   );
 }
 
+const GLASS_CARD = { background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 12, padding: "1rem", backdropFilter: "blur(8px)" };
+const SIDE_TITLE = { fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-3)", marginBottom: "0.625rem", fontFamily: "'Inter', system-ui, sans-serif" };
+
 function SectorSidebar({ symbol, sectorData, period }) {
   const meta = SECTOR_META[symbol] || {};
   const val = sectorData?.[period];
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       {/* Header */}
-      <div className="t-card t-card-gold t-card-p">
-        <div style={{ display: "flex", alignItems: "baseline", gap: "0.625rem", marginBottom: 4 }}>
-          <span className="t-mono" style={{ fontWeight: 800, fontSize: "1.125rem", color: "var(--gold)" }}>{symbol}</span>
-          <span style={{ fontSize: "0.875rem", color: "var(--text-1)", fontWeight: 600 }}>{meta.name}</span>
+      <div style={{ ...GLASS_CARD, background: "rgba(201,169,110,0.05)", border: "1px solid rgba(201,169,110,0.2)" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.375rem" }}>
+          <span style={{ fontWeight: 800, fontSize: "1rem", color: "var(--gold)", fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>{symbol}</span>
+          <span style={{ fontSize: "0.8125rem", color: "var(--text-1)", fontWeight: 600, fontFamily: "'Inter', system-ui, sans-serif" }}>{meta.name}</span>
         </div>
-        <div style={{ fontSize: "1.75rem", fontWeight: 800, color: pctColor(val), fontVariantNumeric: "tabular-nums" }}>
+        <div style={{ fontSize: "1.75rem", fontWeight: 800, color: pctColor(val), fontFamily: "'JetBrains Mono', 'Fira Code', monospace", lineHeight: 1 }}>
           {fmtPct(val)}
         </div>
-        <div className="t-label" style={{ marginTop: 4 }}>SELECTED PERIOD</div>
+        <div style={{ fontSize: "0.5rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-3)", marginTop: 6, fontFamily: "'Inter', system-ui, sans-serif" }}>Selected Period</div>
       </div>
 
       {/* Performance Bars */}
-      <div className="t-card t-card-p">
-        <div className="t-section-title" style={{ marginBottom: "0.75rem" }}>Performance</div>
+      <div style={GLASS_CARD}>
+        <div style={SIDE_TITLE}>Performance</div>
         <MiniBar label="DAY" value={sectorData?.dayChange} max={3} />
         <MiniBar label="WEEK" value={sectorData?.weekChange} max={5} />
         <MiniBar label="MONTH" value={sectorData?.monthChange} max={10} />
       </div>
 
       {/* Top Holdings */}
-      <div className="t-card t-card-p">
-        <div className="t-section-title" style={{ marginBottom: "0.75rem" }}>Top Holdings</div>
+      <div style={GLASS_CARD}>
+        <div style={SIDE_TITLE}>Top Holdings</div>
         {(meta.holdings || []).map((h, i) => (
           <div key={h} style={{ display: "flex", alignItems: "center", gap: "0.625rem", padding: "5px 0", borderBottom: i < (meta.holdings.length - 1) ? "1px solid var(--border-c)" : "none" }}>
-            <span style={{ fontSize: "0.6875rem", color: "var(--text-3)", minWidth: 14 }}>{i + 1}</span>
-            <span className="t-mono" style={{ fontWeight: 700, color: "var(--gold)", fontSize: "0.8125rem" }}>{h}</span>
+            <span style={{ fontSize: "0.625rem", color: "var(--text-3)", minWidth: 14, fontFamily: "'Inter', system-ui, sans-serif" }}>{i + 1}</span>
+            <span style={{ fontWeight: 700, color: "var(--gold)", fontSize: "0.8125rem", fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>{h}</span>
           </div>
         ))}
       </div>
 
       {/* Description */}
-      <div className="t-card t-card-p">
-        <div className="t-section-title" style={{ marginBottom: "0.75rem" }}>About</div>
-        <p style={{ fontSize: "0.8125rem", color: "var(--text-2)", lineHeight: 1.65 }}>
+      <div style={GLASS_CARD}>
+        <div style={SIDE_TITLE}>About</div>
+        <p style={{ fontSize: "0.8125rem", color: "var(--text-2)", lineHeight: 1.7, margin: 0, fontFamily: "'Inter', system-ui, sans-serif" }}>
           {meta.desc || "Sector ETF tracking a basket of representative equities."}
         </p>
       </div>
@@ -198,74 +201,67 @@ export default function Sectors() {
     .sort((a, b) => b.value - a.value);
 
   return (
-    <div className="t-bg" style={{ minHeight: "100vh", padding: "1.5rem" }}>
+    <div>
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
-        marginBottom: "1.25rem",
-        position: "relative",
-        overflow: "hidden",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: "1.25rem", position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{
-          position: "absolute", top: -60, right: -40,
-          width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
+        <div style={{ position: "absolute", top: -80, right: -60, width: 400, height: 400, background: "radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 68%)", pointerEvents: "none" }} />
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <PieChart size={14} style={{ color: "var(--gold)" }} />
-              </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>SECTOR PERFORMANCE</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.875rem" }}>
+              <div style={{ width: 20, height: 1, background: "var(--gold)", opacity: 0.55 }} />
+              <p style={{ fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--gold)", margin: 0, fontFamily: "'Inter', system-ui, sans-serif" }}>
+                Terminal · Markets
+              </p>
             </div>
-            <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
+            <h1 style={{ margin: "0 0 0.625rem", fontSize: "clamp(1.5rem, 2.5vw, 2rem)", fontWeight: 800, letterSpacing: "-0.04em", color: "var(--text-1)", lineHeight: 1.05, fontFamily: "'Inter', system-ui, sans-serif", display: "flex", alignItems: "baseline", gap: "0.375rem", flexWrap: "wrap" }}>
+              <span>Sector</span>
+              <em style={{ fontStyle: "italic", color: "var(--gold)", fontFamily: "'Playfair Display', Georgia, serif" }}>Performance</em>
+            </h1>
+            <p style={{ fontSize: "0.875rem", color: "var(--text-3)", lineHeight: 1.75, maxWidth: 520, margin: "0 0 1.125rem", fontFamily: "'Inter', system-ui, sans-serif" }}>
               Track performance across all 11 S&P 500 sectors. Identify rotation opportunities and see which sectors are leading or lagging the broad market.
             </p>
-            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.375rem" }}>
               {["11 S&P Sectors", "Weekly & YTD", "Live ETF Data", "Sector Rotation"].map((label) => (
                 <span key={label} style={{
-                  fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
-                  borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
-                  color: "var(--gold)",
+                  fontSize: "0.5625rem", fontWeight: 700, padding: "3px 10px",
+                  borderRadius: 99, letterSpacing: "0.08em", textTransform: "uppercase",
+                  background: "rgba(201,169,110,0.08)",
+                  border: "1px solid rgba(201,169,110,0.2)",
+                  color: "var(--gold)", fontFamily: "'Inter', system-ui, sans-serif",
                 }}>{label}</span>
               ))}
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", flexShrink: 0 }}>
             {[
-              { icon: PieChart, label: "11 GICS Sectors", sub: "Full S&P 500 coverage", color: "#3b82f6" },
-              { icon: TrendingUp, label: "Weekly Performance", sub: "7-day sector returns", color: "var(--gold)" },
-              { icon: BarChart2, label: "YTD Returns", sub: "Year-to-date performance", color: "var(--teal)" },
-              { icon: ArrowLeftRight, label: "Rotation Map", sub: "Capital flow tracking", color: "#f59e0b" },
-            ].map(({ icon: Icon, label, sub, color }) => (
+              { icon: PieChart, label: "11 GICS Sectors", sub: "Full S&P 500 coverage" },
+              { icon: TrendingUp, label: "Weekly Performance", sub: "7-day sector returns" },
+              { icon: BarChart2, label: "YTD Returns", sub: "Year-to-date performance" },
+              { icon: ArrowLeftRight, label: "Rotation Map", sub: "Capital flow tracking" },
+            ].map(({ icon: Icon, label, sub }) => (
               <div key={label} style={{
                 display: "flex", alignItems: "center", gap: "0.625rem",
                 padding: "0.625rem 0.875rem",
-                background: "var(--bg)", border: "1px solid var(--border-c)",
-                borderRadius: 10, minWidth: 170,
+                background: "var(--elevated)", border: "1px solid var(--border-c)",
+                borderRadius: 10, minWidth: 160,
               }}>
                 <div style={{
-                  width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  width: 28, height: 28, borderRadius: 7, flexShrink: 0,
+                  background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                  <Icon size={14} style={{ color }} />
+                  <Icon size={13} style={{ color: "var(--gold)" }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-1)", lineHeight: 1 }}>{label}</div>
-                  <div style={{ fontSize: "0.625rem", color: "var(--text-3)", marginTop: 2, lineHeight: 1.3 }}>{sub}</div>
+                  <div style={{ fontSize: "0.6875rem", fontWeight: 700, color: "var(--text-1)", lineHeight: 1.2, fontFamily: "'Inter', system-ui, sans-serif" }}>{label}</div>
+                  <div style={{ fontSize: "0.5625rem", color: "var(--text-3)", marginTop: 2, fontFamily: "'Inter', system-ui, sans-serif" }}>{sub}</div>
                 </div>
               </div>
             ))}
@@ -274,16 +270,19 @@ export default function Sectors() {
       </div>
 
       {/* Period selector */}
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.25rem" }}>
+      <div style={{ display: "flex", gap: "0.25rem", marginBottom: "1.25rem", background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 10, padding: "0.3rem", width: "fit-content" }}>
         {PERIOD_OPTIONS.map((p) => (
           <button
             key={p.key}
             onClick={() => setPeriod(p.key)}
-            className="t-btn t-btn-sm"
             style={{
-              background: period === p.key ? "var(--gold-dim)" : "var(--elevated)",
-              color: period === p.key ? "var(--gold)" : "var(--text-2)",
-              borderColor: period === p.key ? "rgba(201,168,76,0.3)" : "var(--border-alt)",
+              background: period === p.key ? "rgba(201,169,110,0.18)" : "transparent",
+              color: period === p.key ? "var(--gold)" : "var(--text-3)",
+              border: period === p.key ? "1px solid rgba(201,169,110,0.35)" : "1px solid transparent",
+              borderRadius: 7, padding: "0.35rem 0.75rem",
+              fontSize: "0.6875rem", fontWeight: period === p.key ? 700 : 500,
+              cursor: "pointer", transition: "all 0.12s",
+              fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: "0.03em",
             }}
           >
             {p.label}
@@ -295,7 +294,7 @@ export default function Sectors() {
       <div style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start" }}>
         {/* Heatmap */}
         <div style={{ flex: 1 }}>
-          <div className="t-section-title" style={{ marginBottom: "0.75rem" }}>Market Sectors</div>
+          <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-2)", marginBottom: "0.875rem", letterSpacing: "0.06em", textTransform: "uppercase", fontFamily: "'Inter', system-ui, sans-serif" }}>Market Sectors</div>
           <div style={{
             display: "flex",
             flexWrap: "wrap",
@@ -318,8 +317,8 @@ export default function Sectors() {
                     background: cellBg(val),
                     border: isSelected
                       ? "2px solid var(--gold)"
-                      : "1px solid rgba(255,255,255,0.06)",
-                    boxShadow: isSelected ? "0 0 0 2px rgba(201,168,76,0.15)" : "none",
+                      : "1px solid var(--border-c)",
+                    boxShadow: isSelected ? "0 0 0 2px rgba(201,169,110,0.15)" : "none",
                   }}
                 >
                   <span className="t-mono" style={{ fontWeight: 800, fontSize: "0.9375rem", color: "var(--text-1)", letterSpacing: "0.04em" }}>
@@ -363,11 +362,11 @@ export default function Sectors() {
           </div>
 
           {/* Comparison Bar Chart */}
-          <div className="t-card t-card-p">
-            <div className="t-section-title" style={{ marginBottom: "0.875rem" }}>Sector Performance Comparison</div>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 14, padding: "1.25rem", backdropFilter: "blur(8px)" }}>
+            <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "var(--text-1)", marginBottom: "0.875rem", fontFamily: "'Inter', system-ui, sans-serif" }}>Sector Performance Comparison</div>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={barData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" />
                 <XAxis
                   dataKey="symbol"
                   tick={{ fill: "var(--text-3)", fontSize: 10 }}
@@ -398,18 +397,23 @@ export default function Sectors() {
 
         {/* Sidebar */}
         {selected && (
-          <div style={{ width: 240, flexShrink: 0 }} className="t-fade-up">
-            <div className="t-label" style={{ marginBottom: "0.625rem" }}>SECTOR DETAIL</div>
+          <div style={{ width: 244, flexShrink: 0 }}>
+            <div style={{ fontSize: "0.5rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-3)", marginBottom: "0.625rem", fontFamily: "'Inter', system-ui, sans-serif" }}>Sector Detail</div>
             <SectorSidebar symbol={selected} sectorData={selectedData} period={period} />
           </div>
         )}
 
         {!selected && (
-          <div style={{ width: 240, flexShrink: 0 }}>
-            <div className="t-card t-card-p" style={{ textAlign: "center", padding: "2rem 1rem" }}>
-              <div style={{ fontSize: "1.5rem", marginBottom: 8, opacity: 0.4 }}>◎</div>
-              <div style={{ fontSize: "0.8125rem", color: "var(--text-3)" }}>
-                Click any sector cell to view detailed breakdown
+          <div style={{ width: 244, flexShrink: 0 }}>
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 12, padding: "2.5rem 1.25rem", textAlign: "center", backdropFilter: "blur(8px)" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(201,169,110,0.08)", border: "1px solid rgba(201,169,110,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.875rem" }}>
+                <PieChart size={16} style={{ color: "var(--gold)", opacity: 0.6 }} />
+              </div>
+              <div style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--text-2)", marginBottom: "0.375rem", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                Select a sector
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-3)", lineHeight: 1.65, fontFamily: "'Inter', system-ui, sans-serif" }}>
+                Click any cell in the heatmap to view the detailed breakdown
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
+import { Zap } from "lucide-react";
 import { RiskContext } from "../RiskAnalysis";
 import { PORTFOLIO_MODELS, riskColor, riskLabel, GOLD, GREEN, RED, YELLOW } from "./riskData";
 
@@ -35,7 +36,7 @@ function RiskGauge({ score }) {
             <stop offset="100%" stopColor="#ef4444" />
           </linearGradient>
         </defs>
-        <path d="M 20 85 A 60 60 0 0 1 140 85" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="12" strokeLinecap="round" />
+        <path d="M 20 85 A 60 60 0 0 1 140 85" fill="none" stroke="var(--border-c)" strokeWidth="12" strokeLinecap="round" />
         <path d="M 20 85 A 60 60 0 0 1 140 85" fill="none" stroke="url(#gaugeGrad)" strokeWidth="8" strokeLinecap="round" />
         {/* needle */}
         <line
@@ -196,10 +197,10 @@ export default function TabCommandCenter() {
 
       {!hasPortfolio && (
         <div style={{
-          background:"rgba(201,168,76,0.06)",border:"1px solid rgba(201,168,76,0.2)",
+          background:"rgba(201,169,110,0.06)",border:"1px solid rgba(201,169,110,0.2)",
           borderRadius:8,padding:"0.75rem 1rem",display:"flex",gap:"0.75rem",alignItems:"center",
         }}>
-          <div style={{ fontSize:"1rem" }}>⚡</div>
+          <Zap size={16} color={GOLD} />
           <div style={{ fontSize:"0.75rem",color:"var(--text-2)",lineHeight:1.6 }}>
             <strong style={{ color:GOLD }}>No portfolio entered.</strong> Head to the{" "}
             <em>My Portfolio</em> tab to add your holdings for personalized risk analysis.
@@ -252,11 +253,11 @@ export default function TabCommandCenter() {
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <RadarChart data={radarData}>
-              <PolarGrid stroke="rgba(255,255,255,0.06)" />
+              <PolarGrid stroke="var(--border-c)" />
               <PolarAngleAxis dataKey="dim" tick={{ fill:"var(--text-3)",fontSize:10 }} />
               <PolarRadiusAxis angle={30} domain={[0,100]} tick={false} axisLine={false} />
               <Radar name="Benchmark" dataKey="benchmark" stroke="rgba(255,255,255,0.15)"
-                fill="rgba(255,255,255,0.04)" />
+                fill="var(--border-c)" />
               <Radar name="Your Portfolio" dataKey="score" stroke={GOLD}
                 fill={GOLD} fillOpacity={0.18} dot={{ fill:GOLD,r:3 }} />
               <Tooltip content={<CustomTip />} />
@@ -346,7 +347,7 @@ export default function TabCommandCenter() {
             </thead>
             <tbody>
               {hasPortfolio && (
-                <tr style={{ background:"rgba(201,168,76,0.06)",borderBottom:"1px solid var(--border-c)" }}>
+                <tr style={{ background:"rgba(201,169,110,0.06)",borderBottom:"1px solid var(--border-c)" }}>
                   <td style={{ padding:"7px 10px",fontWeight:700,color:GOLD }}>⭐ Your Portfolio</td>
                   <td style={{ padding:"7px 10px",color:riskColor(stats.riskScore/10) }}>{Math.round(stats.riskScore/10)}/10</td>
                   <td style={{ padding:"7px 10px",color:"var(--text-1)" }}>—</td>
@@ -360,7 +361,7 @@ export default function TabCommandCenter() {
               {[5,7,9,12,17].map(id => {
                 const m = PORTFOLIO_MODELS.find(x => x.id === id);
                 return (
-                  <tr key={id} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                  <tr key={id} style={{ borderBottom:"1px solid var(--border-c)" }}>
                     <td style={{ padding:"7px 10px",color:"var(--text-1)",fontWeight:600 }}>{m.name}</td>
                     <td style={{ padding:"7px 10px" }}>
                       <span style={{ color:riskColor(m.riskLevel),fontWeight:700 }}>{m.riskLevel}/10</span>

@@ -4,7 +4,11 @@ import {
   ResponsiveContainer, AreaChart, Area, BarChart, Bar, ReferenceLine, Cell,
   PieChart, Pie,
 } from "recharts";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ChevronDown, ChevronUp, BarChart2, Zap, Target, Search, Umbrella,
+  Calendar, Clock, TrendingDown, TrendingUp, Layers, Landmark, MapPin,
+  Scale, Receipt, HeartPulse, GraduationCap, BookOpen, Heart, Building2,
+} from "lucide-react";
 import { GOLD, GREEN, RED, YELLOW, BLUE, PURPLE } from "./riskData";
 
 const ORANGE = "#f97316";
@@ -68,7 +72,7 @@ function VolChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={t}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="month" tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <YAxis tickFormatter={v=>fmt(v)} tick={{ fill:"var(--text-3)",fontSize:9 }} width={70}/>
         <Tooltip formatter={(v)=>fmt(v)}
@@ -94,7 +98,7 @@ function DCAChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="year" tickFormatter={v=>`Yr ${v}`} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <YAxis tickFormatter={v=>`$${(v/1000).toFixed(0)}K`} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <Tooltip formatter={(v)=>fmt(v)}
@@ -120,7 +124,7 @@ function TimeInMarketChart() {
   return (
     <ResponsiveContainer width="100%" height={180}>
       <BarChart data={data} layout="vertical">
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false}/>
         <XAxis type="number" tickFormatter={v=>fmt(v)} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <YAxis type="category" dataKey="scenario" width={130} tick={{ fill:"var(--text-2)",fontSize:9 }}/>
         <Tooltip formatter={(v)=>fmt(v)}
@@ -144,7 +148,7 @@ function DiversificationChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <AreaChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="stocks" label={{ value:"# of Stocks", position:"insideBottom",
           offset:-4, fill:"var(--text-3)", fontSize:9 }} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <YAxis tickFormatter={v=>v+"%"} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
@@ -174,7 +178,7 @@ function FactorChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data} layout="vertical">
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false}/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false}/>
         <XAxis type="number" tickFormatter={v=>v+"%"} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <YAxis type="category" dataKey="factor" width={100} tick={{ fill:"var(--text-2)",fontSize:9 }}/>
         <Tooltip formatter={(v)=>[v+"%","Avg Annual Premium"]}
@@ -206,7 +210,7 @@ function FourPctChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={combo}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)"/>
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)"/>
         <XAxis dataKey="year" tickFormatter={v=>`Yr ${v}`} tick={{ fill:"var(--text-3)",fontSize:9 }}/>
         <YAxis tickFormatter={v=>`$${(v/1000).toFixed(0)}K`} tick={{ fill:"var(--text-3)",fontSize:9 }} width={55}/>
         <ReferenceLine y={0} stroke={RED} strokeDasharray="4 4"/>
@@ -228,7 +232,7 @@ export default function TabEducation() {
         Click any topic to expand the full explanation with interactive charts.
       </div>
 
-      <Section title="Standard Deviation & Volatility" icon="📊"
+      <Section title="Standard Deviation & Volatility" icon={<BarChart2 size={18} color={GOLD} />}
         subtitle="Why volatility is the price of returns — and how to measure it">
         <P>Standard deviation measures how much an investment's returns vary around its average. A portfolio with 10% annual volatility can swing ±10% from its expected return in a typical year.</P>
         <Formula>Volatility = √( Σ(return - avg)² / n )</Formula>
@@ -241,7 +245,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="Sharpe Ratio" icon="⚡"
+      <Section title="Sharpe Ratio" icon={<Zap size={18} color={GOLD} />}
         subtitle="The gold standard of risk-adjusted return measurement">
         <P>The Sharpe Ratio measures return earned <em>per unit of risk taken</em>. A higher Sharpe means you earned more return for each percent of volatility you accepted.</P>
         <Formula>Sharpe Ratio = (Portfolio Return - Risk-Free Rate) / Portfolio Volatility</Formula>
@@ -273,7 +277,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="Modern Portfolio Theory (MPT)" icon="🎯"
+      <Section title="Modern Portfolio Theory (MPT)" icon={<Target size={18} color={GOLD} />}
         subtitle="Markowitz 1952 — the math behind diversification">
         <P>Harry Markowitz proved in 1952 that by combining assets with low correlations, investors can reduce portfolio risk without sacrificing return. This is the mathematical proof of "don't put all your eggs in one basket."</P>
         <P>The <strong style={{ color:GOLD }}>Efficient Frontier</strong> is the set of portfolios that maximize return for each level of risk. No rational investor should hold a portfolio below the frontier.</P>
@@ -286,7 +290,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="Factor Investing (Smart Beta)" icon="🔬"
+      <Section title="Factor Investing (Smart Beta)" icon={<Search size={18} color={GOLD} />}
         subtitle="Fama-French, momentum, quality — the science of excess returns">
         <P>Academic research identified specific characteristics (factors) that have historically delivered excess returns over the market. Factor investing tilts portfolios toward these characteristics systematically.</P>
         <FactorChart/>
@@ -299,7 +303,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="The 4% Withdrawal Rule" icon="🏖️"
+      <Section title="The 4% Withdrawal Rule" icon={<Umbrella size={18} color={GOLD} />}
         subtitle="How much can you safely withdraw in retirement — the Trinity Study">
         <P>The 4% Rule (Bengen 1994, Trinity Study 1998): A retiree can withdraw 4% of their starting portfolio annually (inflation-adjusted) with high probability of the portfolio lasting 30 years, based on historical US market returns.</P>
         <FourPctChart/>
@@ -313,7 +317,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="Dollar Cost Averaging vs Lump Sum" icon="📅"
+      <Section title="Dollar Cost Averaging vs Lump Sum" icon={<Calendar size={18} color={GOLD} />}
         subtitle="When to invest all at once vs spreading it out">
         <P>Research shows lump sum investing outperforms dollar cost averaging (DCA) approximately two-thirds of the time, because markets trend upward over time. However, DCA reduces regret and sequence of returns risk for risk-averse investors.</P>
         <DCAChart/>
@@ -325,7 +329,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="Time in Market vs Market Timing" icon="⏰"
+      <Section title="Time in Market vs Market Timing" icon={<Clock size={18} color={GOLD} />}
         subtitle="Why missing the best days is catastrophic">
         <P>Missing just the 10 best trading days over 20 years can cut your final portfolio value by nearly half. The best days often occur during extreme volatility — when panic sellers are out of the market.</P>
         <TimeInMarketChart/>
@@ -337,7 +341,7 @@ export default function TabEducation() {
         </div>
       </Section>
 
-      <Section title="Maximum Drawdown & Recovery" icon="📉"
+      <Section title="Maximum Drawdown & Recovery" icon={<TrendingDown size={18} color={GOLD} />}
         subtitle="Understanding the true cost of portfolio losses">
         <P>Maximum drawdown is the largest peak-to-trough decline in portfolio history. It measures the worst experience a long-term investor would have faced. Understanding recovery math is critical: a 50% loss requires a 100% gain to recover.</P>
         <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:6,margin:"0.75rem 0" }}>
@@ -359,7 +363,7 @@ export default function TabEducation() {
           INVESTMENT EDUCATION — ASSET CLASSES & ACCOUNTS
       ════════════════════════════════════════════════════════════ */}
       <div style={{ margin:"0.75rem 0 0.25rem",padding:"0.5rem 0.75rem",
-        borderLeft:`3px solid ${GOLD}`,background:"rgba(201,168,76,0.05)",borderRadius:"0 6px 6px 0" }}>
+        border:`1px solid rgba(201,169,110,0.2)`,background:"rgba(201,169,110,0.05)",borderRadius:6,borderTop:`2px solid ${GOLD}` }}>
         <div style={{ fontSize:"0.5625rem",fontWeight:800,letterSpacing:"0.12em",
           textTransform:"uppercase",color:GOLD }}>Asset Classes, Account Types & Tax Strategy</div>
         <div style={{ fontSize:"0.5625rem",color:"var(--text-3)",marginTop:2 }}>
@@ -367,32 +371,32 @@ export default function TabEducation() {
         </div>
       </div>
 
-      <Section title="Asset Classes & Risk Spectrum" icon="🏗️"
+      <Section title="Asset Classes & Risk Spectrum" icon={<Layers size={18} color={GOLD} />}
         subtitle="Stocks, ETFs, bonds, REITs, crypto, metals — risk rated and explained">
         <AssetClassSpectrum />
       </Section>
 
-      <Section title="Investment Account Types — Complete Breakdown" icon="🏦"
+      <Section title="Investment Account Types — Complete Breakdown" icon={<Landmark size={18} color={GOLD} />}
         subtitle="Roth IRA, Traditional IRA, 401k, Roth 401k, Brokerage — rules, limits & tax treatment">
         <AccountTypeBreakdown />
       </Section>
 
-      <Section title="Asset Location Strategy — What Goes Where" icon="📍"
+      <Section title="Asset Location Strategy — What Goes Where" icon={<MapPin size={18} color={GOLD} />}
         subtitle="Maximize after-tax returns by putting the right investments in the right accounts">
         <AssetLocation />
       </Section>
 
-      <Section title="The Investment Priority Ladder — What to Fund First" icon="🪜"
+      <Section title="The Investment Priority Ladder — What to Fund First" icon={<Layers size={18} color={GOLD} />}
         subtitle="The optimal order to fund each account for maximum lifetime wealth">
         <PriorityLadder />
       </Section>
 
-      <Section title="Roth 401k vs Traditional 401k — Deep Dive" icon="⚖️"
+      <Section title="Roth 401k vs Traditional 401k — Deep Dive" icon={<Scale size={18} color={GOLD} />}
         subtitle="Marginal tax rates, when each wins, and how to split contributions intelligently">
         <RothVsTraditional />
       </Section>
 
-      <Section title="How Each Account Gets Taxed — The Full Picture" icon="🧾"
+      <Section title="How Each Account Gets Taxed — The Full Picture" icon={<Receipt size={18} color={GOLD} />}
         subtitle="Contribution tax, growth tax, withdrawal tax, penalties, RMDs — all accounts side by side">
         <TaxDeepDive />
       </Section>
@@ -548,7 +552,7 @@ function RiskBar({ level }) {
           width:14,height:6,borderRadius:2,
           background: i < level
             ? (level<=2 ? TEAL : level<=3 ? BLUE : level<=5 ? GOLD : level===6 ? ORANGE : RED)
-            : "rgba(255,255,255,0.08)",
+            : "var(--border-alt)",
         }}/>
       ))}
     </div>
@@ -601,7 +605,7 @@ function AssetClassSpectrum() {
             <InfoBox label="Tax Treatment" value={ac.taxNote} color={ORANGE}/>
             <InfoBox label="Best For" value={ac.bestFor} color={GREEN}/>
             <div style={{ gridColumn:"1/-1" }}>
-              <InfoBox label="⚠️ Watch Out For" value={ac.watchOut} color={RED}/>
+              <InfoBox label="Watch Out For" value={ac.watchOut} color={RED}/>
             </div>
           </div>
         </div>
@@ -623,7 +627,7 @@ function AssetClassSpectrum() {
 
 function InfoBox({ label, value, color }) {
   return (
-    <div style={{ padding:"0.5rem 0.625rem",background:"rgba(255,255,255,0.03)",borderRadius:6,border:"1px solid var(--border-c)" }}>
+    <div style={{ padding:"0.5rem 0.625rem",background:"var(--elevated)",borderRadius:6,border:"1px solid var(--border-c)" }}>
       <div style={{ fontSize:"0.5rem",fontWeight:700,letterSpacing:"0.08em",textTransform:"uppercase",color,marginBottom:3 }}>{label}</div>
       <div style={{ fontSize:"0.6875rem",color:"var(--text-2)",lineHeight:1.5 }}>{value}</div>
     </div>
@@ -638,7 +642,7 @@ const ACCOUNTS = [
     key:"roth_ira",
     name:"Roth IRA",
     color:GREEN,
-    icon:"🌱",
+    icon: TrendingUp,
     limit:"$7,000/yr ($8,000 if 50+) — 2024",
     incomeLimit:"Phase out: $146K–$161K (single) / $230K–$240K (married) — 2024",
     contribution:"After-tax dollars — you pay tax NOW, never again",
@@ -659,7 +663,7 @@ const ACCOUNTS = [
     key:"trad_ira",
     name:"Traditional IRA",
     color:BLUE,
-    icon:"📘",
+    icon: BookOpen,
     limit:"$7,000/yr ($8,000 if 50+) — 2024",
     incomeLimit:"Deductibility phases out if you have a 401k: $77K–$87K (single) / $123K–$143K (married)",
     contribution:"Pre-tax if deductible (tax deduction now). After-tax if non-deductible.",
@@ -680,7 +684,7 @@ const ACCOUNTS = [
     key:"k401",
     name:"Traditional 401k",
     color:GOLD,
-    icon:"🏢",
+    icon: Building2,
     limit:"$23,000/yr employee ($30,500 if 50+) + employer match. Total: $69,000 — 2024",
     incomeLimit:"No income limits — available to all employees of participating employers",
     contribution:"Pre-tax — reduces your taxable income in the year of contribution",
@@ -701,7 +705,7 @@ const ACCOUNTS = [
     key:"roth_401k",
     name:"Roth 401k",
     color:"#a855f7",
-    icon:"💜",
+    icon: Heart,
     limit:"Same as Traditional 401k: $23,000 ($30,500 if 50+) — COMBINED limit with Traditional 401k",
     incomeLimit:"No income limits — unlike Roth IRA, anyone can contribute regardless of income",
     contribution:"After-tax dollars — taxed upfront, never taxed again",
@@ -722,7 +726,7 @@ const ACCOUNTS = [
     key:"brokerage",
     name:"Taxable Brokerage",
     color:ORANGE,
-    icon:"📊",
+    icon: BarChart2,
     limit:"Unlimited contributions — no cap",
     incomeLimit:"No restrictions. Available to anyone.",
     contribution:"After-tax — no deduction, no tax benefit upfront",
@@ -751,17 +755,18 @@ function AccountTypeBreakdown() {
       <P>Each account type has distinct rules for contributions, growth, and withdrawals. Knowing how each one is taxed at every stage lets you build a tax-efficient wealth engine.</P>
 
       {/* Tab selector */}
-      <div style={{ display:"flex",gap:4,marginBottom:"1rem",flexWrap:"wrap" }}>
+      <div style={{ display:"flex",gap:6,marginBottom:"1rem",flexWrap:"wrap",
+        background:"var(--elevated)",border:"1px solid var(--border-c)",
+        borderRadius:12,padding:5 }}>
         {ACCOUNTS.map(a=>(
           <button key={a.key} onClick={()=>setActive(a.key)} style={{
-            padding:"0.4375rem 0.875rem",borderRadius:6,border:"none",cursor:"pointer",
+            padding:"0.4375rem 0.875rem",borderRadius:9,border:`1px solid ${active===a.key ? a.color+"40" : "transparent"}`,cursor:"pointer",
             fontSize:"0.6875rem",fontWeight:700,
-            background: active===a.key ? `${a.color}20` : "var(--elevated)",
+            background: active===a.key ? `${a.color}18` : "transparent",
             color: active===a.key ? a.color : "var(--text-3)",
-            borderBottom: active===a.key ? `2px solid ${a.color}` : "2px solid transparent",
-            transition:"all 0.15s",
+            transition:"all 0.15s",display:"flex",alignItems:"center",gap:4,
           }}>
-            {a.icon} {a.name}
+            {(() => { const AI = a.icon; return <AI size={13} />; })()} {a.name}
           </button>
         ))}
       </div>
@@ -771,7 +776,7 @@ function AccountTypeBreakdown() {
           {/* Header */}
           <div style={{ background:`${acc.color}10`,padding:"1rem 1.25rem",borderBottom:`1px solid ${acc.color}20`,
             display:"flex",alignItems:"center",gap:"0.75rem" }}>
-            <div style={{ fontSize:"1.75rem" }}>{acc.icon}</div>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"center" }}>{(() => { const AccI = acc.icon; return <AccI size={28} color={acc.color} />; })()}</div>
             <div>
               <div style={{ fontSize:"1rem",fontWeight:800,color:acc.color }}>{acc.name}</div>
               <div style={{ fontSize:"0.6875rem",color:"var(--text-3)" }}>{acc.limit}</div>
@@ -920,8 +925,8 @@ function AssetLocation() {
   return (
     <div>
       <P>Asset location is the strategy of placing each investment in the account where it generates the least tax drag. The same investment can have dramatically different after-tax returns depending on where you hold it.</P>
-      <div style={{ background:"rgba(201,168,76,0.06)",borderRadius:7,padding:"0.625rem 0.875rem",
-        border:"1px solid rgba(201,168,76,0.2)",marginBottom:"1rem" }}>
+      <div style={{ background:"rgba(201,169,110,0.06)",borderRadius:7,padding:"0.625rem 0.875rem",
+        border:"1px solid rgba(201,169,110,0.2)",marginBottom:"1rem" }}>
         <div style={{ fontSize:"0.6875rem",fontWeight:700,color:GOLD,marginBottom:2 }}>The Core Rule</div>
         <div style={{ fontSize:"0.6875rem",color:"var(--text-2)",lineHeight:1.6 }}>
           Tax-inefficient assets (bonds, REITs, active funds) → Tax-advantaged accounts (IRA, 401k, Roth).
@@ -955,12 +960,12 @@ function AssetLocationRow({ asset, taxDrag, best, ok, avoid, reason }) {
       {open && (
         <div style={{ padding:"0 0.875rem 0.875rem",borderTop:"1px solid var(--border-c)" }}>
           <div style={{ paddingTop:"0.625rem",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:"0.625rem" }}>
-            <InfoBox label="✅ Best Account" value={best} color={GREEN}/>
+            <InfoBox label="Best Account" value={best} color={GREEN}/>
             <InfoBox label="✓ Also Fine" value={ok} color={BLUE}/>
-            <InfoBox label="❌ Avoid" value={avoid} color={RED}/>
+            <InfoBox label="Avoid" value={avoid} color={RED}/>
           </div>
           <div style={{ fontSize:"0.6875rem",color:"var(--text-3)",fontStyle:"italic",lineHeight:1.5 }}>
-            📌 {reason}
+            {reason}
           </div>
         </div>
       )}
@@ -974,7 +979,7 @@ function AssetLocationRow({ asset, taxDrag, best, ok, avoid, reason }) {
 function PriorityLadder() {
   const steps = [
     {
-      step:1, icon:"🎯", title:"401k — Up to Employer Match",
+      step:1, icon: Target, title:"401k — Up to Employer Match",
       color:GOLD,
       why:"Free money. If your employer matches 50¢ per dollar up to 6% of salary, that's an instant 50% return on your contribution before any market growth.",
       how:"Contribute exactly enough to capture 100% of the employer match. Not a dollar less.",
@@ -982,7 +987,7 @@ function PriorityLadder() {
       skip:"If you skip the match, you're leaving guaranteed money on the table. This is the only investment with a 100% guaranteed first-year return.",
     },
     {
-      step:2, icon:"🏥", title:"HSA — Health Savings Account (if eligible)",
+      step:2, icon: HeartPulse, title:"HSA — Health Savings Account (if eligible)",
       color:"#14b8a6",
       why:"The only triple-tax-advantaged account in existence: deductible contributions, tax-free growth, tax-free withdrawals for medical expenses. After 65, use for anything (like a Traditional IRA).",
       how:"Must have a High-Deductible Health Plan (HDHP). 2024 limits: $4,150 individual / $8,300 family.",
@@ -990,7 +995,7 @@ function PriorityLadder() {
       skip:"If you don't have an HDHP, skip to step 3.",
     },
     {
-      step:3, icon:"🌱", title:"Roth IRA — Max It Out",
+      step:3, icon: TrendingUp, title:"Roth IRA — Max It Out",
       color:GREEN,
       why:"Tax-free growth forever, no RMDs, most flexible retirement account. Your most valuable long-term account.",
       how:"$7,000/yr ($8,000 if 50+). Income limits apply — use backdoor Roth if over the limit. Invest in your highest-growth assets here.",
@@ -998,7 +1003,7 @@ function PriorityLadder() {
       skip:"If your income exceeds limits and backdoor Roth feels complex, skip to step 4 and revisit.",
     },
     {
-      step:4, icon:"🏢", title:"401k / Roth 401k — Max the Rest",
+      step:4, icon: Building2, title:"401k / Roth 401k — Max the Rest",
       color:BLUE,
       why:"$23,000/yr of tax-advantaged space is massive. After getting the match and funding Roth IRA, fill the remaining 401k space.",
       how:"$23,000 total (Traditional + Roth 401k combined). Choose Traditional vs Roth based on your marginal tax rate (see next section).",
@@ -1006,7 +1011,7 @@ function PriorityLadder() {
       skip:"If cash flow is tight after steps 1–3, contribute what you can. Even $100/mo extra matters.",
     },
     {
-      step:5, icon:"📊", title:"Taxable Brokerage — No Limit",
+      step:5, icon: BarChart2, title:"Taxable Brokerage — No Limit",
       color:ORANGE,
       why:"After maxing tax-advantaged accounts, a taxable brokerage provides unlimited investment capacity, full liquidity, and long-term capital gains treatment.",
       how:"Invest in tax-efficient vehicles: index ETFs, buy-and-hold individual stocks, municipal bonds. Avoid frequent trading.",
@@ -1014,7 +1019,7 @@ function PriorityLadder() {
       skip:"This is for extra savings beyond retirement account limits. Also the vehicle for early retirement (no age restrictions).",
     },
     {
-      step:6, icon:"🎓", title:"529 / Education Accounts (if applicable)",
+      step:6, icon: GraduationCap, title:"529 / Education Accounts (if applicable)",
       color:"#a855f7",
       why:"If you have children or plan to fund education, 529 plans grow tax-free when used for qualified education expenses. Also useful for estate planning.",
       how:"No federal limit but state deduction limits vary. Invest in age-based portfolios. SECURE 2.0: unused 529 funds can roll to Roth IRA (lifetime $35K limit).",
@@ -1064,7 +1069,7 @@ function PriorityStep({ step, icon, title, color, why, how, numbers, skip, last 
           background:"none",border:"none",cursor:"pointer",
           display:"flex",alignItems:"center",gap:"0.5rem",
         }}>
-          <span style={{ fontSize:"1.125rem" }}>{icon}</span>
+          {(() => { const SI = icon; return <SI size={18} color={color} />; })()}
           <div style={{ flex:1 }}>
             <div style={{ fontSize:"0.75rem",fontWeight:800,color }}>{title}</div>
           </div>
@@ -1123,7 +1128,7 @@ function RothVsTraditional() {
 
       {/* Core concept */}
       <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0.75rem",marginBottom:"1rem" }}>
-        <div style={{ padding:"0.875rem",borderRadius:8,background:"rgba(201,168,76,0.08)",border:"1px solid rgba(201,168,76,0.25)" }}>
+        <div style={{ padding:"0.875rem",borderRadius:8,background:"rgba(201,169,110,0.08)",border:"1px solid rgba(201,169,110,0.25)" }}>
           <div style={{ fontSize:"0.6875rem",fontWeight:800,color:GOLD,marginBottom:6 }}>Traditional 401k</div>
           <div style={{ fontSize:"0.625rem",color:"var(--text-2)",lineHeight:1.7 }}>
             Pay tax <strong>LATER</strong> at retirement rates. Best when:<br/>
@@ -1226,7 +1231,7 @@ function RothVsTraditional() {
 
         {/* Result cards */}
         <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"0.625rem",marginTop:"0.5rem" }}>
-          <div style={{ padding:"0.75rem",borderRadius:7,background:"rgba(201,168,76,0.08)",
+          <div style={{ padding:"0.75rem",borderRadius:7,background:"rgba(201,169,110,0.08)",
             border:`2px solid ${rothWins ? "var(--border-c)" : GOLD}` }}>
             <div style={{ fontSize:"0.5625rem",color:GOLD,fontWeight:700,marginBottom:6 }}>TRADITIONAL 401k</div>
             <div style={{ fontFamily:"monospace",fontSize:"1.25rem",fontWeight:800,color:rothWins ? "var(--text-2)" : GOLD }}>
@@ -1266,7 +1271,7 @@ function RothVsTraditional() {
         </div>
 
         <div style={{ marginTop:"0.75rem",padding:"0.625rem",borderRadius:6,
-          background:"rgba(255,255,255,0.03)",border:"1px solid var(--border-c)",
+          background:"var(--elevated)",border:"1px solid var(--border-c)",
           fontSize:"0.5625rem",color:"var(--text-3)",lineHeight:1.7 }}>
           <strong style={{ color:"var(--text-2)" }}>Methodology:</strong> Assuming $10,000 Roth contribution (after-tax) vs equivalent Traditional (pre-tax).
           Both grow at 8%/yr for 30 years. Traditional amount scaled to same after-tax cost at current bracket, then taxed at retirement bracket.
@@ -1278,7 +1283,7 @@ function RothVsTraditional() {
       <div style={{ padding:"0.875rem",background:"rgba(20,184,166,0.06)",borderRadius:8,
         border:"1px solid rgba(20,184,166,0.25)",marginBottom:"0.875rem" }}>
         <div style={{ fontSize:"0.6875rem",fontWeight:800,color:TEAL,marginBottom:"0.5rem" }}>
-          🎯 The Smart Strategy: Tax Diversification (Split Your Contributions)
+          The Smart Strategy: Tax Diversification (Split Your Contributions)
         </div>
         <div style={{ fontSize:"0.6875rem",color:"var(--text-2)",lineHeight:1.7 }}>
           Nobody knows what tax rates will be in 30 years. The smartest approach is to build balances in BOTH account types.
@@ -1484,10 +1489,10 @@ function TaxDeepDive() {
         </div>
       </div>
 
-      <div style={{ marginTop:"0.75rem",padding:"0.75rem",background:"rgba(201,168,76,0.05)",
-        borderRadius:7,border:"1px solid rgba(201,168,76,0.2)" }}>
+      <div style={{ marginTop:"0.75rem",padding:"0.75rem",background:"rgba(201,169,110,0.05)",
+        borderRadius:7,border:"1px solid rgba(201,169,110,0.2)" }}>
         <div style={{ fontSize:"0.5625rem",fontWeight:800,color:GOLD,marginBottom:4 }}>
-          🏆 The Ideal Tax-Efficient Investor Playbook
+          The Ideal Tax-Efficient Investor Playbook
         </div>
         <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0.75rem" }}>
           {[

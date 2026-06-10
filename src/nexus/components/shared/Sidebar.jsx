@@ -257,8 +257,7 @@ const styles = {
   },
   navItemActive: {
     background: 'var(--gold-glow)',
-    borderLeft: '2px solid var(--gold)',
-    paddingLeft: 8,
+    borderRadius: 6,
   },
   bottom: {
     padding: '0 8px 16px',

@@ -45,12 +45,12 @@ export default function GroceryPricesCard() {
   };
 
   const items = [
-    { label: "Eggs / dozen", value: data?.eggs_per_dozen, icon: "🥚" },
-    { label: "Milk / gallon", value: data?.milk_per_gallon, icon: "🥛" },
-    { label: "Ground Beef / lb", value: data?.ground_beef_per_lb, icon: "🥩" },
-    { label: "Chicken Breast / lb", value: data?.chicken_breast_per_lb, icon: "🍗" },
-    { label: "Bread / loaf", value: data?.bread_per_loaf, icon: "🍞" },
-    { label: "Butter / lb", value: data?.butter_per_lb, icon: "🧈" },
+    { label: "Eggs / dozen", value: data?.eggs_per_dozen },
+    { label: "Milk / gallon", value: data?.milk_per_gallon },
+    { label: "Ground Beef / lb", value: data?.ground_beef_per_lb },
+    { label: "Chicken Breast / lb", value: data?.chicken_breast_per_lb },
+    { label: "Bread / loaf", value: data?.bread_per_loaf },
+    { label: "Butter / lb", value: data?.butter_per_lb },
   ];
 
   return (
@@ -76,7 +76,6 @@ export default function GroceryPricesCard() {
           {items.map((item, i) => (
             <div key={i} style={{ background: "var(--elevated)", borderRadius: "0.625rem", padding: "0.75rem", border: "1px solid var(--border-c)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginBottom: "0.25rem" }}>
-                <span style={{ fontSize: "1rem" }}>{item.icon}</span>
                 <span style={{ fontSize: "0.625rem", color: "var(--text-3)", fontWeight: 500, lineHeight: 1.3 }}>{item.label}</span>
               </div>
               <div className="tabnum" style={{ fontSize: "1.125rem", fontWeight: 800, color: "var(--text-1)" }}>

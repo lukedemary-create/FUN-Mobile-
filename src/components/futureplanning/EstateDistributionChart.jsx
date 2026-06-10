@@ -89,7 +89,7 @@ export default function EstateDistributionChart({ assets, beneficiaries, trustTy
                   {beneficiary.age && beneficiary.age < 18 && (
                     <div className="pt-2 border-t border-[#1e293b]">
                       <p className="text-xs text-[#f59e0b]">
-                        👶 Minor - {beneficiary.guardian ? `Guardian: ${beneficiary.guardian}` : "Needs guardian"}
+                        Minor — {beneficiary.guardian ? `Guardian: ${beneficiary.guardian}` : "Needs guardian"}
                       </p>
                     </div>
                   )}

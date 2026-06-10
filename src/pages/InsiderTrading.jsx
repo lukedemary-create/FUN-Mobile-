@@ -849,17 +849,19 @@ export default function InsiderTrading() {
   };
 
   const tabBtn = (id) => ({
-    padding: "8px 20px",
-    borderRadius: 8,
-    border: "none",
+    padding: "0.45rem 0.85rem",
+    borderRadius: 7,
+    border: activeTab === id ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent",
     cursor: "pointer",
     fontFamily: "inherit",
-    fontSize: 13,
-    fontWeight: 600,
+    fontSize: "0.75rem",
+    fontWeight: activeTab === id ? 700 : 500,
     letterSpacing: "0.03em",
-    background: activeTab === id ? "var(--gold)" : "var(--surface)",
-    color: activeTab === id ? "#0a0a0a" : "var(--text-2)",
+    background: activeTab === id ? "rgba(201,169,110,0.18)" : "transparent",
+    color: activeTab === id ? "var(--gold)" : "var(--text-3)",
     transition: "all 0.15s ease",
+    whiteSpace: "nowrap",
+    flexShrink: 0,
   });
 
   const filterBtn = (val, current) => ({
@@ -891,21 +893,23 @@ export default function InsiderTrading() {
     padding: "10px 14px",
     fontSize: 13,
     color: "var(--text-1)",
-    borderBottom: "1px solid rgba(255,255,255,0.04)",
+    borderBottom: "1px solid var(--border-c)",
     background: isBuy ? "rgba(0,200,120,0.03)" : "rgba(255,80,80,0.03)",
     whiteSpace: "nowrap",
   });
 
   return (
-    <div style={{ padding: "28px 24px", maxWidth: 1400, margin: "0 auto", color: "var(--text-1)" }}>
+    <div style={{ maxWidth: 1400, color: "var(--text-1)" }}>
 
       {/* ─── Hero Banner ───────────────────────────────────────────── */}
       <div style={{
-        background: "linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(0,180,170,0.06) 100%)",
+        background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "28px 32px",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         marginBottom: 28,
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 8 }}>
           <div style={{
@@ -916,7 +920,10 @@ export default function InsiderTrading() {
             <Eye size={22} color="var(--gold)" />
           </div>
           <div>
-            <h1 className="t-page-title" style={{ margin: 0, fontSize: 26 }}>Insider Trading Tracker</h1>
+            <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+              Insider Trading{" "}
+              <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Tracker</em>
+            </h1>
             <p style={{ margin: "4px 0 0", color: "var(--text-2)", fontSize: 14 }}>
               Monitor SEC Form 4 filings — track when executives and directors buy or sell their own company stock
             </p>
@@ -1047,7 +1054,7 @@ export default function InsiderTrading() {
         <div style={{ flex: 1, minWidth: 0 }}>
 
           {/* Tab Bar */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: 18 }}>
             {TABS.map((t) => (
               <button key={t.id} style={tabBtn(t.id)} onClick={() => setActiveTab(t.id)}>
                 {t.label}
@@ -1129,7 +1136,7 @@ export default function InsiderTrading() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {filteredNotable.map((f) => (
                 <div key={f.id} className="t-card-p" style={{
-                  borderLeft: `3px solid ${f.signal === "strong" ? "var(--up)" : f.signal === "moderate" ? "var(--gold)" : "var(--teal)"}`,
+                  border: `1px solid ${f.signal === "strong" ? "rgba(16,185,129,0.3)" : f.signal === "moderate" ? "rgba(201,169,110,0.3)" : "rgba(0,180,198,0.3)"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
                     <div>
@@ -1150,12 +1157,12 @@ export default function InsiderTrading() {
                   <div style={{
                     marginTop: 12,
                     padding: "10px 14px",
-                    background: "rgba(255,255,255,0.03)",
+                    background: "var(--elevated)",
                     borderRadius: 8,
                     fontSize: 13,
                     color: "var(--text-2)",
                     lineHeight: 1.6,
-                    borderLeft: "2px solid rgba(212,175,55,0.2)",
+                    border: "1px solid rgba(212,175,55,0.2)",
                   }}>
                     {NOTABLE_ANALYSIS[f.id] || "Insider purchase filed with the SEC. Review full Form 4 filing for transaction context."}
                   </div>
@@ -1183,7 +1190,7 @@ export default function InsiderTrading() {
 
               {CLUSTERS.map((c, i) => (
                 <div key={i} className="t-card-p" style={{
-                  borderLeft: `3px solid ${c.isSell ? "var(--down)" : c.signal === "strong" ? "var(--up)" : "var(--gold)"}`,
+                  border: `1px solid ${c.isSell ? "rgba(239,68,68,0.3)" : c.signal === "strong" ? "rgba(16,185,129,0.3)" : "rgba(201,169,110,0.3)"}`,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
                     <div>
@@ -1226,12 +1233,12 @@ export default function InsiderTrading() {
                   <div style={{
                     marginTop: 12,
                     padding: "10px 14px",
-                    background: "rgba(255,255,255,0.03)",
+                    background: "var(--elevated)",
                     borderRadius: 8,
                     fontSize: 13,
                     color: "var(--text-2)",
                     lineHeight: 1.6,
-                    borderLeft: `2px solid ${c.isSell ? "rgba(255,80,80,0.2)" : "rgba(0,200,120,0.2)"}`,
+                    border: `1px solid ${c.isSell ? "rgba(255,80,80,0.2)" : "rgba(0,200,120,0.2)"}`,
                   }}>
                     {c.analysis}
                   </div>
@@ -1313,7 +1320,7 @@ export default function InsiderTrading() {
                 layout="vertical"
                 margin={{ top: 0, right: 10, bottom: 0, left: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" horizontal={false} />
                 <XAxis
                   type="number"
                   tick={{ fill: "var(--text-3)", fontSize: 10 }}
@@ -1374,7 +1381,7 @@ export default function InsiderTrading() {
       <div style={{
         marginTop: 28,
         padding: "14px 18px",
-        background: "rgba(255,255,255,0.02)",
+        background: "var(--surface)",
         border: "1px solid var(--border-c)",
         borderRadius: 10,
         fontSize: 11,

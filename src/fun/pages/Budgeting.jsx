@@ -11,9 +11,17 @@ import {
 } from 'lucide-react';
 
 const TEAL  = '#00B4C6';
-const NAVY  = '#0A1F44';
+const NAVY  = '#f0e8d8';
+const BG    = '#1a1410';
+const SURF  = '#231c16';
+const RAISE = '#2d2419';
+const B1    = '#2a2018';
+const B2    = '#3d3028';
+const T2    = '#a89070';
+const T3    = '#6b5540';
+const UI    = "'Inter', system-ui, sans-serif";
+const DISP  = "'Playfair Display', Georgia, serif";
 const LIGHT = '#5BC8E2';
-const BG    = '#F4F7FA';
 
 /* ── Shared helpers ───────────────────────────────────────────────── */
 function fmt(n) {
@@ -28,8 +36,8 @@ function pct(v, total) {
 function SectionCard({ title, subtitle, children }) {
   return (
     <div style={{
-      background: '#fff',
-      border: '1px solid #e5e7eb',
+      background: SURF,
+      border: `1px solid ${B1}`,
       borderRadius: 16,
       padding: '1.5rem',
       boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
@@ -39,7 +47,7 @@ function SectionCard({ title, subtitle, children }) {
         <div style={{ marginBottom: '1.25rem' }}>
           {title && (
             <h3 style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: DISP,
               fontSize: '1.25rem',
               fontWeight: 700,
               color: NAVY,
@@ -48,7 +56,7 @@ function SectionCard({ title, subtitle, children }) {
             }}>{title}</h3>
           )}
           {subtitle && (
-            <p style={{ margin: 0, fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.65 }}>{subtitle}</p>
+            <p style={{ margin: 0, fontSize: '0.875rem', color: T3, lineHeight: 1.65 }}>{subtitle}</p>
           )}
         </div>
       )}
@@ -66,14 +74,14 @@ function CalcInput({ label, value, onChange, prefix = '$', min = 0, max, step = 
         fontWeight: 600,
         color: NAVY,
         marginBottom: '0.375rem',
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: UI,
       }}>{label}</label>
       <div style={{ position: 'relative' }}>
         {prefix && (
           <span style={{
             position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-            fontSize: '0.9375rem', color: '#9ca3af', fontWeight: 500,
-            fontFamily: "'DM Sans', sans-serif",
+            fontSize: '0.9375rem', color: T3, fontWeight: 500,
+            fontFamily: UI,
           }}>{prefix}</span>
         )}
         <input
@@ -86,14 +94,14 @@ function CalcInput({ label, value, onChange, prefix = '$', min = 0, max, step = 
           style={{
             width: '100%',
             padding: prefix ? '0.625rem 0.75rem 0.625rem 1.625rem' : '0.625rem 0.75rem',
-            border: '1.5px solid #e5e7eb',
+            border: `1.5px solid ${B2}`,
             borderRadius: 9,
             fontSize: '1rem',
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: UI,
             color: NAVY,
             fontWeight: 600,
             outline: 'none',
-            background: '#fafafa',
+            background: RAISE,
             boxSizing: 'border-box',
             transition: 'border-color 0.13s',
           }}
@@ -101,7 +109,7 @@ function CalcInput({ label, value, onChange, prefix = '$', min = 0, max, step = 
           onBlur={e => e.target.style.borderColor = '#e5e7eb'}
         />
       </div>
-      {hint && <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif" }}>{hint}</p>}
+      {hint && <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: T3, fontFamily: UI }}>{hint}</p>}
     </div>
   );
 }
@@ -123,7 +131,7 @@ function ResultBadge({ label, value, color = TEAL, size = 'md' }) {
         letterSpacing: '-0.02em',
         lineHeight: 1.1,
       }}>{value}</div>
-      <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: 4, fontFamily: "'DM Sans',sans-serif", fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: '0.75rem', color: T3, marginTop: 4, fontFamily: UI, fontWeight: 500 }}>{label}</div>
     </div>
   );
 }
@@ -138,18 +146,18 @@ const PAYCHECK_SEGMENTS = [
   { label: 'Federal Income Tax',   pct: 12,    color: '#3b82f6', desc: 'Withheld based on your W-4 and marginal tax bracket',           ex: '$600' },
   { label: 'FICA (SS + Medicare)', pct: 7.65,  color: '#8b5cf6', desc: 'Social Security 6.2% + Medicare 1.45% — always fixed',          ex: '$383' },
   { label: 'State Income Tax',     pct: 5,     color: '#f59e0b', desc: 'Varies by state — ranges from 0% (TX, FL) to 13%+ (CA)',        ex: '$250' },
-  { label: 'Benefits & 401(k)',    pct: 4.65,  color: '#6b7280', desc: 'Health insurance premiums + voluntary retirement contributions', ex: '$232' },
+  { label: 'Benefits & 401(k)',    pct: 4.65,  color: T3, desc: 'Health insurance premiums + voluntary retirement contributions', ex: '$232' },
 ];
 
 function PaycheckDiagram() {
   const [hovered, setHovered] = useState(null);
   return (
     <div>
-      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.125rem', lineHeight: 1.7, fontFamily: "'DM Sans',sans-serif" }}>
+      <p style={{ fontSize: '0.875rem', color: T3, marginBottom: '1.125rem', lineHeight: 1.7, fontFamily: UI }}>
         Your <strong style={{ color: NAVY }}>gross pay</strong> is what you earn before deductions.
         Your <strong style={{ color: TEAL }}>net pay</strong> (take-home) is what you actually spend and save.
         The gap between the two can be surprisingly large — understanding it is step one of any budget.
-        <br/><em style={{ fontSize: '0.8125rem', color: '#9ca3af' }}>Example based on $5,000/month gross income in a mid-tax state.</em>
+        <br/><em style={{ fontSize: '0.8125rem', color: T3 }}>Example based on $5,000/month gross income in a mid-tax state.</em>
       </p>
 
       {/* Stacked bar */}
@@ -180,7 +188,7 @@ function PaycheckDiagram() {
             title={`${s.label}: ${s.pct}%`}
           >
             {s.pct > 10 && (
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#fff', fontFamily: "'DM Sans',sans-serif", textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#fff', fontFamily: UI, textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                 {Math.round(s.pct)}%
               </span>
             )}
@@ -208,12 +216,12 @@ function PaycheckDiagram() {
           >
             <div style={{ width: 12, height: 12, borderRadius: 3, background: s.color, flexShrink: 0, marginTop: 3 }}/>
             <div style={{ flex: 1 }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: NAVY, fontFamily: "'DM Sans',sans-serif" }}>{s.label}</span>
-              <span style={{ fontSize: '0.8125rem', color: '#6b7280', marginLeft: 6, fontFamily: "'DM Sans',sans-serif" }}>— {s.desc}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: NAVY, fontFamily: UI }}>{s.label}</span>
+              <span style={{ fontSize: '0.8125rem', color: T3, marginLeft: 6, fontFamily: UI }}>— {s.desc}</span>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: s.color, fontFamily: "'DM Sans',sans-serif" }}>{s.pct}%</div>
-              <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif" }}>{s.ex}</div>
+              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: s.color, fontFamily: UI }}>{s.pct}%</div>
+              <div style={{ fontSize: '0.75rem', color: T3, fontFamily: UI }}>{s.ex}</div>
             </div>
           </div>
         ))}
@@ -266,7 +274,7 @@ function IncomeTypes() {
             flexWrap: 'wrap',
             gap: 8,
           }}>
-            <span style={{ fontFamily: "'Playfair Display',serif", fontSize: '1rem', fontWeight: 700, color: NAVY }}>{t.type}</span>
+            <span style={{ fontFamily: DISP, fontSize: '1rem', fontWeight: 700, color: NAVY }}>{t.type}</span>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {t.tags.map(tag => (
                 <span key={tag} style={{
@@ -277,14 +285,14 @@ function IncomeTypes() {
                   fontSize: '0.6875rem',
                   fontWeight: 600,
                   color: t.color,
-                  fontFamily: "'DM Sans',sans-serif",
+                  fontFamily: UI,
                   letterSpacing: '0.03em',
                 }}>{tag}</span>
               ))}
             </div>
           </div>
           <div style={{ padding: '0.875rem 1rem' }}>
-            <p style={{ margin: '0 0 0.625rem', fontSize: '0.875rem', color: '#374151', lineHeight: 1.7, fontFamily: "'DM Sans',sans-serif" }}>{t.desc}</p>
+            <p style={{ margin: '0 0 0.625rem', fontSize: '0.875rem', color: T2, lineHeight: 1.7, fontFamily: UI }}>{t.desc}</p>
             <div style={{
               display: 'flex',
               alignItems: 'flex-start',
@@ -294,7 +302,7 @@ function IncomeTypes() {
               borderRadius: 8,
             }}>
               <Info size={13} color={t.color} style={{ flexShrink: 0, marginTop: 2 }}/>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: '#4b5563', lineHeight: 1.6, fontFamily: "'DM Sans',sans-serif" }}>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: '#4b5563', lineHeight: 1.6, fontFamily: UI }}>
                 <strong>Pro tip:</strong> {t.tip}
               </p>
             </div>
@@ -332,16 +340,16 @@ const CustomTooltip = ({ active, payload }) => {
   const d = payload[0].payload;
   return (
     <div style={{
-      background: '#fff',
-      border: '1px solid #e5e7eb',
+      background: SURF,
+      border: `1px solid ${B1}`,
       borderRadius: 10,
       padding: '0.75rem 1rem',
       boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
       maxWidth: 220,
-      fontFamily: "'DM Sans',sans-serif",
+      fontFamily: UI,
     }}>
       <div style={{ fontWeight: 700, color: NAVY, marginBottom: 4, fontSize: '0.875rem' }}>{d.name}</div>
-      <div style={{ fontSize: '0.8125rem', color: '#6b7280', lineHeight: 1.6 }}>{d.desc}</div>
+      <div style={{ fontSize: '0.8125rem', color: T3, lineHeight: 1.6 }}>{d.desc}</div>
     </div>
   );
 };
@@ -349,7 +357,7 @@ const CustomTooltip = ({ active, payload }) => {
 function SpendingPie() {
   return (
     <div>
-      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.25rem', lineHeight: 1.7, fontFamily: "'DM Sans',sans-serif" }}>
+      <p style={{ fontSize: '0.875rem', color: T3, marginBottom: '1.25rem', lineHeight: 1.7, fontFamily: UI }}>
         The <strong style={{ color: NAVY }}>50/30/20 rule</strong> is a simple framework popularized by Senator Elizabeth Warren.
         Allocate 50% of take-home pay to needs, 30% to wants, and 20% to savings and debt reduction.
         It's a starting point — not a straitjacket.
@@ -391,8 +399,8 @@ function SpendingPie() {
                 marginTop: 3,
               }}/>
               <div>
-                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: NAVY, fontFamily: "'DM Sans',sans-serif", marginBottom: 2 }}>{d.name}</div>
-                <div style={{ fontSize: '0.8125rem', color: '#6b7280', lineHeight: 1.6, fontFamily: "'DM Sans',sans-serif" }}>{d.desc}</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: NAVY, fontFamily: UI, marginBottom: 2 }}>{d.name}</div>
+                <div style={{ fontSize: '0.8125rem', color: T3, lineHeight: 1.6, fontFamily: UI }}>{d.desc}</div>
               </div>
             </div>
           ))}
@@ -433,7 +441,7 @@ function BarVsTarget({ actual, target, color }) {
   const pctUsed = target > 0 ? Math.min((actual / target) * 100, 130) : 0;
   return (
     <div style={{ marginTop: 6 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6875rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif", marginBottom: 3 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6875rem', color: T3, fontFamily: UI, marginBottom: 3 }}>
         <span>Actual: {fmt(actual)}</span>
         <span style={{ color: over ? '#ef4444' : '#9ca3af' }}>Target: {fmt(target)}</span>
       </div>
@@ -494,10 +502,10 @@ function BudgetBuilder() {
               alignItems: 'center',
             }}>
               <div>
-                <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, color: NAVY, fontSize: '0.9375rem' }}>
+                <span style={{ fontFamily: UI, fontWeight: 700, color: NAVY, fontSize: '0.9375rem' }}>
                   {meta.label}
                 </span>
-                <span style={{ marginLeft: 8, fontSize: '0.75rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif" }}>
+                <span style={{ marginLeft: 8, fontSize: '0.75rem', color: T3, fontFamily: UI }}>
                   ({Math.round(meta.target * 100)}% target)
                 </span>
               </div>
@@ -505,9 +513,9 @@ function BudgetBuilder() {
                 <span style={{
                   fontSize: '0.9375rem', fontWeight: 800,
                   color: actual > target ? '#ef4444' : meta.color,
-                  fontFamily: "'DM Sans',sans-serif",
+                  fontFamily: UI,
                 }}>{fmt(actual)}</span>
-                <span style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif", marginLeft: 4 }}>/ {fmt(target)}</span>
+                <span style={{ fontSize: '0.75rem', color: T3, fontFamily: UI, marginLeft: 4 }}>/ {fmt(target)}</span>
               </div>
             </div>
 
@@ -528,10 +536,10 @@ function BudgetBuilder() {
                     padding: '0.375rem 1rem',
                   }}>
                     <Icon size={13} color={meta.color} style={{ flexShrink: 0 }}/>
-                    <span style={{ flex: 1, fontSize: '0.8125rem', color: '#374151', fontFamily: "'DM Sans',sans-serif" }}>{cat.label}</span>
+                    <span style={{ flex: 1, fontSize: '0.8125rem', color: T2, fontFamily: UI }}>{cat.label}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <button onClick={() => update(cat.id, (cats[cat.id] || 0) - 25)}
-                        style={{ width:24, height:24, border:`1px solid #e5e7eb`, borderRadius:6, background:'#f9fafb', cursor:'pointer', fontSize:'1rem', lineHeight:1, color:'#6b7280', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'inherit' }}>
+                        style={{ width:24, height:24, border:`1px solid #e5e7eb`, borderRadius:6, background:RAISE, cursor:'pointer', fontSize:'1rem', lineHeight:1, color:T3, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'inherit' }}>
                         −
                       </button>
                       <input
@@ -540,17 +548,17 @@ function BudgetBuilder() {
                         onChange={e => update(cat.id, Number(e.target.value))}
                         style={{
                           width: 72, textAlign: 'center',
-                          border: '1.5px solid #e5e7eb', borderRadius: 6,
+                          border: `1.5px solid ${B2}`, borderRadius: 6,
                           padding: '3px 6px',
                           fontSize: '0.8125rem', fontWeight: 600,
-                          color: NAVY, fontFamily: "'DM Sans',sans-serif",
-                          background: '#fafafa',
+                          color: NAVY, fontFamily: UI,
+                          background: RAISE,
                         }}
                         onFocus={e => e.target.style.borderColor = TEAL}
                         onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                       />
                       <button onClick={() => update(cat.id, (cats[cat.id] || 0) + 25)}
-                        style={{ width:24, height:24, border:`1px solid #e5e7eb`, borderRadius:6, background:'#f9fafb', cursor:'pointer', fontSize:'1rem', lineHeight:1, color:TEAL, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'inherit' }}>
+                        style={{ width:24, height:24, border:`1px solid #e5e7eb`, borderRadius:6, background:RAISE, cursor:'pointer', fontSize:'1rem', lineHeight:1, color:TEAL, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'inherit' }}>
                         +
                       </button>
                     </div>
@@ -575,11 +583,11 @@ function BudgetBuilder() {
         gap: '0.75rem',
       }}>
         <div>
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: "'DM Sans',sans-serif", marginBottom: 3 }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: T3, textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: UI, marginBottom: 3 }}>
             Monthly {surplusPos ? 'Surplus' : 'Deficit'}
           </div>
           <div style={{
-            fontFamily: "'Playfair Display',serif",
+            fontFamily: DISP,
             fontSize: '2rem',
             fontWeight: 700,
             color: surplusPos ? TEAL : '#ef4444',
@@ -587,13 +595,13 @@ function BudgetBuilder() {
           }}>{surplusPos ? '+' : ''}{fmt(surplus)}</div>
         </div>
         <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
-          <div style={{ textAlign: 'center', padding: '0.5rem 0.875rem', background: '#fff', borderRadius: 9, border: '1px solid #e5e7eb' }}>
-            <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif" }}>Total Expenses</div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: NAVY, fontFamily: "'DM Sans',sans-serif" }}>{fmt(totalExp)}</div>
+          <div style={{ textAlign: 'center', padding: '0.5rem 0.875rem', background: SURF, borderRadius: 9, border: `1px solid ` }}>
+            <div style={{ fontSize: '0.75rem', color: T3, fontFamily: UI }}>Total Expenses</div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: NAVY, fontFamily: UI }}>{fmt(totalExp)}</div>
           </div>
-          <div style={{ textAlign: 'center', padding: '0.5rem 0.875rem', background: '#fff', borderRadius: 9, border: '1px solid #e5e7eb' }}>
-            <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif" }}>Savings Rate</div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: TEAL, fontFamily: "'DM Sans',sans-serif" }}>{pct(groupTotals.savings, income)}%</div>
+          <div style={{ textAlign: 'center', padding: '0.5rem 0.875rem', background: SURF, borderRadius: 9, border: `1px solid ` }}>
+            <div style={{ fontSize: '0.75rem', color: T3, fontFamily: UI }}>Savings Rate</div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: TEAL, fontFamily: UI }}>{pct(groupTotals.savings, income)}%</div>
           </div>
         </div>
       </div>
@@ -601,7 +609,7 @@ function BudgetBuilder() {
       {!surplusPos && (
         <div style={{ marginTop: '0.875rem', display: 'flex', gap: 8, padding: '0.75rem 0.875rem', background: '#fef2f2', borderRadius: 10, border: '1px solid #fee2e2' }}>
           <AlertCircle size={15} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }}/>
-          <p style={{ margin: 0, fontSize: '0.8125rem', color: '#991b1b', lineHeight: 1.6, fontFamily: "'DM Sans',sans-serif" }}>
+          <p style={{ margin: 0, fontSize: '0.8125rem', color: '#991b1b', lineHeight: 1.6, fontFamily: UI }}>
             You're spending more than you earn. Identify which categories to reduce — start with Wants, then revisit fixed costs.
           </p>
         </div>
@@ -629,7 +637,7 @@ function EmergencyFundCalc() {
       </div>
 
       <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: NAVY, marginBottom: '0.5rem', fontFamily: "'DM Sans',sans-serif" }}>
+        <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: NAVY, marginBottom: '0.5rem', fontFamily: UI }}>
           Months of expenses to cover: <span style={{ color: recColor, fontWeight: 700 }}>{months} months ({recMonths})</span>
         </label>
         <input
@@ -637,7 +645,7 @@ function EmergencyFundCalc() {
           onChange={e => setMonths(Number(e.target.value))}
           style={{ width: '100%', accentColor: TEAL, cursor: 'pointer' }}
         />
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6875rem', color: '#9ca3af', fontFamily: "'DM Sans',sans-serif", marginTop: 3 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6875rem', color: T3, fontFamily: UI, marginTop: 3 }}>
           <span>1 mo</span><span>3 mo (min)</span><span>6 mo (ideal)</span><span>12 mo</span>
         </div>
       </div>
@@ -648,7 +656,7 @@ function EmergencyFundCalc() {
       </div>
 
       <div style={{ padding: '0.875rem', background: '#f0fdff', border: '1px solid rgba(0,180,198,0.2)', borderRadius: 10 }}>
-        <p style={{ margin: 0, fontSize: '0.8125rem', color: '#374151', lineHeight: 1.7, fontFamily: "'DM Sans',sans-serif" }}>
+        <p style={{ margin: 0, fontSize: '0.8125rem', color: T2, lineHeight: 1.7, fontFamily: UI }}>
           <strong>Where to keep it:</strong> A high-yield savings account (HYSA) — currently 4.5–5% APY at online banks like Marcus, Ally, or SoFi.
           Keep it separate from your checking so you're not tempted to spend it.
         </p>
@@ -699,9 +707,9 @@ function SavingsRateCalc() {
                 ? <CheckCircle2 size={15} color={b.color}/>
                 : <div style={{ width:15, height:15, borderRadius:'50%', border:'1.5px solid #d1d5db', flexShrink:0 }}/>
               }
-              <span style={{ fontWeight: 700, color: b.color, fontSize: '0.875rem', fontFamily: "'DM Sans',sans-serif", width: 36, flexShrink:0 }}>{b.label}</span>
-              <span style={{ fontSize: '0.8125rem', color: '#4b5563', fontFamily: "'DM Sans',sans-serif" }}>{b.desc}</span>
-              {isYou && <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', fontWeight: 700, color: b.color, fontFamily: "'DM Sans',sans-serif", background: `${b.color}18`, padding:'2px 8px', borderRadius:100 }}>You are here</span>}
+              <span style={{ fontWeight: 700, color: b.color, fontSize: '0.875rem', fontFamily: UI, width: 36, flexShrink:0 }}>{b.label}</span>
+              <span style={{ fontSize: '0.8125rem', color: '#4b5563', fontFamily: UI }}>{b.desc}</span>
+              {isYou && <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', fontWeight: 700, color: b.color, fontFamily: UI, background: `${b.color}18`, padding:'2px 8px', borderRadius:100 }}>You are here</span>}
             </div>
           );
         })}
@@ -733,16 +741,16 @@ function DTICalc() {
       <CalcInput label="Monthly Gross Income (before taxes)" value={grossIncome} onChange={setGross} min={0} step={100}/>
 
       <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: NAVY, marginBottom: '0.5rem', fontFamily: "'DM Sans',sans-serif" }}>Monthly Debt Payments</label>
+        <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: NAVY, marginBottom: '0.5rem', fontFamily: UI }}>Monthly Debt Payments</label>
         {DTI_CATS.map(c => (
           <div key={c.id} style={{ display:'flex', alignItems:'center', gap:'0.75rem', padding:'0.375rem 0' }}>
-            <span style={{ flex:1, fontSize:'0.8125rem', color:'#374151', fontFamily:"'DM Sans',sans-serif" }}>{c.label}</span>
+            <span style={{ flex:1, fontSize:'0.8125rem', color:T2, fontFamily:UI }}>{c.label}</span>
             <div style={{ display:'flex', alignItems:'center', gap:4 }}>
-              <span style={{ color:'#9ca3af', fontSize:'0.9375rem' }}>$</span>
+              <span style={{ color:T3, fontSize:'0.9375rem' }}>$</span>
               <input
                 type="number" min={0} value={debts[c.id] || 0}
                 onChange={e => setDebts(prev => ({ ...prev, [c.id]: Math.max(0, Number(e.target.value)) }))}
-                style={{ width:88, border:'1.5px solid #e5e7eb', borderRadius:7, padding:'5px 8px', fontSize:'0.875rem', fontWeight:600, color:NAVY, fontFamily:"'DM Sans',sans-serif", background:'#fafafa' }}
+                style={{ width:88, border:`1.5px solid ${B2}`, borderRadius:7, padding:'5px 8px', fontSize:'0.875rem', fontWeight:600, color:NAVY, fontFamily:UI, background:RAISE }}
                 onFocus={e => e.target.style.borderColor = TEAL}
                 onBlur={e => e.target.style.borderColor = '#e5e7eb'}
               />
@@ -757,18 +765,18 @@ function DTICalc() {
       </div>
 
       {/* DTI Scale */}
-      <div style={{ background:'#f9fafb', borderRadius:10, padding:'0.875rem' }}>
+      <div style={{ background:RAISE, borderRadius:10, padding:'0.875rem' }}>
         <div style={{ display:'flex', height:8, borderRadius:99, overflow:'hidden', marginBottom:6 }}>
           <div style={{ flex:28, background:'#22c55e' }}/>
           <div style={{ flex:8,  background:TEAL }}/>
           <div style={{ flex:14, background:'#f59e0b' }}/>
           <div style={{ flex:50, background:'#ef4444' }}/>
         </div>
-        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.6875rem', color:'#9ca3af', fontFamily:"'DM Sans',sans-serif" }}>
+        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.6875rem', color:T3, fontFamily:UI }}>
           <span>0%</span><span style={{color:'#22c55e'}}>≤28% ideal</span><span style={{color:TEAL}}>≤36% good</span><span style={{color:'#f59e0b'}}>≤50%</span><span style={{color:'#ef4444'}}>50%+</span>
         </div>
         <div style={{ marginTop:6, width:`${Math.min(dti,100)}%`, height:3, background:dtiColor, borderRadius:99, transition:'width 0.4s ease' }}/>
-        <p style={{ margin:'0.625rem 0 0', fontSize:'0.8125rem', color:'#4b5563', lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0.625rem 0 0', fontSize:'0.8125rem', color:'#4b5563', lineHeight:1.65, fontFamily:UI }}>
           <strong>Why it matters:</strong> Lenders use DTI to decide whether to approve loans. Most mortgages require a DTI under 43%. Keeping it under 28% (housing only) puts you in the best possible position.
         </p>
       </div>
@@ -828,7 +836,7 @@ function ResourcesTab() {
         alignItems:'flex-start',
       }}>
         <Info size={15} color={TEAL} style={{ flexShrink:0, marginTop:1 }}/>
-        <p style={{ margin:0, fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:0, fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>
           <strong>How to choose:</strong> Start with a free or low-cost app. The best budgeting app is the one you'll actually use. Try one for 30 days before committing — most offer free trials.
         </p>
       </div>
@@ -836,8 +844,8 @@ function ResourcesTab() {
       <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
         {RESOURCES.map((r, i) => (
           <div key={i} style={{
-            background:'#fff',
-            border:'1px solid #e5e7eb',
+            background:SURF,
+            border:`1px solid ${B1}`,
             borderRadius:14,
             overflow:'hidden',
             boxShadow:'0 1px 4px rgba(0,0,0,0.05)',
@@ -853,7 +861,7 @@ function ResourcesTab() {
             }}>
               <div style={{ display:'flex', alignItems:'center', gap:10 }}>
                 <span style={{
-                  fontFamily:"'Playfair Display',serif",
+                  fontFamily:DISP,
                   fontSize:'1rem',
                   fontWeight:700,
                   color:NAVY,
@@ -866,18 +874,18 @@ function ResourcesTab() {
                   fontSize:'0.6875rem',
                   fontWeight:700,
                   color:r.badgeColor,
-                  fontFamily:"'DM Sans',sans-serif",
+                  fontFamily:UI,
                   letterSpacing:'0.03em',
                 }}>{r.badge}</span>
               </div>
             </div>
             <div style={{ padding:'0.875rem 1.125rem' }}>
-              <p style={{ margin:'0 0 0.75rem', fontSize:'0.875rem', color:'#374151', lineHeight:1.7, fontFamily:"'DM Sans',sans-serif" }}>{r.desc}</p>
-              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'0.25rem 0.75rem', fontSize:'0.8125rem', fontFamily:"'DM Sans',sans-serif" }}>
-                <span style={{ color:'#9ca3af', fontWeight:600 }}>Cost</span>
-                <span style={{ color:'#374151' }}>{r.cost}</span>
-                <span style={{ color:'#9ca3af', fontWeight:600 }}>Best for</span>
-                <span style={{ color:'#374151' }}>{r.best}</span>
+              <p style={{ margin:'0 0 0.75rem', fontSize:'0.875rem', color:T2, lineHeight:1.7, fontFamily:UI }}>{r.desc}</p>
+              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:'0.25rem 0.75rem', fontSize:'0.8125rem', fontFamily:UI }}>
+                <span style={{ color:T3, fontWeight:600 }}>Cost</span>
+                <span style={{ color:T2 }}>{r.cost}</span>
+                <span style={{ color:T3, fontWeight:600 }}>Best for</span>
+                <span style={{ color:T2 }}>{r.best}</span>
               </div>
             </div>
           </div>
@@ -901,17 +909,18 @@ export default function Budgeting() {
   const [tab, setTab] = useState('learn');
 
   return (
-    <div style={{ minHeight:'100vh', background:BG, fontFamily:"'DM Sans', sans-serif" }}>
+    <div style={{ minHeight:'100vh', background:BG, fontFamily:UI }}>
 
       {/* Page header */}
       <div style={{
-        background: NAVY,
+        background: SURF,
+        borderBottom: `1px solid ${B1}`,
         padding: '2rem 2.5rem 0',
         marginBottom: 0,
       }}>
         {/* Breadcrumb */}
-        <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6, fontFamily:"'DM Sans',sans-serif" }}>
-          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+        <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.35)', marginBottom:'1rem', display:'flex', alignItems:'center', gap:6, fontFamily:UI }}>
+          <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:TEAL, fontSize:'0.75rem', fontFamily:UI, padding:0 }}>
             Dashboard
           </button>
           <ChevronRight size={12} color="rgba(255,255,255,0.25)"/>
@@ -927,7 +936,7 @@ export default function Budgeting() {
           letterSpacing:'-0.025em',
           lineHeight:1.2,
         }}>Budgeting & Financial Foundations</h1>
-        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ margin:'0 0 1.75rem', fontSize:'1rem', color:'rgba(255,255,255,0.55)', lineHeight:1.65, maxWidth:580, fontFamily:UI }}>
           Master the fundamentals — understand your paycheck, build a budget that works, and create an emergency fund that actually gives you peace of mind.
         </p>
 
@@ -947,7 +956,7 @@ export default function Budgeting() {
                   border:'none',
                   borderBottom: active ? `2px solid ${TEAL}` : '2px solid transparent',
                   cursor:'pointer',
-                  fontFamily:"'DM Sans',sans-serif",
+                  fontFamily:UI,
                   fontSize:'0.875rem',
                   fontWeight: active ? 700 : 500,
                   color: active ? TEAL : 'rgba(255,255,255,0.45)',
@@ -1038,7 +1047,7 @@ export default function Budgeting() {
             marginTop:'2rem',
             display:'flex', alignItems:'center', justifyContent:'space-between',
             padding:'1rem 1.25rem',
-            background:NAVY,
+            background:RAISE,
             borderRadius:12,
             cursor:'pointer',
             transition:'opacity 0.15s',
@@ -1047,13 +1056,13 @@ export default function Budgeting() {
           onMouseLeave={e => e.currentTarget.style.opacity='1'}
         >
           <div>
-            <div style={{ fontSize:'0.6875rem', color:'rgba(255,255,255,0.4)', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:3, fontFamily:"'DM Sans',sans-serif" }}>Next section</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:'1rem', fontWeight:600, color:'#fff' }}>Debt & Credit</div>
+            <div style={{ fontSize:'0.6875rem', color:'rgba(255,255,255,0.4)', fontWeight:600, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:3, fontFamily:UI }}>Next section</div>
+            <div style={{ fontFamily:DISP, fontSize:'1rem', fontWeight:600, color:'#fff' }}>Debt & Credit</div>
           </div>
           <ArrowRight size={18} color={TEAL}/>
         </div>
 
-        <p style={{ marginTop:'2rem', fontSize:'0.6875rem', color:'#d1d5db', textAlign:'center', lineHeight:1.6, fontFamily:"'DM Sans',sans-serif" }}>
+        <p style={{ marginTop:'2rem', fontSize:'0.6875rem', color:T3, textAlign:'center', lineHeight:1.6, fontFamily:UI }}>
           For educational purposes only — not financial, tax, or legal advice.
         </p>
       </div>

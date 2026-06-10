@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 
 const TEAL = '#00B4C6';
-const NAVY = '#0A1F44';
+const NAVY = '#f0e8d8';
 
 const ICON_MAP = { Wallet, CreditCard, TrendingUp, Shield, ScrollText, Clock, Home, Calendar, Calculator, BookOpen };
 
@@ -81,13 +81,13 @@ export default function FunComingSoon({ section, icon, next, nextPath }) {
     <div style={{
       minHeight: '100vh',
       padding: '3rem 2.5rem',
-      fontFamily: "'DM Sans', sans-serif",
+      fontFamily: "'Inter', system-ui, sans-serif",
       maxWidth: 780,
       margin: '0 auto',
     }}>
       {/* Breadcrumb */}
-      <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: 6 }}>
-        <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:'#00B4C6', fontSize:'0.75rem', fontFamily:"'DM Sans',sans-serif", padding:0 }}>
+      <div style={{ fontSize: '0.75rem', color: '#6b5540', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+        <button onClick={() => navigate('/fun')} style={{ background:'none', border:'none', cursor:'pointer', color:'#00B4C6', fontSize:'0.75rem', fontFamily:"'Inter',system-ui,sans-serif", padding:0 }}>
           Dashboard
         </button>
         <span>/</span>
@@ -138,7 +138,7 @@ export default function FunComingSoon({ section, icon, next, nextPath }) {
       {/* Description */}
       <p style={{
         fontSize: '1rem',
-        color: '#4b5563',
+        color: '#6b5540',
         lineHeight: 1.75,
         margin: '0 0 2rem',
         maxWidth: 640,
@@ -148,7 +148,7 @@ export default function FunComingSoon({ section, icon, next, nextPath }) {
 
       {/* What's coming */}
       <div style={{
-        background: '#fff',
+        background: '#231c16',
         border: '1px solid #e5e7eb',
         borderRadius: 16,
         padding: '1.5rem',
@@ -175,7 +175,7 @@ export default function FunComingSoon({ section, icon, next, nextPath }) {
               }}>
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: TEAL }}/>
               </div>
-              <span style={{ fontSize: '0.875rem', color: '#374151', lineHeight: 1.6 }}>{item}</span>
+              <span style={{ fontSize: '0.875rem', color: '#a89070', lineHeight: 1.6 }}>{item}</span>
             </div>
           ))}
         </div>

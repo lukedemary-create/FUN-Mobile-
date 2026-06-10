@@ -197,7 +197,7 @@ export default function DebtPayoffTab({ plan }) {
         {[
           {
             key: "avalanche",
-            label: "🔥 Avalanche Method",
+            label: "Avalanche Method",
             description: "Highest interest rate first — saves the most money.",
             result: avalanche,
             color: "#ef4444",
@@ -205,7 +205,7 @@ export default function DebtPayoffTab({ plan }) {
           },
           {
             key: "snowball",
-            label: "⛄ Snowball Method",
+            label: "Snowball Method",
             description: "Smallest balance first — builds momentum with quick wins.",
             result: snowball,
             color: "#3b82f6",

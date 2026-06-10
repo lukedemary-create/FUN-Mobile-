@@ -5,6 +5,7 @@ import { PerformanceChart, AllocationPie } from '../../components/shared/Portfol
 import { MetricRow } from '../../components/shared/StatCard'
 import { useApp } from '../../context/AppContext'
 import { clients, fmt, engagementColor, engagementLabel, categoryIcon } from '../../data/demoData'
+import { ClipboardList } from 'lucide-react'
 
 const TABS = ['Overview', 'Portfolio', 'Life Events', 'Action Items', 'Messages', 'Documents']
 
@@ -260,10 +261,10 @@ export default function ClientDetail() {
           <div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {(client.lifeEvents || []).map(ev => (
-                <div key={ev.id} className="card" style={{ borderLeft: `3px solid ${eventColor(ev.category)}` }}>
+                <div key={ev.id} className="card" style={{ border: `1px solid ${eventColor(ev.category)}38`, borderTop: `2px solid ${eventColor(ev.category)}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                      <div style={{ fontSize: 24 }}>{categoryIcon[ev.category] || '📌'}</div>
+                      <div style={{ fontSize: '0.5rem', fontWeight: 800, letterSpacing: '0.05em', color: 'var(--text-tertiary)', width: 32, textAlign: 'center', paddingTop: 2 }}>{categoryIcon[ev.category] || 'EVT'}</div>
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{ev.title}</div>
                         <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4, lineHeight: 1.5 }}>
@@ -287,7 +288,7 @@ export default function ClientDetail() {
               ))}
               {(!client.lifeEvents || client.lifeEvents.length === 0) && (
                 <div className="empty-state">
-                  <span style={{ fontSize: 32 }}>📋</span>
+                  <ClipboardList size={32} color="var(--text-tertiary)" />
                   <div>No life events logged yet.</div>
                 </div>
               )}

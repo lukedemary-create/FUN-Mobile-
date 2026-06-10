@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Header } from '../../components/shared/Header'
 import { useApp } from '../../context/AppContext'
 import { fmt } from '../../data/demoData'
+import { BarChart2, Folder } from 'lucide-react'
 
 const CATEGORIES = ['All', 'reports', 'planning', 'tax', 'agreements', 'analysis', 'memo']
 
@@ -80,7 +81,7 @@ export default function ClientDocuments() {
         {filtered.filter(d => d.category === 'reports').length > 0 && (
           <div style={styles.reportsBanner}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <span style={{ fontSize: 16 }}>📊</span>
+              <BarChart2 size={16} color="var(--gold)" />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
                   Latest: {filtered.find(d => d.category === 'reports')?.name}
@@ -135,7 +136,7 @@ export default function ClientDocuments() {
 
           {filtered.length === 0 && (
             <div className="empty-state">
-              <span style={{ fontSize: 32 }}>📁</span>
+              <Folder size={32} color="var(--text-tertiary)" />
               <div>No documents match your search.</div>
             </div>
           )}

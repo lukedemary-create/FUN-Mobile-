@@ -278,8 +278,8 @@ export default function PlonoraAI() {
 
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <Brain size={16} className="text-white" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(201,169,110,0.15)', border: '1px solid rgba(201,169,110,0.3)' }}>
+              <Brain size={16} style={{ color: '#c9a96e' }} />
             </div>
             <div>
               <div className="text-sm font-bold text-white">Planora AI</div>
@@ -288,7 +288,10 @@ export default function PlonoraAI() {
           </div>
           <button
             onClick={newChat}
-            className="w-full flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+            style={{ background: '#c9a96e', color: '#1a1410' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#d4941e'}
+            onMouseLeave={e => e.currentTarget.style.background = '#c9a96e'}
           >
             <Plus size={14} />
             New Conversation
@@ -344,8 +347,8 @@ export default function PlonoraAI() {
         {/* Empty state */}
         {!activeChat && (
           <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-8 py-10">
-            <div className="w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mb-5">
-              <Brain size={32} className="text-blue-400" />
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(201,169,110,0.1)', border: '1px solid rgba(201,169,110,0.25)' }}>
+              <Brain size={32} style={{ color: '#c9a96e' }} />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Planora AI</h1>
             <p className="text-gray-400 text-center max-w-lg mb-2 text-sm leading-relaxed">
@@ -367,7 +370,10 @@ export default function PlonoraAI() {
                   <button
                     key={ticker}
                     onClick={() => sendMessage(`Give me a full analysis of $${ticker} — current price, valuation, key fundamentals, strengths, risks, and your outlook.`)}
-                    className="px-3 py-1.5 bg-gray-800 hover:bg-blue-600/20 border border-gray-700 hover:border-blue-500/50 text-gray-300 hover:text-white text-xs font-mono font-medium rounded-lg transition-all"
+                    className="px-3 py-1.5 bg-gray-800 border border-gray-700 text-gray-300 hover:text-white text-xs font-mono font-medium rounded-lg transition-all"
+                    style={{ '--hover-bg': 'rgba(201,169,110,0.1)', '--hover-border': 'rgba(201,169,110,0.35)' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,169,110,0.1)'; e.currentTarget.style.borderColor = 'rgba(201,169,110,0.35)'; e.currentTarget.style.color = '#c9a96e'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.borderColor = ''; e.currentTarget.style.color = ''; }}
                   >
                     ${ticker}
                   </button>
@@ -385,7 +391,7 @@ export default function PlonoraAI() {
                     onClick={() => sendMessage(text)}
                     className="flex items-center gap-3 px-4 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-gray-700 rounded-xl text-left transition-all group"
                   >
-                    <Icon size={16} className="text-blue-400 flex-shrink-0" />
+                    <Icon size={16} className="flex-shrink-0" style={{ color: '#c9a96e' }} />
                     <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{text}</span>
                     <ChevronRight size={14} className="text-gray-600 flex-shrink-0 ml-auto group-hover:text-gray-400" />
                   </button>
@@ -401,22 +407,26 @@ export default function PlonoraAI() {
             <div className="max-w-3xl mx-auto space-y-6">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <div className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-xs font-bold ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 border border-gray-700'
-                  }`}>
-                    {msg.role === 'user' ? 'You' : <Brain size={14} className="text-blue-400" />}
+                  <div
+                    className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-xs font-bold ${
+                      msg.role === 'user' ? '' : 'bg-gray-800 border border-gray-700'
+                    }`}
+                    style={msg.role === 'user' ? { background: '#c9a96e', color: '#1a1410' } : {}}
+                  >
+                    {msg.role === 'user' ? 'You' : <Brain size={14} style={{ color: '#c9a96e' }} />}
                   </div>
 
                   <div className={`max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
-                    <div className={`rounded-2xl px-4 py-3 ${
-                      msg.role === 'user'
-                        ? 'bg-blue-600 text-white rounded-tr-sm'
-                        : msg.error
+                    <div
+                      className={`rounded-2xl px-4 py-3 ${
+                        msg.role === 'user'
+                          ? 'rounded-tr-sm'
+                          : msg.error
                           ? 'bg-red-900/30 border border-red-800 text-red-300 rounded-tl-sm'
                           : 'bg-gray-800/80 border border-gray-700/50 rounded-tl-sm'
-                    }`}>
+                      }`}
+                      style={msg.role === 'user' ? { background: '#c9a96e', color: '#1a1410' } : {}}
+                    >
                       {msg.role === 'user' ? (
                         <p className="text-sm">{msg.content}</p>
                       ) : (
@@ -441,7 +451,7 @@ export default function PlonoraAI() {
               {streaming && (
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-lg flex-shrink-0 bg-gray-800 border border-gray-700 flex items-center justify-center">
-                    <Brain size={14} className="text-blue-400" />
+                    <Brain size={14} style={{ color: '#c9a96e' }} />
                   </div>
                   <div className="max-w-[85%]">
                     <div className="bg-gray-800/80 border border-gray-700/50 rounded-2xl rounded-tl-sm px-4 py-3">
@@ -466,7 +476,7 @@ export default function PlonoraAI() {
         {/* Input Bar */}
         <div className="border-t border-gray-800 bg-gray-900/50 px-4 py-4">
           <div className="max-w-3xl mx-auto">
-            <div className="flex items-end gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 focus-within:border-blue-500/50 transition-colors">
+            <div className="flex items-end gap-3 bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 focus-within:border-[rgba(201,169,110,0.5)] transition-colors">
               <textarea
                 ref={inputRef}
                 value={input}
@@ -495,9 +505,10 @@ export default function PlonoraAI() {
                   disabled={!input.trim()}
                   className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
                     input.trim()
-                      ? 'bg-blue-600 hover:bg-blue-500 text-white'
+                      ? ''
                       : 'bg-gray-700 text-gray-500 cursor-not-allowed'
                   }`}
+                  style={input.trim() ? { background: '#c9a96e', color: '#1a1410' } : {}}
                 >
                   <Send size={14} />
                 </button>

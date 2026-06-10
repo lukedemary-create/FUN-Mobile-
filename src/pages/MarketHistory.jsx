@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef } from "react";
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  ReferenceLine, Cell
+  ReferenceLine, Cell, ReferenceArea
 } from "recharts";
 import {
   TrendingUp, TrendingDown, BookOpen, DollarSign,
@@ -12,7 +12,7 @@ import {
 
 /* ─── Helpers ────────────────────────────────────────────────────────────── */
 const TT_STYLE = { background: "var(--surface)", border: "1px solid var(--border-c)", borderRadius: 4, fontSize: 11, color: "var(--text-1)" };
-const GOLD = "#c9a84c";
+const GOLD = "#c9a96e";
 const UP   = "#00b899";
 const DOWN = "#ff3b5c";
 
@@ -208,7 +208,7 @@ const MARKET_EVENTS = [
     name: "Black Monday",
     period: "Oct 19, 1987",
     type: "crash",
-    color: "#c9a84c",
+    color: "#c9a96e",
     stats: { peak:"2,722 (Aug 1987)", trough:"1,739 (Oct 19, 1987)", drawdown:"-22.6% in one day / -36% peak-trough", duration:"2 months", recovery:"Jul 1989", recoveryTime:"15 months" },
     tagline: "The largest single-day percentage drop in stock market history",
     chartData: [
@@ -861,21 +861,23 @@ function LongTermChart({ onMarketEnvClick }) {
   const selColor = selectedDot ? (DOT_COLOR[selectedDot.type] || GOLD) : GOLD;
 
   return (
-    <div className="t-card t-card-p" style={{ marginBottom: "1.25rem" }}>
+    <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)",
+      borderRadius:16, padding:"1.5rem", marginBottom:"1.25rem",
+      backdropFilter:"blur(12px)", boxShadow:"0 4px 24px rgba(0,0,0,0.3)" }}>
       {/* Header */}
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"0.75rem" }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"0.875rem" }}>
         <div>
-          <div style={{ fontSize:"0.9375rem", fontWeight:700, color:"var(--text-1)" }}>
+          <div style={{ fontSize:"0.9375rem", fontWeight:700, color:"var(--text-1)", fontFamily:"'Inter', system-ui, sans-serif" }}>
             Dow Jones Industrial Average: 1900 – Present
           </div>
-          <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", marginTop:3 }}>
+          <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", marginTop:3, fontFamily:"'Inter', system-ui, sans-serif" }}>
             126 years of market history · Click any dot or chip to see a breakdown
           </div>
         </div>
         {selectedDot && (
           <button onClick={() => setSelectedDot(null)}
-            style={{ background:"none", border:"none", color:"var(--text-3)", cursor:"pointer", fontSize:"0.75rem", padding:"2px 6px" }}>
-            ✕ close
+            style={{ background:"var(--border-c)", border:"1px solid var(--border-alt)", borderRadius:6, color:"var(--text-3)", cursor:"pointer", fontSize:"0.6875rem", padding:"3px 8px", fontFamily:"'Inter', system-ui, sans-serif", display:"flex", alignItems:"center", gap:4 }}>
+            <X size={11} /> close
           </button>
         )}
       </div>
@@ -920,39 +922,41 @@ function LongTermChart({ onMarketEnvClick }) {
 
         {/* Mini breakdown panel */}
         {selectedDot && (
-          <div style={{ width:260, flexShrink:0, display:"flex", flexDirection:"column", gap:"0.625rem" }}>
+          <div style={{ width:268, flexShrink:0, display:"flex", flexDirection:"column", gap:"0.625rem" }}>
             {/* Header card */}
-            <div style={{ background:`${selColor}15`, border:`1px solid ${selColor}40`, borderRadius:8, padding:"0.875rem" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
-                <span style={{ fontSize:"0.55rem", fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase",
-                  color:selColor, background:`${selColor}20`, borderRadius:4, padding:"2px 7px" }}>
+            <div style={{ background:`${selColor}0d`, border:`1px solid ${selColor}35`, borderRadius:10, padding:"0.875rem" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"0.5rem" }}>
+                <span style={{ fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.14em", textTransform:"uppercase",
+                  color:selColor, background:`${selColor}18`, borderRadius:4, padding:"2px 7px",
+                  fontFamily:"'Inter', system-ui, sans-serif" }}>
                   {selectedDot.type}
                 </span>
-                <span style={{ fontSize:"0.65rem", color:"var(--text-3)" }}>{selectedDot.year}</span>
+                <span style={{ fontSize:"0.625rem", color:"var(--text-3)", fontFamily:"'JetBrains Mono', monospace" }}>{selectedDot.year}</span>
               </div>
-              <div style={{ fontSize:"0.9375rem", fontWeight:800, color:"var(--text-1)", marginBottom:2 }}>
+              <div style={{ fontSize:"0.9375rem", fontWeight:800, color:"var(--text-1)", marginBottom:2,
+                fontFamily:"'Inter', system-ui, sans-serif" }}>
                 {selectedDot.label}
               </div>
-              <div style={{ display:"flex", gap:"1rem", marginTop:"0.5rem" }}>
+              <div style={{ display:"flex", gap:"1.25rem", marginTop:"0.625rem" }}>
                 <div>
-                  <div style={{ fontSize:"0.55rem", color:"var(--text-3)", fontWeight:700, letterSpacing:"0.08em" }}>DOW</div>
-                  <div style={{ fontSize:"0.875rem", fontWeight:800, color:selColor, fontFamily:"var(--font-mono)" }}>
+                  <div style={{ fontSize:"0.5rem", color:"var(--text-3)", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", fontFamily:"'Inter', system-ui, sans-serif" }}>DOW</div>
+                  <div style={{ fontSize:"0.9375rem", fontWeight:800, color:selColor, fontFamily:"'JetBrains Mono', 'Fira Code', monospace" }}>
                     {selectedDot.dow?.toLocaleString() ?? "—"}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize:"0.55rem", color:"var(--text-3)", fontWeight:700, letterSpacing:"0.08em" }}>MOVE</div>
-                  <div style={{ fontSize:"0.75rem", fontWeight:700, color:selColor }}>{selectedDot.change}</div>
+                  <div style={{ fontSize:"0.5rem", color:"var(--text-3)", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", fontFamily:"'Inter', system-ui, sans-serif" }}>MOVE</div>
+                  <div style={{ fontSize:"0.75rem", fontWeight:700, color:selColor, fontFamily:"'JetBrains Mono', 'Fira Code', monospace" }}>{selectedDot.change}</div>
                 </div>
               </div>
             </div>
 
             {/* Brief description */}
-            <div style={{ background:"var(--elevated)", border:"1px solid var(--border-c)", borderRadius:8, padding:"0.875rem" }}>
-              <div style={{ fontSize:"0.55rem", fontWeight:800, letterSpacing:"0.1em", color:"var(--text-3)", marginBottom:"0.5rem" }}>
-                WHAT HAPPENED
+            <div style={{ background:"var(--elevated)", border:"1px solid var(--border-c)", borderRadius:10, padding:"0.875rem" }}>
+              <div style={{ fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.14em", color:"var(--text-3)", marginBottom:"0.5rem", textTransform:"uppercase", fontFamily:"'Inter', system-ui, sans-serif" }}>
+                What Happened
               </div>
-              <p style={{ fontSize:"0.75rem", color:"var(--text-2)", lineHeight:1.65, margin:0 }}>
+              <p style={{ fontSize:"0.75rem", color:"var(--text-2)", lineHeight:1.7, margin:0, fontFamily:"'Inter', system-ui, sans-serif" }}>
                 {selectedDot.brief}
               </p>
             </div>
@@ -964,9 +968,10 @@ function LongTermChart({ onMarketEnvClick }) {
                   const match = MARKET_EVENTS.find(e => e.id === selectedDot.eventId);
                   if (match) onMarketEnvClick(match);
                 }}
-                style={{ background:`${selColor}20`, border:`1px solid ${selColor}50`, borderRadius:8,
+                style={{ background:`${selColor}15`, border:`1px solid ${selColor}45`, borderRadius:9,
                   padding:"0.625rem", color:selColor, fontWeight:700, fontSize:"0.75rem",
-                  cursor:"pointer", width:"100%", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+                  cursor:"pointer", width:"100%", display:"flex", alignItems:"center", justifyContent:"center", gap:6,
+                  fontFamily:"'Inter', system-ui, sans-serif" }}>
                 View Full Analysis
                 <ChevronRight size={14} />
               </button>
@@ -1015,21 +1020,26 @@ function EventCard({ event, isSelected, onClick }) {
   const isBull = event.type === "bull";
   return (
     <button onClick={onClick} style={{
-      background: isSelected ? `${event.color}15` : "var(--elevated)",
+      background: isSelected ? `${event.color}10` : "var(--surface)",
       border: `1px solid ${isSelected ? event.color : "var(--border-c)"}`,
-      borderRadius: 8, padding: "1rem", cursor: "pointer", textAlign: "left",
-      transition: "all 0.15s", flex: "1 1 160px", minWidth: 150,
+      borderRadius: 12, padding: "1rem 1.125rem", cursor: "pointer", textAlign: "left",
+      transition: "border-color 0.18s, background 0.18s", flex: "1 1 165px", minWidth: 155,
+      backdropFilter: "blur(8px)",
     }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"0.5rem" }}>
-        <span style={{ fontSize:"0.6rem", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
-          color: event.color, background:`${event.color}20`, borderRadius:4, padding:"2px 7px" }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"0.625rem" }}>
+        <span style={{ fontSize:"0.5375rem", fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase",
+          color: event.color, background:`${event.color}18`, borderRadius:5, padding:"2px 7px",
+          fontFamily:"'Inter', system-ui, sans-serif" }}>
           {event.type}
         </span>
-        {isBull ? <TrendingUp size={14} color={event.color} /> : <TrendingDown size={14} color={event.color} />}
+        {isBull ? <TrendingUp size={13} color={event.color} /> : <TrendingDown size={13} color={event.color} />}
       </div>
-      <div style={{ fontWeight:700, fontSize:"0.8125rem", color:"var(--text-1)", marginBottom:2 }}>{event.name}</div>
-      <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", marginBottom:"0.5rem" }}>{event.period}</div>
-      <div style={{ fontSize:"0.9375rem", fontWeight:800, color: isBull ? UP : DOWN }}>
+      <div style={{ fontWeight:700, fontSize:"0.8125rem", color:"var(--text-1)", marginBottom:2,
+        fontFamily:"'Inter', system-ui, sans-serif" }}>{event.name}</div>
+      <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", marginBottom:"0.5rem",
+        fontFamily:"'Inter', system-ui, sans-serif" }}>{event.period}</div>
+      <div style={{ fontSize:"0.9375rem", fontWeight:800, color: isBull ? UP : DOWN,
+        fontFamily:"'JetBrains Mono', 'Fira Code', monospace" }}>
         {event.stats.drawdown}
       </div>
     </button>
@@ -1171,23 +1181,26 @@ function EventDetailPanel({ event, onClose }) {
   const [tab, setTab] = useState("story");
 
   return (
-    <div className="t-card" style={{ marginBottom:"1.25rem", overflow:"hidden" }}>
+    <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)",
+      borderRadius:16, marginBottom:"1.25rem", overflow:"hidden",
+      backdropFilter:"blur(12px)", boxShadow:"0 4px 24px rgba(0,0,0,0.3)" }}>
       {/* Header */}
-      <div style={{ padding:"1.25rem 1.25rem 0", borderBottom:"1px solid var(--border-c)" }}>
+      <div style={{ padding:"1.375rem 1.375rem 0", borderBottom:"1px solid var(--border-c)" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1rem" }}>
           <div>
-            <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", marginBottom:4 }}>
-              <span style={{ fontSize:"0.6rem", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
-                color:event.color, background:`${event.color}20`, borderRadius:4, padding:"2px 8px" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", marginBottom:"0.5rem" }}>
+              <span style={{ fontSize:"0.5375rem", fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase",
+                color:event.color, background:`${event.color}18`, borderRadius:5, padding:"2px 8px",
+                fontFamily:"'Inter', system-ui, sans-serif" }}>
                 {event.type}
               </span>
-              <span style={{ fontSize:"0.6rem", color:"var(--text-3)" }}>{event.period}</span>
+              <span style={{ fontSize:"0.625rem", color:"var(--text-3)", fontFamily:"'Inter', system-ui, sans-serif" }}>{event.period}</span>
             </div>
-            <div style={{ fontSize:"1.25rem", fontWeight:800, color:"var(--text-1)" }}>{event.name}</div>
-            <div style={{ fontSize:"0.75rem", color:"var(--text-3)", marginTop:2 }}>{event.tagline}</div>
+            <div style={{ fontSize:"1.25rem", fontWeight:800, color:"var(--text-1)", fontFamily:"'Inter', system-ui, sans-serif" }}>{event.name}</div>
+            <div style={{ fontSize:"0.8125rem", color:"var(--text-3)", marginTop:3, fontFamily:"'Inter', system-ui, sans-serif" }}>{event.tagline}</div>
           </div>
-          <button onClick={onClose} style={{ background:"none", border:"none", color:"var(--text-3)", cursor:"pointer", padding:4 }}>
-            <X size={16} />
+          <button onClick={onClose} style={{ background:"var(--border-c)", border:"1px solid var(--border-alt)", borderRadius:7, color:"var(--text-3)", cursor:"pointer", padding:"5px 7px", display:"flex", alignItems:"center" }}>
+            <X size={14} />
           </button>
         </div>
 
@@ -1207,15 +1220,18 @@ function EventDetailPanel({ event, onClose }) {
         <PeriodChart event={event} />
 
         {/* Tabs */}
-        <div style={{ display:"flex", gap:0, marginTop:"0.75rem", overflowX:"auto" }}>
+        <div style={{ display:"flex", gap:"0.25rem", marginTop:"1rem", overflowX:"auto", paddingBottom:"0.5rem" }}>
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
-              background:"none", border:"none", borderBottom: tab===t.id ? `2px solid ${GOLD}` : "2px solid transparent",
-              color: tab===t.id ? "var(--text-1)" : "var(--text-3)", cursor:"pointer",
-              padding:"0.5rem 0.875rem", fontSize:"0.6875rem", fontWeight: tab===t.id ? 700 : 500,
+              background: tab===t.id ? `${GOLD}18` : "transparent",
+              border: tab===t.id ? `1px solid ${GOLD}45` : "1px solid transparent",
+              borderRadius:7,
+              color: tab===t.id ? GOLD : "var(--text-3)", cursor:"pointer",
+              padding:"0.375rem 0.75rem", fontSize:"0.6875rem", fontWeight: tab===t.id ? 700 : 500,
               whiteSpace:"nowrap", display:"flex", alignItems:"center", gap:5,
+              fontFamily:"'Inter', system-ui, sans-serif", transition:"all 0.15s",
             }}>
-              <t.icon size={12} />{t.label}
+              <t.icon size={11} />{t.label}
             </button>
           ))}
         </div>
@@ -1360,12 +1376,13 @@ function EventDetailPanel({ event, onClose }) {
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:"0.875rem" }}>
               {event.keyLessons.map((l, i) => (
-                <div key={i} style={{ background:"var(--elevated)", border:`1px solid ${event.color}30`,
-                  borderLeft:`3px solid ${event.color}`, borderRadius:8, padding:"1rem" }}>
-                  <div style={{ fontSize:"0.875rem", fontWeight:700, color:"var(--text-1)", marginBottom:"0.375rem" }}>
-                    {i+1}. {l.title}
+                <div key={i} style={{ background:`${event.color}07`, border:`1px solid ${event.color}28`,
+                  borderRadius:10, padding:"1rem 1.125rem" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:"0.625rem", marginBottom:"0.375rem" }}>
+                    <span style={{ width:20, height:20, borderRadius:5, background:`${event.color}20`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontSize:"0.5625rem", fontWeight:800, color:event.color, fontFamily:"'Inter', system-ui, sans-serif" }}>{i+1}</span>
+                    <div style={{ fontSize:"0.875rem", fontWeight:700, color:"var(--text-1)", fontFamily:"'Inter', system-ui, sans-serif" }}>{l.title}</div>
                   </div>
-                  <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.6 }}>{l.lesson}</div>
+                  <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.65, paddingLeft:"1.625rem", fontFamily:"'Inter', system-ui, sans-serif" }}>{l.lesson}</div>
                 </div>
               ))}
             </div>
@@ -1390,6 +1407,602 @@ const WISDOM = [
   "October 2022 felt like everything was broken. It was the best buying opportunity in a decade.",
 ];
 
+/* ─── Historical Decades Data ──────────────────────────────────────────────── */
+const DECADE_LIST = [
+  "1920s","1930s","1940s","1950s","1960s","1970s","1980s","1990s","2000s","2010s","2020s",
+];
+
+const FIFTIES_ANNUAL = [
+  { year:"1950", ret:18.1,  note:"Korean War begins in June. Defense spending surges. Industrial mobilization supports corporate earnings. The market advances 18.1% despite the active conflict." },
+  { year:"1951", ret:14.4,  note:"War intensifies through the year. Consumer prices rise 7.9% annually at peak wartime inflation. The Federal Reserve tightens. Market delivers 14.4% through it all." },
+  { year:"1952", ret:8.4,   note:"Fed raises discount rate to 3% to combat persistent inflation. Wartime economy continues. Eisenhower wins the presidency in November. Modest gains as the war winds down." },
+  { year:"1953", ret:-3.8,  note:"Korean armistice signed July 1953. Abrupt post-war defense cuts spark a recession. GDP falls 5.9% in Q4. Unemployment rises. Market pulls back 3.8%.", recession:true },
+  { year:"1954", ret:43.9,  note:"Recession ends. One of the greatest single-year rallies in Dow Jones history. GDP rebounds sharply. The Federal Reserve eases. Consumer confidence recovers powerfully." },
+  { year:"1955", ret:20.8,  note:"The Eisenhower boom. Consumer confidence reaches decade highs. The Interstate Highway Act creates massive infrastructure investment. Baby boom drives housing and spending." },
+  { year:"1956", ret:2.3,   note:"The Suez Crisis creates brief geopolitical anxiety in the autumn. Market largely absorbs the international shock. Modest gains on cautious corporate sentiment." },
+  { year:"1957", ret:-12.8, note:"The Eisenhower Recession begins in August. Fed tightens to curb inflation. Asian flu pandemic reduces US exports. Sputnik shocks American confidence in October.", recession:true },
+  { year:"1958", ret:34.0,  note:"Recession ends in April. Second massive recovery in five years. The Fed eases aggressively. Economy rebounds sharply. The pattern — decline then powerful recovery — repeats." },
+  { year:"1959", ret:16.4,  note:"Bull market resumes. Decade closes at approximately 680 on the Dow, up from 200 at the start. A full decade of compounding through adversity at 14.1% per year." },
+];
+
+const FIFTIES_DOW = [
+  { year:1950, v:236 }, { year:1951, v:270 }, { year:1952, v:293 },
+  { year:1953, v:282 }, { year:1954, v:405 }, { year:1955, v:490 },
+  { year:1956, v:501 }, { year:1957, v:437 }, { year:1958, v:585 },
+  { year:1959, v:681 },
+];
+
+const FIFTIES_DOW_META = {
+  1953: { type:"recession", label:"Recession I", ret:"−3.8%" },
+  1954: { type:"recovery",  label:"Recovery",   ret:"+43.9%" },
+  1957: { type:"recession", label:"Recession II", ret:"−12.8%" },
+  1958: { type:"recovery",  label:"Recovery",   ret:"+34.0%" },
+};
+
+const DECADE_COMPS = [
+  { dec:"1920s", ret:14.2 }, { dec:"1930s", ret:-1.9 }, { dec:"1940s", ret:3.4 },
+  { dec:"1950s", ret:14.1, hi:true }, { dec:"1960s", ret:2.6 }, { dec:"1970s", ret:2.1 },
+  { dec:"1980s", ret:13.3 }, { dec:"1990s", ret:15.9 }, { dec:"2000s", ret:0.6 },
+  { dec:"2010s", ret:11.0 }, { dec:"2020s", ret:9.2 },
+];
+
+const FIFTIES_HEADWINDS = [
+  {
+    id:"korean",
+    title:"The Korean War",
+    dates:"June 1950 — July 1953",
+    color:"#1a9fd8",
+    stats:[
+      { label:"Peak Inflation", value:"7.9% annualized (1951)" },
+      { label:"Fed Response", value:"Rate raised 1.75% to 3%" },
+      { label:"Dow in 1950", value:"+18.1%" },
+      { label:"Dow in 1951", value:"+14.4%" },
+    ],
+    body:"Active US military engagement on the Korean peninsula drove government spending sharply higher. Consumer prices rose 7.9% annually at the 1951 peak. The Federal Reserve raised the discount rate from 1.75% to 3% to fight wartime inflation, constraining civilian investment. Yet the market delivered double-digit gains through the war years. Defense mobilization supported corporate earnings rather than suppressing them.",
+  },
+  {
+    id:"rec1",
+    title:"Recession I",
+    dates:"July 1953 — May 1954 · 10 months",
+    color:DOWN,
+    stats:[
+      { label:"GDP (Q4 1953)", value:"−5.9% contraction" },
+      { label:"Unemployment Peak", value:"6.1% by late 1954" },
+      { label:"Cause", value:"Post-war defense spending cuts" },
+      { label:"Dow Drop / Recovery", value:"−3.8% then +43.9%" },
+    ],
+    body:"Abrupt cuts in defense spending after the Korean War armistice combined with Federal Reserve tightening created an economic contraction. Defense procurement fell sharply. GDP contracted 2.2% overall with a severe 5.9% drop in Q4 1953 alone. Unemployment rose from 2.5% to 6.1%. The Dow fell just 3.8% in 1953, then surged 43.9% in 1954 — one of the greatest single-year recoveries in market history.",
+  },
+  {
+    id:"rec2",
+    title:"Recession II",
+    dates:"August 1957 — April 1958 · 8 months",
+    color:DOWN,
+    stats:[
+      { label:"GDP (Q1 1958)", value:"−10.0% contraction" },
+      { label:"Unemployment Peak", value:"7.5% by July 1958" },
+      { label:"Additional Shocks", value:"Asian flu, Sputnik, trade deficit" },
+      { label:"Dow Drop / Recovery", value:"−12.8% then +34.0%" },
+    ],
+    body:"Federal Reserve contractionary policy combined with a global recession and the Asian flu pandemic reduced US exports significantly. GDP fell 4.1% in Q4 1957 then contracted a severe 10.0% in Q1 1958. Sputnik's launch in October 1957 shocked American confidence. Unemployment reached 7.5%. The Dow fell 12.8% in 1957 then surged 34.0% in 1958 — the same recovery pattern repeated precisely.",
+  },
+];
+
+const FIFTIES_LESSONS = [
+  {
+    n:"01",
+    title:"Recessions are temporary. Recoveries are permanent.",
+    body:"The market fell in each recession year then delivered some of its greatest single-year returns immediately after. The 1953 recession was followed by +43.9% in 1954. The 1957 recession was followed by +34.0% in 1958. Investors who sold during either recession missed the greatest recovery gains of the decade. The pattern repeated so clearly it was almost a formula.",
+  },
+  {
+    n:"02",
+    title:"War does not stop bull markets.",
+    body:"The Korean War created inflation, uncertainty, and genuine geopolitical fear. The market averaged 18.1% in 1950 — the year the war began — and 14.4% in 1951 while it raged. Defense spending and industrial mobilization supported corporate earnings rather than suppressing them. The instinct to sell on war news would have cost investors dearly.",
+  },
+  {
+    n:"03",
+    title:"The cost of patience is volatility.",
+    body:"Investors who held through both recessions, the Korean War, the Cold War, Sputnik, McCarthyism, and two aggressive Federal Reserve tightening cycles were rewarded with 14.1% annual returns for a full decade. The price of those returns was living through the anxiety of each event in real time — an anxiety that always feels permanent but never is.",
+  },
+  {
+    n:"04",
+    title:"Post-war economic foundations create generational wealth.",
+    body:"The baby boom drove housing demand. The Interstate Highway Act of 1956 created massive infrastructure investment across the country. Consumer culture emerged as Americans had disposable income for the first time in decades. Corporate America modernized rapidly. These structural tailwinds overwhelmed every short-term headwind the decade produced.",
+  },
+  {
+    n:"05",
+    title:"The Federal Reserve is the dominant macro variable.",
+    body:"The Treasury-Fed Accord of 1951 granted the Federal Reserve genuine independence from the Treasury Department. The Fed's decisions to tighten and ease monetary policy drove both recessions and both recoveries of the decade. Understanding the Fed's direction was the single most important macro judgment an investor could make — and it remains so today.",
+  },
+];
+
+/* ─── Decades Panel ──────────────────────────────────────────────────────── */
+function DecadesPanel() {
+  const [activeDec, setActiveDec] = useState("1950s");
+  const [selectedBar, setSelectedBar] = useState(null);
+
+  return (
+    <div>
+      {/* Section header */}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:"1rem" }}>
+        <div>
+          <div className="t-section-title">Decade in Focus</div>
+          <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", marginTop:2 }}>
+            Deep analysis of the most consequential market decades in history
+          </div>
+        </div>
+      </div>
+
+      {/* Decade tabs */}
+      <div style={{ display:"flex", gap:"0.25rem", flexWrap:"wrap", marginBottom:"1.5rem",
+        background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:10, padding:"0.375rem" }}>
+        {DECADE_LIST.map(dec => {
+          const enabled = dec === "1950s";
+          const isActive = activeDec === dec;
+          return (
+            <button key={dec}
+              onClick={() => enabled && setActiveDec(dec)}
+              style={{
+                background: isActive ? GOLD : "transparent",
+                color: isActive ? "#07080a" : enabled ? "var(--text-2)" : "var(--text-3)",
+                border:"none", borderRadius:7, padding:"0.4rem 0.875rem",
+                fontSize:"0.6875rem", fontWeight: isActive ? 800 : 500,
+                cursor: enabled ? "pointer" : "default",
+                opacity: enabled ? 1 : 0.35,
+                letterSpacing:"0.04em", transition:"all 0.12s",
+                fontFamily:"'Inter', system-ui, sans-serif",
+              }}>
+              {dec}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Content */}
+      {activeDec !== "1950s" ? (
+        <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)",
+          borderRadius:14, padding:"3.5rem 2rem", textAlign:"center", backdropFilter:"blur(8px)" }}>
+          <div style={{ fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.2em", color:"var(--text-3)",
+            textTransform:"uppercase", marginBottom:"1rem", fontFamily:"'Inter', system-ui, sans-serif" }}>Analysis Coming</div>
+          <div style={{ fontSize:"1.625rem", fontWeight:800, color:"var(--text-1)", marginBottom:"0.75rem",
+            fontFamily:"'JetBrains Mono', 'Fira Code', monospace" }}>The {activeDec}</div>
+          <div style={{ fontSize:"0.8125rem", color:"var(--text-3)", maxWidth:480, margin:"0 auto", lineHeight:1.75, fontFamily:"'Inter', system-ui, sans-serif" }}>
+            A full decade analysis — year by year returns, key headwinds, recovery patterns, and investor lessons — is in development.
+            The 1950s analysis is live now.
+          </div>
+        </div>
+      ) : (
+        <div style={{ display:"flex", flexDirection:"column", gap:"1.25rem" }}>
+
+          {/* SECTION 1 — Decade hero header */}
+          <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)",
+            borderRadius:16, padding:"2rem 2.25rem", position:"relative", overflow:"hidden",
+            backdropFilter:"blur(12px)", boxShadow:"0 4px 24px rgba(0,0,0,0.3)" }}>
+            <div style={{ position:"absolute", top:-80, right:-60, width:360, height:360,
+              background:"radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 68%)",
+              pointerEvents:"none" }} />
+            <div style={{ position:"relative" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginBottom:"0.75rem" }}>
+                <div style={{ width:16, height:1, background:"var(--gold)", opacity:0.5 }} />
+                <div style={{ fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.2em",
+                  color:"var(--text-3)", textTransform:"uppercase", fontFamily:"'Inter', system-ui, sans-serif" }}>
+                  Decade Analysis · Dow Jones Industrial Average
+                </div>
+              </div>
+              <div style={{ fontSize:"clamp(2rem, 4vw, 3.25rem)", fontWeight:800, color:"var(--text-1)", lineHeight:1,
+                letterSpacing:"-0.03em", marginBottom:"0.5rem", fontFamily:"'Inter', system-ui, sans-serif", display:"flex", alignItems:"baseline", gap:"0.5rem" }}>
+                <span>The</span>
+                <em style={{ fontStyle:"italic", color:"var(--gold)", fontFamily:"'Playfair Display', Georgia, serif" }}>1950s</em>
+              </div>
+              <div style={{ fontSize:"1rem", fontWeight:500, color:"var(--text-2)", marginBottom:"1.5rem", fontFamily:"'Inter', system-ui, sans-serif" }}>
+                The Decade That Refused to Break
+              </div>
+
+              <div style={{ display:"flex", gap:"2.5rem", flexWrap:"wrap", marginBottom:"1.5rem" }}>
+                {[
+                  { label:"Avg. Annual Return", value:"14.1%", color:GOLD, mono:true },
+                  { label:"Dow Jones 1950", value:"~200", color:"var(--text-1)", mono:true },
+                  { label:"Dow Jones 1959", value:"~680", color:"var(--text-1)", mono:true },
+                  { label:"Total Decade Gain", value:"+240%", color:UP, mono:true },
+                ].map(s => (
+                  <div key={s.label}>
+                    <div style={{ fontSize:"0.5rem", fontWeight:700, letterSpacing:"0.12em",
+                      color:"var(--text-3)", textTransform:"uppercase", marginBottom:4 }}>
+                      {s.label}
+                    </div>
+                    <div style={{ fontSize:"2.5rem", fontWeight:900, color:s.color, lineHeight:1,
+                      fontFamily: s.mono ? "var(--font-mono)" : undefined }}>
+                      {s.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ padding:"1rem 1.25rem", background:"rgba(201,169,110,0.06)",
+                border:"1px solid rgba(201,169,110,0.2)", borderRadius:8, maxWidth:680, marginBottom:"0.875rem" }}>
+                <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.75 }}>
+                  Two recessions. An active military conflict on the Korean peninsula. Cold War nuclear anxiety.
+                  McCarthyism. Sputnik. Two aggressive Federal Reserve tightening cycles. Inflation reaching
+                  7.9% annually. The market compounded at 14.1% per year through all of it.
+                </div>
+              </div>
+
+              <div style={{ padding:"0.75rem 1rem", background:"rgba(201,169,110,0.04)",
+                border:"1px solid rgba(201,169,110,0.15)", borderRadius:6, maxWidth:680 }}>
+                <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", lineHeight:1.65 }}>
+                  <strong style={{ color:GOLD }}>Long-term perspective:</strong>{" "}
+                  $100 invested in the S&P 500 in 1950 grew to $396,719 by 2026 —
+                  a compounded return that turned a modest investment into generational wealth
+                  for anyone who stayed the course through every decade that followed.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 2 — Year-by-year bar chart */}
+          <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:14, padding:"1.5rem", backdropFilter:"blur(8px)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1rem", flexWrap:"wrap", gap:"0.5rem" }}>
+              <div>
+                <div style={{ fontSize:"0.875rem", fontWeight:700, color:"var(--text-1)" }}>
+                  Annual Dow Jones Returns: 1950 — 1959
+                </div>
+                <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", marginTop:2 }}>
+                  Click any bar to see what drove returns that year
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:"1rem", flexWrap:"wrap" }}>
+                {[
+                  { label:"Positive year", type:"swatch", color:GOLD },
+                  { label:"Recession year", type:"swatch", color:DOWN },
+                  { label:"14.1% average", type:"dash", color:GOLD },
+                ].map(l => (
+                  <div key={l.label} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                    {l.type === "swatch"
+                      ? <span style={{ width:10, height:10, background:l.color, borderRadius:2, display:"inline-block" }} />
+                      : <span style={{ width:18, borderTop:`2px dashed ${l.color}`, display:"inline-block" }} />
+                    }
+                    <span style={{ fontSize:"0.6rem", color:"var(--text-3)" }}>{l.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={FIFTIES_ANNUAL} margin={{ top:20, right:20, left:0, bottom:0 }}
+                onClick={d => {
+                  const payload = d?.activePayload?.[0]?.payload;
+                  if (!payload) return;
+                  setSelectedBar(prev => prev?.year === payload.year ? null : payload);
+                }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" vertical={false} />
+                <XAxis dataKey="year" tick={{ fill:"var(--text-3)", fontSize:10 }} tickLine={false} />
+                <YAxis tickFormatter={v => `${v > 0 ? "+" : ""}${v}%`} tick={{ fill:"var(--text-3)", fontSize:10 }}
+                  tickLine={false} width={46} />
+                <Tooltip contentStyle={TT_STYLE}
+                  labelStyle={{ color:"#f0e8d8", fontWeight:700 }}
+                  itemStyle={{ color:"#f0e8d8" }}
+                  formatter={v => [`${v > 0 ? "+" : ""}${v}%`, "Annual Return"]}
+                  cursor={{ fill:"rgba(201,169,110,0.06)" }} />
+                <ReferenceLine y={14.1} stroke={GOLD} strokeDasharray="4 3" strokeWidth={1.5}
+                  label={{ value:"14.1% avg", position:"insideTopRight", fill:GOLD, fontSize:9, fontWeight:700 }} />
+                <ReferenceLine y={0} stroke="var(--text-3)" strokeWidth={0.5} />
+                <Bar dataKey="ret" radius={[2,2,0,0]} cursor="pointer">
+                  {FIFTIES_ANNUAL.map((d, i) => (
+                    <Cell key={i}
+                      fill={d.ret < 0 ? DOWN : GOLD}
+                      opacity={selectedBar && selectedBar.year !== d.year ? 0.35 : 0.9} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+
+            {selectedBar && (
+              <div style={{ marginTop:"1rem", padding:"1rem 1.25rem",
+                background: selectedBar.ret < 0 ? `${DOWN}08` : `${GOLD}08`,
+                border:`1px solid ${selectedBar.ret < 0 ? `${DOWN}30` : `${GOLD}30`}`,
+                borderRadius:8, display:"flex", gap:"1.5rem", alignItems:"flex-start" }}>
+                <div style={{ flexShrink:0 }}>
+                  <div style={{ fontSize:"0.5rem", fontWeight:700, letterSpacing:"0.12em",
+                    color:"var(--text-3)", textTransform:"uppercase", marginBottom:4 }}>
+                    {selectedBar.year}
+                  </div>
+                  <div style={{ fontSize:"2.25rem", fontWeight:900, lineHeight:1.1,
+                    color: selectedBar.ret < 0 ? DOWN : GOLD, fontFamily:"var(--font-mono)" }}>
+                    {selectedBar.ret > 0 ? "+" : ""}{selectedBar.ret}%
+                  </div>
+                  {selectedBar.recession && (
+                    <div style={{ marginTop:6, fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.1em",
+                      color:DOWN, textTransform:"uppercase", background:`${DOWN}15`,
+                      borderRadius:4, padding:"2px 7px", display:"inline-block" }}>
+                      Recession Year
+                    </div>
+                  )}
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.75 }}>
+                    {selectedBar.note}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* SECTION 3 — Three headwind panels */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px, 1fr))", gap:"0.875rem" }}>
+            {FIFTIES_HEADWINDS.map(hw => (
+              <div key={hw.id} style={{ background:"var(--surface)", border:"1px solid var(--border-c)",
+                borderRadius:12, padding:"1.25rem", display:"flex", flexDirection:"column", gap:"0.875rem" }}>
+                <div>
+                  <div style={{ fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.14em",
+                    color:hw.color, textTransform:"uppercase", marginBottom:4 }}>
+                    Major Headwind
+                  </div>
+                  <div style={{ fontSize:"0.9375rem", fontWeight:800, color:"var(--text-1)", marginBottom:2 }}>
+                    {hw.title}
+                  </div>
+                  <div style={{ fontSize:"0.6875rem", color:"var(--text-3)" }}>{hw.dates}</div>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.5rem" }}>
+                  {hw.stats.map(s => (
+                    <div key={s.label} style={{ background:"var(--elevated)", border:"1px solid var(--border-c)",
+                      borderRadius:6, padding:"0.5rem 0.625rem" }}>
+                      <div style={{ fontSize:"0.4375rem", fontWeight:700, letterSpacing:"0.1em",
+                        color:"var(--text-3)", textTransform:"uppercase", marginBottom:2 }}>
+                        {s.label}
+                      </div>
+                      <div style={{ fontSize:"0.75rem", fontWeight:700, color:"var(--text-1)" }}>
+                        {s.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ fontSize:"0.75rem", color:"var(--text-2)", lineHeight:1.7,
+                  borderTop:"1px solid var(--border-c)", paddingTop:"0.875rem" }}>
+                  {hw.body}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* SECTION 4 — Recovery pattern area chart */}
+          <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:12, padding:"1.5rem" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"1.25rem", flexWrap:"wrap", gap:"0.5rem" }}>
+              <div>
+                <div style={{ fontSize:"0.875rem", fontWeight:700, color:"var(--text-1)", marginBottom:2 }}>
+                  The Recovery Pattern: Dow Jones Level 1950 — 1959
+                </div>
+                <div style={{ fontSize:"0.6875rem", color:"var(--text-3)" }}>
+                  Red bands mark recession years · Green dots mark recovery peaks · Hover for values
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:"1rem" }}>
+                {[
+                  { label:"Recession", color:DOWN },
+                  { label:"Recovery", color:UP },
+                  { label:"Trend", color:GOLD },
+                ].map(l => (
+                  <div key={l.label} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                    <span style={{ width:8, height:8, borderRadius:"50%", background:l.color, display:"inline-block" }} />
+                    <span style={{ fontSize:"0.6rem", color:"var(--text-3)" }}>{l.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <ResponsiveContainer width="100%" height={310}>
+              <AreaChart data={FIFTIES_DOW} margin={{ top:24, right:16, left:0, bottom:0 }}>
+                <defs>
+                  <linearGradient id="dow50-fill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={GOLD} stopOpacity={0.22} />
+                    <stop offset="60%" stopColor={GOLD} stopOpacity={0.06} />
+                    <stop offset="100%" stopColor={GOLD} stopOpacity={0} />
+                  </linearGradient>
+                  <filter id="dot-glow">
+                    <feGaussianBlur stdDeviation="2.5" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                </defs>
+
+                {/* Recession shading bands */}
+                <ReferenceArea x1={1952.55} x2={1953.45} fill="rgba(255,59,92,0.10)" stroke="rgba(255,59,92,0.25)" strokeWidth={0.5} />
+                <ReferenceArea x1={1956.55} x2={1957.45} fill="rgba(255,59,92,0.10)" stroke="rgba(255,59,92,0.25)" strokeWidth={0.5} />
+
+                <CartesianGrid strokeDasharray="2 4" stroke="var(--border-c)" vertical={false} />
+                <CartesianGrid strokeDasharray="0" stroke="var(--border-c)" horizontal={false} />
+
+                <XAxis
+                  type="number" dataKey="year"
+                  domain={[1949.8, 1959.2]}
+                  tickCount={10}
+                  tickFormatter={v => Math.round(v)}
+                  tick={{ fill:"var(--text-3)", fontSize:10, fontFamily:"var(--font-mono)" }}
+                  tickLine={false} axisLine={{ stroke:"var(--border-c)" }}
+                />
+                <YAxis
+                  tick={{ fill:"var(--text-3)", fontSize:10, fontFamily:"var(--font-mono)" }}
+                  tickLine={false} axisLine={false} width={38}
+                  domain={[140, 760]}
+                  tickFormatter={v => v}
+                />
+                <Tooltip
+                  contentStyle={{ ...TT_STYLE, padding:"0.625rem 0.875rem" }}
+                  labelStyle={{ color:"#f0e8d8", fontWeight:700, fontFamily:"var(--font-mono)", marginBottom:4 }}
+                  itemStyle={{ color:GOLD, fontWeight:700, fontFamily:"var(--font-mono)" }}
+                  labelFormatter={v => `Year ${v}`}
+                  formatter={v => [v.toLocaleString(), "DJIA"]}
+                  cursor={{ stroke:GOLD, strokeWidth:1, strokeDasharray:"4 3" }}
+                />
+
+                {/* Start / end reference lines */}
+                <ReferenceLine y={236} stroke="rgba(255,255,255,0.12)" strokeDasharray="3 3" strokeWidth={1} />
+                <ReferenceLine y={681} stroke={`${GOLD}55`} strokeDasharray="3 3" strokeWidth={1}
+                  label={{ value:"681", position:"right", fill:GOLD, fontSize:9, fontWeight:700, fontFamily:"var(--font-mono)" }} />
+
+                {/* Recession event vertical markers */}
+                <ReferenceLine x={1953} stroke={`${DOWN}60`} strokeWidth={1} strokeDasharray="3 3"
+                  label={{ value:"REC I", position:"insideTopLeft", fill:DOWN, fontSize:8, fontWeight:800 }} />
+                <ReferenceLine x={1957} stroke={`${DOWN}60`} strokeWidth={1} strokeDasharray="3 3"
+                  label={{ value:"REC II", position:"insideTopLeft", fill:DOWN, fontSize:8, fontWeight:800 }} />
+
+                <Area
+                  type="monotone" dataKey="v"
+                  stroke={GOLD} strokeWidth={3}
+                  fill="url(#dow50-fill)"
+                  dot={(props) => {
+                    const { cx, cy, payload } = props;
+                    const meta = FIFTIES_DOW_META[payload.year];
+                    if (!meta) {
+                      return <circle key={payload.year} cx={cx} cy={cy} r={3.5}
+                        fill={GOLD} stroke="#1a1410" strokeWidth={1.5} />;
+                    }
+                    const color = meta.type === "recession" ? DOWN : UP;
+                    return (
+                      <g key={payload.year} filter="url(#dot-glow)">
+                        <circle cx={cx} cy={cy} r={14} fill={color} opacity={0.08} />
+                        <circle cx={cx} cy={cy} r={8} fill={color} opacity={0.18} />
+                        <circle cx={cx} cy={cy} r={5.5} fill={color} stroke="#1a1410" strokeWidth={1.5} />
+                        <text x={cx} y={meta.type === "recession" ? cy + 18 : cy - 13}
+                          textAnchor="middle" fill={color}
+                          fontSize={8} fontWeight={800} fontFamily="var(--font-mono)">
+                          {meta.ret}
+                        </text>
+                      </g>
+                    );
+                  }}
+                  activeDot={{ r:7, fill:GOLD, stroke:"#1a1410", strokeWidth:2 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+
+            {/* Event legend row */}
+            <div style={{ display:"flex", gap:"1.5rem", marginTop:"0.875rem", flexWrap:"wrap",
+              padding:"0.875rem 1rem", background:"var(--elevated)", borderRadius:8,
+              border:"1px solid var(--border-c)" }}>
+              {[
+                { label:"1953: −3.8%", sub:"Post-war recession · 10 months", color:DOWN },
+                { label:"1954: +43.9%", sub:"Greatest single-year recovery", color:UP },
+                { label:"1957: −12.8%", sub:"Eisenhower recession · 8 months", color:DOWN },
+                { label:"1958: +34.0%", sub:"Second extraordinary recovery", color:UP },
+              ].map(a => (
+                <div key={a.label} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <span style={{ width:9, height:9, borderRadius:"50%", background:a.color,
+                    display:"inline-block", flexShrink:0,
+                    boxShadow:`0 0 6px ${a.color}60` }} />
+                  <div>
+                    <div style={{ fontSize:"0.6875rem", fontWeight:800, color:a.color,
+                      fontFamily:"var(--font-mono)" }}>{a.label}</div>
+                    <div style={{ fontSize:"0.5625rem", color:"var(--text-3)", marginTop:1 }}>{a.sub}</div>
+                  </div>
+                </div>
+              ))}
+              <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:6 }}>
+                <div style={{ width:24, height:2, background:GOLD, borderRadius:2 }} />
+                <span style={{ fontSize:"0.5625rem", color:"var(--text-3)" }}>Dow Jones level</span>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 5 — Decade comparison bar chart */}
+          <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:14, padding:"1.5rem", backdropFilter:"blur(8px)" }}>
+            <div style={{ marginBottom:"1rem" }}>
+              <div style={{ fontSize:"0.875rem", fontWeight:700, color:"var(--text-1)", marginBottom:2 }}>
+                Average Annual Dow Return by Decade: 1920s — 2020s
+              </div>
+              <div style={{ fontSize:"0.6875rem", color:"var(--text-3)" }}>
+                1950s highlighted · The 1990s led at 15.9% — without a war, recession, or inflation
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={310}>
+              <BarChart data={DECADE_COMPS} layout="vertical" margin={{ left:0, right:60, top:5, bottom:5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-c)" horizontal={false} />
+                <XAxis type="number" tick={{ fill:"var(--text-3)", fontSize:10 }} tickLine={false}
+                  tickFormatter={v => `${v > 0 ? "+" : ""}${v}%`} domain={[-5, 20]} />
+                <YAxis type="category" dataKey="dec" tick={{ fill:"var(--text-2)", fontSize:10 }}
+                  tickLine={false} width={48} />
+                <Tooltip contentStyle={TT_STYLE}
+                  labelStyle={{ color:"#f0e8d8", fontWeight:700 }}
+                  itemStyle={{ color:"#f0e8d8" }}
+                  formatter={v => [`${v > 0 ? "+" : ""}${v}%`, "Avg Annual Return"]} />
+                <ReferenceLine x={0} stroke="var(--text-3)" strokeWidth={0.5} />
+                <Bar dataKey="ret" radius={[0,3,3,0]}>
+                  {DECADE_COMPS.map((d, i) => (
+                    <Cell key={i}
+                      fill={d.hi ? GOLD : d.ret < 0 ? DOWN : "rgba(201,169,110,0.32)"} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* SECTION 6 — Editorial investor lessons */}
+          <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:14, padding:"1.5rem 2rem", backdropFilter:"blur(8px)" }}>
+            <div style={{ fontSize:"0.875rem", fontWeight:700, color:"var(--text-1)", marginBottom:"1.5rem" }}>
+              Five Investor Lessons from the 1950s
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:"1.5rem" }}>
+              {FIFTIES_LESSONS.map((l, i) => (
+                <div key={l.n} style={{ display:"flex", gap:"1.75rem", alignItems:"flex-start",
+                  paddingBottom: i < FIFTIES_LESSONS.length - 1 ? "1.5rem" : 0,
+                  borderBottom: i < FIFTIES_LESSONS.length - 1 ? "1px solid var(--border-c)" : "none" }}>
+                  <div style={{ fontSize:"3rem", fontWeight:900, color:`${GOLD}25`,
+                    fontFamily:"var(--font-mono)", lineHeight:1, flexShrink:0, width:60, letterSpacing:"-0.02em" }}>
+                    {l.n}
+                  </div>
+                  <div>
+                    <div style={{ fontSize:"0.9375rem", fontWeight:700, color:"var(--text-1)", marginBottom:"0.5rem" }}>
+                      {l.title}
+                    </div>
+                    <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.75 }}>
+                      {l.body}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SECTION 7 — Bottom line pullquote */}
+          <div style={{ background:`rgba(201,169,110,0.04)`, border:`1px solid rgba(201,169,110,0.18)`,
+            borderRadius:14, padding:"2rem 2.25rem" }}>
+            <div style={{ fontSize:"0.5rem", fontWeight:800, letterSpacing:"0.18em",
+              color:GOLD, textTransform:"uppercase", marginBottom:"1.25rem" }}>
+              The Bottom Line
+            </div>
+            <div style={{ fontSize:"1.0625rem", fontWeight:500, color:"var(--text-1)", lineHeight:1.85,
+              maxWidth:700, fontStyle:"italic", fontFamily:"'Playfair Display', Georgia, serif", paddingTop:"0.125rem" }}>
+              The 1950s proved that the stock market is not a barometer of current events. It is a
+              discounting mechanism for future earnings. Every headwind that decade was real, serious,
+              and frightening in the moment. None of them stopped the compounding of American enterprise.
+            </div>
+            <div style={{ marginTop:"1.75rem", display:"flex", gap:"3rem", flexWrap:"wrap",
+              paddingTop:"1.25rem", borderTop:"1px solid var(--border-c)" }}>
+              <div>
+                <div style={{ fontSize:"0.5rem", fontWeight:700, letterSpacing:"0.12em",
+                  color:"var(--text-3)", textTransform:"uppercase", marginBottom:4 }}>
+                  $100 in 1950 — by 2026
+                </div>
+                <div style={{ fontSize:"1.75rem", fontWeight:900, color:GOLD, fontFamily:"var(--font-mono)" }}>
+                  $396,719
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize:"0.5rem", fontWeight:700, letterSpacing:"0.12em",
+                  color:"var(--text-3)", textTransform:"uppercase", marginBottom:4 }}>
+                  The principle
+                </div>
+                <div style={{ fontSize:"0.9375rem", fontWeight:700, color:"var(--text-1)", maxWidth:360, lineHeight:1.5 }}>
+                  Time in the market, not timing the market.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── Main Component ─────────────────────────────────────────────────────── */
 export default function MarketHistory() {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -1409,73 +2022,26 @@ export default function MarketHistory() {
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
-        marginBottom: "1.25rem",
-        position: "relative",
-        overflow: "hidden",
+        borderRadius: 20, padding: "2rem 2.25rem",
+        marginBottom: "1.25rem", position: "relative", overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
-        <div style={{
-          position: "absolute", top: -60, right: -40,
-          width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <History size={14} style={{ color: "var(--gold)" }} />
-              </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>MARKET HISTORY</h1>
-            </div>
-            <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
-              Explore decades of market history. Visualize how the S&P 500, Dow Jones, and NASDAQ have performed through recessions, bull markets, and major economic events.
+        <div style={{ position: "absolute", top: -80, right: -60, width: 400, height: 400, background: "radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 68%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.875rem" }}>
+            <div style={{ width: 20, height: 1, background: "var(--gold)", opacity: 0.55 }} />
+            <p style={{ fontSize: "0.5625rem", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--gold)", margin: 0, fontFamily: "'Inter', system-ui, sans-serif" }}>
+              Terminal · Markets
             </p>
-            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
-              {["100+ Years of Data", "Major Indices", "Recession Markers", "Inflation-Adjusted"].map((label) => (
-                <span key={label} style={{
-                  fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
-                  borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
-                  color: "var(--gold)",
-                }}>{label}</span>
-              ))}
-            </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", flexShrink: 0 }}>
-            {[
-              { icon: BarChart2, label: "S&P 500 History", sub: "Century of price data", color: "#3b82f6" },
-              { icon: AlertTriangle, label: "Recession Periods", sub: "NBER-marked downturns", color: "var(--gold)" },
-              { icon: TrendingUp, label: "Bull & Bear Markets", sub: "Full cycle analysis", color: "var(--teal)" },
-              { icon: Clock, label: "Long-Term Trends", sub: "Secular market patterns", color: "#f59e0b" },
-            ].map(({ icon: Icon, label, sub, color }) => (
-              <div key={label} style={{
-                display: "flex", alignItems: "center", gap: "0.625rem",
-                padding: "0.625rem 0.875rem",
-                background: "var(--bg)", border: "1px solid var(--border-c)",
-                borderRadius: 10, minWidth: 170,
-              }}>
-                <div style={{
-                  width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <Icon size={14} style={{ color }} />
-                </div>
-                <div>
-                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-1)", lineHeight: 1 }}>{label}</div>
-                  <div style={{ fontSize: "0.625rem", color: "var(--text-3)", marginTop: 2, lineHeight: 1.3 }}>{sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h1 style={{ margin: "0 0 0.625rem", fontSize: "clamp(1.5rem, 2.5vw, 2rem)", fontWeight: 800, letterSpacing: "-0.04em", color: "var(--text-1)", lineHeight: 1.05, fontFamily: "'Inter', system-ui, sans-serif", display: "flex", alignItems: "baseline", gap: "0.375rem", flexWrap: "wrap" }}>
+            <span>Market</span>
+            <em style={{ fontStyle: "italic", color: "var(--gold)", fontFamily: "'Playfair Display', Georgia, serif" }}>History</em>
+          </h1>
+          <p style={{ fontSize: "0.875rem", color: "var(--text-3)", lineHeight: 1.75, maxWidth: 560, margin: 0, fontFamily: "'Inter', system-ui, sans-serif" }}>
+            Explore decades of market history. Visualize how the Dow Jones, S&P 500, and NASDAQ have performed through recessions, bull markets, and major economic events.
+          </p>
         </div>
       </div>
 
@@ -1483,16 +2049,18 @@ export default function MarketHistory() {
       <LongTermChart onMarketEnvClick={handleMarketEnvClick} />
 
       {/* Wisdom bar */}
-      <div style={{ background:"var(--elevated)", border:`1px solid ${GOLD}40`,
-        borderLeft:`3px solid ${GOLD}`, borderRadius:8, padding:"0.875rem 1.25rem",
+      <div style={{ background:`rgba(201,169,110,0.04)`, border:`1px solid rgba(201,169,110,0.18)`,
+        borderRadius:10, padding:"0.875rem 1.25rem",
         display:"flex", alignItems:"center", gap:"0.875rem", marginBottom:"1.25rem" }}>
-        <TrendingUp size={16} color={GOLD} style={{ flexShrink:0 }} />
+        <div style={{ width:28, height:28, borderRadius:7, background:"rgba(201,169,110,0.12)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+          <TrendingUp size={14} color={GOLD} />
+        </div>
         <div>
-          <div style={{ fontSize:"0.5625rem", fontWeight:700, letterSpacing:"0.12em",
-            textTransform:"uppercase", color:GOLD, marginBottom:2 }}>
+          <div style={{ fontSize:"0.5625rem", fontWeight:700, letterSpacing:"0.18em",
+            textTransform:"uppercase", color:GOLD, marginBottom:3, fontFamily:"'Inter', system-ui, sans-serif" }}>
             Market Wisdom of the Day
           </div>
-          <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.5 }}>
+          <div style={{ fontSize:"0.8125rem", color:"var(--text-2)", lineHeight:1.6, fontFamily:"'Inter', system-ui, sans-serif" }}>
             {WISDOM[wisdomIdx]}
           </div>
         </div>
@@ -1505,8 +2073,16 @@ export default function MarketHistory() {
 
       {/* Market Environments header */}
       <div ref={marketEnvRef} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"0.875rem" }}>
-        <div className="t-section-title">Market Environments</div>
-        <div style={{ fontSize:"0.6875rem", color:"var(--text-3)" }}>
+        <div>
+          <div style={{ display:"flex", alignItems:"center", gap:"0.5rem", marginBottom:"0.25rem" }}>
+            <div style={{ width:16, height:1, background:"var(--gold)", opacity:0.5 }} />
+            <span style={{ fontSize:"0.5rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", color:"var(--gold)", fontFamily:"'Inter', system-ui, sans-serif" }}>Explore</span>
+          </div>
+          <div style={{ fontSize:"1.125rem", fontWeight:800, color:"var(--text-1)", fontFamily:"'Inter', system-ui, sans-serif", letterSpacing:"-0.02em" }}>
+            Market <em style={{ fontStyle:"italic", color:"var(--gold)", fontFamily:"'Playfair Display', Georgia, serif" }}>Environments</em>
+          </div>
+        </div>
+        <div style={{ fontSize:"0.6875rem", color:"var(--text-3)", fontFamily:"'Inter', system-ui, sans-serif" }}>
           Click any event to explore the full breakdown
         </div>
       </div>
@@ -1519,6 +2095,11 @@ export default function MarketHistory() {
             onClick={() => setSelectedEvent(prev => prev?.id === ev.id ? null : ev)}
           />
         ))}
+      </div>
+
+      {/* ── Decade in Focus ──────────────────────────────────────── */}
+      <div style={{ borderTop:"1px solid var(--border-c)", paddingTop:"1.25rem", marginTop:"0.5rem" }}>
+        <DecadesPanel />
       </div>
     </div>
   );

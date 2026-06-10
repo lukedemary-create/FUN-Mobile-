@@ -99,23 +99,23 @@ function getChartData(stockData, tf) {
 /* ─────────────────────────────────────────────────────────────────
    DESIGN TOKENS
 ───────────────────────────────────────────────────────────────── */
-const GOLD  = "#F5A623";
+const GOLD  = "#c9a96e";
 const TEAL  = "#00B4C6";
-const GREEN = "#10b981";
-const RED   = "#ef4444";
-const BG    = "#0a0a0f";
-const SURF  = "#111318";
-const ELEV  = "#16181f";
-const BORD  = "#1e2028";
-const T1    = "#f1f5f9";
-const T2    = "#94a3b8";
-const T3    = "#64748b";
+const GREEN = "#4a7c59";
+const RED   = "#c0392b";
+const BG    = "#1a1410";
+const SURF  = "#231c16";
+const ELEV  = "#2d2419";
+const BORD  = "#2a2018";
+const T1    = "#f0e8d8";
+const T2    = "#a89070";
+const T3    = "#6b5540";
 
 const SECTOR_COLORS = {
   "Technology":             { text: "#818cf8", bg: "rgba(99,102,241,0.12)",  border: "rgba(99,102,241,0.3)"  },
   "Healthcare":             { text: "#34d399", bg: "rgba(16,185,129,0.12)",  border: "rgba(16,185,129,0.3)"  },
-  "Financial Services":     { text: GOLD,      bg: "rgba(245,165,35,0.12)",  border: "rgba(245,165,35,0.3)"  },
-  "Financials":             { text: GOLD,      bg: "rgba(245,165,35,0.12)",  border: "rgba(245,165,35,0.3)"  },
+  "Financial Services":     { text: GOLD,      bg: "rgba(201,169,110,0.12)",  border: "rgba(201,169,110,0.3)"  },
+  "Financials":             { text: GOLD,      bg: "rgba(201,169,110,0.12)",  border: "rgba(201,169,110,0.3)"  },
   "Consumer Cyclical":      { text: "#fb923c", bg: "rgba(249,115,22,0.12)",  border: "rgba(249,115,22,0.3)"  },
   "Consumer Defensive":     { text: "#eab308", bg: "rgba(234,179,8,0.12)",   border: "rgba(234,179,8,0.3)"   },
   "Energy":                 { text: "#f87171", bg: "rgba(239,68,68,0.12)",   border: "rgba(239,68,68,0.3)"   },
@@ -155,8 +155,8 @@ const METRIC_INFO = {
 ───────────────────────────────────────────────────────────────── */
 const CINEMA_CSS = `
   @keyframes breatheGold {
-    0%,100% { box-shadow: 0 0 20px rgba(245,165,35,0.15), 0 0 60px rgba(245,165,35,0.05); }
-    50%      { box-shadow: 0 0 40px rgba(245,165,35,0.35), 0 0 90px rgba(245,165,35,0.15); }
+    0%,100% { box-shadow: 0 0 20px rgba(201,169,110,0.15), 0 0 60px rgba(201,169,110,0.05); }
+    50%      { box-shadow: 0 0 40px rgba(201,169,110,0.35), 0 0 90px rgba(201,169,110,0.15); }
   }
   @keyframes breatheLive {
     0%,100% { transform: scale(1);   opacity: 1; }
@@ -204,7 +204,7 @@ const CINEMA_CSS = `
     border-radius: 14px;
   }
   .cinema-card-gold-top {
-    border-top: 1px solid rgba(245,165,35,0.4);
+    border-top: 1px solid rgba(201,169,110,0.4);
   }
   .cinema-tab-btn {
     font-size: 0.75rem;
@@ -528,7 +528,7 @@ function CinemaRangeBar({ low, high, current, targetPct, targetColor = GREEN }) 
         <div style={{
           position: "absolute", inset: 0, borderRadius: 4,
           background: `linear-gradient(90deg, ${RED}90 0%, ${GOLD}90 50%, ${GREEN}90 100%)`,
-          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.4), inset 0 -1px 2px rgba(255,255,255,0.05)",
+          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.4), inset 0 -1px 2px var(--border-c)",
         }} />
 
         {/* Target dot (optional) */}
@@ -1091,7 +1091,7 @@ function ChartTab({ data }) {
                       <stop offset="100%" stopColor={GOLD} stopOpacity={0}    />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.03)" />
+                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(42,32,24,0.8)" />
                   <XAxis
                     dataKey="label"
                     tick={{ fill: T3, fontSize: 10, fontFamily: "monospace" }}
@@ -1257,13 +1257,13 @@ function FinancialsTab({ data }) {
             <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={chartData} barCategoryGap="28%">
-                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.03)" />
+                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(42,32,24,0.8)" />
                   <XAxis dataKey="displayDate" tick={{ fill: T3, fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fill: T3, fontSize: 10 }} tickFormatter={fmtMoney} width={66} axisLine={false} tickLine={false} />
                   <Tooltip
                     contentStyle={{ background: ELEV, border: `1px solid ${BORD}`, borderRadius: 8, color: T1, fontSize: "0.75rem" }}
                     formatter={(v, n) => [fmtMoney(v), n === "revenue" ? "Revenue" : "Net Income"]}
-                    cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                    cursor={{ fill: "rgba(42,32,24,0.5)" }}
                   />
                   <Bar dataKey="revenue"  shape={<Bar3D fill={TEAL} />} isAnimationActive animationDuration={700} />
                   <Bar dataKey="earnings" shape={<Bar3D fill={GOLD} />} isAnimationActive animationDuration={700} animationBegin={150} />
@@ -1288,7 +1288,7 @@ function FinancialsTab({ data }) {
           </div>
           <ResponsiveContainer width="100%" height={150}>
             <LineChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.03)" />
+              <CartesianGrid strokeDasharray="2 6" stroke="rgba(42,32,24,0.8)" />
               <XAxis dataKey="displayDate" tick={{ fill: T3, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: T3, fontSize: 10 }} tickFormatter={(v) => `$${v.toFixed(2)}`} width={52} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: ELEV, border: `1px solid ${BORD}`, borderRadius: 8, color: T1, fontSize: "0.75rem" }} formatter={(v) => [`$${Number(v).toFixed(2)}`, "EPS"]} />
@@ -1370,7 +1370,7 @@ function AnalysisTab({ data }) {
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}
         style={{
           background: "rgba(17,19,24,0.9)", backdropFilter: "blur(12px)",
-          border: `1px solid ${BORD}`, borderLeft: `3px solid ${GOLD}`,
+          border: `1px solid rgba(201,169,110,0.25)`,
           borderRadius: 14, padding: "1.5rem",
           position: "relative", overflow: "hidden",
         }}
@@ -1544,21 +1544,16 @@ export default function Terminal() {
                     Equity Research Terminal
                   </h1>
                 </div>
-                <p style={{ fontSize: "0.875rem", color: T2, lineHeight: 1.65, maxWidth: 520, margin: "0 0 1rem" }}>
+                <p style={{ fontSize: "0.875rem", color: T2, lineHeight: 1.75, maxWidth: 520, margin: 0 }}>
                   Institutional-grade stock research. Live data, cinematic visualizations, and plain-English explanations built for wealth managers and their clients.
                 </p>
-                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                  {["Live Quotes", "Interactive Charts", "3D Metrics", "Earnings Data"].map((l) => (
-                    <GlassPill key={l} color={GOLD}>{l}</GlassPill>
-                  ))}
-                </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem", flexShrink: 0 }}>
                 {[
-                  { icon: Search,   label: "Stock Lookup",      sub: "Any ticker, instant data",        color: "#3b82f6" },
-                  { icon: TrendingUp, label: "Live Charts",      sub: "Cinematic price history",        color: GOLD     },
-                  { icon: Layers,   label: "Options Flow",       sub: "Calls, puts & open interest",    color: TEAL     },
-                  { icon: BarChart2, label: "Technical Analysis", sub: "RSI, MACD, Bollinger & more",  color: "#f59e0b" },
+                  { icon: Search,   label: "Stock Lookup",      sub: "Any ticker, instant data",        color: GOLD  },
+                  { icon: TrendingUp, label: "Live Charts",      sub: "Cinematic price history",        color: GOLD  },
+                  { icon: Layers,   label: "Options Flow",       sub: "Calls, puts & open interest",    color: TEAL  },
+                  { icon: BarChart2, label: "Technical Analysis", sub: "RSI, MACD, Bollinger & more",  color: GOLD  },
                 ].map(({ icon: Icon, label, sub, color }) => (
                   <div key={label} style={{
                     display: "flex", alignItems: "center", gap: "0.625rem",

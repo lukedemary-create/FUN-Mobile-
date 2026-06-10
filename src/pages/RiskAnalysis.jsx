@@ -32,7 +32,7 @@ const TABS = [
 
 const Loader = () => (
   <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:300 }}>
-    <div style={{ width:32,height:32,border:"3px solid rgba(201,168,76,0.15)",
+    <div style={{ width:32,height:32,border:"3px solid rgba(201,169,110,0.15)",
       borderTopColor:"#c9a84c",borderRadius:"50%",animation:"tSpin 0.7s linear infinite" }} />
     <style>{`@keyframes tSpin{to{transform:rotate(360deg)}}`}</style>
   </div>
@@ -68,16 +68,18 @@ export default function RiskAnalysis() {
         <div style={{
           background: "var(--surface)",
           border: "1px solid var(--border-c)",
-          borderRadius: 16,
-          padding: "1.75rem 2rem",
+          borderRadius: 20,
+          padding: "2rem 2.25rem",
           marginBottom: "1.25rem",
           position: "relative",
           overflow: "hidden",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
         }}>
           <div style={{
             position: "absolute", top: -60, right: -40,
             width: 320, height: 320,
-            background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -85,12 +87,15 @@ export default function RiskAnalysis() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: 7,
-                  background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                  background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 }}>
                   <ShieldAlert size={14} style={{ color: "var(--gold)" }} />
                 </div>
-                <h1 className="t-page-title" style={{ margin: 0 }}>RISK ANALYSIS</h1>
+                <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                  RISK{" "}
+                  <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Analysis</em>
+                </h1>
               </div>
               <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
                 Institutional-grade risk analytics for your portfolio. Run Monte Carlo simulations, stress tests, and scenario analysis to understand your true downside exposure.
@@ -100,8 +105,8 @@ export default function RiskAnalysis() {
                   <span key={label} style={{
                     fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                     borderRadius: 99, letterSpacing: "0.04em",
-                    background: "rgba(201,168,76,0.10)",
-                    border: "1px solid rgba(201,168,76,0.25)",
+                    background: "rgba(201,169,110,0.10)",
+                    border: "1px solid rgba(201,169,110,0.25)",
                     color: "var(--gold)",
                   }}>{label}</span>
                 ))}
@@ -122,8 +127,8 @@ export default function RiskAnalysis() {
                 }}>
                   <div style={{
                     width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                    background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                    border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                    background: "rgba(201,169,110,0.1)",
+                    border: "1px solid rgba(201,169,110,0.2)",
                     display: "flex", alignItems: "center", justifyContent: "center",
                   }}>
                     <Icon size={14} style={{ color }} />
@@ -139,11 +144,7 @@ export default function RiskAnalysis() {
         </div>
 
         {/* ── Tab Bar ── */}
-        <div style={{
-          display:"flex",gap:"2px",overflowX:"auto",marginBottom:"1.25rem",
-          background:"var(--surface)",borderRadius:8,padding:"4px",
-          border:"1px solid var(--border-c)",
-        }}>
+        <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)", marginBottom: "1.25rem" }}>
           {TABS.map(tab => {
             const active = activeTab === tab.key;
             const Icon = tab.icon;
@@ -151,15 +152,7 @@ export default function RiskAnalysis() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                style={{
-                  display:"flex",alignItems:"center",gap:"0.375rem",
-                  padding:"0.5rem 0.75rem",borderRadius:6,border:"none",cursor:"pointer",
-                  whiteSpace:"nowrap",flexShrink:0,fontSize:"0.6875rem",fontWeight:600,
-                  letterSpacing:"0.02em",transition:"all 0.15s",
-                  background: active ? "rgba(201,168,76,0.12)" : "transparent",
-                  color: active ? "#c9a84c" : "var(--text-3)",
-                  borderBottom: active ? "2px solid #c9a84c" : "2px solid transparent",
-                }}
+                style={{ display: "flex", alignItems: "center", gap: "0.375rem", padding: "0.45rem 0.85rem", borderRadius: 7, border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent", cursor: "pointer", background: active ? "rgba(201,169,110,0.18)" : "transparent", color: active ? "var(--gold)" : "var(--text-3)", fontWeight: active ? 700 : 500, fontSize: "0.75rem", whiteSpace: "nowrap", flexShrink: 0 }}
               >
                 <Icon size={13} />
                 {tab.label}

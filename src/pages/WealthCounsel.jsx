@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search, MapPin, Star, ChevronDown, ChevronUp, X, Check,
   FileText, FolderOpen, User, Briefcase, Shield, Home,
@@ -390,7 +391,7 @@ function AdvisorCard({ advisor, onSelect }) {
       <div style={{ display:"flex",flexWrap:"wrap",gap:4,marginBottom:"0.625rem" }}>
         {advisor.credentials.map(c => (
           <span key={c} style={{ fontSize:"0.5rem",fontWeight:700,color:GOLD,
-            background:"rgba(201,168,76,0.1)",border:"1px solid rgba(201,168,76,0.2)",
+            background:"rgba(201,169,110,0.1)",border:"1px solid rgba(201,169,110,0.2)",
             borderRadius:4,padding:"2px 6px" }}>{c}</span>
         ))}
         <span style={{ fontSize:"0.5rem",color:"var(--text-3)",background:"var(--elevated)",
@@ -453,7 +454,7 @@ function AdvisorProfile({ advisor, onClose }) {
             <div style={{ display:"flex",flexWrap:"wrap",gap:4,marginBottom:"0.75rem" }}>
               {advisor.credentials.map(c => (
                 <span key={c} style={{ fontSize:"0.5625rem",fontWeight:700,color:GOLD,
-                  background:"rgba(201,168,76,0.12)",border:"1px solid rgba(201,168,76,0.25)",
+                  background:"rgba(201,169,110,0.12)",border:"1px solid rgba(201,169,110,0.25)",
                   borderRadius:4,padding:"3px 8px" }}>{c}</span>
               ))}
             </div>
@@ -501,7 +502,8 @@ function AdvisorProfile({ advisor, onClose }) {
         <div style={{ ...card, padding:"1rem" }}>
           <div style={{ fontSize:"0.5625rem",color:"var(--text-3)",textTransform:"uppercase",letterSpacing:"0.1em",marginBottom:"0.5rem" }}>Planning Approach</div>
           <p style={{ fontSize:"0.6875rem",color:"var(--text-2)",lineHeight:1.7,margin:0,
-            borderLeft:`3px solid ${GOLD}`,paddingLeft:"0.625rem" }}>{advisor.approach}</p>
+            padding:"0.5rem 0.75rem",borderRadius:6,
+            background:`${GOLD}0c`,border:`1px solid ${GOLD}28` }}>{advisor.approach}</p>
         </div>
 
         {/* Specialties */}
@@ -547,7 +549,7 @@ function AdvisorProfile({ advisor, onClose }) {
       </div>
 
       {/* Prep reminder */}
-      <div style={{ background:"rgba(201,168,76,0.06)",border:"1px solid rgba(201,168,76,0.2)",
+      <div style={{ background:"rgba(201,169,110,0.06)",border:"1px solid rgba(201,169,110,0.2)",
         borderRadius:8,padding:"1rem",display:"flex",gap:"0.75rem",alignItems:"center" }}>
         <FileText size={18} color={GOLD} style={{ flexShrink:0 }} />
         <div>
@@ -730,7 +732,7 @@ function TabPrepHub() {
                     style={{ display:"flex",alignItems:"flex-start",gap:"0.625rem",
                       padding:"0.5rem 0.375rem",cursor:"pointer",borderRadius:5,
                       transition:"background 0.1s" }}
-                    onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.03)"}
+                    onMouseEnter={e => e.currentTarget.style.background="var(--elevated)"}
                     onMouseLeave={e => e.currentTarget.style.background="transparent"}>
                     <div style={{ width:18,height:18,borderRadius:4,flexShrink:0,marginTop:1,
                       background: done ? GREEN : "transparent",
@@ -807,41 +809,41 @@ function TabFolder() {
 
       {/* Document Vault */}
       <div style={{ ...card, padding:"1.25rem" }}>
-        <div style={{ fontSize:"0.75rem",fontWeight:800,color:"var(--text-1)",marginBottom:4,
+        <div style={{ fontSize:"0.875rem",fontWeight:800,color:"var(--text-1)",marginBottom:6,
           textTransform:"uppercase",letterSpacing:"0.08em" }}>Document Vault</div>
-        <div style={{ fontSize:"0.625rem",color:"var(--text-3)",marginBottom:"1rem",lineHeight:1.6 }}>
+        <div style={{ fontSize:"0.8125rem",color:"var(--text-3)",marginBottom:"1rem",lineHeight:1.6 }}>
           Organize your documents by category before meeting with your advisor.
           File upload coming soon — for now, use this as your preparation checklist.
         </div>
-        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:"0.75rem" }}>
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:"0.875rem" }}>
           {DOC_CATEGORIES.map(cat => {
             const CIcon = cat.icon;
             return (
               <div key={cat.id}
                 style={{ background:"var(--elevated)",border:`1px solid ${activeDoc===cat.id ? cat.color : "var(--border-c)"}`,
-                  borderRadius:8,padding:"1rem",cursor:"pointer",transition:"border-color 0.15s" }}
+                  borderRadius:10,padding:"1.125rem",cursor:"pointer",transition:"border-color 0.15s" }}
                 onClick={() => setActiveDoc(activeDoc === cat.id ? null : cat.id)}>
-                <div style={{ display:"flex",alignItems:"center",gap:"0.5rem",marginBottom:"0.625rem" }}>
-                  <div style={{ width:28,height:28,borderRadius:6,background:`${cat.color}18`,
+                <div style={{ display:"flex",alignItems:"center",gap:"0.625rem",marginBottom:"0.75rem" }}>
+                  <div style={{ width:34,height:34,borderRadius:8,background:`${cat.color}18`,
                     display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
-                    <CIcon size={13} style={{ color:cat.color }} />
+                    <CIcon size={16} style={{ color:cat.color }} />
                   </div>
-                  <span style={{ fontSize:"0.625rem",fontWeight:700,color:"var(--text-1)" }}>{cat.label}</span>
+                  <span style={{ fontSize:"0.875rem",fontWeight:700,color:"var(--text-1)" }}>{cat.label}</span>
                 </div>
                 {activeDoc === cat.id ? (
                   <div>
                     {cat.examples.map(ex => (
-                      <div key={ex} style={{ fontSize:"0.5625rem",color:"var(--text-3)",
-                        padding:"3px 0",borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                      <div key={ex} style={{ fontSize:"0.8125rem",color:"var(--text-3)",
+                        padding:"5px 0",borderBottom:"1px solid var(--border-c)" }}>
                         □ {ex}
                       </div>
                     ))}
-                    <div style={{ marginTop:"0.5rem",fontSize:"0.5rem",color:cat.color,fontWeight:700 }}>
+                    <div style={{ marginTop:"0.625rem",fontSize:"0.75rem",color:cat.color,fontWeight:700 }}>
                       Upload available in future version
                     </div>
                   </div>
                 ) : (
-                  <div style={{ fontSize:"0.5rem",color:"var(--text-3)" }}>
+                  <div style={{ fontSize:"0.75rem",color:"var(--text-3)" }}>
                     {cat.examples.slice(0,2).join(" · ")} + more
                   </div>
                 )}
@@ -1056,23 +1058,42 @@ const TABS = [
 
 export default function WealthCounsel() {
   const [activeTab, setActiveTab] = useState("directory");
+  const navigate = useNavigate();
 
   return (
     <div style={{ display:"flex",flexDirection:"column",gap:"1.25rem" }}>
+
+      {/* ── P button — fixed top-right, back to landing ── */}
+      <button
+        onClick={() => navigate('/')}
+        title="Back to Planora"
+        style={{
+          position: 'fixed', top: 16, right: 20, zIndex: 100,
+          width: 36, height: 36, borderRadius: 9,
+          background: GOLD, border: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          boxShadow: '0 0 14px rgba(201,168,76,0.3)',
+        }}
+      >
+        <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '0.9375rem', fontWeight: 900, color: '#1a1410', lineHeight: 1 }}>P</span>
+      </button>
 
       {/* ── Hero Banner ─────────────────────────────────────────── */}
       <div style={{
         background: "var(--surface)",
         border: "1px solid var(--border-c)",
-        borderRadius: 16,
-        padding: "1.75rem 2rem",
+        borderRadius: 20,
+        padding: "2rem 2.25rem",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(12px)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 var(--border-c)",
       }}>
         <div style={{
           position: "absolute", top: -60, right: -40,
           width: 320, height: 320,
-          background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%)",
           pointerEvents: "none",
         }} />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem", position: "relative" }}>
@@ -1080,12 +1101,15 @@ export default function WealthCounsel() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: 7,
-                background: "rgba(201,168,76,0.15)", border: "1px solid rgba(201,168,76,0.3)",
+                background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <BookUser size={14} style={{ color: "var(--gold)" }} />
               </div>
-              <h1 className="t-page-title" style={{ margin: 0 }}>WEALTH COUNSEL</h1>
+              <h1 style={{ margin: 0, fontSize: "1.35rem", fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em", fontFamily: "'Inter', system-ui, sans-serif" }}>
+                WEALTH{" "}
+                <em style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--gold)", fontWeight: 400, fontSize: "1.5rem" }}>Counsel</em>
+              </h1>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-2)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 1rem" }}>
               Connect with the right financial advisor for your situation. Browse vetted CFP® professionals filtered by specialty, fee structure, and investment minimums.
@@ -1095,8 +1119,8 @@ export default function WealthCounsel() {
                 <span key={label} style={{
                   fontSize: "0.6875rem", fontWeight: 700, padding: "3px 10px",
                   borderRadius: 99, letterSpacing: "0.04em",
-                  background: "rgba(201,168,76,0.10)",
-                  border: "1px solid rgba(201,168,76,0.25)",
+                  background: "rgba(201,169,110,0.10)",
+                  border: "1px solid rgba(201,169,110,0.25)",
                   color: "var(--gold)",
                 }}>{label}</span>
               ))}
@@ -1117,8 +1141,8 @@ export default function WealthCounsel() {
               }}>
                 <div style={{
                   width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                  background: `color-mix(in srgb, ${color} 14%, transparent)`,
-                  border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
+                  background: "rgba(201,169,110,0.1)",
+                  border: "1px solid rgba(201,169,110,0.2)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <Icon size={14} style={{ color }} />
@@ -1134,19 +1158,19 @@ export default function WealthCounsel() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:"flex",gap:4,background:"var(--surface)",
-        border:"1px solid var(--border-c)",borderRadius:8,padding:4 }}>
+      <div style={{ display: "flex", gap: "0.25rem", background: "var(--surface)", padding: "0.3rem", borderRadius: 10, border: "1px solid var(--border-c)", overflowX: "auto", backdropFilter: "blur(12px)" }}>
         {TABS.map(({ key, label, icon: Icon }) => {
           const active = activeTab === key;
           return (
             <button key={key} onClick={() => setActiveTab(key)}
-              style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,
-                padding:"8px 12px",borderRadius:6,border:"none",cursor:"pointer",transition:"all 0.15s",
-                background: active ? GOLD : "transparent",
-                color: active ? "#07080a" : "var(--text-3)",
-                fontWeight: active ? 700 : 400, fontSize:"0.6875rem" }}>
+              style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                padding: "0.45rem 0.85rem", borderRadius: 7, cursor: "pointer", transition: "all 0.15s",
+                border: active ? "1px solid rgba(201,169,110,0.3)" : "1px solid transparent",
+                background: active ? "rgba(201,169,110,0.18)" : "transparent",
+                color: active ? "var(--gold)" : "var(--text-3)",
+                fontWeight: active ? 700 : 500, fontSize: "0.6875rem" }}>
               <Icon size={13} />
-              <span style={{ display:"inline" }}>{label}</span>
+              <span style={{ display: "inline" }}>{label}</span>
             </button>
           );
         })}
