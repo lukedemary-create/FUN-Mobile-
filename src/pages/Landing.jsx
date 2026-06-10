@@ -73,10 +73,10 @@ const INSIGHTS = [
 
 // ── Nav links
 const NAV_LINKS = [
-  { label: 'Terminal', href: '/dashboard'     },
+  { label: 'Terminal', href: '/terminal-hub'  },
   { label: 'Wealth Counsel', href: '/wealth-counsel' },
-  { label: 'FUN',      href: '/fun'           },
-  { label: 'Markets',  href: '/MarketHistory' },
+  { label: 'FUN',      href: '/education-hub' },
+  { label: 'Markets',  href: '/markets'       },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
