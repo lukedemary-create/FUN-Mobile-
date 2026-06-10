@@ -787,53 +787,6 @@ function Hero() {
             education — unified for investors who want to understand before they act.
           </motion.p>
 
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.46, ease: EASE }}
-            style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 44 }}
-          >
-            <button
-              onClick={() => window._planoraNavigate?.('/dashboard')}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                background: '#c9a96e', border: 'none', borderRadius: 10,
-                padding: '13px 20px', color: '#1a1410',
-                fontSize: 14, fontWeight: 700, fontFamily: UI,
-                cursor: 'pointer',
-                transition: 'all 0.25s cubic-bezier(0.32,0.72,0,1)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(201,169,110,0.25)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)';    e.currentTarget.style.boxShadow = 'none' }}
-              onClick={() => { window.location.href = '/dashboard' }}
-            >
-              Enter Platform
-              <span style={{
-                width: 24, height: 24, borderRadius: '50%',
-                background: 'rgba(26,20,16,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-              }}>
-                <ArrowRight size={13} />
-              </span>
-            </button>
-
-            <button
-              onClick={() => { window.location.href = '/wealth-counsel' }}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                background: 'transparent', border: '1px solid rgba(201,169,110,0.3)',
-                borderRadius: 10, padding: '13px 20px',
-                color: '#c9a96e', fontSize: 14, fontWeight: 600, fontFamily: UI,
-                cursor: 'pointer',
-                transition: 'all 0.25s cubic-bezier(0.32,0.72,0,1)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,169,110,0.06)'; e.currentTarget.style.borderColor = 'rgba(201,169,110,0.5)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent';             e.currentTarget.style.borderColor = 'rgba(201,169,110,0.3)' }}
-            >
-              Explore Solutions
-            </button>
-          </motion.div>
 
           {/* Trust row */}
           <motion.div
