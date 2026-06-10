@@ -4,7 +4,7 @@ import { motion, useInView } from 'framer-motion'
 import {
   BookOpen, Wallet, CreditCard, TrendingUp, Shield, FileText,
   Clock, Home, Calendar, ArrowUpRight, ChevronRight, BarChart2,
-  Lightbulb, Target, Users, CheckCircle2, XCircle, GraduationCap,
+  Lightbulb, Target, Users, CheckCircle2, XCircle, GraduationCap, Scale,
 } from 'lucide-react'
 
 const DISPLAY = "'Playfair Display', Georgia, serif"
@@ -152,6 +152,14 @@ const SECTIONS = [
     desc: 'Curated books, tools, calculators, and institutions — the trusted resources for every stage of the financial journey.',
     href: '/fun/resources',
     concept: 'Financial Literacy',
+    accent: C.teal, accentDim: C.tealDim, accentBdr: C.tealBdr,
+  },
+  {
+    icon: Scale,
+    label: 'Tax Planning',
+    desc: 'Tax brackets, deductions, Roth vs. traditional accounts, capital gains, and strategies every investor should know.',
+    href: '/fun/tax-planning',
+    concept: 'Tax Alpha',
     accent: C.teal, accentDim: C.tealDim, accentBdr: C.tealBdr,
   },
   {
