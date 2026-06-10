@@ -3,7 +3,7 @@ import { useEffect, useState, lazy, Suspense } from 'react';
 import {
   LayoutDashboard, Wallet, CreditCard, TrendingUp, Shield,
   ScrollText, Clock, Home, Calendar, BookOpen, GraduationCap,
-  ChevronLeft, Menu, X,
+  ChevronLeft, Menu, X, Scale,
 } from 'lucide-react';
 
 const FunDashboard   = lazy(() => import('./pages/FunDashboard'));
@@ -15,6 +15,7 @@ const Estate         = lazy(() => import('./pages/Estate'));
 const Retirement     = lazy(() => import('./pages/Retirement'));
 const MajorPurchases = lazy(() => import('./pages/MajorPurchases'));
 const LifeEvents     = lazy(() => import('./pages/LifeEvents'));
+const TaxPlanning       = lazy(() => import('./pages/TaxPlanning'));
 const Resources         = lazy(() => import('./pages/Resources'));
 const LearnersLibrary   = lazy(() => import('../pages/Education'));
 const LearnersLibraryTopic = lazy(() => import('../pages/EducationTopic'));
@@ -49,6 +50,7 @@ const NAV = [
   { path: 'retirement',      label: 'Retirement Planning',        icon: Clock           },
   { path: 'major-purchases', label: 'Major Purchases',            icon: Home            },
   { path: 'life-events',     label: 'Life Events',                icon: Calendar        },
+  { path: 'tax-planning',       label: 'Tax Planning',               icon: Scale           },
   { path: 'resources',         label: 'Resource Directory',         icon: BookOpen        },
   { path: 'learners-library', label: "Learner's Library",          icon: GraduationCap   },
 ];
@@ -301,6 +303,7 @@ export default function FunApp() {
             <Route path="retirement"      element={<Retirement />} />
             <Route path="major-purchases" element={<MajorPurchases />} />
             <Route path="life-events"     element={<LifeEvents />} />
+            <Route path="tax-planning"                   element={<TaxPlanning />} />
             <Route path="resources"                     element={<Resources />} />
             <Route path="learners-library"              element={<LearnersLibrary />} />
             <Route path="learners-library/:topicId"     element={<LearnersLibraryTopic />} />
