@@ -28,56 +28,57 @@ const UI    = "'Inter', system-ui, sans-serif";
 const DISP  = "'Playfair Display', Georgia, serif";
 
 /* ── 2026 CFP Tax Data ─────────────────────────────────────────── */
+// Source: CFP Board 2026 Exam Tax Tables
 const BRACKETS = {
   single: [
-    { rate: 0.10, min: 0,       max: 11925   },
-    { rate: 0.12, min: 11925,   max: 48475   },
-    { rate: 0.22, min: 48475,   max: 103350  },
-    { rate: 0.24, min: 103350,  max: 197300  },
-    { rate: 0.32, min: 197300,  max: 250525  },
-    { rate: 0.35, min: 250525,  max: 626350  },
-    { rate: 0.37, min: 626350,  max: Infinity },
+    { rate: 0.10, min: 0,       max: 12400   },
+    { rate: 0.12, min: 12400,   max: 50400   },
+    { rate: 0.22, min: 50400,   max: 105700  },
+    { rate: 0.24, min: 105700,  max: 201775  },
+    { rate: 0.32, min: 201775,  max: 256225  },
+    { rate: 0.35, min: 256225,  max: 640600  },
+    { rate: 0.37, min: 640600,  max: Infinity },
   ],
   mfj: [
-    { rate: 0.10, min: 0,       max: 23850   },
-    { rate: 0.12, min: 23850,   max: 96950   },
-    { rate: 0.22, min: 96950,   max: 206700  },
-    { rate: 0.24, min: 206700,  max: 394600  },
-    { rate: 0.32, min: 394600,  max: 501050  },
-    { rate: 0.35, min: 501050,  max: 751600  },
-    { rate: 0.37, min: 751600,  max: Infinity },
+    { rate: 0.10, min: 0,       max: 24800   },
+    { rate: 0.12, min: 24800,   max: 100800  },
+    { rate: 0.22, min: 100800,  max: 211400  },
+    { rate: 0.24, min: 211400,  max: 403550  },
+    { rate: 0.32, min: 403550,  max: 512450  },
+    { rate: 0.35, min: 512450,  max: 768700  },
+    { rate: 0.37, min: 768700,  max: Infinity },
   ],
   hoh: [
-    { rate: 0.10, min: 0,       max: 17000   },
-    { rate: 0.12, min: 17000,   max: 64850   },
-    { rate: 0.22, min: 64850,   max: 103350  },
-    { rate: 0.24, min: 103350,  max: 197300  },
-    { rate: 0.32, min: 197300,  max: 250500  },
-    { rate: 0.35, min: 250500,  max: 626350  },
-    { rate: 0.37, min: 626350,  max: Infinity },
+    { rate: 0.10, min: 0,       max: 17700   },
+    { rate: 0.12, min: 17700,   max: 67450   },
+    { rate: 0.22, min: 67450,   max: 105700  },
+    { rate: 0.24, min: 105700,  max: 201750  },
+    { rate: 0.32, min: 201750,  max: 256200  },
+    { rate: 0.35, min: 256200,  max: 640600  },
+    { rate: 0.37, min: 640600,  max: Infinity },
   ],
   mfs: [
-    { rate: 0.10, min: 0,       max: 11925   },
-    { rate: 0.12, min: 11925,   max: 48475   },
-    { rate: 0.22, min: 48475,   max: 103350  },
-    { rate: 0.24, min: 103350,  max: 197300  },
-    { rate: 0.32, min: 197300,  max: 250525  },
-    { rate: 0.35, min: 250525,  max: 375800  },
-    { rate: 0.37, min: 375800,  max: Infinity },
+    { rate: 0.10, min: 0,       max: 12400   },
+    { rate: 0.12, min: 12400,   max: 50400   },
+    { rate: 0.22, min: 50400,   max: 105700  },
+    { rate: 0.24, min: 105700,  max: 201775  },
+    { rate: 0.32, min: 201775,  max: 256225  },
+    { rate: 0.35, min: 256225,  max: 384350  },
+    { rate: 0.37, min: 384350,  max: Infinity },
   ],
 };
 
-const STD_DED = { single: 15000, mfj: 30000, hoh: 22500, mfs: 15000 };
+const STD_DED = { single: 16100, mfj: 32200, hoh: 24150, mfs: 16100 };
 
 const LTCG = {
   single: [
-    { rate: 0.00, max: 48350  },
-    { rate: 0.15, max: 533400 },
+    { rate: 0.00, max: 49450  },
+    { rate: 0.15, max: 545500 },
     { rate: 0.20, max: Infinity },
   ],
   mfj: [
-    { rate: 0.00, max: 96700  },
-    { rate: 0.15, max: 600050 },
+    { rate: 0.00, max: 98900  },
+    { rate: 0.15, max: 613700 },
     { rate: 0.20, max: Infinity },
   ],
 };
@@ -198,25 +199,27 @@ function TabKeyNumbers() {
       </SCard>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: '1.25rem' }}>
-        <StatCard label="Standard Deduction — Single" value="$15,000" sub="2026 CFP exam figure" />
-        <StatCard label="Standard Deduction — MFJ" value="$30,000" sub="2026 CFP exam figure" />
-        <StatCard label="Standard Deduction — HoH" value="$22,500" sub="2026 CFP exam figure" />
-        <StatCard label="401(k) Employee Limit" value="$23,500" sub="+$7,500 catch-up age 50–59, 64+" color={GOLD} />
-        <StatCard label="Super Catch-Up (Age 60–63)" value="$11,250" sub="SECURE 2.0 — total $34,750" color={GOLD} />
-        <StatCard label="IRA / Roth IRA Limit" value="$7,000" sub="+$1,000 catch-up age 50+" color={GOLD} />
-        <StatCard label="HSA — Self-Only" value="$4,300" sub="+$1,000 catch-up age 55+" color={GREEN} />
-        <StatCard label="HSA — Family" value="$8,550" sub="+$1,000 catch-up age 55+" color={GREEN} />
-        <StatCard label="SS Wage Base" value="$176,100" sub="6.2% SS tax on wages up to this" color={LIGHT} />
+        <StatCard label="Standard Deduction — Single" value="$16,100" sub="+$2,050 if age 65+ or blind" />
+        <StatCard label="Standard Deduction — MFJ" value="$32,200" sub="+$1,650 per spouse age 65+ or blind" />
+        <StatCard label="Standard Deduction — HoH" value="$24,150" sub="2026 CFP Board figure" />
+        <StatCard label="401(k) / 403(b) / 457 Limit" value="$24,500" sub="+$8,000 catch-up age 50–59, 64+" color={GOLD} />
+        <StatCard label="Super Catch-Up (Age 60–63)" value="$11,250" sub="SECURE 2.0 — total $35,750" color={GOLD} />
+        <StatCard label="IRA / Roth IRA Limit" value="$7,500" sub="+$1,100 catch-up age 50+" color={GOLD} />
+        <StatCard label="HSA — Self-Only" value="$4,400" sub="+$1,000 catch-up age 55+" color={GREEN} />
+        <StatCard label="HSA — Family" value="$8,750" sub="+$1,000 catch-up age 55+" color={GREEN} />
+        <StatCard label="SS Wage Base" value="$184,500" sub="6.2% SS tax on wages up to this" color={LIGHT} />
         <StatCard label="Annual Gift Exclusion" value="$19,000" sub="Per recipient, per year" color={AMBER} />
-        <StatCard label="Lifetime Estate Exemption" value="$13,990,000" sub="Per person in 2026" color={AMBER} />
-        <StatCard label="NIIT Threshold — Single" value="$200,000" sub="3.8% net investment income tax" color={RED} />
+        <StatCard label="Lifetime Estate Exemption" value="$15,000,000" sub="Applicable exclusion amount 2026" color={AMBER} />
+        <StatCard label="NIIT Threshold — Single/HoH" value="$200,000" sub="3.8% on net investment income" color={RED} />
       </div>
 
       <SCard title="Long-Term Capital Gains Rates 2026" subtitle="Applies to assets held more than 12 months. Far more favorable than ordinary income rates.">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20 }}>
           {[
-            { label: 'Single', data: [{ rate: '0%', range: 'Up to $48,350' }, { rate: '15%', range: '$48,351 – $533,400' }, { rate: '20%', range: 'Over $533,400' }] },
-            { label: 'Married Filing Jointly', data: [{ rate: '0%', range: 'Up to $96,700' }, { rate: '15%', range: '$96,701 – $600,050' }, { rate: '20%', range: 'Over $600,050' }] },
+            { label: 'Single', data: [{ rate: '0%', range: 'Up to $49,450' }, { rate: '15%', range: '$49,451 – $545,500' }, { rate: '20%', range: 'Over $545,500' }] },
+            { label: 'Married Filing Jointly', data: [{ rate: '0%', range: 'Up to $98,900' }, { rate: '15%', range: '$98,901 – $613,700' }, { rate: '20%', range: 'Over $613,700' }] },
+            { label: 'Head of Household', data: [{ rate: '0%', range: 'Up to $66,200' }, { rate: '15%', range: '$66,201 – $579,600' }, { rate: '20%', range: 'Over $579,600' }] },
+            { label: 'Married Filing Separately', data: [{ rate: '0%', range: 'Up to $49,450' }, { rate: '15%', range: '$49,451 – $306,850' }, { rate: '20%', range: 'Over $306,850' }] },
           ].map(({ label, data }) => (
             <div key={label}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: TEAL, letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: UI, marginBottom: 10 }}>{label}</div>
@@ -230,15 +233,15 @@ function TabKeyNumbers() {
           ))}
         </div>
         <InfoBox color={GREEN} icon={CheckCircle2}>
-          If your taxable income is below $48,350 (single) or $96,700 (MFJ), you pay <strong style={{ color: GREEN }}>0% federal tax</strong> on long-term capital gains. Strategic realizations in low-income years can be completely tax-free.
+          If your taxable income is below $49,450 (single) or $98,900 (MFJ), you pay <strong style={{ color: GREEN }}>0% federal tax</strong> on long-term capital gains. Strategic realizations in low-income years can be completely tax-free. Note: 25% rate applies to Section 1250 depreciation recapture; 28% applies to collectibles.
         </InfoBox>
       </SCard>
 
       <SCard title="Roth IRA Income Phase-Out 2026" subtitle="Above these MAGI ranges you cannot contribute directly to a Roth IRA. Backdoor Roth is an alternative for high earners.">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
           {[
-            { label: 'Single / MFS (separate)', range: '$150,000 – $165,000' },
-            { label: 'Married Filing Jointly', range: '$236,000 – $246,000' },
+            { label: 'Single', range: '$153,000 – $168,000' },
+            { label: 'Married Filing Jointly', range: '$242,000 – $252,000' },
             { label: 'Married Filing Separately', range: '$0 – $10,000' },
           ].map((row, i) => (
             <div key={i} style={{ background: RAISE, border: `1px solid ${B2}`, borderRadius: 10, padding: '0.875rem 1rem' }}>
@@ -261,10 +264,10 @@ function TabKeyNumbers() {
             </thead>
             <tbody>
               {[
-                ['Social Security', '6.2%', '$176,100', 'Employer also pays 6.2%'],
+                ['Social Security', '6.2%', '$184,500 wage base', 'Employer also pays 6.2%'],
                 ['Medicare', '1.45%', 'No limit', 'Employer also pays 1.45%'],
-                ['Additional Medicare', '0.9%', 'Over $200K (S) / $250K (MFJ)', 'Employee only; no employer match'],
-                ['Net Investment Income (NIIT)', '3.8%', 'On investment income over threshold', 'Applies to investment income, not wages'],
+                ['Additional Medicare', '0.9%', 'Over $200K (S/HoH) / $250K (MFJ) / $125K (MFS)', 'Employee only; no employer match'],
+                ['Net Investment Income (NIIT)', '3.8%', 'Investment income over $200K (S) / $250K (MFJ) / $125K (MFS)', 'Does not apply to wages or retirement distributions'],
               ].map((row, i) => (
                 <tr key={i} style={{ borderBottom: `1px solid ${B1}` }}>
                   {row.map((cell, j) => (
@@ -275,6 +278,113 @@ function TabKeyNumbers() {
             </tbody>
           </table>
         </div>
+      </SCard>
+
+      <SCard title="Estates, Trusts & Corporate Tax Rates 2026">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+          <div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: TEAL, letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: UI, marginBottom: 8 }}>Estates & Non-Grantor Trusts</div>
+            {[['$0 – $3,300','10%'],['$3,301 – $11,700','24%'],['$11,701 – $16,000','35%'],['Over $16,000','37%']].map(([r,t],i)=>(
+              <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'5px 0', borderBottom: i<3?`1px solid ${B1}`:'none' }}>
+                <span style={{ fontFamily:UI, fontSize:'0.8125rem', color:T2 }}>{r}</span>
+                <span style={{ fontFamily:UI, fontSize:'0.8125rem', fontWeight:700, color:T1 }}>{t}</span>
+              </div>
+            ))}
+            <div style={{ marginTop:10, fontSize:'0.75rem', color:T3, fontFamily:UI }}>Note: Trust brackets compress quickly — trusts hit 37% at just $16,000 of income.</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: GOLD, letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: UI, marginBottom: 8 }}>Corporate Income Tax</div>
+            <div style={{ background: RAISE, border: `1px solid ${B2}`, borderRadius: 8, padding: '0.875rem 1rem' }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: GOLD, fontFamily: UI }}>21%</div>
+              <div style={{ fontSize: '0.8125rem', color: T2, fontFamily: UI }}>Flat rate on all corporate taxable income (no graduated brackets for C-corps)</div>
+            </div>
+            <div style={{ marginTop: 10, fontSize: '0.75rem', color: T3, fontFamily: UI }}>Pass-through entities (S-corps, LLCs, partnerships) are taxed at owner's individual rates, not the corporate rate.</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: AMBER, letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: UI, marginBottom: 8 }}>2026 AMT — Exemptions & Phase-Outs</div>
+            {[
+              ['Single & HoH', '$90,100', '$500,000'],
+              ['Married Filing Jointly', '$140,200', '$1,000,000'],
+              ['Married Filing Separately', '$70,100', '$500,000'],
+              ['Trusts & Estates', '$31,400', '$104,800'],
+            ].map(([status, ex, po], i) => (
+              <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'5px 0', borderBottom: i<3?`1px solid ${B1}`:'none', gap:8 }}>
+                <span style={{ fontFamily:UI, fontSize:'0.75rem', color:T2 }}>{status}</span>
+                <span style={{ fontFamily:UI, fontSize:'0.75rem', color:AMBER, fontWeight:600 }}>{ex} exemption</span>
+              </div>
+            ))}
+            <div style={{ marginTop: 8, fontSize:'0.75rem', color:T3, fontFamily:UI }}>AMT rates: 26% on AMTI up to $244,500; 28% above. Phase-out reduces exemption $0.25 for each $1 over threshold.</div>
+          </div>
+        </div>
+      </SCard>
+
+      <SCard title="2026 Retirement Plan Limits (CFP Board)" subtitle="All contribution limits from the official 2026 CFP exam tax tables.">
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: UI, fontSize: '0.8125rem' }}>
+            <tbody>
+              {[
+                ['401(k) / 403(b) / 457 elective deferrals', '$24,500', TEAL],
+                ['Catch-up contribution (age 50–59, 64+)', '$8,000', TEAL],
+                ['Catch-up contribution (ages 60–63)', '$11,250', TEAL],
+                ['Defined contribution plan limit', '$72,000', GOLD],
+                ['Defined benefit plan limit', '$290,000', GOLD],
+                ['SIMPLE plan elective deferral', '$17,000', LIGHT],
+                ['SIMPLE catch-up (age 50+)', '$4,000', LIGHT],
+                ['SIMPLE catch-up (ages 60–63)', '$5,250', LIGHT],
+                ['SEP contribution limit', '$72,000', GOLD],
+                ['Maximum includible compensation', '$360,000', T2],
+                ['Highly compensated employee threshold', '$160,000', AMBER],
+                ['Key employee (top-heavy plan)', '>$235,000', AMBER],
+                ['IRA / Roth IRA contribution limit', '$7,500', GREEN],
+                ['IRA / Roth IRA catch-up (age 50+)', '$1,100', GREEN],
+                ['IRA deduction phase-out — Single/HoH', '$81,000 – $91,000', T2],
+                ['IRA deduction phase-out — MFJ', '$129,000 – $149,000', T2],
+                ['IRA deduction phase-out — Spousal IRA', '$242,000 – $252,000', T2],
+                ['Roth IRA phase-out — Single', '$153,000 – $168,000', GREEN],
+                ['Roth IRA phase-out — MFJ', '$242,000 – $252,000', GREEN],
+                ['Roth IRA phase-out — MFS', '$0 – $10,000', GREEN],
+              ].map(([label, value, color], i) => (
+                <tr key={i} style={{ borderBottom: `1px solid ${B1}`, background: i%2===0?'transparent':`${RAISE}88` }}>
+                  <td style={{ padding:'7px 10px', color:T2 }}>{label}</td>
+                  <td style={{ padding:'7px 10px', color, fontWeight:700, textAlign:'right', whiteSpace:'nowrap' }}>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </SCard>
+
+      <SCard title="Education & Other Phase-Outs 2026">
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: UI, fontSize: '0.8125rem' }}>
+            <thead>
+              <tr style={{ background: RAISE }}>
+                {['Benefit','Single / HoH','Married Filing Jointly'].map(h=>(
+                  <th key={h} style={{ padding:'7px 10px', textAlign:'left', color:T3, fontWeight:600, fontSize:'0.75rem' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['EE Bonds — Education Exclusion','$101,800 – $116,800','$152,650 – $182,650'],
+                ['Coverdell ESA Contribution','$95,000 – $110,000','$190,000 – $220,000'],
+                ['Lifetime Learning Credit','$80,000 – $90,000','$160,000 – $180,000'],
+                ['American Opportunity Tax Credit','$80,000 – $90,000','$160,000 – $180,000'],
+                ['Student Loan Interest Deduction','$85,000 – $100,000','$175,000 – $205,000'],
+                ['Child Tax Credit Phase-Out Begins','$200,000','$400,000'],
+              ].map((row, i) => (
+                <tr key={i} style={{ borderBottom:`1px solid ${B1}`, background: i%2===0?'transparent':`${RAISE}88` }}>
+                  {row.map((cell,j)=>(
+                    <td key={j} style={{ padding:'7px 10px', color: j===0?T2:TEAL, fontWeight: j===0?400:600 }}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <InfoBox color={TEAL}>
+          Child Tax Credit phases out at $55 per $1,000 of MAGI over the threshold ($44,000 per child before full phase-out). Social Security full retirement age is 67 for anyone born in 1960 or later. SS wage base in 2026: $184,500; earnings limit below FRA: $24,480/year.
+        </InfoBox>
       </SCard>
     </div>
   );
@@ -581,9 +691,9 @@ function TabAccounts() {
 
       <SCard title="HSA — The Triple Tax-Advantage Account" subtitle="The only account in the tax code that is tax-deductible going in, grows tax-free, and is tax-free on qualified withdrawals.">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, marginBottom: '1rem' }}>
-          <StatCard label="Self-Only Contribution 2026" value="$4,300" color={GREEN} />
-          <StatCard label="Family Contribution 2026" value="$8,550" color={GREEN} />
-          <StatCard label="Catch-Up (Age 55+)" value="+$1,000" color={GREEN} />
+          <StatCard label="Self-Only Contribution 2026" value="$4,400" sub="HDHP min deductible: $1,700" color={GREEN} />
+          <StatCard label="Family Contribution 2026" value="$8,750" sub="HDHP min deductible: $3,400" color={GREEN} />
+          <StatCard label="Catch-Up (Age 55+)" value="+$1,000" sub="Max OOP: $8,500 (S) / $17,000 (F)" color={GREEN} />
           <StatCard label="Effective Tax Savings" value="~30%+" sub="Federal + FICA combined" color={GREEN} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -987,7 +1097,8 @@ function TabAdvanced() {
           </div>
         </div>
         <div style={{ background: RAISE, border: `1px solid ${B2}`, borderRadius: 10, padding: '1rem' }}>
-          <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: T1, fontFamily: UI, marginBottom: 8 }}>Effective LTCG Rate at the Top</div>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: T1, fontFamily: UI, marginBottom: 4 }}>Effective LTCG Rate at the Top</div>
+          <div style={{ fontSize: '0.75rem', color: T3, fontFamily: UI, marginBottom: 10 }}>NIIT thresholds: $250,000 MFJ / $200,000 Single/HoH / $125,000 MFS. Estates & Trusts: AGI over $16,000.</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {[
               { label: 'LTCG Rate', value: '20.0%', color: AMBER },
