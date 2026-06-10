@@ -7,15 +7,79 @@ import {
   BarChart2, RefreshCw, Gauge, Globe, Map, Zap, ArrowUpRight, ArrowDownRight,
 } from "lucide-react";
 
-const SERVER = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const FH_KEY = import.meta.env.VITE_FINNHUB_KEY;
+const FH = 'https://finnhub.io/api/v1';
+
+async function fhQuote(symbol) {
+  const r = await fetch(`${FH}/quote?symbol=${symbol}&token=${FH_KEY}`);
+  if (!r.ok) throw new Error(`quote:${symbol}`);
+  return r.json();
+}
+
+// Primary = actual index symbols; fallback = ETF proxy if Finnhub returns 0
+const INDEX_DEFS = [
+  { symbol: '^GSPC', fallback: 'SPY',  display: 'S&P 500',  name: 'S&P 500 Index'       },
+  { symbol: '^IXIC', fallback: 'QQQ',  display: 'NASDAQ',   name: 'Nasdaq Composite'     },
+  { symbol: '^DJI',  fallback: 'DIA',  display: 'DOW',      name: 'Dow Jones Industrial' },
+  { symbol: '^RUT',  fallback: 'IWM',  display: 'RUSSELL',  name: 'Russell 2000'         },
+  { symbol: 'VIXY',  fallback: null,   display: 'VIX',      name: 'VIX Short-Term'       },
+];
+
+const SECTOR_DEFS = [
+  { symbol: 'XLK',  name: 'Technology'       },
+  { symbol: 'XLF',  name: 'Financials'       },
+  { symbol: 'XLE',  name: 'Energy'           },
+  { symbol: 'XLV',  name: 'Health Care'      },
+  { symbol: 'XLI',  name: 'Industrials'      },
+  { symbol: 'XLY',  name: 'Consumer Disc.'   },
+  { symbol: 'XLP',  name: 'Consumer Staples' },
+  { symbol: 'XLU',  name: 'Utilities'        },
+  { symbol: 'XLRE', name: 'Real Estate'      },
+  { symbol: 'XLB',  name: 'Materials'        },
+  { symbol: 'XLC',  name: 'Communication'    },
+];
+
+const MOVER_DEFS = [
+  { symbol: 'NVDA',  name: 'NVIDIA'     },
+  { symbol: 'TSLA',  name: 'Tesla'      },
+  { symbol: 'META',  name: 'Meta'       },
+  { symbol: 'AMZN',  name: 'Amazon'     },
+  { symbol: 'AAPL',  name: 'Apple'      },
+  { symbol: 'MSFT',  name: 'Microsoft'  },
+  { symbol: 'GOOGL', name: 'Alphabet'   },
+  { symbol: 'AMD',   name: 'AMD'        },
+  { symbol: 'NFLX',  name: 'Netflix'    },
+  { symbol: 'CRM',   name: 'Salesforce' },
+];
 
 /* ─── Data fetchers ─────────────────────────────────────────────── */
-const fetchIndices = () =>
-  fetch(`${SERVER}/api/indices`).then(r => { if (!r.ok) throw new Error("indices"); return r.json(); });
-const fetchMovers = () =>
-  fetch(`${SERVER}/api/market/movers`).then(r => { if (!r.ok) throw new Error("movers"); return r.json(); });
-const fetchSectors = () =>
-  fetch(`${SERVER}/api/sector/heatmap`).then(r => { if (!r.ok) throw new Error("sectors"); return r.json(); });
+async function fetchIndices() {
+  const quotes = await Promise.all(
+    INDEX_DEFS.map(async d => {
+      const q = await fhQuote(d.symbol);
+      // If primary returns 0 price (unsupported on free tier), try ETF fallback
+      if ((!q.c || q.c === 0) && d.fallback) return fhQuote(d.fallback);
+      return q;
+    })
+  );
+  return INDEX_DEFS.map((d, i) => {
+    const q = quotes[i];
+    return { symbol: d.display, name: d.name, price: q.c, change: q.d, changePercent: q.dp, isUp: q.dp >= 0 };
+  });
+}
+
+async function fetchSectors() {
+  const quotes = await Promise.all(SECTOR_DEFS.map(d => fhQuote(d.symbol)));
+  return SECTOR_DEFS.map((d, i) => ({ symbol: d.symbol, name: d.name, dayChange: quotes[i].dp }));
+}
+
+async function fetchMovers() {
+  const quotes = await Promise.all(MOVER_DEFS.map(d => fhQuote(d.symbol)));
+  const stocks = MOVER_DEFS.map((d, i) => ({
+    symbol: d.symbol, name: d.name, price: quotes[i].c, changePercent: quotes[i].dp,
+  })).sort((a, b) => b.changePercent - a.changePercent);
+  return { gainers: stocks.slice(0, 5), losers: [...stocks].reverse().slice(0, 5) };
+}
 
 /* ─── Helpers ───────────────────────────────────────────────────── */
 function fmt(n, dec = 2) {
@@ -688,11 +752,11 @@ export default function Dashboard() {
     retry: 2,
   });
 
-  const spx     = indices?.find(i => i.symbol === "SPX" || i.symbol === "^GSPC" || i.symbol === "SPY") || indices?.[0];
-  const dow     = indices?.find(i => i.symbol === "DJI" || i.symbol === "^DJI"  || i.symbol === "DIA") || indices?.[1];
-  const nasdaq  = indices?.find(i => i.symbol === "COMP"|| i.symbol === "^IXIC" || i.symbol === "QQQ") || indices?.[2];
-  const russell = indices?.find(i => i.symbol === "RUT" || i.symbol === "^RUT"  || i.symbol === "IWM") || indices?.[3];
-  const vixEntry   = indices?.find(i => i.symbol === "VIX" || i.symbol === "^VIX");
+  const spx     = indices?.find(i => i.symbol === "S&P 500") || indices?.[0];
+  const nasdaq  = indices?.find(i => i.symbol === "NASDAQ")  || indices?.[1];
+  const dow     = indices?.find(i => i.symbol === "DOW")     || indices?.[2];
+  const russell = indices?.find(i => i.symbol === "RUSSELL") || indices?.[3];
+  const vixEntry   = indices?.find(i => i.symbol === "VIX");
   const vixValue   = vixEntry?.price;
   const featuredIndices = [spx, dow, nasdaq, russell].filter(Boolean);
   const anyError = errIndices && errMovers && errSectors;
@@ -801,7 +865,7 @@ export default function Dashboard() {
           fontSize: "0.8125rem", color: "var(--down)",
         }}>
           <AlertTriangle size={14} />
-          <span>Unable to reach market data server at localhost:3001. Showing cached or placeholder data.</span>
+          <span>Live market data unavailable. Showing cached or placeholder data.</span>
         </div>
       )}
 

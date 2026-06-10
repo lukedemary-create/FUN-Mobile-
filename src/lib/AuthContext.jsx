@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { supabase } from './supabase';
 
 const AuthContext = createContext();
 
@@ -9,26 +10,49 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingPublicSettings] = useState(false);
 
   useEffect(() => {
-    // Check localStorage for a saved session
-    try {
-      const saved = localStorage.getItem('planora_user');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setUser(parsed);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
         setIsAuthenticated(true);
       }
-    } catch {}
-    setIsLoadingAuth(false);
+      setIsLoadingAuth(false);
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (userData) => {
-    localStorage.setItem('planora_user', JSON.stringify(userData));
-    setUser(userData);
-    setIsAuthenticated(true);
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
   };
 
-  const logout = () => {
-    localStorage.removeItem('planora_user');
+  const signup = async (email, password, firstName, lastName) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { first_name: firstName, last_name: lastName, full_name: `${firstName} ${lastName}` },
+      },
+    });
+    if (error) throw error;
+    return data;
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -45,6 +69,7 @@ export const AuthProvider = ({ children }) => {
       authError: null,
       appPublicSettings: null,
       login,
+      signup,
       logout,
       navigateToLogin,
       checkAppState,

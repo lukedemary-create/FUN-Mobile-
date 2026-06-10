@@ -9,7 +9,85 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from "recharts";
 
-const SERVER = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const FH_KEY = import.meta.env.VITE_FINNHUB_KEY;
+const FH = 'https://finnhub.io/api/v1';
+
+function isoDate(d) { return d.toISOString().slice(0, 10); }
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function fmtTime12(utcTime) {
+  if (!utcTime) return '';
+  const d = new Date(utcTime.replace(' ', 'T') + 'Z');
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' });
+}
+function mapImpact(impact) {
+  if (!impact) return 'LOW';
+  const s = impact.toLowerCase();
+  if (s === 'high') return 'HIGH';
+  if (s === 'medium' || s === 'moderate') return 'MEDIUM';
+  return 'LOW';
+}
+
+async function fetchLiveEvents() {
+  const from = isoDate(addDays(new Date(), -7));
+  const to   = isoDate(addDays(new Date(), 45));
+  const r = await fetch(`${FH}/calendar/economic?from=${from}&to=${to}&token=${FH_KEY}`);
+  if (!r.ok) throw new Error('eco');
+  const j = await r.json();
+  const items = (j.economicCalendar || []).filter(e => e.country === 'US');
+  return items.map(e => ({
+    date:       e.time ? e.time.slice(0, 10) : '',
+    time:       fmtTime12(e.time),
+    event:      e.event,
+    importance: mapImpact(e.impact),
+    forecast:   e.estimate != null ? String(e.estimate) + (e.unit || '') : '—',
+    previous:   e.prev     != null ? String(e.prev)     + (e.unit || '') : '—',
+    actual:     e.actual   != null ? String(e.actual)   + (e.unit || '') : null,
+  })).filter(e => e.date).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+async function fetchLiveIPOs() {
+  const from = isoDate(addDays(new Date(), -30));
+  const to   = isoDate(addDays(new Date(), 90));
+  const r = await fetch(`${FH}/calendar/ipo?from=${from}&to=${to}&token=${FH_KEY}`);
+  if (!r.ok) throw new Error('ipo');
+  const j = await r.json();
+  return (j.ipoCalendar || []).map(e => ({
+    date:          e.date,
+    ticker:        e.symbol || '—',
+    company:       e.name,
+    exchange:      e.exchange,
+    priceRange:    e.price ? `$${e.price}` : '$TBD',
+    sharesOffered: e.numberOfShares ? `${(e.numberOfShares / 1e6).toFixed(1)}M` : 'TBD',
+    estValuation:  e.totalSharesValue ? `$${(e.totalSharesValue / 1e9).toFixed(1)}B` : '—',
+    sector:        '—',
+    status:        e.status === 'priced' ? 'priced' : e.status === 'filed' ? 'filed' : 'upcoming',
+    openChange:    null,
+    currentPrice:  null,
+  }));
+}
+
+async function fetchLiveEarnings() {
+  const from = isoDate(addDays(new Date(), -7));
+  const to   = isoDate(addDays(new Date(), 45));
+  const r = await fetch(`${FH}/calendar/earnings?from=${from}&to=${to}&token=${FH_KEY}`);
+  if (!r.ok) throw new Error('earnings');
+  const j = await r.json();
+  return (j.earningsCalendar || [])
+    .filter(e => e.symbol)
+    .map(e => ({
+      date:        e.date,
+      time:        e.hour === 'bmo' ? 'Pre-Market' : e.hour === 'amc' ? 'After-Market' : 'During Market',
+      ticker:      e.symbol,
+      company:     e.symbol,
+      epsEst:      e.epsEstimate    != null ? `$${e.epsEstimate}`    : '—',
+      epsActual:   e.epsActual      != null ? `$${e.epsActual}`      : null,
+      revEst:      e.revenueEstimate != null ? `$${(e.revenueEstimate / 1e9).toFixed(1)}B` : '—',
+      revActual:   e.revenueActual  != null ? `$${(e.revenueActual  / 1e9).toFixed(1)}B` : null,
+      surprise:    null,
+      beat:        e.epsActual != null && e.epsEstimate != null ? e.epsActual >= e.epsEstimate : null,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
 
 /* ─── Helpers ─────────────────────────────────────────────────────── */
 const fmt = (v, dec = 2) => (v == null ? "—" : Number(v).toFixed(dec));
@@ -24,73 +102,56 @@ const IMPORTANCE_BORDER = {
   LOW: "rgba(122,136,153,0.15)"
 };
 
-/* ─── Hardcoded realistic economic events ─────────────────────────── */
+/* ─── Hardcoded fallback economic events (updated to June 2026) ────── */
 function buildEvents() {
-  const now = new Date("2026-04-11");
+  const now = new Date();
   const y = now.getFullYear();
 
   const raw = [
-    // January 2026
-    { date: "2026-01-08", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "215K", previous: "219K", actual: "212K" },
-    { date: "2026-01-15", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.9%", previous: "2.7%", actual: "3.0%" },
-    { date: "2026-01-15", time: "8:30 AM", event: "Core CPI (MoM)", importance: "HIGH", forecast: "0.3%", previous: "0.3%", actual: "0.4%" },
-    { date: "2026-01-17", time: "8:30 AM", event: "Retail Sales (MoM)", importance: "HIGH", forecast: "0.4%", previous: "-0.1%", actual: "0.6%" },
-    { date: "2026-01-24", time: "8:30 AM", event: "Durable Goods Orders", importance: "MEDIUM", forecast: "0.5%", previous: "-1.1%", actual: "0.9%" },
-    { date: "2026-01-28", time: "2:00 PM", event: "FOMC Rate Decision", importance: "HIGH", forecast: "4.25-4.50%", previous: "4.25-4.50%", actual: "4.25-4.50%" },
-    { date: "2026-01-30", time: "8:30 AM", event: "GDP (Advance, Q4)", importance: "HIGH", forecast: "2.6%", previous: "3.1%", actual: "2.3%" },
-    // February 2026
-    { date: "2026-02-05", time: "8:30 AM", event: "Non-Farm Payrolls", importance: "HIGH", forecast: "175K", previous: "256K", actual: "143K" },
-    { date: "2026-02-05", time: "8:30 AM", event: "Unemployment Rate", importance: "HIGH", forecast: "4.1%", previous: "4.1%", actual: "4.0%" },
-    { date: "2026-02-12", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.9%", previous: "3.0%", actual: "3.0%" },
-    { date: "2026-02-19", time: "8:30 AM", event: "PPI (MoM)", importance: "MEDIUM", forecast: "0.3%", previous: "0.2%", actual: "0.4%" },
-    { date: "2026-02-26", time: "8:30 AM", event: "PCE Price Index (YoY)", importance: "HIGH", forecast: "2.5%", previous: "2.6%", actual: "2.5%" },
-    { date: "2026-02-26", time: "8:30 AM", event: "Core PCE (MoM)", importance: "HIGH", forecast: "0.3%", previous: "0.2%", actual: "0.3%" },
-    // March 2026
-    { date: "2026-03-05", time: "10:00 AM", event: "ISM Manufacturing PMI", importance: "MEDIUM", forecast: "50.4", previous: "50.9", actual: "50.3" },
-    { date: "2026-03-07", time: "8:30 AM", event: "Non-Farm Payrolls", importance: "HIGH", forecast: "160K", previous: "143K", actual: "151K" },
-    { date: "2026-03-07", time: "8:30 AM", event: "Unemployment Rate", importance: "HIGH", forecast: "4.1%", previous: "4.0%", actual: "4.1%" },
-    { date: "2026-03-12", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.9%", previous: "3.0%", actual: "2.8%" },
-    { date: "2026-03-19", time: "2:00 PM", event: "FOMC Rate Decision", importance: "HIGH", forecast: "4.00-4.25%", previous: "4.25-4.50%", actual: "4.00-4.25%" },
-    { date: "2026-03-19", time: "2:30 PM", event: "FOMC Press Conference", importance: "HIGH", forecast: "—", previous: "—", actual: "Dovish" },
-    { date: "2026-03-20", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "220K", previous: "227K", actual: "223K" },
-    { date: "2026-03-24", time: "10:00 AM", event: "Consumer Confidence (Conference Board)", importance: "MEDIUM", forecast: "103.5", previous: "98.3", actual: "92.9" },
-    { date: "2026-03-24", time: "10:00 AM", event: "New Home Sales", importance: "MEDIUM", forecast: "680K", previous: "657K", actual: "676K" },
-    { date: "2026-03-26", time: "8:30 AM", event: "Durable Goods Orders (MoM)", importance: "MEDIUM", forecast: "0.7%", previous: "-0.6%", actual: "0.9%" },
-    { date: "2026-03-26", time: "8:30 AM", event: "GDP (Final, Q4)", importance: "HIGH", forecast: "2.3%", previous: "2.3%", actual: "2.4%" },
-    { date: "2026-03-27", time: "8:30 AM", event: "PCE Price Index (YoY)", importance: "HIGH", forecast: "2.5%", previous: "2.5%", actual: "2.5%" },
-    { date: "2026-03-27", time: "8:30 AM", event: "Core PCE (MoM)", importance: "HIGH", forecast: "0.3%", previous: "0.3%", actual: "0.4%" },
-    { date: "2026-03-27", time: "10:00 AM", event: "Consumer Sentiment (U. of Michigan)", importance: "MEDIUM", forecast: "65.0", previous: "64.7", actual: "57.0" },
-    // April 2026 — past (before Apr 11)
-    { date: "2026-04-02", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "222K", previous: "223K", actual: "219K" },
-    { date: "2026-04-03", time: "8:30 AM", event: "Non-Farm Payrolls", importance: "HIGH", forecast: "165K", previous: "151K", actual: "228K" },
-    { date: "2026-04-03", time: "8:30 AM", event: "Unemployment Rate", importance: "HIGH", forecast: "4.1%", previous: "4.1%", actual: "4.2%" },
-    { date: "2026-04-03", time: "10:00 AM", event: "ISM Services PMI", importance: "MEDIUM", forecast: "53.0", previous: "52.8", actual: "50.8" },
-    { date: "2026-04-08", time: "2:00 PM", event: "FOMC Meeting Minutes", importance: "HIGH", forecast: "—", previous: "—", actual: "Cautious" },
-    { date: "2026-04-09", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "225K", previous: "219K", actual: "223K" },
-    { date: "2026-04-10", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.7%", previous: "2.8%", actual: "2.4%" },
-    { date: "2026-04-10", time: "8:30 AM", event: "Core CPI (MoM)", importance: "HIGH", forecast: "0.3%", previous: "0.3%", actual: "0.1%" },
-    // April 11 — today
-    { date: "2026-04-11", time: "8:30 AM", event: "PPI (MoM)", importance: "MEDIUM", forecast: "0.2%", previous: "0.4%", actual: null },
-    // April 2026 — upcoming
-    { date: "2026-04-16", time: "8:30 AM", event: "Retail Sales (MoM)", importance: "HIGH", forecast: "1.3%", previous: "0.2%", actual: null },
-    { date: "2026-04-16", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "226K", previous: "223K", actual: null },
-    { date: "2026-04-16", time: "9:15 AM", event: "Industrial Production (MoM)", importance: "LOW", forecast: "0.3%", previous: "0.7%", actual: null },
-    { date: "2026-04-17", time: "8:30 AM", event: "Housing Starts", importance: "MEDIUM", forecast: "1.42M", previous: "1.50M", actual: null },
-    { date: "2026-04-17", time: "8:30 AM", event: "Building Permits", importance: "MEDIUM", forecast: "1.45M", previous: "1.46M", actual: null },
-    { date: "2026-04-22", time: "10:00 AM", event: "Existing Home Sales", importance: "LOW", forecast: "4.14M", previous: "4.26M", actual: null },
-    { date: "2026-04-23", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "227K", previous: "226K", actual: null },
-    { date: "2026-04-24", time: "8:30 AM", event: "Durable Goods Orders", importance: "MEDIUM", forecast: "-1.0%", previous: "0.9%", actual: null },
-    { date: "2026-04-25", time: "10:00 AM", event: "Consumer Sentiment (U. of Michigan, Final)", importance: "MEDIUM", forecast: "50.8", previous: "57.0", actual: null },
-    { date: "2026-04-29", time: "8:30 AM", event: "GDP (Advance, Q1)", importance: "HIGH", forecast: "0.3%", previous: "2.4%", actual: null },
-    { date: "2026-04-30", time: "8:30 AM", event: "PCE Price Index (YoY)", importance: "HIGH", forecast: "2.3%", previous: "2.5%", actual: null },
-    { date: "2026-04-30", time: "8:30 AM", event: "Core PCE (MoM)", importance: "HIGH", forecast: "0.1%", previous: "0.4%", actual: null },
-    { date: "2026-04-30", time: "8:30 AM", event: "Employment Cost Index (Q1)", importance: "MEDIUM", forecast: "0.9%", previous: "0.9%", actual: null },
-    { date: "2026-04-30", time: "10:00 AM", event: "Trade Balance", importance: "LOW", forecast: "-$130.0B", previous: "-$122.7B", actual: null },
-    // May 2026
-    { date: "2026-05-01", time: "2:00 PM", event: "FOMC Rate Decision", importance: "HIGH", forecast: "4.00-4.25%", previous: "4.00-4.25%", actual: null },
-    { date: "2026-05-01", time: "2:30 PM", event: "FOMC Press Conference", importance: "HIGH", forecast: "—", previous: "—", actual: null },
-    { date: "2026-05-07", time: "2:00 PM", event: "Fed Beige Book", importance: "MEDIUM", forecast: "—", previous: "—", actual: null },
-    { date: "2026-05-13", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.3%", previous: "2.4%", actual: null },
+    // May 2026 — past
+    { date: "2026-05-02", time: "8:30 AM", event: "Non-Farm Payrolls", importance: "HIGH", forecast: "130K", previous: "228K", actual: "177K" },
+    { date: "2026-05-02", time: "8:30 AM", event: "Unemployment Rate", importance: "HIGH", forecast: "4.2%", previous: "4.2%", actual: "4.2%" },
+    { date: "2026-05-07", time: "2:00 PM", event: "FOMC Rate Decision", importance: "HIGH", forecast: "3.75-4.00%", previous: "4.00-4.25%", actual: "3.75-4.00%" },
+    { date: "2026-05-07", time: "2:30 PM", event: "FOMC Press Conference", importance: "HIGH", forecast: "—", previous: "—", actual: "Dovish" },
+    { date: "2026-05-13", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.3%", previous: "2.4%", actual: "2.3%" },
+    { date: "2026-05-13", time: "8:30 AM", event: "Core CPI (MoM)", importance: "HIGH", forecast: "0.2%", previous: "0.1%", actual: "0.2%" },
+    { date: "2026-05-15", time: "8:30 AM", event: "Retail Sales (MoM)", importance: "HIGH", forecast: "0.1%", previous: "1.4%", actual: "-0.1%" },
+    { date: "2026-05-22", time: "8:30 AM", event: "PCE Price Index (YoY)", importance: "HIGH", forecast: "2.2%", previous: "2.3%", actual: "2.1%" },
+    { date: "2026-05-22", time: "8:30 AM", event: "Core PCE (MoM)", importance: "HIGH", forecast: "0.1%", previous: "0.1%", actual: "0.1%" },
+    { date: "2026-05-27", time: "8:30 AM", event: "GDP (Second Estimate, Q1)", importance: "HIGH", forecast: "-0.2%", previous: "-0.3%", actual: "-0.2%" },
+    { date: "2026-05-29", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "228K", previous: "222K", actual: "230K" },
+    // June 2026 — past
+    { date: "2026-06-03", time: "8:30 AM", event: "Non-Farm Payrolls", importance: "HIGH", forecast: "140K", previous: "177K", actual: "139K" },
+    { date: "2026-06-03", time: "8:30 AM", event: "Unemployment Rate", importance: "HIGH", forecast: "4.2%", previous: "4.2%", actual: "4.3%" },
+    { date: "2026-06-04", time: "10:00 AM", event: "ISM Services PMI", importance: "MEDIUM", forecast: "51.5", previous: "51.6", actual: "53.8" },
+    { date: "2026-06-05", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "232K", previous: "230K", actual: "229K" },
+    // June 9 — today
+    { date: "2026-06-09", time: "10:00 AM", event: "Consumer Credit (April)", importance: "LOW", forecast: "$14.0B", previous: "$10.6B", actual: null },
+    // June 2026 — upcoming
+    { date: "2026-06-11", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.2%", previous: "2.3%", actual: null },
+    { date: "2026-06-11", time: "8:30 AM", event: "Core CPI (MoM)", importance: "HIGH", forecast: "0.2%", previous: "0.2%", actual: null },
+    { date: "2026-06-12", time: "2:00 PM", event: "FOMC Rate Decision", importance: "HIGH", forecast: "3.75-4.00%", previous: "3.75-4.00%", actual: null },
+    { date: "2026-06-12", time: "2:30 PM", event: "FOMC Press Conference", importance: "HIGH", forecast: "—", previous: "—", actual: null },
+    { date: "2026-06-12", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "231K", previous: "229K", actual: null },
+    { date: "2026-06-13", time: "8:30 AM", event: "PPI (MoM)", importance: "MEDIUM", forecast: "0.2%", previous: "0.0%", actual: null },
+    { date: "2026-06-17", time: "8:30 AM", event: "Retail Sales (MoM)", importance: "HIGH", forecast: "0.3%", previous: "-0.1%", actual: null },
+    { date: "2026-06-18", time: "8:30 AM", event: "Housing Starts", importance: "MEDIUM", forecast: "1.38M", previous: "1.36M", actual: null },
+    { date: "2026-06-18", time: "8:30 AM", event: "Building Permits", importance: "MEDIUM", forecast: "1.40M", previous: "1.42M", actual: null },
+    { date: "2026-06-19", time: "8:30 AM", event: "Initial Jobless Claims", importance: "MEDIUM", forecast: "230K", previous: "231K", actual: null },
+    { date: "2026-06-19", time: "9:15 AM", event: "Industrial Production (MoM)", importance: "LOW", forecast: "0.2%", previous: "0.3%", actual: null },
+    { date: "2026-06-24", time: "10:00 AM", event: "Consumer Confidence (Conference Board)", importance: "MEDIUM", forecast: "100.0", previous: "98.0", actual: null },
+    { date: "2026-06-24", time: "10:00 AM", event: "New Home Sales", importance: "MEDIUM", forecast: "680K", previous: "674K", actual: null },
+    { date: "2026-06-25", time: "8:30 AM", event: "Durable Goods Orders (MoM)", importance: "MEDIUM", forecast: "0.5%", previous: "6.3%", actual: null },
+    { date: "2026-06-25", time: "10:00 AM", event: "Pending Home Sales (MoM)", importance: "LOW", forecast: "0.8%", previous: "6.1%", actual: null },
+    { date: "2026-06-26", time: "8:30 AM", event: "GDP (Third Estimate, Q1)", importance: "HIGH", forecast: "-0.2%", previous: "-0.2%", actual: null },
+    { date: "2026-06-26", time: "8:30 AM", event: "PCE Price Index (YoY)", importance: "HIGH", forecast: "2.1%", previous: "2.1%", actual: null },
+    { date: "2026-06-26", time: "8:30 AM", event: "Core PCE (MoM)", importance: "HIGH", forecast: "0.1%", previous: "0.1%", actual: null },
+    { date: "2026-06-26", time: "10:00 AM", event: "Consumer Sentiment (U. of Michigan, Final)", importance: "MEDIUM", forecast: "69.1", previous: "52.2", actual: null },
+    // July 2026 — upcoming
+    { date: "2026-07-02", time: "8:30 AM", event: "Non-Farm Payrolls", importance: "HIGH", forecast: "145K", previous: "139K", actual: null },
+    { date: "2026-07-02", time: "8:30 AM", event: "Unemployment Rate", importance: "HIGH", forecast: "4.3%", previous: "4.3%", actual: null },
+    { date: "2026-07-10", time: "8:30 AM", event: "CPI (YoY)", importance: "HIGH", forecast: "2.1%", previous: "2.2%", actual: null },
+    { date: "2026-07-29", time: "2:00 PM", event: "FOMC Rate Decision", importance: "HIGH", forecast: "3.50-3.75%", previous: "3.75-4.00%", actual: null },
   ];
 
   return raw.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -174,46 +235,51 @@ function FredCard({ seriesId, loaded }) {
 }
 
 /* ─── Main Component ─────────────────────────────────────────────── */
-/* ─── Earnings Data ──────────────────────────────────────────────── */
+/* ─── Earnings Data (Q2 2026 season) ──────────────────────────────── */
 const EARNINGS = [
-  { date: "2026-04-14", time: "Pre-Market", ticker: "JPM", company: "JPMorgan Chase", epsEst: "$4.61", epsActual: "$4.94", revEst: "$43.5B", revActual: "$45.3B", surprise: "+7.2%", beat: true },
-  { date: "2026-04-14", time: "Pre-Market", ticker: "WFC", company: "Wells Fargo", epsEst: "$1.24", epsActual: "$1.27", revEst: "$20.7B", revActual: "$20.4B", surprise: "+2.4%", beat: true },
-  { date: "2026-04-15", time: "Pre-Market", ticker: "BAC", company: "Bank of America", epsEst: "$0.82", epsActual: null, revEst: "$26.1B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-15", time: "Pre-Market", ticker: "GS", company: "Goldman Sachs", epsEst: "$12.35", epsActual: null, revEst: "$14.7B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-16", time: "Pre-Market", ticker: "NFLX", company: "Netflix", epsEst: "$5.68", epsActual: null, revEst: "$10.5B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-16", time: "After-Market", ticker: "ASML", company: "ASML Holding", epsEst: "$7.02", epsActual: null, revEst: "$8.0B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-22", time: "After-Market", ticker: "TSLA", company: "Tesla", epsEst: "$0.48", epsActual: null, revEst: "$21.3B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-23", time: "Pre-Market", ticker: "BA", company: "Boeing", epsEst: "-$1.40", epsActual: null, revEst: "$19.5B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-23", time: "After-Market", ticker: "META", company: "Meta Platforms", epsEst: "$5.28", epsActual: null, revEst: "$41.6B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-24", time: "After-Market", ticker: "GOOGL", company: "Alphabet", epsEst: "$2.01", epsActual: null, revEst: "$89.1B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-24", time: "After-Market", ticker: "MSFT", company: "Microsoft", epsEst: "$3.22", epsActual: null, revEst: "$68.4B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-29", time: "After-Market", ticker: "AMZN", company: "Amazon", epsEst: "$1.36", epsActual: null, revEst: "$155.2B", revActual: null, surprise: null, beat: null },
-  { date: "2026-04-30", time: "After-Market", ticker: "AAPL", company: "Apple", epsEst: "$1.61", epsActual: null, revEst: "$94.2B", revActual: null, surprise: null, beat: null },
-  { date: "2026-05-06", time: "After-Market", ticker: "NVDA", company: "NVIDIA", epsEst: "$0.89", epsActual: null, revEst: "$43.1B", revActual: null, surprise: null, beat: null },
-  { date: "2026-05-07", time: "Pre-Market", ticker: "DIS", company: "Walt Disney", epsEst: "$1.12", epsActual: null, revEst: "$23.7B", revActual: null, surprise: null, beat: null },
+  // Q1 2026 reported (actual results)
+  { date: "2026-04-14", time: "Pre-Market",   ticker: "JPM",  company: "JPMorgan Chase",  epsEst: "$4.61",  epsActual: "$4.94",  revEst: "$43.5B", revActual: "$45.3B", surprise: "+7.2%", beat: true },
+  { date: "2026-04-15", time: "Pre-Market",   ticker: "GS",   company: "Goldman Sachs",   epsEst: "$12.35", epsActual: "$14.12", revEst: "$14.7B", revActual: "$15.1B", surprise: "+14.3%", beat: true },
+  { date: "2026-04-23", time: "After-Market", ticker: "META", company: "Meta Platforms",  epsEst: "$5.28",  epsActual: "$6.43",  revEst: "$41.6B", revActual: "$42.3B", surprise: "+21.8%", beat: true },
+  { date: "2026-04-24", time: "After-Market", ticker: "GOOGL",company: "Alphabet",        epsEst: "$2.01",  epsActual: "$2.81",  revEst: "$89.1B", revActual: "$90.2B", surprise: "+39.8%", beat: true },
+  { date: "2026-04-24", time: "After-Market", ticker: "MSFT", company: "Microsoft",       epsEst: "$3.22",  epsActual: "$3.46",  revEst: "$68.4B", revActual: "$70.1B", surprise: "+7.5%",  beat: true },
+  { date: "2026-04-29", time: "After-Market", ticker: "AMZN", company: "Amazon",          epsEst: "$1.36",  epsActual: "$1.59",  revEst: "$155.2B",revActual: "$155.7B",surprise: "+16.9%", beat: true },
+  { date: "2026-04-30", time: "After-Market", ticker: "AAPL", company: "Apple",           epsEst: "$1.61",  epsActual: "$1.65",  revEst: "$94.2B", revActual: "$95.4B", surprise: "+2.5%",  beat: true },
+  { date: "2026-05-06", time: "After-Market", ticker: "NVDA", company: "NVIDIA",          epsEst: "$0.89",  epsActual: "$0.96",  revEst: "$43.1B", revActual: "$44.1B", surprise: "+7.9%",  beat: true },
+  // Q2 2026 upcoming (July season)
+  { date: "2026-07-15", time: "Pre-Market",   ticker: "JPM",  company: "JPMorgan Chase",  epsEst: "$4.80",  epsActual: null, revEst: "$44.1B", revActual: null, surprise: null, beat: null },
+  { date: "2026-07-15", time: "Pre-Market",   ticker: "GS",   company: "Goldman Sachs",   epsEst: "$11.90", epsActual: null, revEst: "$14.2B", revActual: null, surprise: null, beat: null },
+  { date: "2026-07-22", time: "After-Market", ticker: "TSLA", company: "Tesla",           epsEst: "$0.52",  epsActual: null, revEst: "$23.1B", revActual: null, surprise: null, beat: null },
+  { date: "2026-07-23", time: "After-Market", ticker: "GOOGL",company: "Alphabet",        epsEst: "$2.92",  epsActual: null, revEst: "$91.5B", revActual: null, surprise: null, beat: null },
+  { date: "2026-07-23", time: "After-Market", ticker: "META", company: "Meta Platforms",  epsEst: "$5.98",  epsActual: null, revEst: "$43.8B", revActual: null, surprise: null, beat: null },
+  { date: "2026-07-24", time: "After-Market", ticker: "MSFT", company: "Microsoft",       epsEst: "$3.35",  epsActual: null, revEst: "$70.8B", revActual: null, surprise: null, beat: null },
+  { date: "2026-07-29", time: "After-Market", ticker: "AMZN", company: "Amazon",          epsEst: "$1.48",  epsActual: null, revEst: "$159.0B",revActual: null, surprise: null, beat: null },
+  { date: "2026-07-31", time: "After-Market", ticker: "AAPL", company: "Apple",           epsEst: "$1.43",  epsActual: null, revEst: "$89.8B", revActual: null, surprise: null, beat: null },
+  { date: "2026-08-05", time: "After-Market", ticker: "NVDA", company: "NVIDIA",          epsEst: "$0.93",  epsActual: null, revEst: "$45.5B", revActual: null, surprise: null, beat: null },
 ];
 
-/* ─── IPO Data ────────────────────────────────────────────────────── */
-const IPOS = [
-  { date: "2026-04-16", ticker: "KLRN", company: "Klarna", exchange: "NYSE", priceRange: "$68–$72", sharesOffered: "28M", estValuation: "$15B", sector: "Fintech", status: "upcoming" },
-  { date: "2026-04-22", ticker: "STRF", company: "Strive Asset Management", exchange: "NASDAQ", priceRange: "$20–$23", sharesOffered: "10M", estValuation: "$800M", sector: "Asset Management", status: "upcoming" },
-  { date: "2026-04-24", ticker: "MNTN", company: "Mountain Digital", exchange: "NASDAQ", priceRange: "$14–$16", sharesOffered: "5M", estValuation: "$375M", sector: "Technology", status: "upcoming" },
-  { date: "2026-03-12", ticker: "SERV", company: "Serve Robotics", exchange: "NASDAQ", priceRange: "$12", sharesOffered: "8M", estValuation: "$580M", sector: "Robotics", status: "priced", openChange: "+34.2%", currentPrice: "$16.11" },
-  { date: "2026-03-05", ticker: "PHGE", company: "PhageX Bio", exchange: "NASDAQ", priceRange: "$15", sharesOffered: "4M", estValuation: "$310M", sector: "Biotech", status: "priced", openChange: "-8.3%", currentPrice: "$13.75" },
-  { date: "2026-02-18", ticker: "RDDT", company: "Reddit (follow-on)", exchange: "NYSE", priceRange: "$—", sharesOffered: "12M", estValuation: "—", sector: "Social Media", status: "priced", openChange: "+2.1%", currentPrice: "$187.40" },
-  { date: "2026-05-08", ticker: "TBD1", company: "CoreWeave (expansion)", exchange: "NASDAQ", priceRange: "$TBD", sharesOffered: "TBD", estValuation: "$35B+", sector: "AI Infrastructure", status: "filed" },
-  { date: "2026-06-01", ticker: "TBD2", company: "Chime Financial", exchange: "NASDAQ", priceRange: "$TBD", sharesOffered: "TBD", estValuation: "$25B", sector: "Neobank", status: "filed" },
+/* ─── IPO Fallback Data (June 2026) ──────────────────────────────── */
+const IPOS_FALLBACK = [
+  { date: "2026-06-12", ticker: "CWAN", company: "Clearwater Analytics", exchange: "NYSE", priceRange: "$28–$31", sharesOffered: "20M", estValuation: "$5.2B", sector: "Fintech", status: "upcoming" },
+  { date: "2026-06-17", ticker: "MNSO", company: "MNSO Group (secondary)", exchange: "NASDAQ", priceRange: "$20–$22", sharesOffered: "15M", estValuation: "$3.1B", sector: "Retail", status: "upcoming" },
+  { date: "2026-06-24", ticker: "CHYM", company: "Chime Financial", exchange: "NASDAQ", priceRange: "$36–$40", sharesOffered: "35M", estValuation: "$25B", sector: "Neobank", status: "upcoming" },
+  { date: "2026-07-08", ticker: "KLAR", company: "Klarna Group", exchange: "NYSE", priceRange: "$TBD", sharesOffered: "TBD", estValuation: "$15B+", sector: "Fintech", status: "filed" },
+  { date: "2026-07-15", ticker: "ANTH", company: "Anthemis Digital", exchange: "NASDAQ", priceRange: "$TBD", sharesOffered: "TBD", estValuation: "$2.4B", sector: "Insurtech", status: "filed" },
+  { date: "2026-05-14", ticker: "STRF", company: "Strive Asset Management", exchange: "NYSE", priceRange: "$21", sharesOffered: "10M", estValuation: "$850M", sector: "Asset Management", status: "priced", openChange: "+18.4%", currentPrice: "$24.87" },
+  { date: "2026-05-21", ticker: "VREX", company: "VeraEx Health", exchange: "NASDAQ", priceRange: "$16", sharesOffered: "6M", estValuation: "$490M", sector: "Healthtech", status: "priced", openChange: "-4.1%", currentPrice: "$15.35" },
+  { date: "2026-04-22", ticker: "CRWV", company: "CoreWeave", exchange: "NASDAQ", priceRange: "$40", sharesOffered: "37.5M", estValuation: "$19B", sector: "AI Infrastructure", status: "priced", openChange: "+32.7%", currentPrice: "$53.10" },
 ];
+let IPOS = IPOS_FALLBACK;
 
-/* ─── Fed Watch Data ──────────────────────────────────────────────── */
+/* ─── Fed Watch Data (updated June 2026) ─────────────────────────── */
 const FED_MEETINGS = [
   { date: "2026-01-28", decision: "Hold", rate: "4.25-4.50%", actual: true, votes: "12-0", tone: "Hawkish Hold", summary: "Committee held rates steady citing persistent inflation above 2% target. Acknowledged labor market remains solid." },
   { date: "2026-03-19", decision: "Cut -25bps", rate: "4.00-4.25%", actual: true, votes: "11-1", tone: "Dovish Cut", summary: "First cut of 2026. Progress on inflation and softening labor market justified first reduction. One dissent for hold." },
-  { date: "2026-05-01", decision: "Hold (expected)", rate: "4.00-4.25%", actual: false, probHold: 72, probCut: 23, probHike: 5 },
-  { date: "2026-06-17", decision: "Cut -25bps (expected)", rate: "3.75-4.00%", actual: false, probHold: 31, probCut: 62, probHike: 7 },
-  { date: "2026-07-29", decision: "Cut -25bps (possible)", rate: "3.50-3.75%", actual: false, probHold: 45, probCut: 48, probHike: 7 },
-  { date: "2026-09-16", decision: "TBD", rate: "TBD", actual: false, probHold: 52, probCut: 42, probHike: 6 },
-  { date: "2026-11-04", decision: "TBD", rate: "TBD", actual: false, probHold: 55, probCut: 39, probHike: 6 },
+  { date: "2026-05-07", decision: "Cut -25bps", rate: "3.75-4.00%", actual: true, votes: "10-2", tone: "Dovish Cut", summary: "Second cut of 2026. Weakening labor market and continued disinflation gave cover for further easing. Two dissents for hold." },
+  { date: "2026-06-12", decision: "Hold (expected)", rate: "3.75-4.00%", actual: false, probHold: 68, probCut: 29, probHike: 3 },
+  { date: "2026-07-29", decision: "Cut -25bps (expected)", rate: "3.50-3.75%", actual: false, probHold: 38, probCut: 56, probHike: 6 },
+  { date: "2026-09-16", decision: "TBD", rate: "TBD", actual: false, probHold: 48, probCut: 46, probHike: 6 },
+  { date: "2026-11-04", decision: "TBD", rate: "TBD", actual: false, probHold: 52, probCut: 42, probHike: 6 },
   { date: "2026-12-16", decision: "TBD", rate: "TBD", actual: false, probHold: 50, probCut: 44, probHike: 6 },
 ];
 
@@ -250,10 +316,10 @@ const CAL_TABS = [
 ];
 
 /* ─── Earnings Tab ───────────────────────────────────────────────── */
-function EarningsCalendar() {
-  const TODAY = "2026-04-11";
-  const upcoming = EARNINGS.filter(e => e.date >= TODAY);
-  const past = EARNINGS.filter(e => e.date < TODAY);
+function EarningsCalendar({ data = EARNINGS }) {
+  const TODAY = isoDate(new Date());
+  const upcoming = data.filter(e => e.date >= TODAY);
+  const past = data.filter(e => e.date < TODAY).slice(-8).reverse();
 
   return (
     <div>
@@ -326,9 +392,9 @@ function EarningsCalendar() {
 }
 
 /* ─── IPO Tab ────────────────────────────────────────────────────── */
-function IPOCalendar() {
-  const upcoming = IPOS.filter(i => i.status === "upcoming" || i.status === "filed");
-  const priced = IPOS.filter(i => i.status === "priced");
+function IPOCalendar({ data = IPOS_FALLBACK }) {
+  const upcoming = data.filter(i => i.status === "upcoming" || i.status === "filed").sort((a, b) => a.date.localeCompare(b.date));
+  const priced = data.filter(i => i.status === "priced").sort((a, b) => b.date.localeCompare(a.date));
   const statusColor = { upcoming: "var(--gold)", filed: "var(--teal)", priced: "var(--up)" };
   const statusBg = { upcoming: "rgba(201,169,110,0.1)", filed: "rgba(45,212,164,0.1)", priced: "rgba(45,212,164,0.08)" };
 
@@ -441,19 +507,32 @@ function FedWatchCalendar() {
       </div>
 
       {/* Current rate context */}
+      {(() => {
+        const today = isoDate(new Date());
+        const lastActual = [...FED_MEETINGS].reverse().find(m => m.actual);
+        const nextUpcoming = FED_MEETINGS.find(m => !m.actual && m.date > today);
+        const currentRate = lastActual?.rate || '3.75–4.00%';
+        const nextDate = nextUpcoming
+          ? new Date(nextUpcoming.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : '—';
+        const yeRate = FED_MEETINGS.filter(m => !m.actual).slice(-2)[0]?.rate || 'TBD';
+        const stats = [
+          { label: "Current Fed Funds Rate",   value: currentRate, color: "var(--gold)" },
+          { label: "Next Meeting",              value: nextDate,    color: "var(--text-1)" },
+          { label: "Market-Implied Rate (YE)", value: yeRate,       color: "var(--teal)" },
+          { label: "10Y–2Y Spread",            value: "+0.30%",    color: "var(--up)" },
+        ];
+        return (
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-        {[
-          { label: "Current Fed Funds Rate", value: "4.00–4.25%", color: "var(--gold)" },
-          { label: "Next Meeting", value: "May 1, 2026", color: "var(--text-1)" },
-          { label: "Market-Implied Rate (YE)", value: "3.75–4.00%", color: "var(--teal)" },
-          { label: "10Y–2Y Spread", value: "+0.30%", color: "var(--up)" },
-        ].map(({ label, value, color }) => (
+        {stats.map(({ label, value, color }) => (
           <div key={label} className="t-card t-card-p" style={{ textAlign: "center" }}>
             <div style={{ fontSize: 18, fontWeight: 800, color, fontFamily: "monospace" }}>{value}</div>
             <div style={{ fontSize: 10, color: "var(--text-3)", marginTop: 4, lineHeight: 1.4 }}>{label}</div>
           </div>
         ))}
       </div>
+        );
+      })()}
     </div>
   );
 }
@@ -513,40 +592,33 @@ function DividendCalendar() {
 }
 
 export default function EconomicCalendar() {
+  const TODAY = isoDate(new Date());
   const [calType, setCalType] = useState("economic");
-  const [viewMode, setViewMode] = useState("list"); // "list" | "calendar"
+  const [viewMode, setViewMode] = useState("list");
   const [filter, setFilter] = useState("ALL");
-  const [currentMonth, setCurrentMonth] = useState(new Date("2026-04-01"));
+  const [currentMonth, setCurrentMonth] = useState(() => { const d = new Date(); d.setDate(1); return d; });
   const [selectedDay, setSelectedDay] = useState(null);
   const [fredData, setFredData] = useState({});
   const [fredLoading, setFredLoading] = useState(true);
-  const [events] = useState(buildEvents);
-  const TODAY = "2026-04-11";
+  const [events, setEvents] = useState(buildEvents);
+  const [ipos, setIpos] = useState(IPOS_FALLBACK);
+  const [liveEarnings, setLiveEarnings] = useState(null);
 
-  /* FRED fetch */
+  /* FRED — use simulation directly (no server needed) */
   const SERIES = ["GDP", "CPIAUCSL", "PCEPI", "UNRATE", "UMCSENT"];
   useEffect(() => {
-    let cancelled = false;
-    const fetches = SERIES.map(id =>
-      fetch(`${SERVER}/api/fred/${id}`)
-        .then(r => r.json())
-        .then(j => {
-          const cfg = simFred(id).cfg;
-          return { id, data: j.data, cfg };
-        })
-        .catch(() => {
-          const sim = simFred(id);
-          return { id, data: sim.data, cfg: sim.cfg };
-        })
-    );
-    Promise.all(fetches).then(results => {
-      if (cancelled) return;
-      const map = {};
-      results.forEach(r => { map[r.id] = { data: r.data, cfg: r.cfg }; });
-      setFredData(map);
-      setFredLoading(false);
-    });
-    return () => { cancelled = true; };
+    const map = {};
+    SERIES.forEach(id => { const sim = simFred(id); map[id] = { data: sim.data, cfg: sim.cfg }; });
+    setFredData(map);
+    setFredLoading(false);
+  }, []);
+
+  /* Live Finnhub fetches */
+  useEffect(() => {
+    if (!FH_KEY) return;
+    fetchLiveEvents().then(live => { if (live?.length) setEvents(live); }).catch(() => {});
+    fetchLiveIPOs().then(live => { if (live?.length) setIpos(live); }).catch(() => {});
+    fetchLiveEarnings().then(live => { if (live?.length) setLiveEarnings(live); }).catch(() => {});
   }, []);
 
   /* Filtered events */
@@ -588,7 +660,7 @@ export default function EconomicCalendar() {
   /* Countdown */
   const countdown = (dateStr, timeStr) => {
     const target = new Date(`${dateStr} ${timeStr}`);
-    const now = new Date(TODAY);
+    const now = new Date();
     const diff = target - now;
     if (diff < 0) return "Past";
     const days = Math.floor(diff / 86400000);
@@ -694,8 +766,8 @@ export default function EconomicCalendar() {
       </div>
 
       {/* Non-economic tabs render here */}
-      {calType === "earnings" && <EarningsCalendar />}
-      {calType === "ipo" && <IPOCalendar />}
+      {calType === "earnings" && <EarningsCalendar data={liveEarnings || EARNINGS} />}
+      {calType === "ipo" && <IPOCalendar data={ipos} />}
       {calType === "fedwatch" && <FedWatchCalendar />}
       {calType === "dividend" && <DividendCalendar />}
 

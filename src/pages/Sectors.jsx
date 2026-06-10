@@ -6,7 +6,57 @@ import {
 } from "recharts";
 import { PieChart, TrendingUp, BarChart2, RefreshCw, ArrowLeftRight } from "lucide-react";
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const FH_KEY = import.meta.env.VITE_FINNHUB_KEY;
+const FH = 'https://finnhub.io/api/v1';
+
+function toUnix(date) { return Math.floor(date.getTime() / 1000); }
+
+async function fetchSectorData() {
+  const symbols = Object.keys(SECTOR_META);
+  const now = new Date();
+  const y1ago = new Date(now); y1ago.setFullYear(y1ago.getFullYear() - 1);
+  const from = toUnix(y1ago);
+  const to   = toUnix(now);
+
+  const results = await Promise.all(
+    symbols.map(async sym => {
+      try {
+        const [quoteRes, candleRes] = await Promise.all([
+          fetch(`${FH}/quote?symbol=${sym}&token=${FH_KEY}`).then(r => r.json()),
+          fetch(`${FH}/stock/candle?symbol=${sym}&resolution=D&from=${from}&to=${to}&token=${FH_KEY}`).then(r => r.json()),
+        ]);
+
+        const dayChange = quoteRes.dp ?? 0;
+        const currentPrice = quoteRes.c ?? 0;
+
+        let weekChange = 0, monthChange = 0, threeMonthChange = 0, ytdChange = 0, yearChange = 0;
+
+        if (candleRes.s === 'ok' && candleRes.c?.length) {
+          const prices = candleRes.c;
+          const n = prices.length;
+          const cur = prices[n - 1];
+
+          const pctChange = (old) => old > 0 ? ((cur - old) / old) * 100 : 0;
+
+          weekChange        = pctChange(prices[Math.max(n - 6, 0)]);
+          monthChange       = pctChange(prices[Math.max(n - 22, 0)]);
+          threeMonthChange  = pctChange(prices[Math.max(n - 66, 0)]);
+          yearChange        = pctChange(prices[0]);
+
+          // YTD: find first trading day of current year
+          const jan1 = toUnix(new Date(now.getFullYear(), 0, 1));
+          const ytdIdx = candleRes.t.findIndex(t => t >= jan1);
+          ytdChange = ytdIdx >= 0 ? pctChange(prices[ytdIdx]) : yearChange;
+        }
+
+        return { symbol: sym, dayChange, weekChange, monthChange, threeMonthChange, ytdChange, yearChange, price: currentPrice };
+      } catch {
+        return { symbol: sym, dayChange: 0, weekChange: 0, monthChange: 0, threeMonthChange: 0, ytdChange: 0, yearChange: 0 };
+      }
+    })
+  );
+  return results;
+}
 
 const SECTOR_META = {
   XLK:  { name: "Technology",         holdings: ["AAPL", "MSFT", "NVDA", "AVGO", "ORCL"],      desc: "Information technology companies including hardware, software, semiconductors, and IT services." },
@@ -36,18 +86,6 @@ const PERIOD_OPTIONS = [
   { label: "1Y",  key: "yearChange" },
 ];
 
-const fetchHeatmap = () =>
-  fetch(`${BASE}/api/sector/heatmap`).then((r) => {
-    if (!r.ok) throw new Error("heatmap failed");
-    return r.json();
-  });
-
-const fetchSectorFallback = (start, end) =>
-  fetch(`${BASE}/functions/getSectorPerformance`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ startDate: start, endDate: end }),
-  }).then((r) => r.json());
 
 function fmtPct(v) {
   if (v == null) return "—";
@@ -160,33 +198,17 @@ export default function Sectors() {
   const [period, setPeriod] = useState("dayChange");
   const [selected, setSelected] = useState(null);
 
-  const { data: heatmapData, isError: heatmapError } = useQuery({
-    queryKey: ["sector-heatmap"],
-    queryFn: fetchHeatmap,
+  const { data: sectorList, isLoading } = useQuery({
+    queryKey: ["sector-finnhub"],
+    queryFn: fetchSectorData,
     refetchInterval: 300_000,
     retry: 1,
+    staleTime: 60_000,
   });
-
-  const today = new Date().toISOString().split("T")[0];
-  const monthAgo = new Date(Date.now() - 30 * 86400_000).toISOString().split("T")[0];
-
-  const { data: fallbackData } = useQuery({
-    queryKey: ["sector-perf-fallback", monthAgo, today],
-    queryFn: () => fetchSectorFallback(monthAgo, today),
-    enabled: !!heatmapError,
-    retry: 1,
-  });
-
-  // Merge heatmap data into a map keyed by symbol
-  const rawList = heatmapError
-    ? (fallbackData?.data ?? fallbackData ?? [])
-    : (heatmapData?.data ?? heatmapData ?? []);
 
   const dataMap = {};
-  if (Array.isArray(rawList)) {
-    rawList.forEach((item) => {
-      if (item?.symbol) dataMap[item.symbol] = item;
-    });
+  if (Array.isArray(sectorList)) {
+    sectorList.forEach(item => { if (item?.symbol) dataMap[item.symbol] = item; });
   }
 
   const symbols = Object.keys(SECTOR_META);

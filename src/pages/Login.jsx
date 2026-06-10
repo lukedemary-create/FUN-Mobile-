@@ -26,26 +26,6 @@ const C = {
   ok:      '#4a7c59',
 }
 
-/* ── Simple client-side user store (localStorage) ─────────────────── */
-const USERS_KEY = 'planora_users'
-
-function getUsers() {
-  try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]') } catch { return [] }
-}
-
-function saveUser(user) {
-  const users = getUsers()
-  const exists = users.find(u => u.email.toLowerCase() === user.email.toLowerCase())
-  if (exists) return false
-  users.push(user)
-  localStorage.setItem(USERS_KEY, JSON.stringify(users))
-  return true
-}
-
-function findUser(email, password) {
-  const users = getUsers()
-  return users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password) || null
-}
 
 /* ── Input field ──────────────────────────────────────────────────── */
 function Field({ icon: Icon, type, placeholder, value, onChange, error, right }) {
@@ -114,15 +94,13 @@ function LoginForm({ onSwitch }) {
     if (Object.keys(e).length) { setErrors(e); return }
     setErrors({})
     setLoading(true)
-    await new Promise(r => setTimeout(r, 600))
-    const found = findUser(email.trim(), password)
-    if (!found) {
-      setApiErr('No account found with those credentials.')
+    try {
+      await login(email.trim(), password)
+      navigate('/welcome', { replace: true })
+    } catch (err) {
+      setApiErr(err.message || 'Invalid email or password.')
       setLoading(false)
-      return
     }
-    login({ name: found.name, email: found.email })
-    navigate(from, { replace: true })
   }
 
   return (
@@ -181,8 +159,8 @@ function LoginForm({ onSwitch }) {
 
 /* ── Signup form ──────────────────────────────────────────────────── */
 function SignupForm({ onSwitch }) {
-  const { login } = useAuth()
-  const navigate  = useNavigate()
+  const { signup } = useAuth()
+  const navigate   = useNavigate()
 
   const [name,     setName]     = useState('')
   const [email,    setEmail]    = useState('')
@@ -220,17 +198,18 @@ function SignupForm({ onSwitch }) {
     if (Object.keys(e).length) { setErrors(e); return }
     setErrors({})
     setLoading(true)
-    await new Promise(r => setTimeout(r, 700))
-    const created = saveUser({ name: name.trim(), email: email.trim().toLowerCase(), password })
-    if (!created) {
-      setApiErr('An account with this email already exists.')
+    try {
+      const nameParts = name.trim().split(' ')
+      const firstName = nameParts[0]
+      const lastName  = nameParts.slice(1).join(' ') || ''
+      await signup(email.trim(), password, firstName, lastName)
+      setSuccess(true)
+      await new Promise(r => setTimeout(r, 1200))
+      navigate('/welcome', { replace: true })
+    } catch (err) {
+      setApiErr(err.message || 'Could not create account. Try again.')
       setLoading(false)
-      return
     }
-    setSuccess(true)
-    await new Promise(r => setTimeout(r, 900))
-    login({ name: name.trim(), email: email.trim().toLowerCase() })
-    navigate('/', { replace: true })
   }
 
   if (success) {

@@ -1,11 +1,24 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ErrorBoundary from '@/lib/ErrorBoundary';
 import Layout from './Layout';
+
+/* ─── Route guards ───────────────────────────────────────────────── */
+function RequireAuth({ children }) {
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  if (isLoadingAuth) return null;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+}
+
+function RedirectIfAuth({ children }) {
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  if (isLoadingAuth) return null;
+  return isAuthenticated ? <Navigate to="/" replace /> : children;
+}
 
 /* ─── Existing pages ─────────────────────────────────────────────── */
 const PageNotFound       = lazy(() => import('./lib/PageNotFound'));
@@ -54,7 +67,10 @@ const WealthHub             = lazy(() => import('./pages/WealthHub'));
 const MacroHub              = lazy(() => import('./pages/MacroHub'));
 const EducationHub          = lazy(() => import('./pages/EducationHub'));
 const WealthCounselHub      = lazy(() => import('./pages/WealthCounselHub'));
+const FeaturedInsights      = lazy(() => import('./pages/FeaturedInsights'));
+const InsightArticle        = lazy(() => import('./pages/InsightArticle'));
 const Login              = lazy(() => import('./pages/Login'));
+const Welcome            = lazy(() => import('./pages/Welcome'));
 const Privacy            = lazy(() => import('./pages/Privacy'));
 const Terms              = lazy(() => import('./pages/Terms'));
 
@@ -112,9 +128,12 @@ function AppRoutes() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        {/* ── Landing ── */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
+        {/* ── Auth ── */}
+        <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
+        <Route path="/welcome" element={<RequireAuth><Welcome /></RequireAuth>} />
+
+        {/* ── Landing (requires auth) ── */}
+        <Route path="/" element={<RequireAuth><Landing /></RequireAuth>} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
 
@@ -126,16 +145,18 @@ function AppRoutes() {
         <Route path="/planora-ai" element={<PlonoraAI />} />
 
         {/* ── Hub pages (standalone, no sidebar) ── */}
-        <Route path="/terminal-hub"        element={<TerminalHub />} />
-        <Route path="/markets"             element={<MarketsHub />} />
-        <Route path="/wealth"              element={<WealthHub />} />
-        <Route path="/macro"               element={<MacroHub />} />
-        <Route path="/education-hub"       element={<EducationHub />} />
-        <Route path="/wealth-counsel"      element={<WealthCounselHub />} />
-        <Route path="/WealthCounsel"       element={<WealthCounsel />} />
+        <Route path="/terminal-hub"        element={<RequireAuth><TerminalHub /></RequireAuth>} />
+        <Route path="/markets"             element={<RequireAuth><MarketsHub /></RequireAuth>} />
+        <Route path="/wealth"              element={<RequireAuth><WealthHub /></RequireAuth>} />
+        <Route path="/macro"               element={<RequireAuth><MacroHub /></RequireAuth>} />
+        <Route path="/education-hub"       element={<RequireAuth><EducationHub /></RequireAuth>} />
+        <Route path="/wealth-counsel"      element={<RequireAuth><WealthCounselHub /></RequireAuth>} />
+        <Route path="/insights"            element={<RequireAuth><FeaturedInsights /></RequireAuth>} />
+        <Route path="/insights/:slug"      element={<RequireAuth><InsightArticle /></RequireAuth>} />
+        <Route path="/WealthCounsel"       element={<RequireAuth><WealthCounsel /></RequireAuth>} />
 
         {/* ── Planora Terminal (Layout sidebar) ── */}
-        <Route element={<Layout><Outlet /></Layout>}>
+        <Route element={<RequireAuth><Layout><Outlet /></Layout></RequireAuth>}>
           <Route path="/hub"                 element={<Hub />} />
           <Route path="/planning"            element={<PlanningHub />} />
           <Route path="/dashboard"           element={<Dashboard />} />

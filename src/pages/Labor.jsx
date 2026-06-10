@@ -458,11 +458,10 @@ export default function Labor() {
                 <AreaChart data={unrateChart} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="unrateGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--red)" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="var(--red)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#f97316" stopOpacity={0.55} />
+                      <stop offset="100%" stopColor="#f97316" stopOpacity={0.04} />
                     </linearGradient>
                   </defs>
-                  {/* COVID recession shading */}
                   <CartesianGrid strokeDasharray="2 4" stroke="var(--border-c)" />
                   <XAxis
                     dataKey="date"
@@ -477,13 +476,13 @@ export default function Labor() {
                     tickFormatter={v => `${v}%`}
                   />
                   <Tooltip content={<TT unit="%" />} />
-                  <ReferenceLine y={4.0} stroke="var(--gold)" strokeDasharray="3 3" strokeOpacity={0.5} label={{ value: "Natural Rate", position: "insideTopRight", fontSize: 9, fill: "var(--gold)" }} />
+                  <ReferenceLine y={4.0} stroke="#c9a96e" strokeDasharray="3 3" strokeOpacity={0.7} label={{ value: "Natural Rate", position: "insideTopRight", fontSize: 9, fill: "#c9a96e" }} />
                   <Area
                     type="monotone"
                     dataKey="value"
                     name="Unemployment"
-                    stroke="var(--red)"
-                    strokeWidth={2}
+                    stroke="#f97316"
+                    strokeWidth={2.5}
                     fill="url(#unrateGrad)"
                     dot={false}
                   />
@@ -551,7 +550,7 @@ export default function Labor() {
                   <XAxis dataKey="date" tick={{ fontSize: 9, fill: "var(--text-3)" }} tickLine={false} interval={5} />
                   <YAxis tick={{ fontSize: 9, fill: "var(--text-3)" }} tickLine={false} tickFormatter={v => `${v}M`} />
                   <Tooltip content={<TT unit="M" />} />
-                  <Line type="monotone" dataKey="openings" name="Openings" stroke="var(--blue)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="openings" name="Openings" stroke="#60a5fa" strokeWidth={2} dot={false} />
                   <Line type="monotone" dataKey="quits" name="Quits" stroke="var(--gold)" strokeWidth={2} dot={false} strokeDasharray="4 2" />
                 </LineChart>
               </ResponsiveContainer>
@@ -695,8 +694,8 @@ export default function Labor() {
               <LineChart data={claimsChart} margin={{ top: 8, right: 16, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="claimsGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--blue)" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="var(--blue)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#60a5fa" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="#60a5fa" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="2 4" stroke="var(--border-c)" />
@@ -704,7 +703,7 @@ export default function Labor() {
                 <YAxis tick={{ fontSize: 9, fill: "var(--text-3)" }} tickLine={false} tickFormatter={v => `${v}K`} domain={[160, 280]} />
                 <Tooltip content={<TT unit="K" />} />
                 <ReferenceLine y={220} stroke="var(--text-3)" strokeDasharray="3 3" strokeOpacity={0.4} />
-                <Line type="monotone" dataKey="claims" name="Claims" stroke="var(--blue)" strokeWidth={1.5} dot={false} strokeOpacity={0.7} />
+                <Line type="monotone" dataKey="claims" name="Claims" stroke="#60a5fa" strokeWidth={1.5} dot={false} strokeOpacity={0.7} />
                 <Line type="monotone" dataKey="ma4wk" name="4-Week MA" stroke="var(--gold)" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>

@@ -1625,7 +1625,7 @@ function FeaturedInsight() {
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <button
-                  onClick={() => { window.location.href = insight.href }}
+                  onClick={() => { window.location.href = '/insights' }}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 8,
                     background: 'transparent', border: '1px solid rgba(201,169,110,0.3)',
