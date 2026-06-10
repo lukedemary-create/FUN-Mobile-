@@ -911,9 +911,6 @@ function QuoteSection() {
           <span style={{ fontSize: 12, color: '#a89070', fontWeight: 600, letterSpacing: '0.08em', fontFamily: UI }}>
             The Planora Philosophy
           </span>
-          <span style={{ fontSize: 11, color: '#6b5540', fontStyle: 'italic', fontFamily: UI }}>
-            Bloomberg Terminal standards. Built for everyone.
-          </span>
         </motion.div>
 
         <motion.div
