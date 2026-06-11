@@ -994,7 +994,7 @@ function WelcomeModal({ onClose }) {
 export default function Layout({ children }) {
   const [openSectionId,  setOpenSectionId]  = useState(null);
   const [mobileOpen,     setMobileOpen]     = useState(false);
-  const [showWelcome,    setShowWelcome]    = useState(() => !sessionStorage.getItem(WELCOME_KEY));
+  const [showWelcome,    setShowWelcome]    = useState(false);
   const activeSection = useActiveSection();
   const { pathname }  = useLocation();
 
