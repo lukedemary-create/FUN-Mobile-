@@ -12,7 +12,7 @@ production-grade fintech platform — not a mockup.
 Use this exact layout structure for the Planora homepage:
 
 ### Hero Section (Top)
-- Dark background #0a0a0f
+- Dark background #1a1410
 - Left side: Planora tagline, headline, subheading,
   two CTA buttons (Enter Platform + Explore Solutions)
 - Right side: Floating app dashboard preview/mockup
@@ -24,7 +24,7 @@ Use this exact layout structure for the Planora homepage:
 ### Three Platform Cards (Middle)
 - Label above: "THREE PLATFORMS. ONE ECOSYSTEM."
 - Three equal cards side by side:
-  LEFT — Planora Terminal (gold accent #F5A623)
+  LEFT — Planora Terminal (gold accent #c9a96e)
          Market Intelligence Platform
          Bullet points: Real-time Data, Risk Analysis,
          Planning Tools, Wealth Counsel
@@ -76,7 +76,7 @@ like it belongs in a $100M fintech product
 
 ### 1. Planora Terminal
 - Role: Market Intelligence Platform
-- Accent Color: Gold #F5A623
+- Accent Color: Gold #c9a96e
 - Description: Institutional-grade analytics, live market data,
   risk modeling, and wealth planning tools
 - Key Features: Real-time data, Risk Analysis, Planning Tools,
@@ -97,43 +97,68 @@ like it belongs in a $100M fintech product
 - Key Features: Education Modules, Calculators, Visual Guides,
   Assessments
 
-## Master Color System (NEVER deviate from these)
+## Master Color System — Arche Warm Dark (NEVER deviate from these)
 
-### Global Tokens
-- Background Primary: #0a0a0f
-- Background Surface: #111318
-- Background Elevated: #16181f
-- Border Default: #1e2028
-- Border Subtle: #13151a
-- Text Primary: #f1f5f9
-- Text Secondary: #94a3b8
-- Text Muted: #64748b
-- Success: #10b981
-- Warning: #f59e0b
-- Danger: #ef4444
+This is the ARCHĒ warm-dark design language used throughout every
+component. All backgrounds are warm near-black (brown-tinted), not
+cool blue-black. All text is warm cream, not cool white/gray.
 
-### Platform Accent Colors
-- Planora Terminal Gold: #F5A623
-- Planora Terminal Gold Dim: #F5A62320
-- Nexus Teal: #00B4C6
-- Nexus Teal Dim: #00B4C620
-- FUN Indigo: #818cf8
-- FUN Indigo Dim: #818cf820
+### Global Tokens — JavaScript object (copy exactly)
+```js
+const C = {
+  bg:       '#1a1410',   // page background — warm near-black
+  surf:     '#231c16',   // card / surface
+  raise:    '#2d2419',   // elevated / raised card
+  b1:       '#2a2018',   // border default
+  b2:       '#3d3028',   // border alt / stronger
+  t1:       '#f0e8d8',   // text primary — warm cream
+  t2:       '#a89070',   // text secondary — warm tan
+  t3:       '#6b5540',   // text muted — warm brown
+  gold:     '#c9a96e',   // Terminal / Planning accent
+  goldDim:  'rgba(201,169,110,0.10)',
+  goldBdr:  'rgba(201,169,110,0.20)',
+  teal:     '#00B4C6',   // Nexus / Wealth Counsel accent
+  tealDim:  'rgba(0,180,198,0.10)',
+  tealBdr:  'rgba(0,180,198,0.22)',
+  indigo:   '#818cf8',   // FUN accent
+  indigoDim:'rgba(129,140,248,0.08)',
+  indigoBdr:'rgba(129,140,248,0.22)',
+  up:       '#4a7c59',   // positive / green
+  down:     '#c0392b',   // negative / red
+  success:  '#10b981',
+  warning:  '#f59e0b',
+  danger:   '#ef4444',
+}
+```
+
+### Quick token reference
+- Background: `#1a1410`
+- Surface (cards): `#231c16`
+- Elevated: `#2d2419`
+- Border: `#2a2018` / `#3d3028`
+- Text primary: `#f0e8d8`
+- Text secondary: `#a89070`
+- Text muted: `#6b5540`
+- Gold accent: `#c9a96e`
+- Teal accent: `#00B4C6`
+- Indigo accent: `#818cf8`
 
 ## Typography
-- Primary Font: Inter (clean, institutional, geometric)
-- Display Font: For hero headers only
-- Mono Font: font-mono for all numbers, data, tickers
-- Load from Google Fonts: Inter
-- Never use system fonts in production components
 
-### Type Scale Rules
-- Hero headers: text-5xl font-bold tracking-tight
-- Section headers: text-2xl font-semibold
-- Card titles: text-lg font-semibold
-- Data/numbers: font-mono font-medium
-- Labels: text-xs uppercase tracking-widest text-muted
-- Body: text-sm leading-relaxed
+Three fonts — use exactly these variable names:
+```js
+const DISPLAY = "'Playfair Display', Georgia, serif"   // headlines, card titles
+const UI      = "'Inter', system-ui, sans-serif"        // body, labels, UI text
+const MONO    = "'JetBrains Mono', 'Courier New', monospace"  // numbers, data, tickers
+```
+
+### Type Scale
+- Hero headers: Playfair Display, clamp(28px,4vw,48px), weight 700
+- Section headers: Playfair Display or Inter, 22–28px, weight 700
+- Card titles: Inter, 13–15px, weight 700
+- Data/numbers: JetBrains Mono, weight 600–900
+- Labels: Inter, 9–11px, uppercase, letterSpacing 0.1–0.18em, color #6b5540
+- Body: Inter, 13–14px, lineHeight 1.65, color #a89070
 
 ## Designer Persona
 You are a Senior UI/UX Designer with 15+ years of experience
@@ -150,40 +175,34 @@ before building every component — would a Managing Director at
 JP Morgan Private Bank be proud to show this to a client?
 
 ## Global UI Rules
-- Dark theme ONLY — never light mode content areas
-- Every screen starts with #0a0a0f background
-- Cards: rounded-xl border border-[#1e2028] bg-[#111318]
-- All buttons: platform accent color with subtle glow on hover
-- Micro-animations on ALL interactions
-- Loading skeletons always — never spinners
+- Dark theme ONLY — Arche warm-dark palette everywhere
+- Every screen starts with #1a1410 background (warm near-black, NOT cool black)
+- Cards: background #231c16, border 1px solid #2a2018, border-radius 12–20px
+- All buttons: platform accent color (gold/teal/indigo) with subtle glow on hover
 - Empty states always have an icon + message
 - Mobile responsive on every single component
-- Sticky headers on all data tables
-- Zebra striping on all tables
-- Gradient fills on all charts
-- Charts animated on load
+- Charts: Recharts, transparent background, grid lines #2a2018
 
 ## Navigation Structure
-- Top nav: Planora logo left, platform links center,
-  Sign In + Request Demo right
-- Dark nav background #0a0a0f with gold Planora branding
+- Top nav: Planora logo left, platform links center, Sign In right
+- Warm dark nav background #1a1410 with gold Planora branding
 - Platform switcher shows Terminal / Nexus / FUN
-- Sidebar within each platform for section navigation
+- Sidebar within Planora Terminal (Layout.jsx) for section navigation
 
 ## Component Standards
 
 ### Cards
-background: #111318
-border: 1px solid #1e2028
-border-radius: 12px
-padding: 24px
-hover: border-color lifts to platform accent at 40% opacity
+background: #231c16
+border: 1px solid #2a2018
+border-radius: 12–20px
+padding: 20–28px
+hover: border-color lifts to platform accent at 30–40% opacity
 
 ### Buttons Primary
-background: platform accent color
-color: #0a0a0f (dark text on gold) or white
-border-radius: 8px
-hover: subtle glow shadow in accent color
+background: platform accent color (#c9a96e gold / #00B4C6 teal / #818cf8 indigo)
+color: #1a1410 (dark text on gold) or #f0e8d8 on teal/indigo
+border-radius: 8–12px
+hover: brightness(1.08–1.12)
 
 ### Buttons Secondary
 background: transparent
@@ -192,35 +211,34 @@ color: platform accent
 hover: accent color at 10% background fill
 
 ### Data Tables
-header: bg-[#16181f] sticky top
-rows: alternating #111318 and #0d0f14
-border: #1e2028 between rows
-numbers: font-mono right-aligned
-positive values: #10b981
-negative values: #ef4444
+header: background #2d2419, sticky top
+rows: alternating #231c16 and #1f1812
+border: #2a2018 between rows
+numbers: JetBrains Mono, right-aligned
+positive values: #4a7c59
+negative values: #c0392b
 
 ### Charts (Recharts)
 background: transparent
-grid lines: #1e2028
-axis labels: #64748b font-mono text-xs
-line/bar fills: platform accent with gradient
-animated on mount
+grid lines: #2a2018
+axis labels: #6b5540, JetBrains Mono, text-xs
+line/bar fills: platform accent
 
 ## Tech Stack (NEVER change these)
-- React + Vite
-- Tailwind CSS (custom tokens above, never default grays)
+- React + Vite (plain JSX — no TypeScript)
+- Tailwind CSS present but components primarily use inline styles
 - Recharts for ALL data visualization
 - Lucide React for ALL icons
-- Framer Motion for ALL animations
+- Framer Motion for animations (only when explicitly requested by Luke)
 - No other UI libraries unless explicitly approved
 
 ## Code Standards
-- TypeScript interfaces for all props
-- JSDoc comments on all complex functions
-- Always handle loading, error, and empty states
-- No inline styles — Tailwind only
+- Plain JSX throughout — NO TypeScript, no .tsx files, no interfaces
+- Inline styles are the standard pattern (not Tailwind-only)
 - No console.logs in production components
-- Componentize everything — no monolithic files
+- localStorage persistence via useLS(key, default) hook pattern
+- State-based internal navigation (not React Router sub-routes) for complex pages
+- All tax/financial constants imported from src/config/taxConstants2026.js
 
 ## Platform-Specific Rules
 
@@ -294,13 +312,14 @@ SUMMARY:
 - Quality bar → Stripe-level precision and intentionality
 
 ## Absolute Rules — Never Break These
-- Never deviate from the color tokens above
-- Never use default Tailwind grays
+- Never deviate from the Arche warm-dark color tokens above
+- Never use cool blue-black or generic dark grays (#0a0a0f, #111318, etc.)
 - Never build light/white themes
-- Never use spinners — always skeletons
-- Never build a static page — everything interactive
-- Never skip empty states or error states
 - Never mix platform accent colors
+- Always use #1a1410 as the page background
+- Always use Playfair Display for display headings
+- Always use JetBrains Mono for numbers and data
 - Always keep Planora as the parent brand
-- Always maintain the three-platform hierarchy
+- Always maintain the three-platform hierarchy (Terminal / Nexus / FUN)
 - No approval prompts during builds — just build
+- No TypeScript — plain JSX only

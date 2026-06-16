@@ -1154,6 +1154,77 @@ function FUNCard({ inView }) {
   )
 }
 
+function BusinessOwnerCard({ inView }) {
+  const topics = [
+    { label: 'Entity Strategy',    color: '#c9a96e' },
+    { label: 'Tax Minimization',   color: '#8b6340' },
+    { label: 'Retirement Plans',   color: '#6b5540' },
+    { label: 'Buy-Sell Agreements', color: '#c9a96e' },
+    { label: 'Succession Planning', color: '#8b6340' },
+    { label: 'Benefits & Team',    color: '#6b5540' },
+  ]
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: 0.45, ease: EASE }}
+      style={{ height: '100%' }}
+    >
+      <div
+        onClick={() => { window.location.href = '/business-planning' }}
+        style={{
+          background: '#231c16', border: '1px solid #3d3028', borderRadius: 20,
+          padding: '28px 30px', cursor: 'pointer', height: '100%', boxSizing: 'border-box',
+          transition: 'all 0.3s cubic-bezier(0.32,0.72,0,1)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.borderColor = 'rgba(139,99,64,0.45)'
+          e.currentTarget.style.transform = 'translateY(-4px)'
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03)'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.borderColor = '#3d3028'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.03)'
+        }}
+      >
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 28, alignItems: 'center' }} className="biz-card-inner">
+          <div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              background: 'rgba(139,99,64,0.12)', border: '1px solid rgba(139,99,64,0.28)',
+              borderRadius: 6, padding: '4px 10px', marginBottom: 16,
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#8b6340' }} />
+              <span style={{ fontSize: 10, color: '#8b6340', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: UI }}>
+                Business Owner
+              </span>
+            </div>
+            <h3 style={{ fontFamily: DISPLAY, fontSize: 22, fontWeight: 700, color: '#f0e8d8', margin: '0 0 8px', letterSpacing: '-0.01em' }}>
+              Business Owner Planning
+            </h3>
+            <p style={{ fontSize: 13, color: '#a89070', lineHeight: 1.65, margin: 0, fontFamily: UI }}>
+              Entity strategy, tax minimization, retirement plans, buy-sell agreements, and succession planning — the financial layer every business owner needs but rarely gets.
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, maxWidth: 240 }}>
+            {topics.map(t => (
+              <span key={t.label} style={{
+                fontSize: 11, fontFamily: UI, color: t.color,
+                background: `${t.color}10`, border: `1px solid ${t.color}25`,
+                borderRadius: 6, padding: '4px 10px', fontWeight: 500,
+              }}>
+                {t.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 function SectionPreview() {
   const ref    = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
@@ -1186,16 +1257,21 @@ function SectionPreview() {
         >
           <TerminalCard inView={inView} />
           <WealthCounselCard inView={inView} />
-          <div style={{ gridColumn: '1 / -1' }}>
+          <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="bottom-row-grid">
             <FUNCard inView={inView} />
+            <BusinessOwnerCard inView={inView} />
           </div>
         </div>
       </div>
 
       <style>{`
+        @media (max-width: 900px) {
+          .bottom-row-grid { grid-template-columns: 1fr !important; }
+        }
         @media (max-width: 768px) {
           .planora-preview-grid { grid-template-columns: 1fr !important; }
           .fun-card-inner        { grid-template-columns: 1fr !important; }
+          .biz-card-inner        { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 640px) {
           section { padding-left: 24px !important; padding-right: 24px !important; }

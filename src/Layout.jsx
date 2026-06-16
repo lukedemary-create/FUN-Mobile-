@@ -92,6 +92,7 @@ const SECTIONS = [
       { label: "Net Worth Tracker",   icon: Target,        path: "/net-worth",           desc: "Assets, liabilities, and growth" },
       { label: "Estate Planning",      icon: LineChart,     path: "/FuturePlanning",      desc: "Wills, trusts, and estate strategy" },
       { label: "Retirement Planning", icon: Sunrise,       path: "/retirement-planning", desc: "Monte Carlo retirement projections" },
+      { label: "Business Planning",   icon: Briefcase,     path: "/business-planning",   desc: "Entity strategy, tax, and succession planning" },
       { label: "Life Insurance",      icon: HeartPulse,    path: "/life-insurance",      desc: "Coverage needs analysis" },
       { label: "Tax Planning",        icon: Receipt,       path: "/tax-planning",        desc: "Tax-efficiency strategies" },
       { label: "Social Security",     icon: ShieldCheck,   path: "/social-security",     desc: "Benefits and claiming strategy" },

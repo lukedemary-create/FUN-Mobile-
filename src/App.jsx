@@ -56,7 +56,8 @@ const InsiderTrading     = lazy(() => import('./pages/InsiderTrading'));
 const NetWorthTracker    = lazy(() => import('./pages/NetWorthTracker'));
 const TaxPlanning        = lazy(() => import('./pages/TaxPlanning'));
 const SocialSecurity        = lazy(() => import('./pages/SocialSecurity'));
-const RetirementPlanning    = lazy(() => import('./pages/RetirementPlanning'));
+const RetirementPlanning    = lazy(() => import('./pages/RetirementPlanning'))
+const BusinessPlanning      = lazy(() => import('./pages/BusinessPlanning'));
 const RealEstatePlanning    = lazy(() => import('./pages/RealEstatePlanning'));
 const FamilyPlanning        = lazy(() => import('./pages/FamilyPlanning'));
 const Hub                   = lazy(() => import('./pages/Hub'));
@@ -190,6 +191,7 @@ function AppRoutes() {
           <Route path="/tax-planning"       element={<TaxPlanning />} />
           <Route path="/social-security"       element={<SocialSecurity />} />
           <Route path="/retirement-planning"   element={<RetirementPlanning />} />
+          <Route path="/business-planning"    element={<BusinessPlanning />} />
           <Route path="/real-estate-planning" element={<RealEstatePlanning />} />
           <Route path="/family-planning"      element={<FamilyPlanning />} />
           <Route path="*"                    element={<PageNotFound />} />
