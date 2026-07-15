@@ -129,23 +129,21 @@ function FUNOrb() {
         zIndex: 200,
         width: ORB,
         height: ORB,
-        borderRadius: 16,
-        overflow: 'hidden',
+        borderRadius: '50%',
+        background: '#818cf8',
+        boxShadow: '0 4px 20px rgba(129,140,248,0.45), 0 2px 8px rgba(0,0,0,0.25)',
         transform: `translateX(${tx}px)`,
         transition: active ? 'none' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        boxShadow: '0 6px 20px rgba(28,21,16,0.20), 0 2px 6px rgba(28,21,16,0.10)',
         WebkitTapHighlightColor: 'transparent',
         touchAction: 'pan-x',
         userSelect: 'none',
         cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <img
-        src="/fun-logo.png"
-        alt="FUN"
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-        draggable={false}
-      />
+      <Sparkles size={20} color="#fff" strokeWidth={1.8} />
     </div>
   )
 }
