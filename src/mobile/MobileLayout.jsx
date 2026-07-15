@@ -406,45 +406,69 @@ const ORB  = 52
 const PEEK = 22
 
 function FUNOrb() {
-  const navigate            = useNavigate()
-  const [open,   setOpen]   = useState(false)
-  const [hidden, setHidden] = useState(false)
-  const [dragX,  setDragX]  = useState(0)
-  const [active, setActive] = useState(false)
-  const startX = useRef(null)
+  const [open,    setOpen]    = useState(false)
+  const [hidden,  setHidden]  = useState(false)
+  const [tx,      setTx]      = useState(0)
+  const [active,  setActive]  = useState(false)
 
-  const HIDE_X = ORB + 16 - PEEK  // 46
+  const startXRef  = useRef(null)
+  const hiddenRef  = useRef(false)   // mirrors hidden without stale closure
+  const currentDX  = useRef(0)       // live drag delta, no state lag
+  const didTouch   = useRef(false)   // prevent onClick double-fire after touch
 
-  const clampedDrag = hidden ? Math.min(0, dragX) : Math.max(0, dragX)
-  const tx = hidden ? HIDE_X + clampedDrag : clampedDrag
+  const HIDE_X = ORB + 16 - PEEK    // 46
+
+  function handleTouchStart(e) {
+    startXRef.current = e.touches[0].clientX
+    currentDX.current = 0
+    didTouch.current  = false
+    setActive(true)
+  }
+
+  function handleTouchMove(e) {
+    if (startXRef.current === null) return
+    const dx = e.touches[0].clientX - startXRef.current
+    currentDX.current = dx
+    const clamped = hiddenRef.current ? Math.min(0, dx) : Math.max(0, dx)
+    setTx(hiddenRef.current ? HIDE_X + clamped : clamped)
+  }
+
+  function handleTouchEnd(e) {
+    e.preventDefault()              // prevent ghost click on iOS
+    const dx = currentDX.current
+    setActive(false)
+    startXRef.current = null
+    currentDX.current = 0
+    didTouch.current  = true
+
+    if (!hiddenRef.current && dx > 48) {
+      hiddenRef.current = true
+      setHidden(true)
+      setTx(HIDE_X)
+    } else if (hiddenRef.current && dx < -48) {
+      hiddenRef.current = false
+      setHidden(false)
+      setTx(0)
+    } else {
+      setTx(hiddenRef.current ? HIDE_X : 0)
+      if (Math.abs(dx) < 10 && !hiddenRef.current) {
+        setOpen(true)
+      }
+    }
+  }
+
+  function handleClick() {
+    if (didTouch.current) { didTouch.current = false; return }
+    if (!hidden) setOpen(true)
+  }
 
   return (
     <>
       <div
-        onTouchStart={e => {
-          startX.current = e.touches[0].clientX
-          setActive(true)
-          setDragX(0)
-        }}
-        onTouchMove={e => {
-          if (startX.current === null) return
-          const dx = e.touches[0].clientX - startX.current
-          setDragX(hidden ? Math.min(0, dx) : Math.max(0, dx))
-        }}
-        onTouchEnd={() => {
-          const dx = dragX
-          setActive(false)
-          setDragX(0)
-          startX.current = null
-
-          if (!hidden && dx > 48) {
-            setHidden(true)
-          } else if (hidden && dx < -48) {
-            setHidden(false)
-          } else if (Math.abs(dx) < 8 && !hidden) {
-            setOpen(true)
-          }
-        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onClick={handleClick}
         style={{
           position: 'fixed',
           right: 16,
@@ -458,7 +482,7 @@ function FUNOrb() {
           transform: `translateX(${tx}px)`,
           transition: active ? 'none' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
           WebkitTapHighlightColor: 'transparent',
-          touchAction: 'pan-x',
+          touchAction: 'none',
           userSelect: 'none',
           cursor: 'pointer',
           display: 'flex',
