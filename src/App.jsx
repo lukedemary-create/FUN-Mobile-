@@ -1,218 +1,135 @@
-import { Toaster } from "@/components/ui/toaster"
-import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Outlet, Navigate } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import ErrorBoundary from '@/lib/ErrorBoundary';
-import Layout from './Layout';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Suspense, lazy, useState } from 'react'
+import MobileLayout from './mobile/MobileLayout'
+import { C } from './mobile/tokens'
+import { userKey } from './mobile/utils/auth'
 
-/* ─── Route guards ───────────────────────────────────────────────── */
-function RequireAuth({ children }) {
-  const { isAuthenticated, isLoadingAuth } = useAuth();
-  if (isLoadingAuth) return null;
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
-}
+const LoginScreen = lazy(() => import('./mobile/screens/auth/LoginScreen'))
 
-function RedirectIfAuth({ children }) {
-  const { isAuthenticated, isLoadingAuth } = useAuth();
-  if (isLoadingAuth) return null;
-  return isAuthenticated ? <Navigate to="/" replace /> : children;
-}
-
-/* ─── Existing pages ─────────────────────────────────────────────── */
-const PageNotFound       = lazy(() => import('./lib/PageNotFound'));
-const Dashboard          = lazy(() => import('./pages/Dashboard'));
-const AIAdvisor          = lazy(() => import('./pages/AIAdvisor'));
-const AdvisorMarketplace = lazy(() => import('./pages/AdvisorMarketplace'));
-const BudgetPlanner      = lazy(() => import('./pages/BudgetPlanner'));
-const Calculators        = lazy(() => import('./pages/Calculators'));
-const FuturePlanning     = lazy(() => import('./pages/FuturePlanning'));
-const MarketHistory      = lazy(() => import('./pages/MarketHistory'));
-const PoliticsEconomy    = lazy(() => import('./pages/PoliticsEconomy'));
-const RiskAnalysis       = lazy(() => import('./pages/RiskAnalysis'));
-const StockLookup        = lazy(() => import('./pages/StockLookup'));
-const TickerLookup       = lazy(() => import('./pages/TickerLookup'));
-const Settings           = lazy(() => import('./pages/Settings'));
-
-/* ─── New pages ──────────────────────────────────────────────────── */
-const Terminal           = lazy(() => import('./pages/Terminal'));
-const Sectors            = lazy(() => import('./pages/Sectors'));
-const TopPerformers      = lazy(() => import('./pages/TopPerformers'));
-const EconomicCalendar   = lazy(() => import('./pages/EconomicCalendar'));
-const Energy             = lazy(() => import('./pages/Energy'));
-const Labor              = lazy(() => import('./pages/Labor'));
-const Watchlist          = lazy(() => import('./pages/Watchlist'));
-const MarketBreadth      = lazy(() => import('./pages/MarketBreadth'));
-const LifeInsurance      = lazy(() => import('./pages/LifeInsurance'));
-const WealthCounsel      = lazy(() => import('./pages/WealthCounsel'));
-const Landing            = lazy(() => import('./pages/Landing'));
-const Consumer           = lazy(() => import('./pages/Consumer'));
-const PlonoraAI          = lazy(() => import('./pages/PlonoraAI'));
-const BrokerageGuide     = lazy(() => import('./pages/BrokerageGuide'));
-const MarketNews         = lazy(() => import('./pages/MarketNews'));
-const RealEstate         = lazy(() => import('./pages/RealEstate'));
-const InsiderTrading     = lazy(() => import('./pages/InsiderTrading'));
-const NetWorthTracker    = lazy(() => import('./pages/NetWorthTracker'));
-const TaxPlanning        = lazy(() => import('./pages/TaxPlanning'));
-const SocialSecurity        = lazy(() => import('./pages/SocialSecurity'));
-const RetirementPlanning    = lazy(() => import('./pages/RetirementPlanning'))
-const BusinessPlanning      = lazy(() => import('./pages/BusinessPlanning'));
-const RealEstatePlanning    = lazy(() => import('./pages/RealEstatePlanning'));
-const FamilyPlanning        = lazy(() => import('./pages/FamilyPlanning'));
-const Hub                   = lazy(() => import('./pages/Hub'));
-const TerminalHub           = lazy(() => import('./pages/TerminalHub'));
-const PlanningHub           = lazy(() => import('./pages/PlanningHub'));
-const MarketsHub            = lazy(() => import('./pages/MarketsHub'));
-const WealthHub             = lazy(() => import('./pages/WealthHub'));
-const MacroHub              = lazy(() => import('./pages/MacroHub'));
-const EducationHub          = lazy(() => import('./pages/EducationHub'));
-const WealthCounselHub      = lazy(() => import('./pages/WealthCounselHub'));
-const FeaturedInsights      = lazy(() => import('./pages/FeaturedInsights'));
-const InsightArticle        = lazy(() => import('./pages/InsightArticle'));
-const Login              = lazy(() => import('./pages/Login'));
-const Welcome            = lazy(() => import('./pages/Welcome'));
-const Privacy            = lazy(() => import('./pages/Privacy'));
-const Terms              = lazy(() => import('./pages/Terms'));
-
-/* ─── FUN app ────────────────────────────────────────────────────── */
-const FunApp             = lazy(() => import('./fun/FunApp'));
-
-
-/* ─── Loading fallback ───────────────────────────────────────────── */
 const Loader = () => (
-  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "40vh" }}>
-    <div style={{ width: 32, height: 32, border: "3px solid rgba(201,169,110,0.15)", borderTopColor: "#c9a84c", borderRadius: "50%", animation: "tSpin 0.7s linear infinite" }} />
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', background: C.bg }}>
+    <div style={{ width: 28, height: 28, border: `2px solid ${C.b1}`, borderTopColor: C.indigo, borderRadius: '50%', animation: 'tSpin 0.7s linear infinite' }} />
     <style>{`@keyframes tSpin { to { transform: rotate(360deg); } }`}</style>
   </div>
-);
+)
 
+// ── Home + You + AI ───────────────────────────────────────────────────
+const FunHome            = lazy(() => import('./mobile/screens/fun/FunHome'))
+const FunYou             = lazy(() => import('./mobile/screens/fun/FunYou'))
+const MHealthAssessment  = lazy(() => import('./mobile/screens/fun/MHealthAssessment'))
+const MPlonoraAI         = lazy(() => import('./mobile/screens/more/MPlonoraAI'))
 
-/* ─── Routes ─────────────────────────────────────────────────────── */
-function AppRoutes() {
-  const { isLoadingAuth, isLoadingPublicSettings } = useAuth();
+// ── Wealth Counsel ────────────────────────────────────────────────────
+const MWealthCounsel     = lazy(() => import('./mobile/screens/more/MWealthCounsel'))
+const MMatchMe           = lazy(() => import('./mobile/screens/more/MMatchMe'))
+const MPrepHub           = lazy(() => import('./mobile/screens/more/MPrepHub'))
+const MAdvisorProfile    = lazy(() => import('./mobile/screens/more/MAdvisorProfile'))
 
-  if (isLoadingAuth || isLoadingPublicSettings) {
+// ── Learn hub + education modules ─────────────────────────────────────
+const FunLearn           = lazy(() => import('./mobile/screens/fun/FunLearn'))
+const MBudgeting         = lazy(() => import('./mobile/screens/learn/MBudgeting'))
+const MDebtCredit        = lazy(() => import('./mobile/screens/learn/MDebtCredit'))
+const MInvesting         = lazy(() => import('./mobile/screens/learn/MInvesting'))
+const MPortfolio         = lazy(() => import('./mobile/screens/learn/MPortfolio'))
+const MInsurance         = lazy(() => import('./mobile/screens/learn/MInsurance'))
+const MEstate            = lazy(() => import('./mobile/screens/learn/MEstate'))
+const MRetirement        = lazy(() => import('./mobile/screens/learn/MRetirement'))
+const MMajorPurchases    = lazy(() => import('./mobile/screens/learn/MMajorPurchases'))
+const MBuyRentLease      = lazy(() => import('./mobile/screens/learn/MBuyRentLease'))
+const MLifeEvents        = lazy(() => import('./mobile/screens/learn/MLifeEvents'))
+const MTaxFun            = lazy(() => import('./mobile/screens/learn/MTaxFun'))
+const MResources         = lazy(() => import('./mobile/screens/learn/MResources'))
+
+// ── Plan hub + planning tools ──────────────────────────────────────────
+const FunPlan            = lazy(() => import('./mobile/screens/fun/FunPlan'))
+const MBudgetPlanner     = lazy(() => import('./mobile/screens/planning/MBudgetPlanner'))
+const MNetWorth          = lazy(() => import('./mobile/screens/planning/MNetWorth'))
+const MRetirementPlanning= lazy(() => import('./mobile/screens/planning/MRetirementPlanning'))
+const MTaxPlanning       = lazy(() => import('./mobile/screens/planning/MTaxPlanning'))
+const MLifeInsurance     = lazy(() => import('./mobile/screens/planning/MLifeInsurance'))
+const MSocialSecurity    = lazy(() => import('./mobile/screens/planning/MSocialSecurity'))
+const MRealEstatePlanning= lazy(() => import('./mobile/screens/planning/MRealEstatePlanning'))
+const MFamilyPlanning    = lazy(() => import('./mobile/screens/planning/MFamilyPlanning'))
+const MEstatePlanning    = lazy(() => import('./mobile/screens/planning/MEstatePlanning'))
+const MCalculators       = lazy(() => import('./mobile/screens/planning/MCalculators'))
+
+/* ── HomeGuard re-evaluates localStorage on every render ─── */
+function HomeGuard() {
+  return !localStorage.getItem(userKey('fun-onboarding-v1'))
+    ? <Navigate to="/assessment" replace />
+    : <FunHome />
+}
+
+export default function App() {
+  const [hasAuth, setHasAuth] = useState(() => !!localStorage.getItem('planora_auth_v1'))
+
+  if (!hasAuth) {
     return (
-      <div style={{ background: "var(--bg)", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-          {/* Gold P logo mark */}
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              background: "var(--gold, #c9a84c)",
-              borderRadius: "6px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span style={{ fontSize: "1.125rem", fontWeight: 900, color: "#07080a", lineHeight: 1 }}>P</span>
-          </div>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              border: "2px solid rgba(201,169,110,0.15)",
-              borderTopColor: "#c9a84c",
-              borderRadius: "50%",
-              animation: "tSpin 0.7s linear infinite",
-            }}
-          />
-          <style>{`@keyframes tSpin { to { transform: rotate(360deg); } }`}</style>
-        </div>
-      </div>
-    );
+      <Suspense fallback={<Loader />}>
+        <LoginScreen onComplete={() => setHasAuth(true)} />
+      </Suspense>
+    )
   }
 
   return (
-    <Suspense fallback={<Loader />}>
-      <Routes>
-        {/* ── Auth ── */}
-        <Route path="/login" element={<RedirectIfAuth><Login /></RedirectIfAuth>} />
-        <Route path="/welcome" element={<RequireAuth><Welcome /></RequireAuth>} />
+    <BrowserRouter>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route element={<MobileLayout />}>
 
-        {/* ── Landing (requires auth) ── */}
-        <Route path="/" element={<RequireAuth><Landing /></RequireAuth>} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
+            {/* ── Home — guard re-evaluates on every navigation */}
+            <Route path="/" element={<HomeGuard />} />
 
-        {/* ── FUN (own full-page layout) ── */}
-        <Route path="/fun/*" element={<FunApp />} />
+            {/* ── Learn */}
+            <Route path="/learn"                  element={<FunLearn />} />
+            <Route path="/learn/budgeting"        element={<MBudgeting />} />
+            <Route path="/learn/debt"             element={<MDebtCredit />} />
+            <Route path="/learn/investing"        element={<MInvesting />} />
+            <Route path="/learn/portfolio"        element={<MPortfolio />} />
+            <Route path="/learn/insurance"        element={<MInsurance />} />
+            <Route path="/learn/estate"           element={<MEstate />} />
+            <Route path="/learn/retirement"       element={<MRetirement />} />
+            <Route path="/learn/purchases"        element={<MMajorPurchases />} />
+            <Route path="/learn/buy-rent-lease"   element={<MBuyRentLease />} />
+            <Route path="/learn/life-events"      element={<MLifeEvents />} />
+            <Route path="/learn/tax"              element={<MTaxFun />} />
+            <Route path="/learn/resources"        element={<MResources />} />
 
+            {/* ── Plan */}
+            <Route path="/plan"                   element={<FunPlan />} />
+            <Route path="/plan/budget"            element={<MBudgetPlanner />} />
+            <Route path="/plan/networth"          element={<MNetWorth />} />
+            <Route path="/plan/retirement"        element={<MRetirementPlanning />} />
+            <Route path="/plan/tax"               element={<MTaxPlanning />} />
+            <Route path="/plan/insurance"         element={<MLifeInsurance />} />
+            <Route path="/plan/social-security"   element={<MSocialSecurity />} />
+            <Route path="/plan/real-estate"       element={<MRealEstatePlanning />} />
+            <Route path="/plan/family"            element={<MFamilyPlanning />} />
+            <Route path="/plan/estate"            element={<MEstatePlanning />} />
+            <Route path="/plan/calculators"       element={<MCalculators />} />
+            <Route path="/plan/buy-rent-lease"    element={<MBuyRentLease />} />
+            <Route path="/plan/purchases"         element={<MMajorPurchases />} />
 
-        {/* ── Planora AI (fullscreen — own layout) ── */}
-        <Route path="/planora-ai" element={<PlonoraAI />} />
+            {/* ── AI */}
+            <Route path="/ai" element={<MPlonoraAI />} />
 
-        {/* ── Hub pages (standalone, no sidebar) ── */}
-        <Route path="/terminal-hub"        element={<RequireAuth><TerminalHub /></RequireAuth>} />
-        <Route path="/markets"             element={<RequireAuth><MarketsHub /></RequireAuth>} />
-        <Route path="/wealth"              element={<RequireAuth><WealthHub /></RequireAuth>} />
-        <Route path="/macro"               element={<RequireAuth><MacroHub /></RequireAuth>} />
-        <Route path="/education-hub"       element={<RequireAuth><EducationHub /></RequireAuth>} />
-        <Route path="/wealth-counsel"      element={<RequireAuth><WealthCounselHub /></RequireAuth>} />
-        <Route path="/insights"            element={<RequireAuth><FeaturedInsights /></RequireAuth>} />
-        <Route path="/insights/:slug"      element={<RequireAuth><InsightArticle /></RequireAuth>} />
-        <Route path="/WealthCounsel"       element={<RequireAuth><WealthCounsel /></RequireAuth>} />
+            {/* ── Assessment */}
+            <Route path="/assessment" element={<MHealthAssessment />} />
 
-        {/* ── Planora Terminal (Layout sidebar) ── */}
-        <Route element={<RequireAuth><Layout><Outlet /></Layout></RequireAuth>}>
-          <Route path="/hub"                 element={<Hub />} />
-          <Route path="/planning"            element={<PlanningHub />} />
-          <Route path="/dashboard"           element={<Dashboard />} />
-          <Route path="/Dashboard"           element={<Dashboard />} />
-          <Route path="/AIAdvisor"           element={<AIAdvisor />} />
-          <Route path="/AdvisorMarketplace"  element={<AdvisorMarketplace />} />
-          <Route path="/BudgetPlanner"       element={<BudgetPlanner />} />
-          <Route path="/Calculators"         element={<Calculators />} />
-          <Route path="/FuturePlanning"      element={<FuturePlanning />} />
-          <Route path="/MarketHistory"       element={<MarketHistory />} />
-          <Route path="/PoliticsEconomy"     element={<PoliticsEconomy />} />
-          <Route path="/RiskAnalysis"        element={<RiskAnalysis />} />
-          <Route path="/StockLookup"         element={<StockLookup />} />
-          <Route path="/TickerLookup"        element={<TickerLookup />} />
-          <Route path="/Settings"            element={<Settings />} />
-          <Route path="/terminal"            element={<Terminal />} />
-          <Route path="/sectors"             element={<Sectors />} />
-          <Route path="/top-performers"      element={<TopPerformers />} />
-          <Route path="/economic-calendar"   element={<EconomicCalendar />} />
-          <Route path="/energy"              element={<Energy />} />
-          <Route path="/labor"               element={<Labor />} />
-          <Route path="/watchlist"           element={<Watchlist />} />
-          <Route path="/market-breadth"      element={<MarketBreadth />} />
-          <Route path="/life-insurance"      element={<LifeInsurance />} />
-          <Route path="/consumer"            element={<Consumer />} />
-          <Route path="/brokerage-guide"     element={<BrokerageGuide />} />
-          <Route path="/market-news"        element={<MarketNews />} />
-          <Route path="/real-estate"        element={<RealEstate />} />
-          <Route path="/insider-trading"    element={<InsiderTrading />} />
-          <Route path="/net-worth"          element={<NetWorthTracker />} />
-          <Route path="/tax-planning"       element={<TaxPlanning />} />
-          <Route path="/social-security"       element={<SocialSecurity />} />
-          <Route path="/retirement-planning"   element={<RetirementPlanning />} />
-          <Route path="/business-planning"    element={<BusinessPlanning />} />
-          <Route path="/real-estate-planning" element={<RealEstatePlanning />} />
-          <Route path="/family-planning"      element={<FamilyPlanning />} />
-          <Route path="*"                    element={<PageNotFound />} />
-        </Route>
-      </Routes>
-    </Suspense>
-  );
-}
+            {/* ── Wealth Counsel */}
+            <Route path="/wealth-counsel"              element={<MWealthCounsel />} />
+            <Route path="/wealth-counsel/match"        element={<MMatchMe />} />
+            <Route path="/wealth-counsel/prep"         element={<MPrepHub />} />
+            <Route path="/wealth-counsel/advisor/:id"  element={<MAdvisorProfile />} />
 
-/* ─── App ────────────────────────────────────────────────────────── */
-export default function App() {
-  return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <Router>
-            <AppRoutes />
-          </Router>
-          <Toaster />
-        </QueryClientProvider>
-      </AuthProvider>
-    </ErrorBoundary>
-  );
+            {/* ── You */}
+            <Route path="/you" element={<FunYou />} />
+
+            {/* Catch-all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  )
 }
