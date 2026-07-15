@@ -136,10 +136,7 @@ export default function FunLearn() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '52px 20px 16px',
         borderBottom: `1px solid ${C.b1}`,
-        background: 'rgba(250,246,237,0.85)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        position: 'sticky', top: 0, zIndex: 20,
+        background: C.bg,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/fun-logo.png" alt="FUN logo" style={{ width: 44, height: 44, borderRadius: 12, objectFit: 'cover', objectPosition: 'center' }} />
