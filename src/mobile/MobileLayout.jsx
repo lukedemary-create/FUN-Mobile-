@@ -1,19 +1,21 @@
+import { useState, useRef } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { Home, BookOpen, Target, User, Sparkles } from 'lucide-react'
-import { C, UI, DISPLAY } from './tokens'
+import { C, UI } from './tokens'
 
-const PILL_H = 64
+const PILL_H      = 64
 const PILL_BOTTOM = 20
 const CONTENT_PAD = PILL_H + PILL_BOTTOM + 16
 
 const TABS = [
   { path: '/',      label: 'Home',  Icon: Home,     match: p => p === '/' },
   { path: '/learn', label: 'Learn', Icon: BookOpen,  match: p => p === '/learn' || p.startsWith('/learn/') },
-  { path: '/ai',    label: 'AI',    Icon: Sparkles,  match: p => p === '/ai',     accent: C.indigo },
+  { path: '/ai',    label: 'AI',    Icon: Sparkles,  match: p => p === '/ai',    accent: C.indigo },
   { path: '/plan',  label: 'Plan',  Icon: Target,    match: p => p === '/plan'  || p.startsWith('/plan/')  },
   { path: '/you',   label: 'You',   Icon: User,      match: p => p === '/you'   || p.startsWith('/you/')   },
 ]
 
+/* ── Bottom pill nav ─────────────────────────────────────── */
 function FloatingNav() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -40,11 +42,9 @@ function FloatingNav() {
     }}>
       {TABS.map(({ path, label, Icon, accent }) => {
         const isActive = activeTab === path
-        const bg = isActive ? (accent ?? C.tangerine) : 'transparent'
+        const bg     = isActive ? (accent ?? C.tangerine) : 'transparent'
         const shadow = isActive
-          ? accent
-            ? '0 4px 12px rgba(129,140,248,0.40)'
-            : '0 4px 12px rgba(232,120,60,0.35)'
+          ? accent ? '0 4px 12px rgba(129,140,248,0.40)' : '0 4px 12px rgba(232,120,60,0.35)'
           : 'none'
         return (
           <button
@@ -65,20 +65,9 @@ function FloatingNav() {
               boxShadow: shadow,
             }}
           >
-            <Icon
-              size={18}
-              color={isActive ? '#fff' : 'rgba(255,255,255,0.45)'}
-              strokeWidth={isActive ? 2.3 : 1.8}
-            />
+            <Icon size={18} color={isActive ? '#fff' : 'rgba(255,255,255,0.45)'} strokeWidth={isActive ? 2.3 : 1.8} />
             {isActive && (
-              <span style={{
-                fontFamily: UI,
-                fontSize: 13,
-                fontWeight: 700,
-                color: '#fff',
-                letterSpacing: '0.01em',
-                whiteSpace: 'nowrap',
-              }}>
+              <span style={{ fontFamily: UI, fontSize: 13, fontWeight: 700, color: '#fff', letterSpacing: '0.01em', whiteSpace: 'nowrap' }}>
                 {label}
               </span>
             )}
@@ -89,6 +78,79 @@ function FloatingNav() {
   )
 }
 
+/* ── FUN floating orb ────────────────────────────────────── */
+const ORB   = 52   // size in px
+const PEEK  = 22   // px visible when pushed off screen
+
+function FUNOrb() {
+  const navigate        = useNavigate()
+  const [hidden, setHidden]   = useState(false)
+  const [dragX,  setDragX]    = useState(0)
+  const [active, setActive]   = useState(false)
+  const startX = useRef(null)
+
+  // translateX when fully hidden (only PEEK px shows from right edge)
+  const HIDE_X = ORB + 16 - PEEK  // 52 + 16 - 22 = 46
+
+  // clamp drag direction based on current state
+  const clampedDrag = hidden ? Math.min(0, dragX) : Math.max(0, dragX)
+  const tx = hidden ? HIDE_X + clampedDrag : clampedDrag
+
+  return (
+    <div
+      onTouchStart={e => {
+        startX.current = e.touches[0].clientX
+        setActive(true)
+        setDragX(0)
+      }}
+      onTouchMove={e => {
+        if (startX.current === null) return
+        const dx = e.touches[0].clientX - startX.current
+        setDragX(hidden ? Math.min(0, dx) : Math.max(0, dx))
+      }}
+      onTouchEnd={() => {
+        const dx = dragX
+        setActive(false)
+        setDragX(0)
+        startX.current = null
+
+        if (!hidden && dx > 48) {
+          setHidden(true)
+        } else if (hidden && dx < -48) {
+          setHidden(false)
+        } else if (Math.abs(dx) < 8 && !hidden) {
+          navigate('/')
+        }
+      }}
+      style={{
+        position: 'fixed',
+        right: 16,
+        bottom: 102,
+        zIndex: 200,
+        width: ORB,
+        height: ORB,
+        borderRadius: 16,
+        overflow: 'hidden',
+        transform: `translateX(${tx}px)`,
+        transition: active ? 'none' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        boxShadow: '0 6px 20px rgba(28,21,16,0.20), 0 2px 6px rgba(28,21,16,0.10)',
+        WebkitTapHighlightColor: 'transparent',
+        touchAction: 'pan-x',
+        userSelect: 'none',
+        cursor: 'pointer',
+      }}
+    >
+      <img
+        src="/fun-logo.png"
+        alt="FUN"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        draggable={false}
+      />
+    </div>
+  )
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
 export default function MobileLayout() {
   return (
     <div style={{ background: C.bg, minHeight: '100dvh' }}>
@@ -96,6 +158,7 @@ export default function MobileLayout() {
         <Outlet />
       </main>
       <FloatingNav />
+      <FUNOrb />
     </div>
   )
 }
