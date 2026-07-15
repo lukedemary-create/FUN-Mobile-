@@ -16,7 +16,7 @@ const TOOLS = [
   { path: '/plan/family',          Icon: Baby,        label: 'Family Planning',     desc: 'Money conversations, made easier.',      tint: C.sageBg     },
 ]
 
-const CHIPS = ['All', 'Recommended', 'Short (5m)', 'Deep dive']
+const CHIPS = ['All']
 
 function ChipRow({ active, setActive }) {
   return (
