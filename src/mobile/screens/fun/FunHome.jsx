@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { C, UI, DISPLAY, MONO } from '../../tokens'
+import { userKey } from '../../utils/auth'
 import {
   Flame, Sparkles, ArrowUpRight, CreditCard, Umbrella, ChevronRight,
   Users, X, TrendingUp, Shield, PieChart, Clock, FileText,
@@ -581,6 +582,31 @@ const FOCUS_DATA = {
   },
 }
 
+/* ── Streak logic ────────────────────────────────────────────────── */
+function computeAndSaveStreak() {
+  const key = userKey('fun_streak_v1')
+  const todayStr     = new Date().toISOString().split('T')[0]
+  const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+  let stored = null
+  try { stored = JSON.parse(localStorage.getItem(key)) } catch {}
+
+  let next
+  if (!stored?.lastDate) {
+    next = { count: 1, lastDate: todayStr }
+  } else if (stored.lastDate === todayStr) {
+    next = stored                                              // already stamped today
+  } else if (stored.lastDate === yesterdayStr) {
+    next = { count: (stored.count || 0) + 1, lastDate: todayStr }  // consecutive day
+  } else {
+    next = { count: 1, lastDate: todayStr }                  // streak broken, restart
+  }
+
+  if (next !== stored) {
+    try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
+  }
+  return next.count
+}
+
 /* ── Quote rotation ──────────────────────────────────────────────── */
 const DAILY_QUOTES = [
   { q: "The stock market is a device for transferring money from the impatient to the patient.", a: "Warren Buffett" },
@@ -762,6 +788,7 @@ export default function FunHome() {
   const [focusTopic, setFocusTopic] = useState(null)
   const weekPair    = getWeekPair()
   const daysLeft    = daysUntilMonday()
+  const [streak]    = useState(() => computeAndSaveStreak())
 
   return (
     <div style={{ background:C.bg, minHeight:'100dvh', paddingBottom:8 }}>
@@ -804,8 +831,8 @@ export default function FunHome() {
               <Flame size={15} color={C.tangerine} />
               <span style={{ fontFamily:UI, fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:C.t2 }}>Streak</span>
             </div>
-            <div style={{ fontFamily:DISPLAY, fontSize:28, fontWeight:600, color:C.t1, marginBottom:4 }}>12 days</div>
-            <div style={{ fontFamily:UI, fontSize:12, color:C.t2, lineHeight:1.4 }}>Keep it warm — 3 mins today.</div>
+            <div style={{ fontFamily:DISPLAY, fontSize:28, fontWeight:600, color:C.t1, marginBottom:4 }}>{streak} {streak === 1 ? 'day' : 'days'}</div>
+            <div style={{ fontFamily:UI, fontSize:12, color:C.t2, lineHeight:1.4 }}>{streak === 1 ? 'Day 1 — keep it going!' : 'Keep it warm — 3 mins today.'}</div>
           </div>
           <button onClick={() => navigate('/assessment')} style={{ background:C.tangerine, borderRadius:24, padding:'16px', display:'flex', flexDirection:'column', justifyContent:'space-between', textAlign:'left', cursor:'pointer', border:'none', minHeight:0, boxShadow:'0 8px 24px rgba(232,120,60,0.30)' }}>
             <Sparkles size={18} color="#fff" />
