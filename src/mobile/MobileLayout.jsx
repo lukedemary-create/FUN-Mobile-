@@ -22,7 +22,9 @@ const ROUTES = [
   // ── Learn: Debt & Credit
   { keywords: ['debt','credit score','avalanche','snowball','credit card','pay off debt','utilization','fico','apr','interest rate debt','balance transfer'], path: '/learn/debt', label: 'Debt & Credit' },
   // ── Learn: Investing
-  { keywords: ['invest','investing','index fund','etf','s&p','sp500','rsu','restricted stock','stock compensation','espp','options','vesting','equity compensation','brokerage account','vanguard','fidelity','schwab','dollar cost','dca','compound interest','stock market','shares','dividend','mutual fund'], path: '/learn/investing', label: 'Investing & Accounts' },
+  { keywords: ['invest','investing','index fund','etf','s&p','sp500','brokerage account','vanguard','fidelity','schwab','dollar cost','dca','compound interest','stock market','shares','dividend','mutual fund'], path: '/learn/investing', label: 'Investing & Accounts' },
+  // ── Learn: Tax → Equity Compensation (RSU / ESPP / ISO)
+  { keywords: ['rsu','restricted stock','rsu tax','espp','employee stock purchase','iso','nso','incentive stock option','non qualified','equity compensation','stock vesting','vesting','stock options','409a','83b','sell to cover','supplemental withholding'], path: '/learn/tax', label: 'Equity Compensation (RSUs / ESPP)', state: { mainTab: 'learn', learnSub: 'equity' } },
   // ── Learn: Portfolio
   { keywords: ['portfolio','allocation','rebalanc','asset class','bonds','equities','60/40','diversif','risk tolerance','growth portfolio','conservative portfolio'], path: '/learn/portfolio', label: 'Portfolio Structure' },
   // ── Learn: Insurance
@@ -131,7 +133,7 @@ function FUNNavigator({ onClose }) {
       const match = findRoute(text)
       if (match) {
         setMessages(prev => [...prev, { role: 'assistant', text: `Taking you to ${match.label}…`, nav: match }])
-        setTimeout(() => { navigate(match.path); onClose() }, 800)
+        setTimeout(() => { navigate(match.path, { state: match.state || {} }); onClose() }, 800)
       } else {
         setMessages(prev => [...prev, {
           role: 'assistant',

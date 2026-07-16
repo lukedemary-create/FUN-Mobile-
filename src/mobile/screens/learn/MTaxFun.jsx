@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
 import {
   CheckCircle2, AlertCircle, Info, ChevronDown, ChevronUp,
   TrendingUp, Shield, Zap, DollarSign, ArrowRight, ExternalLink,
@@ -901,8 +902,9 @@ const CALC_TABS  = [['taxcalc','Tax Calculator'],['rothvtrad','Roth vs Trad']]
 const MAIN_TABS  = [['learn','Learn'],['calc','Calculate'],['resources','Resources']]
 
 export default function MTaxFun() {
-  const [mainTab, setMainTab] = useState('learn')
-  const [learnSub, setLearnSub] = useState('brackets')
+  const { state: navState } = useLocation()
+  const [mainTab, setMainTab] = useState(navState?.mainTab   || 'learn')
+  const [learnSub, setLearnSub] = useState(navState?.learnSub || 'brackets')
   const [calcSub, setCalcSub]   = useState('taxcalc')
 
   return (
