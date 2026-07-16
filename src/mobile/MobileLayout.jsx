@@ -101,7 +101,7 @@ const SUGGESTIONS = [
   'Tax strategies',
 ]
 
-/* ── FUN Navigator bottom sheet ──────────────────────────────── */
+/* ── FUN Navigator floating panel ────────────────────────────── */
 function FUNNavigator({ onClose }) {
   const navigate   = useNavigate()
   const [input,    setInput]    = useState('')
@@ -135,7 +135,7 @@ function FUNNavigator({ onClose }) {
       } else {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          text: "I couldn't find an exact match. Try something like \"retirement\", \"RSU\", \"tax planning\", or \"net worth\".",
+          text: "I couldn't find an exact match. Try \"retirement\", \"RSU\", \"tax planning\", or \"net worth\".",
         }])
       }
       setLoading(false)
@@ -148,91 +148,70 @@ function FUNNavigator({ onClose }) {
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        onClick={onClose}
-        style={{ position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(28,21,16,0.35)' }}
-      />
+      {/* Transparent hit area to close on tap outside */}
+      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 400 }} />
 
-      {/* Sheet */}
+      {/* Floating card — dark warm palette matching website */}
       <div style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 401,
-        background: C.surf,
-        borderRadius: '24px 24px 0 0',
-        borderTop: `1px solid ${C.b1}`,
-        borderLeft: `1px solid ${C.b1}`,
-        borderRight: `1px solid ${C.b1}`,
-        maxHeight: '78vh',
+        position: 'fixed',
+        bottom: 168,
+        right: 16,
+        left: 16,
+        maxHeight: 440,
+        background: '#231c16',
+        border: '1px solid rgba(129,140,248,0.22)',
+        borderRadius: 18,
+        boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(129,140,248,0.08)',
         display: 'flex', flexDirection: 'column',
-        boxShadow: '0 -8px 40px rgba(28,21,16,0.14)',
+        overflow: 'hidden',
+        zIndex: 401,
         fontFamily: UI,
       }}>
-        {/* Pull handle */}
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 6px' }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: C.b2 }} />
-        </div>
-
         {/* Header */}
         <div style={{
+          padding: '14px 18px',
+          borderBottom: '1px solid #2a2018',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '4px 20px 14px',
-          borderBottom: `1px solid ${C.b1}`,
+          background: '#2d2419',
           flexShrink: 0,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 30, height: 30, borderRadius: '50%',
-              background: C.indigo,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#818cf8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Sparkles size={13} color="#fff" strokeWidth={1.8} />
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: C.t1, lineHeight: 1.2 }}>FUN Navigator</div>
-              <div style={{ fontSize: 10, color: C.t3, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Ask me anything</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#f0e8d8', lineHeight: 1.2 }}>FUN Navigator</div>
+              <div style={{ fontSize: 10, color: '#6b5540', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Ask me anything</div>
             </div>
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 6, color: C.t3, display: 'flex', alignItems: 'center', borderRadius: 8, WebkitTapHighlightColor: 'transparent' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b5540', padding: 4, display: 'flex', alignItems: 'center', borderRadius: 6, WebkitTapHighlightColor: 'transparent' }}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Messages */}
         <div style={{
           flex: 1, overflowY: 'auto',
-          padding: '14px 16px 8px',
+          padding: '14px 14px 8px',
           display: 'flex', flexDirection: 'column', gap: 10,
           scrollbarWidth: 'none',
         }}>
           {messages.map((msg, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
               {msg.role === 'assistant' ? (
-                <div style={{
-                  background: C.bg,
-                  border: `1px solid ${C.b1}`,
-                  borderRadius: '14px 14px 14px 4px',
-                  padding: '10px 14px',
-                  maxWidth: '86%',
-                  fontSize: 13.5, color: C.t2, lineHeight: 1.6,
-                }}>
+                <div style={{ background: '#2d2419', border: '1px solid #2a2018', borderRadius: '12px 12px 12px 3px', padding: '9px 13px', maxWidth: '84%', fontSize: 13, color: '#a89070', lineHeight: 1.6 }}>
                   {msg.nav ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                      <ArrowUpRight size={13} color={C.indigo} />
-                      <span>Taking you to <strong style={{ color: C.indigo }}>{msg.nav.label}</strong>…</span>
+                      <ArrowUpRight size={13} color="#818cf8" />
+                      <span>Taking you to <strong style={{ color: '#818cf8' }}>{msg.nav.label}</strong>…</span>
                     </div>
                   ) : msg.text}
                 </div>
               ) : (
-                <div style={{
-                  background: C.indigo,
-                  borderRadius: '14px 14px 4px 14px',
-                  padding: '10px 14px',
-                  maxWidth: '86%',
-                  fontSize: 13.5, color: '#fff', fontWeight: 600, lineHeight: 1.6,
-                }}>
+                <div style={{ background: '#818cf8', borderRadius: '12px 12px 3px 12px', padding: '9px 13px', maxWidth: '84%', fontSize: 13, color: '#fff', fontWeight: 600, lineHeight: 1.6 }}>
                   {msg.text}
                 </div>
               )}
@@ -241,41 +220,23 @@ function FUNNavigator({ onClose }) {
 
           {loading && (
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <div style={{
-                background: C.bg, border: `1px solid ${C.b1}`,
-                borderRadius: '14px 14px 14px 4px',
-                padding: '11px 15px', display: 'flex', gap: 5, alignItems: 'center',
-              }}>
+              <div style={{ background: '#2d2419', border: '1px solid #2a2018', borderRadius: '12px 12px 12px 3px', padding: '10px 14px', display: 'flex', gap: 5, alignItems: 'center' }}>
                 {[0, 1, 2].map(j => (
-                  <div key={j} style={{
-                    width: 5, height: 5, borderRadius: '50%', background: C.t3,
-                    animation: `funDot 1.2s ease-in-out ${j * 0.2}s infinite`,
-                  }} />
+                  <div key={j} style={{ width: 5, height: 5, borderRadius: '50%', background: '#6b5540', animation: `funDot 1.2s ease-in-out ${j * 0.2}s infinite` }} />
                 ))}
               </div>
             </div>
           )}
 
-          {/* Suggestions — only on first message */}
           {messages.length === 1 && (
             <div style={{ marginTop: 4 }}>
-              <div style={{ fontSize: 10, color: C.t3, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
-                Try asking
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+              <div style={{ fontSize: 10, color: '#6b5540', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 7 }}>Try asking</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {SUGGESTIONS.map(s => (
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    style={{
-                      background: 'rgba(129,140,248,0.08)',
-                      border: '1px solid rgba(129,140,248,0.22)',
-                      borderRadius: 99,
-                      padding: '6px 13px',
-                      fontSize: 12, color: C.indigo,
-                      cursor: 'pointer', fontFamily: UI, fontWeight: 600,
-                      WebkitTapHighlightColor: 'transparent',
-                    }}
+                    style={{ background: 'rgba(129,140,248,0.10)', border: '1px solid rgba(129,140,248,0.22)', borderRadius: 99, padding: '5px 11px', fontSize: 11, color: '#818cf8', cursor: 'pointer', fontFamily: UI, fontWeight: 500, WebkitTapHighlightColor: 'transparent' }}
                   >
                     {s}
                   </button>
@@ -287,43 +248,29 @@ function FUNNavigator({ onClose }) {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input row */}
-        <div style={{
-          padding: '10px 14px',
-          paddingBottom: `calc(14px + env(safe-area-inset-bottom, 0px))`,
-          borderTop: `1px solid ${C.b1}`,
-          display: 'flex', gap: 8, alignItems: 'center',
-          flexShrink: 0,
-        }}>
+        {/* Input */}
+        <div style={{ padding: '10px 12px 14px', borderTop: '1px solid #2a2018', display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
           <input
             ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKey}
             placeholder="Where do you want to go?"
-            style={{
-              flex: 1,
-              background: C.bg,
-              border: `1.5px solid ${C.b1}`,
-              borderRadius: 12,
-              padding: '11px 14px',
-              fontSize: 14, color: C.t1, fontFamily: UI,
-              outline: 'none',
-            }}
+            style={{ flex: 1, background: '#1a1410', border: '1.5px solid #3d3028', borderRadius: 10, padding: '9px 12px', fontSize: 13, color: '#f0e8d8', fontFamily: UI, outline: 'none' }}
           />
           <button
             onClick={() => send(input)}
             disabled={!input.trim() || loading}
             style={{
-              width: 42, height: 42, borderRadius: 12, flexShrink: 0,
-              background: input.trim() && !loading ? C.indigo : C.bg,
-              border: `1px solid ${input.trim() && !loading ? C.indigo : C.b1}`,
+              width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+              background: input.trim() && !loading ? '#818cf8' : '#2d2419',
+              border: `1px solid ${input.trim() && !loading ? '#818cf8' : '#2a2018'}`,
               cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               WebkitTapHighlightColor: 'transparent',
             }}
           >
-            <Send size={16} color={input.trim() && !loading ? '#fff' : C.t3} />
+            <Send size={14} color={input.trim() && !loading ? '#fff' : '#6b5540'} />
           </button>
         </div>
       </div>
