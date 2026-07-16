@@ -155,9 +155,9 @@ function FUNNavigator({ onClose }) {
       <div style={{
         position: 'fixed',
         bottom: 168,
-        right: 16,
-        left: 16,
-        maxHeight: 440,
+        right: 12,
+        width: '54vw',
+        maxHeight: 400,
         background: '#231c16',
         border: '1px solid rgba(129,140,248,0.22)',
         borderRadius: 18,
@@ -231,12 +231,12 @@ function FUNNavigator({ onClose }) {
           {messages.length === 1 && (
             <div style={{ marginTop: 4 }}>
               <div style={{ fontSize: 10, color: '#6b5540', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 7 }}>Try asking</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                 {SUGGESTIONS.map(s => (
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    style={{ background: 'rgba(129,140,248,0.10)', border: '1px solid rgba(129,140,248,0.22)', borderRadius: 99, padding: '5px 11px', fontSize: 11, color: '#818cf8', cursor: 'pointer', fontFamily: UI, fontWeight: 500, WebkitTapHighlightColor: 'transparent' }}
+                    style={{ background: 'rgba(129,140,248,0.10)', border: '1px solid rgba(129,140,248,0.22)', borderRadius: 99, padding: '5px 10px', fontSize: 10.5, color: '#818cf8', cursor: 'pointer', fontFamily: UI, fontWeight: 500, WebkitTapHighlightColor: 'transparent', textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                   >
                     {s}
                   </button>
