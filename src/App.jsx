@@ -1,13 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import MobileLayout from './mobile/MobileLayout'
 import { C } from './mobile/tokens'
-import { userKey } from './mobile/utils/auth'
+import { userKey, getInitialSession, handleAuthSession } from './mobile/utils/auth'
+import { supabase } from './lib/supabase'
 
 const LoginScreen = lazy(() => import('./mobile/screens/auth/LoginScreen'))
 
 const Loader = () => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', background: C.bg }}>
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', background: C.bg }}>
     <div style={{ width: 28, height: 28, border: `2px solid ${C.b1}`, borderTopColor: C.indigo, borderRadius: '50%', animation: 'tSpin 0.7s linear infinite' }} />
     <style>{`@keyframes tSpin { to { transform: rotate(360deg); } }`}</style>
   </div>
@@ -27,6 +28,7 @@ const MAdvisorProfile    = lazy(() => import('./mobile/screens/more/MAdvisorProf
 
 // ── Learn hub + education modules ─────────────────────────────────────
 const FunLearn           = lazy(() => import('./mobile/screens/fun/FunLearn'))
+const MWhyStart          = lazy(() => import('./mobile/screens/learn/MWhyStart'))
 const MBudgeting         = lazy(() => import('./mobile/screens/learn/MBudgeting'))
 const MDebtCredit        = lazy(() => import('./mobile/screens/learn/MDebtCredit'))
 const MInvesting         = lazy(() => import('./mobile/screens/learn/MInvesting'))
@@ -39,6 +41,7 @@ const MBuyRentLease      = lazy(() => import('./mobile/screens/learn/MBuyRentLea
 const MLifeEvents        = lazy(() => import('./mobile/screens/learn/MLifeEvents'))
 const MTaxFun            = lazy(() => import('./mobile/screens/learn/MTaxFun'))
 const MResources         = lazy(() => import('./mobile/screens/learn/MResources'))
+const MRealEstate        = lazy(() => import('./mobile/screens/learn/MRealEstate'))
 
 // ── Plan hub + planning tools ──────────────────────────────────────────
 const FunPlan            = lazy(() => import('./mobile/screens/fun/FunPlan'))
@@ -61,12 +64,32 @@ function HomeGuard() {
 }
 
 export default function App() {
-  const [hasAuth, setHasAuth] = useState(() => !!localStorage.getItem('planora_auth_v1'))
+  // 'loading' while we check Supabase session | 'auth' = show login | 'app' = show app
+  const [authState, setAuthState] = useState('loading')
 
-  if (!hasAuth) {
+  useEffect(() => {
+    getInitialSession().then(session => {
+      setAuthState(session ? 'app' : 'auth')
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
+        handleAuthSession(session)
+        setAuthState('app')
+      } else if (event === 'SIGNED_OUT') {
+        setAuthState('auth')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  if (authState === 'loading') return <Loader />
+
+  if (authState === 'auth') {
     return (
       <Suspense fallback={<Loader />}>
-        <LoginScreen onComplete={() => setHasAuth(true)} />
+        <LoginScreen onComplete={() => setAuthState('app')} />
       </Suspense>
     )
   }
@@ -82,6 +105,7 @@ export default function App() {
 
             {/* ── Learn */}
             <Route path="/learn"                  element={<FunLearn />} />
+            <Route path="/learn/why-start"        element={<MWhyStart />} />
             <Route path="/learn/budgeting"        element={<MBudgeting />} />
             <Route path="/learn/debt"             element={<MDebtCredit />} />
             <Route path="/learn/investing"        element={<MInvesting />} />
@@ -94,6 +118,7 @@ export default function App() {
             <Route path="/learn/life-events"      element={<MLifeEvents />} />
             <Route path="/learn/tax"              element={<MTaxFun />} />
             <Route path="/learn/resources"        element={<MResources />} />
+            <Route path="/learn/real-estate"      element={<MRealEstate />} />
 
             {/* ── Plan */}
             <Route path="/plan"                   element={<FunPlan />} />

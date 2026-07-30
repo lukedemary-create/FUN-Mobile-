@@ -3,6 +3,7 @@ import { Search, ChevronLeft, TrendingUp, Home, Clock, Receipt, CreditCard, Doll
 import ScreenHeader from '../../navigation/ScreenHeader'
 import { MCard, MSectionHeader, MResultRow, MPrimaryBtn } from '../../components/MCard'
 import { C, UI, MONO, DISPLAY } from '../../tokens'
+import useUserLS from '../../hooks/useUserLS'
 
 // ─── All calculator definitions ──────────────────────────────────────────────
 const CALCS = {
@@ -77,19 +78,19 @@ const CALCS = {
         const int = bal*r; interest += int; bal = bal+int-f.payment; months++
       }
       const yrs = Math.floor(months/12), mos = months%12
-      return [['Payoff Time', months>0 ? `${yrs>0?yrs+'y ':''} ${mos}m` : 'Never', true], ['Total Interest Paid', '$'+Math.round(interest).toLocaleString()], ['Total Paid', '$'+Math.round(f.payment*months).toLocaleString()]]
+      return [['Payoff Time', months>=600 ? 'Payment too low' : `${yrs>0?yrs+'y ':''} ${mos}m`, true], ['Total Interest Paid', '$'+Math.round(interest).toLocaleString()], ['Total Paid', '$'+Math.round(f.payment*months).toLocaleString()]]
     }
   },
   'Tax Savings': {
     icon: Receipt, color: '#a855f7',
     fields: [
       { key:'income', label:'Annual Income', prefix:'$', def:120000 },
-      { key:'contribution', label:'Pre-Tax Contribution', prefix:'$', def:23500 },
+      { key:'contribution', label:'Pre-Tax Contribution', prefix:'$', def:24500 },
       { key:'rate', label:'Marginal Tax Rate (%)', suffix:'%', def:24 },
     ],
     calc: f => {
       const savings = f.contribution*(f.rate/100)
-      return [['Tax Savings', '$'+Math.round(savings).toLocaleString(), true], ['After-Tax Cost', '$'+Math.round(f.contribution-savings).toLocaleString()], ['Effective Rate', (f.rate*(1-f.contribution/f.income)).toFixed(1)+'%']]
+      return [['Tax Savings', '$'+Math.round(savings).toLocaleString(), true], ['After-Tax Cost', '$'+Math.round(f.contribution-savings).toLocaleString()], ['Marginal Rate', f.rate+'%']]
     }
   },
   'Auto Loan': {
@@ -162,10 +163,8 @@ const CALCS = {
       const r = f.rate/100/12, n = f.years*12
       const pmt = r>0 ? f.loan*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1) : f.loan/n
       const totalInterest = pmt*n-f.loan
-      const yr1Principal = Array.from({length:12},(_,i) => {
-        const int = f.loan*(Math.pow(1+r,i))*r
-        return pmt-int
-      }).reduce((a,b)=>a+b,0)
+      let bal = f.loan, yr1Principal = 0
+      for (let i = 0; i < 12; i++) { const int = bal*r; yr1Principal += pmt-int; bal -= (pmt-int) }
       return [['Monthly Payment', '$'+Math.round(pmt).toLocaleString(), true], ['Total Interest', '$'+Math.round(totalInterest).toLocaleString()], ['Year 1 Principal', '$'+Math.round(yr1Principal).toLocaleString()]]
     }
   },
@@ -225,12 +224,13 @@ const CALCS = {
     icon: Receipt, color: '#a855f7',
     fields: [
       { key:'income', label:'Gross Income', prefix:'$', def:120000 },
-      { key:'deductions', label:'Deductions', prefix:'$', def:14600 },
+      { key:'deductions', label:'Deductions', prefix:'$', def:16100 },
       { key:'credits', label:'Tax Credits', prefix:'$', def:0 },
     ],
     calc: f => {
       const taxable = Math.max(0, f.income-f.deductions)
-      const brackets = [[0.10,11925],[0.12,48475],[0.22,103350],[0.24,197300],[0.32,250525],[0.35,626350],[0.37,Infinity]]
+      // 2026 single filer brackets (CFP Board 2026 exam reference)
+      const brackets = [[0.10,12400],[0.12,50400],[0.22,105700],[0.24,201775],[0.32,256225],[0.35,640600],[0.37,Infinity]]
       let tax=0, prev=0
       for (const [r,up] of brackets) {
         if (taxable<=prev) break
@@ -541,8 +541,9 @@ const CALCS = {
       const down=f.price*0.035, loan=f.price-down, upfrontMIP=loan*0.0175
       const totalLoan=loan+upfrontMIP, r=f.rate/100/12, n=f.years*12
       const pmt=totalLoan*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1)
-      const monthlyMIP=loan*0.0055/12
-      return [['Monthly Payment (P&I)', '$'+Math.round(pmt).toLocaleString(), true], ['Monthly MIP', '$'+Math.round(monthlyMIP).toLocaleString()], ['Minimum Down (3.5%)', '$'+Math.round(down).toLocaleString()]]
+      // 0.85%/yr annual MIP for LTV > 95% (3.5% down = 96.5% LTV, 30-yr loan)
+      const monthlyMIP=loan*0.0085/12
+      return [['Monthly Payment (P&I)', '$'+Math.round(pmt).toLocaleString(), true], ['Monthly MIP (0.85%)', '$'+Math.round(monthlyMIP).toLocaleString()], ['Minimum Down (3.5%)', '$'+Math.round(down).toLocaleString()]]
     }
   },
   'RMD Calculator': {
@@ -552,8 +553,9 @@ const CALCS = {
       { key:'age', label:'Your Age', def:73 },
     ],
     calc: f => {
-      const factors = {73:26.5,74:25.5,75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,80:20.2,81:19.4,82:18.5,83:17.7,84:16.8,85:16.0}
-      const factor = factors[Math.min(Math.max(f.age,73),85)] || 16.0
+      // IRS Uniform Lifetime Table (2022 update), ages 73–100
+      const factors = {73:26.5,74:25.5,75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,80:20.2,81:19.4,82:18.5,83:17.7,84:16.8,85:16.0,86:15.2,87:14.4,88:13.7,89:12.9,90:12.2,91:11.5,92:10.8,93:10.1,94:9.5,95:8.9,96:8.4,97:7.8,98:7.3,99:6.8,100:6.4}
+      const factor = factors[Math.min(Math.max(Math.round(f.age),73),100)] || 6.4
       const rmd = f.balance/factor
       return [['Annual RMD', '$'+Math.round(rmd).toLocaleString(), true], ['Monthly Distribution', '$'+Math.round(rmd/12).toLocaleString()], ['Distribution Period', factor+' years']]
     }
@@ -581,17 +583,18 @@ const CALCS = {
       { key:'income2', label:'Spouse 2 Income', prefix:'$', def:75000 },
     ],
     calc: f => {
+      // 2026 brackets — CFP Board 2026 exam reference
       const calcSingle = (inc) => {
-        const brackets = [[0.10,11925],[0.12,48475],[0.22,103350],[0.24,197300],[0.32,250525],[0.35,626350],[0.37,Infinity]]
-        const taxable = Math.max(0, inc-14600)
+        const brackets = [[0.10,12400],[0.12,50400],[0.22,105700],[0.24,201775],[0.32,256225],[0.35,640600],[0.37,Infinity]]
+        const taxable = Math.max(0, inc-16100)  // 2026 single standard deduction
         let tax=0, prev=0
         for (const [r,up] of brackets) { if(taxable<=prev) break; tax+=(Math.min(taxable,up)-prev)*r; prev=up }
         return tax
       }
       const t1=calcSingle(f.income1), t2=calcSingle(f.income2)
       const combined=f.income1+f.income2
-      const mfjTaxable=Math.max(0,combined-29200)
-      const mfjBrackets=[[0.10,23850],[0.12,96950],[0.22,206700],[0.24,394600],[0.32,501050],[0.35,751600],[0.37,Infinity]]
+      const mfjTaxable=Math.max(0,combined-32200)  // 2026 MFJ standard deduction
+      const mfjBrackets=[[0.10,24800],[0.12,100800],[0.22,211400],[0.24,403550],[0.32,512450],[0.35,768700],[0.37,Infinity]]
       let mfjTax=0, prev=0
       for (const [r,up] of mfjBrackets) { if(mfjTaxable<=prev) break; mfjTax+=(Math.min(mfjTaxable,up)-prev)*r; prev=up }
       const penalty = mfjTax-(t1+t2)
@@ -610,6 +613,77 @@ const CALCS = {
       const taxable = Math.max(0, f.estate-f.debts-f.charitable-EXEMPTION)
       const tax = taxable * 0.40
       return [['Estate Tax Owed', '$'+Math.round(tax).toLocaleString(), true], ['Taxable Estate', '$'+Math.round(Math.max(0,f.estate-f.debts-f.charitable)).toLocaleString()], ['After-Tax Estate', '$'+Math.round(f.estate-f.debts-tax).toLocaleString()]]
+    }
+  },
+  'Capital Gains': {
+    icon: TrendingUp, color: '#a855f7',
+    fields: [
+      { key:'costBasis',  label:'Cost Basis (Purchase Price)', prefix:'$', def:50000  },
+      { key:'salePrice',  label:'Sale Price',                  prefix:'$', def:120000 },
+      { key:'income',     label:'Other Ordinary Income',       prefix:'$', def:75000  },
+      { key:'heldMonths', label:'Holding Period (months)',                  def:24     },
+      { key:'filing',     label:'Filing (1=Single  2=Married)',             def:1      },
+    ],
+    calc: f => {
+      const gain = f.salePrice - f.costBasis
+
+      // Capital loss — deduct up to $3,000/yr against ordinary income
+      if (gain <= 0) {
+        const deductNow = Math.min(Math.abs(gain), 3000)
+        return [
+          ['Capital Loss',     '$'+Math.abs(Math.round(gain)).toLocaleString(), true],
+          ['Deductible Now',   '$'+deductNow.toLocaleString()+'/yr'],
+          ['Loss Carryforward','$'+Math.round(Math.max(0,Math.abs(gain)-3000)).toLocaleString()],
+        ]
+      }
+
+      const isLT   = f.heldMonths > 12
+      const isMFJ  = f.filing >= 2
+      // 2026 standard deductions
+      const stdDed = isMFJ ? 32200 : 16100
+      const taxableOrd   = Math.max(0, f.income - stdDed)
+      const taxableTotal = Math.max(0, f.income + gain - stdDed)
+
+      if (!isLT) {
+        // Short-term: taxed as ordinary income
+        const brackets = [[0.10,12400],[0.12,50400],[0.22,105700],[0.24,201775],[0.32,256225],[0.35,640600],[0.37,Infinity]]
+        const ordTax = (inc) => {
+          let tax=0, prev=0
+          for (const [r,up] of brackets) {
+            if (inc<=prev) break
+            tax+=(Math.min(inc,up)-prev)*r; prev=up
+          }
+          return tax
+        }
+        const taxOnGain = ordTax(taxableTotal) - ordTax(taxableOrd)
+        return [
+          ['Tax Owed (Short-Term)', '$'+Math.round(taxOnGain).toLocaleString(), true],
+          ['Ordinary Rate on Gain', (taxOnGain/gain*100).toFixed(1)+'%'],
+          ['Net Proceeds After Tax','$'+Math.round(f.salePrice - taxOnGain).toLocaleString()],
+        ]
+      }
+
+      // Long-term capital gains — 2026 brackets
+      const b0  = isMFJ ? 96700  : 48350
+      const b15 = isMFJ ? 600050 : 533400
+      // Gain stacks on top of taxable ordinary income
+      const g0  = Math.max(0, Math.min(gain, Math.max(0, b0  - taxableOrd)))
+      const g15 = Math.max(0, Math.min(gain - g0, Math.max(0, b15 - Math.max(taxableOrd, b0))))
+      const g20 = Math.max(0, gain - g0 - g15)
+      const ltcgTax = g15*0.15 + g20*0.20
+
+      // Net Investment Income Tax — 3.8% when MAGI exceeds threshold
+      const niitThresh = isMFJ ? 250000 : 200000
+      const niitExcess = Math.max(0, f.income + gain - niitThresh)
+      const niit = Math.min(gain, niitExcess) * 0.038
+
+      const totalTax = ltcgTax + niit
+      const effRate  = (totalTax/gain*100).toFixed(1)
+      return [
+        ['Tax Owed (Long-Term)', '$'+Math.round(totalTax).toLocaleString(), true],
+        ['Effective Rate on Gain', effRate+'%'],
+        ['Net Proceeds After Tax', '$'+Math.round(f.salePrice - totalTax).toLocaleString()],
+      ]
     }
   },
   'Personal Loan': {
@@ -678,20 +752,27 @@ const CATEGORIES = {
   'Auto': ['Auto Loan','Auto Lease','Lease Calculator'],
   'Investment': ['Compound Interest','Savings Calculator','CD Calculator','ROI Calculator','Present Value','Future Value','Simple Interest'],
   'Retirement': ['401(k) Calculator','Roth IRA','IRA Calculator','Pension Calculator','Annuity Calculator','Social Security Est.','RMD Calculator','Annuity Payout'],
-  'Tax & Salary': ['Income Tax','Salary Converter','Take-Home Pay','Estate Tax','Marriage Tax'],
+  'Tax & Salary': ['Capital Gains','Income Tax','Salary Converter','Take-Home Pay','Estate Tax','Marriage Tax'],
   'Debt & Credit': ['Debt Payoff','Credit Card Payoff','Credit Card Calc.','Debt Consolidation','Student Loan','Personal Loan'],
   'Other': ['Inflation Calculator','College Cost','Budget Calculator','Payment Calculator','Discount Calculator'],
 }
 
 function CalcDetail({ name, onBack }) {
   const def = CALCS[name]
+
+  // Build defaults from field definitions (used as fallback)
+  const initVals = {}
+  if (def) def.fields.forEach(f => { initVals[f.key] = f.def ?? 0 })
+
+  // Per-user, per-calculator persistence
+  const safeKey = 'calc_' + (name || '').replace(/[^a-zA-Z0-9]/g, '_')
+  const [saved, setSaved] = useUserLS(safeKey, initVals)
+
   if (!def) return null
 
-  const initVals = {}
-  def.fields.forEach(f => { initVals[f.key] = f.def || 0 })
-
-  const [vals, setVals] = useState(initVals)
-  const set = (k, v) => setVals(prev => ({ ...prev, [k]: parseFloat(v) || 0 }))
+  // Merge saved with field defaults so new fields always have a value
+  const vals = Object.fromEntries(def.fields.map(f => [f.key, saved[f.key] ?? f.def ?? 0]))
+  const set = (k, v) => setSaved(prev => ({ ...prev, [k]: parseFloat(v) || 0 }))
 
   let results = []
   try { results = def.calc(vals) } catch {}

@@ -1,0 +1,1 @@
+import{S as e,T as t,o as n}from"./index-DTe_lrcJ.js";var r=t(e(),1);function i(e,t){let i=n(e),[a,o]=(0,r.useState)(()=>{try{let e=localStorage.getItem(i);return e?JSON.parse(e):t}catch{return t}});return[a,(0,r.useCallback)(e=>{let t=typeof e==`function`?e(a):e;o(t);try{localStorage.setItem(i,JSON.stringify(t))}catch{}},[a,i])]}export{i as t};

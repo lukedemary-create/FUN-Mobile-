@@ -8,29 +8,45 @@ export const GOAL_LABELS = {
 }
 
 export const SEV_STYLE = {
-  Critical: { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.22)', dot: '#ef4444', label: 'Critical' },
-  Moderate: { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.22)', dot: '#f59e0b', label: 'Moderate' },
-  Low:      { bg: 'rgba(100,116,139,0.07)', border: 'rgba(100,116,139,0.18)', dot: '#94a3b8', label: 'Low Priority' },
+  Critical: { bg:'rgba(239,68,68,0.08)',   border:'rgba(239,68,68,0.22)',   dot:'#ef4444', label:'Critical'      },
+  Moderate: { bg:'rgba(245,158,11,0.08)',  border:'rgba(245,158,11,0.22)',  dot:'#f59e0b', label:'Moderate'      },
+  Low:      { bg:'rgba(100,116,139,0.07)', border:'rgba(100,116,139,0.18)', dot:'#94a3b8', label:'Low Priority'  },
 }
 
 export function generateBriefing(answers) {
-  const accs = answers.accounts  || []
-  const ins  = answers.insurance || []
-  const strengths = []
-  const gaps      = []
-  const guide     = []
+  const age        = answers.age        || '25-34'
+  const employment = answers.employment || 'full-time'
+  const dependents = answers.dependents || 'none'
+  const accs       = answers.accounts   || []
+  const ins        = answers.insurance  || []
+  const strengths  = []
+  const gaps       = []
+  const guide      = []
+
+  // ── Derived helpers ──────────────────────────────────────
+  const isWorking      = ['full-time', 'part-time', 'self-employed'].includes(employment)
+  const isSelfEmployed = employment === 'self-employed'
+  const isStudent      = employment === 'student'
+  const isRetired      = employment === 'retired'
+  const isYoung        = age === 'under-25'
+  const ageGte35       = ['35-44','45-54','55-64','65+'].includes(age)
+  const ageGte45       = ['45-54','55-64','65+'].includes(age)
+  const ageGte55       = ['55-64','65+'].includes(age)
+  const isRetirementAge = age === '65+'
+  const hasChildren    = ['children','partner-kids'].includes(dependents)
+  const hasDependents  = dependents !== 'none'
 
   // ── Emergency fund ───────────────────────────────────────
   if (['6plus','3-6'].includes(answers.emergency)) {
-    strengths.push({ area: 'Emergency Reserves', text: answers.emergency === '6plus'
+    strengths.push({ area:'Emergency Reserves', text: answers.emergency === '6plus'
       ? 'Liquid reserves exceed the CFP-recommended 3–6 month standard, providing robust protection against income disruption and eliminating the need to liquidate investments during emergencies.'
       : '3–6 month emergency fund meets the CFP baseline threshold and forms a solid foundation for all other financial planning decisions.'
     })
   } else {
     gaps.push({ severity: (answers.emergency === 'none' || answers.emergency === '1month') ? 'Critical' : 'Moderate',
-      area: 'Emergency Reserves',
+      area:'Emergency Reserves',
       text: answers.emergency === 'none'
-        ? 'No liquid reserves exist. Any unexpected expense forces high-interest debt at 20–29% APR, disrupting every other financial priority. This is the single highest-leverage first action.'
+        ? 'No liquid reserves exist. Any unexpected expense forces high-interest debt at 20–29% APR, disrupting every other financial priority. This is the single highest-leverage first action regardless of age or income.'
         : answers.emergency === '1month'
         ? 'Less than one month of reserves creates acute financial fragility. A single car repair or medical bill could trigger a debt spiral before any planning can take hold.'
         : '1–3 months of reserves falls below the CFP minimum. Extended job disruption or a medical event lasting 3+ months would exhaust these funds before recovery.'
@@ -39,141 +55,271 @@ export function generateBriefing(answers) {
 
   // ── Debt ─────────────────────────────────────────────────
   if (['none','mortgage-only'].includes(answers.debt)) {
-    strengths.push({ area: 'Debt Position', text: answers.debt === 'none'
+    strengths.push({ area:'Debt Position', text: answers.debt === 'none'
       ? 'No significant debt — a position that maximizes investable cash flow and eliminates guaranteed-loss drag on net worth from consumer interest rates.'
       : 'Mortgage is the only liability — leverage on a tangible asset. The absence of consumer debt puts this household ahead of the majority at this income level.'
     })
   } else {
     gaps.push({ severity: ['significant-cc','multiple'].includes(answers.debt) ? 'Critical' : 'Moderate',
-      area: 'Consumer Debt',
+      area:'Consumer Debt',
       text: answers.debt === 'significant-cc'
         ? 'Significant credit card balances at 19–29% APR represent a guaranteed negative return that no legitimate investment strategy can reliably offset. Elimination takes priority over all investing beyond employer match.'
         : answers.debt === 'multiple'
         ? 'Multiple debt types create competing high-interest obligations. A structured payoff sequence — avalanche by interest rate — is mathematically optimal and should be modeled with an advisor.'
         : answers.debt === 'student-loans'
         ? 'Federal student loan debt may qualify for income-driven repayment caps or forgiveness programs. Optimal strategy depends on loan type, servicer, employment sector, and projected income trajectory.'
-        : 'Manageable credit card balances still carry 19–29% interest. Each dollar carried on a balance costs 20× what a 1% savings account returns. Systematic paydown is high-ROI by definition.'
+        : 'Manageable credit card balances still carry 19–29% interest. Systematic paydown is high-ROI by definition — it is a guaranteed return equal to the interest rate.'
     })
   }
 
-  // ── Retirement accounts ──────────────────────────────────
+  // ── Employer retirement plan (401k / 403b) ───────────────
   if (accs.includes('401k')) {
-    strengths.push({ area: 'Employer Retirement Plan', text: '401(k) or employer plan is active. This captures tax-deferred compounding and potentially employer matching — one of the highest-return, lowest-risk financial moves available. The key question is Traditional vs. Roth election given current and expected future tax brackets.' })
+    if (isSelfEmployed) {
+      strengths.push({ area:'Retirement Savings', text:'A retirement account is active. As a self-employed individual, confirm whether a Solo 401(k) or SEP-IRA is the correct structure — a Solo 401(k) allows contributions up to $70,000/year (2026), far exceeding a standard employee limit. Roth vs. Traditional election and entity structure both affect your optimal contribution strategy.' })
+    } else {
+      strengths.push({ area:'Employer Retirement Plan', text:'401(k) or employer plan is active. This captures tax-deferred compounding and potentially employer matching — one of the highest-return, lowest-risk financial moves available. Key question: Traditional vs. Roth election given your current and projected future tax bracket.' + (ageGte45 ? ' At your stage, catch-up contributions ($31,000 total in 2026 for age 50+) add meaningful additional tax-advantaged capacity.' : '') })
+    }
   } else {
-    gaps.push({ severity: 'Moderate', area: 'No Employer Retirement Plan', text: 'Without a 401(k) or similar plan, employer matching contributions (effectively 50–100% instant returns on matched amounts) may be forfeited. This gap also leaves significant taxable income undeferred.' })
+    if (isRetired) {
+      // Retired without 401k — handled in IRA section, skip here
+    } else if (isStudent) {
+      gaps.push({ severity:'Low', area:'Retirement Savings — Starting Point', text:'A 401(k) requires an employer who offers one, so this gap is expected right now. The most accessible move with any earned income (even part-time) is opening a Roth IRA. Contributions today at your age and tax bracket are the cheapest retirement dollars you\'ll ever buy — and the tax-free compounding window is the longest it will ever be.' })
+    } else if (employment === 'not-working') {
+      // Stay-at-home, caregiver, etc. — spousal IRA is the angle, skip 401k gap
+    } else if (isSelfEmployed) {
+      gaps.push({ severity:'Moderate', area:'Self-Employed Retirement Plan', text:'As a self-employed professional, a Solo 401(k) allows contributions up to $70,000/year (2026) — far exceeding the standard employee limit of $23,500. A SEP-IRA is the simpler alternative, allowing up to 25% of net self-employment income. Either option dramatically reduces current-year taxable income while building wealth.' })
+    } else {
+      // Employed (full-time or part-time) with no 401k
+      gaps.push({ severity: isYoung ? 'Low' : 'Moderate', area:'No Employer Retirement Plan', text: isYoung
+        ? 'When you move into a full-time role that offers a 401(k), capturing the employer match should be your first financial action. Even a 50% match on 6% of salary is a guaranteed 3% instant return — before the market moves at all.'
+        : 'Without a 401(k) or similar employer plan, employer matching contributions (effectively 50–100% instant returns on matched amounts) may be forfeited, and significant taxable income goes undeferred.'
+      })
+    }
   }
 
+  // ── IRA ──────────────────────────────────────────────────
   if (accs.includes('ira')) {
-    strengths.push({ area: 'Individual Retirement Account', text: 'An IRA provides an additional $7,000/year (2026) of tax-advantaged compounding independent of employer plans. Roth IRAs offer unique after-tax compounding — tax-free growth and withdrawals — that becomes increasingly valuable over long time horizons.' })
+    strengths.push({ area:'Individual Retirement Account', text: isYoung
+      ? 'An IRA is open — an excellent move this early. A Roth IRA opened in your 20s means decades of tax-free compounding ahead. Even modest annual contributions invested in a broad market index fund become life-changing sums over a 40-year horizon.'
+      : `An IRA provides an additional $7,000/year (2026) of tax-advantaged compounding independent of employer plans. Roth IRAs offer unique after-tax compounding — tax-free growth and withdrawals — that becomes increasingly valuable over long time horizons.`
+    })
   } else {
-    gaps.push({ severity: 'Moderate', area: 'No IRA', text: 'An IRA adds $7,000/year (2026) of tax-advantaged space beyond employer plans. Roth eligibility phases out at higher incomes — a backdoor Roth conversion strategy may apply depending on income level.' })
+    const earnedIncome = isWorking || isStudent
+    if (isRetired) {
+      // Skip standard IRA gap for retired — address in guide
+    } else if (employment === 'not-working') {
+      gaps.push({ severity:'Low', area:'No IRA', text:'A spousal IRA allows a non-working spouse to contribute up to $7,000/year (2026) based on the working spouse\'s earned income. This is a frequently overlooked way to build tax-advantaged assets even without personal employment income.' })
+    } else if (earnedIncome) {
+      gaps.push({ severity: isYoung ? 'Moderate' : 'Moderate', area:'No IRA', text: isYoung
+        ? 'Opening a Roth IRA is one of the most impactful financial moves available to you right now. Contributions grow completely tax-free for your entire career. Even $100/month invested in a broad index fund today can compound to six figures by retirement. Income limits rarely restrict Roth eligibility at this age.'
+        : 'An IRA adds $7,000/year (2026) of tax-advantaged space beyond employer plans. Roth eligibility phases out at higher incomes — a backdoor Roth conversion strategy may apply depending on your income level and existing IRA balances.'
+      })
+    }
   }
 
+  // ── HSA ──────────────────────────────────────────────────
   if (accs.includes('hsa')) {
-    strengths.push({ area: 'Health Savings Account', text: 'The HSA is the only triple-tax-advantaged vehicle available: pre-tax contributions, tax-free growth, tax-free withdrawals for qualified expenses. Investing HSA funds rather than spending them creates a de facto secondary retirement account accessible at 65 for any purpose.' })
+    strengths.push({ area:'Health Savings Account', text:'The HSA is the only triple-tax-advantaged vehicle available: pre-tax contributions, tax-free growth, tax-free qualified withdrawals. Investing HSA funds rather than spending them creates a de facto secondary retirement account fully accessible at 65 for any purpose. Unlimited rollover — no use-it-or-lose-it rule.' })
   }
 
+  // ── Taxable brokerage ────────────────────────────────────
   if (accs.includes('brokerage')) {
-    strengths.push({ area: 'Taxable Brokerage', text: 'A taxable brokerage account provides flexibility beyond retirement account limits — accessible for pre-59½ goals, eligible for preferential long-term capital gains rates, and enables tax-loss harvesting strategies not available in tax-advantaged accounts.' })
+    strengths.push({ area:'Taxable Brokerage', text:'A taxable brokerage account provides flexibility beyond retirement account limits — accessible for pre-59½ goals, eligible for preferential long-term capital gains rates (0%, 15%, or 20%), and enables tax-loss harvesting strategies unavailable in tax-advantaged accounts.' })
   }
 
-  // ── Insurance ────────────────────────────────────────────
+  // ── 529 plan — context-sensitive ─────────────────────────
+  if (accs.includes('529')) {
+    if (hasChildren) {
+      strengths.push({ area:'529 College Savings Plan', text:'A 529 plan provides tax-free growth for qualified education expenses. Unused funds now carry a Roth IRA rollover option (up to $35,000 lifetime after 15 years). Confirm contribution levels align with your projected college timeline, and check whether your state offers an income tax deduction for 529 contributions.' })
+    } else {
+      gaps.push({ severity:'Low', area:'529 Plan — Verify Beneficiary', text:'A 529 plan is on record, but no children or education-bound dependents were listed. If this plan is for a future child or another beneficiary, that\'s valid. If the purpose has changed, an advisor can walk through beneficiary change options or the Roth IRA rollover provision (up to $35,000 lifetime, after 15 years).' })
+    }
+  }
+
+  // ── Insurance — Health ───────────────────────────────────
   if (ins.includes('health')) {
-    strengths.push({ area: 'Health Coverage', text: 'Health insurance is in place — the single most important risk transfer in personal finance. A major medical event without coverage remains the leading cause of personal bankruptcy in the U.S., with average hospital stays generating $30,000–$150,000 in charges.' })
+    strengths.push({ area:'Health Coverage', text:'Health insurance is in place — the single most critical risk transfer in personal finance. A major medical event without coverage remains the leading cause of personal bankruptcy in the U.S., with average hospital stays generating $30,000–$150,000 in charges.' })
   } else {
-    gaps.push({ severity: 'Critical', area: 'No Health Insurance', text: 'No health coverage exists. A single hospitalization without insurance can generate $50,000–$500,000+ in liability, wiping out any accumulated savings. ACA marketplace plans, Medicaid eligibility, or employer-sponsored options should be explored as the highest-priority action after emergency reserves.' })
+    gaps.push({ severity:'Critical', area:'No Health Insurance', text:'No health coverage exists. A single hospitalization without insurance can generate $50,000–$500,000+ in liability, wiping out any accumulated savings. ACA marketplace plans, Medicaid eligibility, or employer-sponsored options should be explored immediately — this is the highest-priority gap to address.' })
   }
 
-  if (!ins.includes('disability')) {
-    gaps.push({ severity: 'Moderate', area: 'No Disability Income Protection', text: 'A 35-year-old has a 1-in-4 statistical probability of a disabling event before age 65 (Society of Actuaries). Without own-occupation disability coverage, earned income — the most valuable asset in an accumulation-phase household — is entirely unprotected. Employer group plans, if available, are the lowest-cost entry point.' })
-  } else {
-    strengths.push({ area: 'Disability Insurance', text: 'Disability coverage is in place, protecting income — statistically the most valuable asset over a 30-year career. Critical policy terms to review with an advisor: benefit period, elimination period, and own-occupation vs. any-occupation definition.' })
+  // ── Insurance — Disability (only if working) ─────────────
+  if (isWorking) {
+    if (!ins.includes('disability')) {
+      gaps.push({ severity: ageGte35 ? 'Moderate' : 'Low', area:'No Disability Income Protection', text: ageGte35
+        ? 'A 1-in-4 worker will experience a disabling event before retirement (Society of Actuaries). At your income level and life stage, earned income is your most valuable asset — without own-occupation disability coverage, it is entirely unprotected. Employer group plans are the lowest-cost entry point.'
+        : 'Disability insurance protects your income if you become unable to work. Less urgent early in your career, but the earlier you lock in coverage while young and healthy, the lower your lifelong premiums — and you guarantee future insurability.'
+      })
+    } else {
+      strengths.push({ area:'Disability Insurance', text:'Disability coverage is in place, protecting earned income — statistically the most valuable asset in an accumulation-phase household. Critical terms to review: benefit period, elimination period, and own-occupation vs. any-occupation definition.' })
+    }
   }
 
+  // ── Insurance — Life (only if dependents) ───────────────
   if (ins.includes('life')) {
-    strengths.push({ area: 'Life Insurance', text: 'Life insurance provides income replacement and debt coverage. Term coverage is typically the most cost-efficient structure for most households in the accumulation phase. Coverage adequacy should be revisited at each major life event.' })
+    if (hasDependents) {
+      strengths.push({ area:'Life Insurance', text:'Life insurance provides income replacement and debt coverage for your dependents. Term coverage is the most cost-efficient structure for most accumulation-phase households. Coverage adequacy should be reviewed at each major life event — new child, home purchase, or significant income change.' })
+    } else {
+      strengths.push({ area:'Life Insurance', text:'Life insurance is in place. With no listed dependents, review whether your coverage amount is still appropriate to your situation — you may have coverage that made sense previously but has changed in relevance.' })
+    }
+  } else {
+    if (hasDependents) {
+      const depText = dependents === 'children' ? 'children' : dependents === 'partner' ? 'a partner' : dependents === 'partner-kids' ? 'a partner and children' : 'dependents'
+      gaps.push({ severity:'Moderate', area:'No Life Insurance', text:`With ${depText} who rely on your income, the absence of life insurance leaves them financially exposed if you die prematurely. A 20-year term policy for a healthy ${isYoung ? 'young adult' : 'individual in your age range'} typically costs $20–$60/month for $500,000–$1,000,000 in coverage.` })
+    }
+    // No dependents, no life insurance — not flagged
+  }
+
+  // ── Insurance — LTC (only 55+) ───────────────────────────
+  if (ageGte55 && !ins.includes('ltc')) {
+    gaps.push({ severity:'Low', area:'Long-Term Care Insurance', text:'At your life stage, long-term care insurance warrants consideration. Average nursing home care exceeds $100,000/year, and 70% of people over 65 will need some form of long-term care. Premiums lock in significantly lower when purchased in your mid-50s vs. your 60s.' })
   }
 
   // ── Estate ───────────────────────────────────────────────
   if (['complete','basic'].includes(answers.estate)) {
-    strengths.push({ area: 'Estate Documents', text: answers.estate === 'complete'
-      ? 'A comprehensive estate plan — will, trust, healthcare proxy, and durable POA — is established. This ensures assets transfer according to stated wishes and protects the family from the time and cost of probate.'
-      : 'A basic will is in place, putting this household ahead of the 60%+ of Americans with no estate documents. Priority additions: durable POA, healthcare proxy, and a beneficiary designation audit across all accounts.'
+    strengths.push({ area:'Estate Documents', text: answers.estate === 'complete'
+      ? 'A comprehensive estate plan — will, trust, healthcare proxy, and durable POA — is established. Assets transfer according to stated wishes and the family is protected from the time and cost of probate.'
+      : 'A basic will is in place, putting this household ahead of the 60%+ of Americans with no estate documents. Priority additions: durable POA, healthcare proxy, and a beneficiary designation audit across all financial accounts.'
     })
   } else {
-    gaps.push({ severity: answers.estate === 'none' ? 'Moderate' : 'Low', area: 'No Estate Plan',
+    const estateSev = (hasDependents && answers.estate === 'none') ? 'Moderate'
+      : ageGte35 && answers.estate === 'none' ? 'Moderate'
+      : 'Low'
+    gaps.push({ severity: estateSev, area:'No Estate Plan',
       text: answers.estate === 'none'
-        ? 'Without a will, state intestacy laws — not personal preference — determine who inherits assets and who gains guardianship of minor children. A basic will, healthcare proxy, and durable POA can typically be completed in a single attorney session for $500–$1,500.'
-        : 'An estate plan is intended but not yet established. Priority minimum documents: will (asset distribution), healthcare proxy (medical decisions if incapacitated), durable POA (financial decisions if incapacitated).'
+        ? hasDependents
+          ? `With dependents relying on you, no estate plan means a court — not you — decides who inherits your assets and, if you have children, who becomes their guardian. A basic will, healthcare proxy, and durable POA can typically be completed in one attorney session for $500–$1,500.`
+          : isYoung
+            ? 'An estate plan isn\'t urgent at your stage, but a healthcare directive and durable POA cost under $200 online (Trust & Will, Fabric) and ensure your medical and financial wishes are honored if you\'re ever incapacitated — even temporarily.'
+            : 'Without a will, state intestacy laws — not your preferences — determine who inherits your assets. A basic will, healthcare proxy, and durable POA can be completed for $500–$1,500 with an attorney, or $100–$200 via online services.'
+        : 'An estate plan is intended but not yet established. Minimum priority documents: will (asset distribution), healthcare proxy (medical decisions if incapacitated), durable POA (financial decisions if incapacitated).'
     })
   }
 
   if (['overwhelmed','not-confident'].includes(answers.confidence)) {
-    gaps.push({ severity: 'Low', area: 'Financial Confidence', text: 'Low financial confidence is extremely common and not reflective of capability. A good CFP-credentialed advisor will prioritize explanation and understanding over product sales. Ask them to quantify every recommendation in concrete dollars-and-cents terms before agreeing to anything.' })
+    gaps.push({ severity:'Low', area:'Financial Confidence', text:'Low financial confidence is extremely common and not reflective of capability. A good CFP-credentialed advisor prioritizes understanding over product sales. Ask them to quantify every recommendation in concrete dollars-and-cents terms before agreeing to anything.' })
   }
 
   // ── Advisor Discussion Guide ─────────────────────────────
-  guide.push({ topic: 'Cash Flow & Emergency Reserves', questions: [
-    'What account type is optimal for my emergency fund in the current rate environment — HYSA, money market, or short-duration T-bills?',
-    'How much total liquid reserve is appropriate given my specific income stability and industry concentration risk?',
-    'Should I tier my reserves — fully liquid core + slightly higher-yield secondary tranche?',
+  guide.push({ topic:'Cash Flow & Emergency Reserves', questions:[
+    'What account type is optimal for my emergency fund right now — HYSA, money market, or short-duration T-bills?',
+    'How much total liquid reserve is appropriate given my specific income stability and employment situation?',
+    'Should I tier my reserves — fully liquid core plus a slightly higher-yield secondary tranche?',
   ]})
 
-  if (!['none'].includes(answers.debt)) {
-    guide.push({ topic: 'Debt Payoff Strategy', questions: [
+  if (answers.debt && answers.debt !== 'none') {
+    guide.push({ topic:'Debt Payoff Strategy', questions:[
       'Model my complete debt payoff projection using the avalanche method — what is my projected debt-free date?',
-      'Are there balance transfer or refinancing opportunities that would meaningfully reduce my blended interest rate today?',
-      answers.debt === 'student-loans' ? 'Am I eligible for PSLF, income-driven repayment caps, or any federal forgiveness programs given my employer and loan type?' : null,
+      'Are there balance transfer or refinancing opportunities that would meaningfully reduce my blended interest rate?',
+      answers.debt === 'student-loans' ? 'Am I eligible for PSLF, income-driven repayment caps, or any federal forgiveness programs given my employer type and loan type?' : null,
       'At what remaining balance or interest rate threshold does the math favor shifting from debt payoff to investing?',
     ].filter(Boolean)})
   }
 
-  guide.push({ topic: 'Retirement Account Optimization', questions: [
-    accs.includes('401k') ? 'Am I capturing the full employer match, and what is the vesting schedule on employer contributions?' : 'What employer-sponsored plan options exist for me, and what is the employer matching structure?',
-    'Should I direct contributions to Traditional or Roth within my retirement accounts given my current income, expected retirement income, and projected tax bracket trajectory?',
-    'Am I eligible to contribute directly to a Roth IRA, or is a backdoor Roth conversion strategy more appropriate given my income?',
-    'What is my retirement number, and am I on track given my current savings rate, asset allocation, and target retirement date?',
-    accs.includes('hsa') ? 'Should I pay current medical expenses out-of-pocket and leave HSA funds invested to maximize tax-free compounding?' : null,
-  ].filter(Boolean)})
+  // Retirement guide — split between accumulation and distribution
+  if (!isRetired) {
+    guide.push({ topic:'Retirement Account Optimization', questions:[
+      isSelfEmployed
+        ? 'Walk me through the differences between a Solo 401(k) and SEP-IRA at my income level — which structure maximizes my tax savings this year?'
+        : accs.includes('401k')
+          ? 'Am I capturing the full employer match, and what is the vesting schedule on employer contributions?'
+          : isWorking
+            ? 'What employer-sponsored plan options exist for me, and what is the matching structure?'
+            : null,
+      'Should I direct contributions to Traditional or Roth given my current income, expected retirement income, and projected tax bracket trajectory?',
+      'Am I eligible to contribute directly to a Roth IRA, or is a backdoor Roth conversion strategy more appropriate given my income level?',
+      'What is my retirement number, and am I on track given my current savings rate, asset allocation, and target retirement date?',
+      ageGte45 ? 'Am I taking full advantage of catch-up contribution limits, and how do they change my projected retirement date?' : null,
+      ageGte55 ? 'What is my projected Social Security benefit at 62, 67, and 70, and how should that shape my retirement income strategy?' : null,
+      accs.includes('hsa') ? 'Should I pay current medical expenses out-of-pocket and leave HSA funds invested to maximize tax-free compounding?' : null,
+    ].filter(Boolean)})
+  } else {
+    guide.push({ topic:'Retirement Income & Distribution', questions:[
+      'What is the optimal account withdrawal sequence — which accounts should I draw from first to minimize lifetime taxes?',
+      'When do Required Minimum Distributions begin for my account types, and how should I plan for the added taxable income?',
+      'Should I pursue Roth conversions in lower-income years to reduce future RMD obligations?',
+      'How do I optimize my Social Security claiming strategy given my health, income needs, and life expectancy?',
+      'At my current withdrawal rate, what is the probability my portfolio lasts 25–30 years?',
+      'How should I structure Medicare supplement or Advantage coverage to minimize lifetime healthcare costs?',
+    ]})
+  }
 
-  guide.push({ topic: 'Investment Allocation & Tax Efficiency', questions: [
-    'What is the appropriate equity/fixed income/alternative allocation for my age, risk tolerance, time horizon, and goal structure?',
-    'How should I allocate assets across account types — which asset classes belong in tax-advantaged vs. taxable accounts for maximum tax efficiency?',
+  guide.push({ topic:'Investment Allocation & Tax Efficiency', questions:[
+    'What is the appropriate equity/fixed income allocation for my age, risk tolerance, time horizon, and goal structure?',
+    'How should I allocate assets across account types — which asset classes belong in tax-advantaged vs. taxable accounts?',
     accs.includes('brokerage') ? 'How should I approach tax-lot selection and tax-loss harvesting in my taxable account?' : null,
     'What is a realistic long-term real return assumption for my proposed allocation, and how does inflation affect my projections?',
   ].filter(Boolean)})
 
-  guide.push({ topic: 'Insurance Gap Analysis', questions: [
-    !ins.includes('disability') ? 'What disability benefit amount, elimination period, and definition — own-occupation vs. any-occupation — is appropriate for my occupation and income level?' : 'What is the own-occupation definition and benefit period on my current disability policy, and are there gaps in coverage I should address?',
-    !ins.includes('life') ? 'Do I have a life insurance need given my current dependents, outstanding debts, and income replacement requirement?' : 'When was my life coverage last reviewed against my current income, liabilities, and dependent structure?',
+  const insQuestions = [
+    isWorking && !ins.includes('disability') ? 'What disability benefit amount, elimination period, and definition — own-occupation vs. any-occupation — is appropriate for my occupation and income level?' : null,
+    isWorking && ins.includes('disability')  ? 'What is the own-occupation definition and benefit period on my current disability policy, and are there coverage gaps?' : null,
+    hasDependents && !ins.includes('life')   ? 'What is my life insurance need given my current dependents, outstanding debts, and income replacement requirement — and is term or permanent coverage appropriate?' : null,
+    hasDependents && ins.includes('life')    ? 'When was my life coverage last reviewed against my current income, liabilities, and dependent structure?' : null,
     'Audit my complete insurance picture — am I carrying any unnecessary coverage, and where are my largest uninsured risks?',
     'At what net worth level does a personal umbrella liability policy become essential for my risk profile?',
-  ]})
+    ageGte55 ? 'When should I evaluate long-term care insurance, and what coverage amount is appropriate for my situation?' : null,
+  ].filter(Boolean)
+  if (insQuestions.length) guide.push({ topic:'Insurance Gap Analysis', questions: insQuestions })
 
-  guide.push({ topic: 'Estate & Legal Priorities', questions: [
-    answers.estate === 'none' ? 'What are the minimum estate documents I need — will, healthcare proxy, durable POA — and what is a realistic cost with a local estate attorney?' : 'Are my current estate documents still consistent with my wishes, and when were beneficiary designations on all accounts last audited?',
+  guide.push({ topic:'Estate & Legal Priorities', questions:[
+    answers.estate === 'none'
+      ? 'What are the minimum estate documents I need — will, healthcare proxy, durable POA — and what is a realistic cost with a local estate attorney?'
+      : 'Are my current estate documents still consistent with my wishes, and when were beneficiary designations on all accounts last audited?',
     'Are beneficiary designations on all retirement accounts, life insurance policies, and financial accounts current and consistent with my will?',
-    'At what asset level does a revocable living trust offer meaningful advantages over a simple will in my state of residence?',
-    'Who is named as my healthcare proxy and durable POA, and are they aware of and prepared for those responsibilities?',
-  ]})
+    'At what asset level does a revocable living trust offer meaningful advantages over a simple will in my state?',
+    hasDependents ? 'Are my designated guardians for dependents still accurate and prepared for that responsibility?' : null,
+    'Who is named as my healthcare proxy and durable POA, and are they aware of those responsibilities?',
+  ].filter(Boolean)})
 
-  guide.push({ topic: 'Tax Planning', questions: [
+  guide.push({ topic:'Tax Planning', questions:[
     'What is my effective vs. marginal tax rate, and how should this inform Traditional vs. Roth elections across all accounts?',
     'Am I positioned to benefit from Roth conversions during lower-income years before Required Minimum Distributions create forced taxable income?',
     'What deductions or credits am I likely leaving on the table at my income level, filing status, and life stage?',
+    isSelfEmployed ? 'What business-related deductions am I potentially missing, and is my current entity structure optimal for tax efficiency?' : null,
     'How does my primary financial goal affect my near-term tax planning approach?',
-  ]})
+  ].filter(Boolean)})
+
+  if (hasChildren) {
+    guide.push({ topic:'Education Planning', questions:[
+      accs.includes('529')
+        ? 'Is my current 529 contribution rate on track to cover projected college costs, and am I capturing any state income tax deduction on contributions?'
+        : 'Should I prioritize a 529 plan for my children\'s education costs, and how does this interact with my retirement savings priority order?',
+      'At what point does the 529-to-Roth IRA rollover provision (up to $35,000 lifetime) meaningfully affect our planning approach?',
+      'How should we balance education savings with retirement savings — which takes priority and in what circumstances?',
+    ]})
+  }
 
   const GOAL_Qs = {
-    'emergency-fund': ['At my current savings rate, what is the specific timeline to reach a fully-funded 3-month reserve?', 'Should I prioritize the emergency fund completely before employer match, or run them in parallel?'],
-    'pay-debt':       ['Walk me through my complete debt-free projection with the avalanche method — give me a specific payoff date.', 'At what debt balance should I begin investing beyond the employer match?'],
-    'save-home':      ['How much total capital do I need — down payment, closing costs, prepaid items, and post-closing cash reserves — before it is prudent to purchase?', 'How does a home purchase affect my overall balance sheet and retirement savings trajectory?', 'Is my current DTI ratio and credit profile positioned for the price range I am targeting?'],
-    'invest':         ['What is a defensible long-term return assumption for my proposed allocation, net of fees and taxes?', 'How do I evaluate whether I am taking appropriate risk relative to my time horizon?'],
-    'retirement':     ['What is my retirement number and am I on track given my current trajectory?', 'What savings rate increase is required to retire by my target date?', 'How should I think about sequence-of-returns risk as I approach the transition into retirement?'],
-    'protect':        ['Rank my uninsured risks from highest to lowest financial exposure — where is my biggest vulnerability?', 'At what net worth level do umbrella liability and excess coverage become essential?'],
+    'emergency-fund': [
+      'At my current savings rate, what is the specific timeline to reach a fully-funded 3-month reserve?',
+      'Should I prioritize the emergency fund completely before capturing employer match, or run them in parallel?',
+    ],
+    'pay-debt': [
+      'Walk me through my complete debt-free projection using the avalanche method — give me a specific payoff date.',
+      'At what debt balance should I begin investing beyond the employer match?',
+    ],
+    'save-home': [
+      'How much total capital do I need — down payment, closing costs, prepaid items, and post-closing cash reserves — before purchasing is prudent?',
+      'How does a home purchase affect my overall balance sheet and retirement savings trajectory?',
+      'Is my current DTI ratio and credit profile positioned for the price range I am targeting?',
+    ],
+    'invest': [
+      'What is a defensible long-term return assumption for my proposed allocation, net of fees and taxes?',
+      'How do I evaluate whether I am taking appropriate risk relative to my time horizon?',
+    ],
+    'retirement': [
+      'What is my retirement number and am I on track given my current trajectory?',
+      'What savings rate increase is required to retire by my target date?',
+      'How should I think about sequence-of-returns risk as I approach the transition into retirement?',
+    ],
+    'protect': [
+      'Rank my uninsured risks from highest to lowest financial exposure — where is my biggest vulnerability?',
+      'At what net worth level do umbrella liability and excess coverage become essential?',
+    ],
   }
   if (answers.goal && GOAL_Qs[answers.goal]) {
-    guide.push({ topic: `Priority: ${GOAL_LABELS[answers.goal]}`, questions: GOAL_Qs[answers.goal], highlight: true })
+    guide.push({ topic:`Priority: ${GOAL_LABELS[answers.goal]}`, questions: GOAL_Qs[answers.goal], highlight: true })
   }
 
   return { strengths, gaps, guide }

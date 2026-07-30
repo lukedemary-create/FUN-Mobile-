@@ -4,6 +4,7 @@ import { C, UI, MONO, DISPLAY } from '../../tokens'
 import {
   Wallet, CreditCard, LineChart, PieChart,
   HeartHandshake, Compass, ChevronRight, Bookmark, BookmarkCheck,
+  Flame, ArrowRight, Home,
 } from 'lucide-react'
 import useUserLS from '../../hooks/useUserLS'
 
@@ -14,6 +15,7 @@ const TOPICS = [
   { path: '/learn/portfolio',   Icon: PieChart,       label: 'Portfolio Structure',     desc: 'Asset allocation, diversification, rebalancing, and building a long-term portfolio.',                   tint: C.tangerineBg },
   { path: '/learn/life-events', Icon: HeartHandshake, label: 'Life Events',             desc: 'Financial planning for marriage, children, job changes, divorce, and major transitions.',               tint: C.plumBg      },
   { path: '/learn/resources',   Icon: Compass,        label: 'Resource Directory',      desc: 'Curated tools, calculators, government links, and trusted third-party resources.',                      tint: C.butterBg    },
+  { path: '/learn/real-estate', Icon: Home,           label: 'Real Estate',             desc: 'Purchasing power by region, property taxes, amortization, 1031 exchanges, capital gains exclusions, and rental investing.', tint: C.skyBg },
 ]
 
 const CHIPS = ['All', 'In Progress', 'Bookmarked', 'Not Started']
@@ -148,6 +150,29 @@ export default function FunLearn() {
       </header>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: '16px 16px 0' }}>
+
+        {/* ── Why Should I Start? entry card ───────────────────── */}
+        <button
+          onClick={() => navigate('/learn/why-start')}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 14,
+            background: C.ink,
+            border: 'none',
+            borderRadius: 20, padding: '18px 16px',
+            cursor: 'pointer', textAlign: 'left', width: '100%',
+            WebkitTapHighlightColor: 'transparent',
+          }}
+        >
+          <div style={{ width:42, height:42, borderRadius:12, background:'rgba(232,120,60,0.22)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <Flame size={20} color={C.tangerine} strokeWidth={1.8} />
+          </div>
+          <div style={{ flex:1 }}>
+            <div style={{ fontFamily:UI, fontSize:10, fontWeight:700, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(250,246,237,0.5)', marginBottom:3 }}>Start here</div>
+            <div style={{ fontFamily:DISPLAY, fontSize:16, fontWeight:600, color:C.cream, lineHeight:1.2, marginBottom:2 }}>Why should I start?</div>
+            <div style={{ fontFamily:UI, fontSize:11, color:'rgba(250,246,237,0.55)', lineHeight:1.4 }}>Inflation, compounding & why every year counts</div>
+          </div>
+          <ArrowRight size={16} color={C.tangerine} style={{ flexShrink:0 }} />
+        </button>
 
         {/* ── Curriculum card ──────────────────────────────────── */}
         <div style={{

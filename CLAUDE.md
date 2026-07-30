@@ -29,10 +29,10 @@ Use this exact layout structure for the Planora homepage:
          Bullet points: Real-time Data, Risk Analysis,
          Planning Tools, Wealth Counsel
 
-  CENTER — Nexus (teal accent #00B4C6)
+  CENTER — Wealth Counsel (teal accent #00B4C6)
            Advisor-Client Platform
-           Bullet points: Client Portal, Workflow Center,
-           Life Events, Secure Messaging
+           Bullet points: Find Advisors, Advisor Profiles,
+           Match Me, Prep Hub
 
   RIGHT — FUN (indigo accent #818cf8)
           Financial Education Network
@@ -82,12 +82,11 @@ like it belongs in a $100M fintech product
 - Key Features: Real-time data, Risk Analysis, Planning Tools,
   Wealth Counsel
 
-### 2. Nexus
+### 2. Wealth Counsel
 - Role: Advisor-Client Platform
 - Accent Color: Teal #00B4C6
-- Description: Secure collaboration hub for advisors and clients
-- Key Features: Client Portal, Workflow Center, Life Events,
-  Secure Messaging
+- Description: Find and connect with financial advisors
+- Key Features: Find Advisors, Advisor Profiles, Match Me, Prep Hub
 
 ### 3. FUN — Financial Understanding Network
 - Role: Financial Education Platform
@@ -117,7 +116,7 @@ const C = {
   gold:     '#c9a96e',   // Terminal / Planning accent
   goldDim:  'rgba(201,169,110,0.10)',
   goldBdr:  'rgba(201,169,110,0.20)',
-  teal:     '#00B4C6',   // Nexus / Wealth Counsel accent
+  teal:     '#00B4C6',   // Wealth Counsel accent
   tealDim:  'rgba(0,180,198,0.10)',
   tealBdr:  'rgba(0,180,198,0.22)',
   indigo:   '#818cf8',   // FUN accent
@@ -186,7 +185,7 @@ JP Morgan Private Bank be proud to show this to a client?
 ## Navigation Structure
 - Top nav: Planora logo left, platform links center, Sign In right
 - Warm dark nav background #1a1410 with gold Planora branding
-- Platform switcher shows Terminal / Nexus / FUN
+- Platform switcher shows Terminal / Wealth Counsel / FUN
 - Sidebar within Planora Terminal (Layout.jsx) for section navigation
 
 ## Component Standards
@@ -248,10 +247,10 @@ line/bar fills: platform accent
 - Live tickers, real-time feel
 - Market data always front and center
 
-### Nexus
+### Wealth Counsel
 - Teal accents throughout
-- Clean, collaborative, communication-forward
-- Chat/messaging components feel polished
+- Clean, trust-forward design
+- Advisor cards and profiles feel premium
 - Client-facing — approachable but professional
 
 ### FUN
@@ -320,6 +319,6 @@ SUMMARY:
 - Always use Playfair Display for display headings
 - Always use JetBrains Mono for numbers and data
 - Always keep Planora as the parent brand
-- Always maintain the three-platform hierarchy (Terminal / Nexus / FUN)
+- Always maintain the three-platform hierarchy (Terminal / Wealth Counsel / FUN)
 - No approval prompts during builds — just build
 - No TypeScript — plain JSX only

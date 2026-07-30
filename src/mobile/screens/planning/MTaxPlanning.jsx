@@ -177,9 +177,16 @@ function BulletRow({ text, color }) {
 
 // ── Tab: Calculator ────────────────────────────────────────────────
 function TabCalculator() {
+  const [calcMode, setCalcMode] = useState('income') // 'income' | 'capgains'
   const [gross,    setGross]    = useState(120000)
   const [filing,   setFiling]   = useState('single')
   const [itemized, setItemized] = useState(0)
+
+  // Capital Gains state
+  const [cgBasis,  setCgBasis]  = useState(50000)
+  const [cgSale,   setCgSale]   = useState(120000)
+  const [cgIncome, setCgIncome] = useState(75000)
+  const [cgMonths, setCgMonths] = useState(24)
 
   const stdDed    = STD_DED[filing]
   const deduction = Math.max(stdDed, itemized)
@@ -200,8 +207,160 @@ function TabCalculator() {
 
   const statusLabels = { single: 'Single', mfj: 'Married Jointly', hoh: 'Head of HH', mfs: 'Married Sep.' }
 
+  // Capital Gains calculation
+  const cgGain    = cgSale - cgBasis
+  const cgIsLT    = cgMonths > 12
+  const cgIsMFJ   = filing === 'mfj'
+  const cgStdDed  = STD_DED[filing]
+  const cgTaxableOrd   = Math.max(0, cgIncome - cgStdDed)
+  const cgTaxableTotal = Math.max(0, cgIncome + Math.max(0, cgGain) - cgStdDed)
+
+  const cgTaxResult = (() => {
+    if (cgGain <= 0) {
+      const deductNow = Math.min(Math.abs(cgGain), 3000)
+      return { type: 'loss', tax: 0, rate: 0, deductNow, carryforward: Math.max(0, Math.abs(cgGain) - 3000) }
+    }
+    if (!cgIsLT) {
+      // Short-term: marginal ordinary rate
+      const t1 = calcTax(cgTaxableTotal, filing)
+      const t2 = calcTax(cgTaxableOrd,   filing)
+      const tax = t1 - t2
+      return { type: 'short', tax, rate: cgGain > 0 ? tax / cgGain : 0 }
+    }
+    // Long-term LTCG 2026
+    const b0  = cgIsMFJ ? 98900  : 49450
+    const b15 = cgIsMFJ ? 613700 : 545500
+    const g0  = Math.max(0, Math.min(cgGain, Math.max(0, b0  - cgTaxableOrd)))
+    const g15 = Math.max(0, Math.min(cgGain - g0, Math.max(0, b15 - Math.max(cgTaxableOrd, b0))))
+    const g20 = Math.max(0, cgGain - g0 - g15)
+    const ltTax = g15 * 0.15 + g20 * 0.20
+    // NIIT 3.8% when MAGI > $200K single / $250K MFJ
+    const niitThresh = cgIsMFJ ? 250000 : 200000
+    const niitBase   = Math.max(0, cgIncome + cgGain - niitThresh)
+    const niit       = Math.min(cgGain, niitBase) * 0.038
+    const tax = ltTax + niit
+    return { type: 'long', tax, rate: cgGain > 0 ? tax / cgGain : 0, niit, g0, g15, g20 }
+  })()
+
   return (
     <div style={{ paddingBottom: 8 }}>
+      {/* Calculator mode toggle */}
+      <div style={{ display:'flex', background:'rgba(28,21,16,0.06)', borderRadius:12, padding:4, marginBottom:14 }}>
+        {[['income','Income Tax'],['capgains','Capital Gains']].map(([mode,label])=>(
+          <button key={mode} onClick={()=>setCalcMode(mode)} style={{
+            flex:1, padding:'8px 4px', borderRadius:9, cursor:'pointer',
+            background: calcMode===mode ? C.surf : 'transparent',
+            border: calcMode===mode ? `1px solid ${C.b1}` : '1px solid transparent',
+            fontFamily:UI, fontSize:12, fontWeight:700,
+            color: calcMode===mode ? GOLD : C.t3,
+            boxShadow: calcMode===mode ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+          }}>{label}</button>
+        ))}
+      </div>
+
+      {calcMode === 'capgains' ? (
+        <div>
+          {/* Filing status pill bar shared */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
+            {Object.entries(statusLabels).map(([k, l]) => (
+              <button key={k} onClick={() => setFiling(k)} style={{
+                padding: '6px 11px', borderRadius: 20, cursor: 'pointer',
+                border: `1px solid ${filing === k ? GOLD : C.b2}`,
+                background: filing === k ? GOLD + '15' : 'transparent',
+                color: filing === k ? GOLD : C.t3,
+                fontFamily: UI, fontSize: 11, fontWeight: 600,
+              }}>{l}</button>
+            ))}
+          </div>
+
+          {/* Holding period toggle */}
+          <div style={{ display:'flex', gap:8, marginBottom:14 }}>
+            {[[12,'≤ 12 mo — Short-Term'],[24,'> 12 mo — Long-Term']].map(([mo,lbl])=>(
+              <button key={mo} onClick={()=>setCgMonths(mo)} style={{
+                flex:1, padding:'9px 6px', borderRadius:12, cursor:'pointer',
+                border:`1.5px solid ${cgMonths===mo ? (mo>12 ? GREEN : RED) : C.b1}`,
+                background: cgMonths===mo ? (mo>12 ? GREEN : RED)+'12' : 'transparent',
+                fontFamily:UI, fontSize:11, fontWeight:700,
+                color: cgMonths===mo ? (mo>12 ? GREEN : RED) : C.t3,
+              }}>{lbl}</button>
+            ))}
+          </div>
+
+          <MCard style={{ marginBottom:10 }}>
+            <SectionLabel>Asset Details</SectionLabel>
+            {[
+              { label:'Cost Basis (Purchase Price)', val:cgBasis,  set:setCgBasis,  max:2000000, step:5000  },
+              { label:'Sale Price',                  val:cgSale,   set:setCgSale,   max:2000000, step:5000  },
+              { label:'Other Ordinary Income',       val:cgIncome, set:setCgIncome, max:500000,  step:1000  },
+            ].map(({label,val,set,max,step}) => (
+              <div key={label} style={{ marginBottom:14 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
+                  <span style={{ fontFamily:UI, fontSize:12, fontWeight:600, color:C.t2 }}>{label}</span>
+                  <span style={{ fontFamily:MONO, fontSize:13, fontWeight:700, color:GOLD }}>{fmt(val)}</span>
+                </div>
+                <input type="range" min={0} max={max} step={step} value={val}
+                  onChange={e=>set(+e.target.value)} style={{ width:'100%', accentColor:GOLD }} />
+              </div>
+            ))}
+          </MCard>
+
+          {cgTaxResult.type === 'loss' ? (
+            <MCard style={{ marginBottom:10 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                <span style={{ fontFamily:UI, fontSize:13, fontWeight:700, color:C.t1 }}>Capital Loss</span>
+                <span style={{ fontFamily:MONO, fontSize:18, fontWeight:800, color:RED }}>{fmt(Math.abs(cgGain))}</span>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                <MiniStat label="Deductible Now" value={fmt(cgTaxResult.deductNow)+'/yr'} color={GREEN} />
+                <MiniStat label="Carryforward"   value={fmt(cgTaxResult.carryforward)}     color={AMBER} />
+              </div>
+              <div style={{ fontFamily:UI, fontSize:11, color:C.t3, marginTop:8, lineHeight:1.5 }}>
+                Capital losses offset capital gains dollar-for-dollar, then up to $3,000/yr of ordinary income. Unused losses carry forward indefinitely.
+              </div>
+            </MCard>
+          ) : (
+            <>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:10 }}>
+                <MiniStat label="Gain on Sale"    value={fmt(cgGain)}                color={C.t1} />
+                <MiniStat label="Tax Type"        value={cgIsLT ? 'Long-Term' : 'Short-Term'} color={cgIsLT ? GREEN : RED} />
+                <MiniStat label="Capital Gains Tax" value={fmt(cgTaxResult.tax)}     color={RED}   sub="Fed only" />
+                <MiniStat label="Effective Rate"  value={fmtPct(cgTaxResult.rate)}   color={AMBER} />
+              </div>
+              <MCard style={{ marginBottom:10 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                  <span style={{ fontFamily:UI, fontSize:12, color:C.t2 }}>Net Proceeds After Tax</span>
+                  <span style={{ fontFamily:MONO, fontSize:18, fontWeight:800, color:GREEN }}>{fmt(cgSale - cgTaxResult.tax)}</span>
+                </div>
+              </MCard>
+              {cgIsLT && cgTaxResult.g0 !== undefined && (
+                <MCard style={{ marginBottom:10 }}>
+                  <SectionLabel>Rate Breakdown</SectionLabel>
+                  {[
+                    { label:'0% bracket', amt:cgTaxResult.g0,  tax:0,                          color:GREEN },
+                    { label:'15% bracket',amt:cgTaxResult.g15, tax:cgTaxResult.g15*0.15,       color:AMBER },
+                    { label:'20% bracket',amt:cgTaxResult.g20, tax:cgTaxResult.g20*0.20,       color:RED   },
+                    { label:'NIIT (3.8%)',amt:Math.min(cgGain, Math.max(0,cgIncome+cgGain-(cgIsMFJ?250000:200000))), tax:cgTaxResult.niit, color:'#a855f7' },
+                  ].filter(r=>r.amt>0).map((r,i)=>(
+                    <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'6px 0', borderBottom:`1px solid ${C.b1}` }}>
+                      <div>
+                        <span style={{ fontFamily:UI, fontSize:12, color:C.t2 }}>{r.label}</span>
+                        <span style={{ fontFamily:MONO, fontSize:10, color:C.t3, marginLeft:6 }}>{fmt(r.amt)} of gain</span>
+                      </div>
+                      <span style={{ fontFamily:MONO, fontSize:13, fontWeight:700, color:r.color }}>{fmt(r.tax)}</span>
+                    </div>
+                  ))}
+                </MCard>
+              )}
+              <InfoBox color={AMBER} icon={AlertCircle}>
+                Federal capital gains only. State taxes vary (CA taxes LTCG as ordinary income at up to 13.3%). Depreciation recapture on rental property taxed at 25%.
+              </InfoBox>
+            </>
+          )}
+        </div>
+      ) : (
+
+      /* ─── Income Tax calculator (original) ─── */
+      <div>
       {/* Filing status pill bar */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
         {Object.entries(statusLabels).map(([k, l]) => (
@@ -299,6 +458,8 @@ function TabCalculator() {
       <InfoBox color={AMBER} icon={AlertCircle}>
         Federal income tax only. Add state income tax (0%–13.3%), FICA (7.65%), and NIIT if applicable for a complete picture.
       </InfoBox>
+      </div>
+      )} {/* end calcMode ternary */}
     </div>
   )
 }

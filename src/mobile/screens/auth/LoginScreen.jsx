@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Eye, EyeOff, ArrowRight, User, Mail, Lock, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, ArrowRight, User, Mail, Lock, ShieldCheck, MailCheck, X, FileText, CheckSquare, Square } from 'lucide-react'
 import { C, UI, MONO, DISPLAY } from '../../tokens'
 import { signUp, signIn, signInAsGuest } from '../../utils/auth'
+import TermsContent from './TermsContent'
 
 /* ── helpers ──────────────────────────────────────────────── */
 function Field({ icon: Icon, placeholder, value, onChange, type = 'text', rightEl }) {
@@ -52,18 +53,21 @@ function BgBlobs() {
 
 /* ── main ─────────────────────────────────────────────────── */
 export default function LoginScreen({ onComplete }) {
-  const [tab, setTab]         = useState('signin')
-  const [name, setName]       = useState('')
-  const [email, setEmail]     = useState('')
-  const [password, setPass]   = useState('')
-  const [showPw, setShowPw]   = useState(false)
-  const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
-  const [exiting, setExiting] = useState(false)
+  const [tab, setTab]               = useState('signin')
+  const [name, setName]             = useState('')
+  const [email, setEmail]           = useState('')
+  const [password, setPass]         = useState('')
+  const [showPw, setShowPw]         = useState(false)
+  const [error, setError]           = useState('')
+  const [loading, setLoading]       = useState(false)
+  const [exiting, setExiting]       = useState(false)
+  const [awaitingEmail, setAwaiting] = useState(false)
+  const [termsAccepted, setTerms]   = useState(false)
+  const [showTerms, setShowTerms]   = useState(false)
 
   const isSignUp = tab === 'signup'
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
 
@@ -71,12 +75,13 @@ export default function LoginScreen({ onComplete }) {
     if (!password.trim()) { setError('Password is required.'); return }
     if (isSignUp && !name.trim()) { setError('Please enter your name.'); return }
     if (password.length < 6) { setError('Password must be at least 6 characters.'); return }
+    if (isSignUp && !termsAccepted) { setError('Please accept the Terms of Use & Privacy Policy to continue.'); return }
 
     setLoading(true)
 
     const result = isSignUp
-      ? signUp({ name: name.trim(), email: email.trim(), password })
-      : signIn({ email: email.trim(), password })
+      ? await signUp({ name: name.trim(), email: email.trim(), password })
+      : await signIn({ email: email.trim(), password })
 
     if (result.error) {
       setLoading(false)
@@ -84,7 +89,13 @@ export default function LoginScreen({ onComplete }) {
       return
     }
 
-    // Slide out to the right, then hand off
+    if (result.needsConfirmation) {
+      setLoading(false)
+      setAwaiting(true)
+      return
+    }
+
+    // Slide out, hand off
     setTimeout(() => {
       setExiting(true)
       setTimeout(onComplete, 380)
@@ -95,6 +106,33 @@ export default function LoginScreen({ onComplete }) {
     signInAsGuest()
     setExiting(true)
     setTimeout(onComplete, 380)
+  }
+
+  // ── Email confirmation waiting screen ─────────────────────
+  if (awaitingEmail) {
+    return (
+      <div style={{ position:'fixed', inset:0, background:C.bg, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 28px' }}>
+        <BgBlobs />
+        <div style={{ position:'relative', zIndex:1, width:'100%', maxWidth:380, textAlign:'center' }}>
+          <div style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:72, height:72, background:`${C.indigo}14`, border:`1.5px solid ${C.indigo}30`, borderRadius:24, marginBottom:24 }}>
+            <MailCheck size={32} color={C.indigo} strokeWidth={1.6} />
+          </div>
+          <h2 style={{ fontFamily:DISPLAY, fontSize:26, fontWeight:700, color:C.t1, margin:'0 0 10px', lineHeight:1.2 }}>Check your inbox</h2>
+          <p style={{ fontFamily:UI, fontSize:14, color:C.t2, lineHeight:1.65, margin:'0 0 28px' }}>
+            We sent a confirmation link to <strong style={{ color:C.t1 }}>{email}</strong>. Click it to activate your account, then come back and sign in.
+          </p>
+          <button
+            onClick={() => { setAwaiting(false); setTab('signin'); setPass('') }}
+            style={{ width:'100%', padding:'14px 0', background:C.indigo, border:'none', borderRadius:14, fontFamily:UI, fontSize:14, fontWeight:700, color:'#fff', cursor:'pointer', boxShadow:`0 4px 20px ${C.indigo}44` }}
+          >
+            Back to Sign In
+          </button>
+          <p style={{ fontFamily:UI, fontSize:11, color:C.t3, marginTop:16, lineHeight:1.5 }}>
+            Didn't get it? Check your spam folder or try signing up again.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -212,6 +250,31 @@ export default function LoginScreen({ onComplete }) {
               }
             />
 
+            {/* Terms checkbox — sign up only */}
+            {isSignUp && (
+              <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'4px 2px' }}>
+                <button
+                  type="button"
+                  onClick={() => setTerms(v => !v)}
+                  style={{ background:'none', border:'none', padding:0, cursor:'pointer', flexShrink:0, marginTop:1, display:'flex' }}
+                >
+                  {termsAccepted
+                    ? <CheckSquare size={20} color={C.indigo} strokeWidth={1.8} />
+                    : <Square size={20} color={C.t3} strokeWidth={1.8} />}
+                </button>
+                <div style={{ fontFamily:UI, fontSize:12, color:C.t2, lineHeight:1.6 }}>
+                  I agree to the{' '}
+                  <button
+                    type="button"
+                    onClick={() => setShowTerms(true)}
+                    style={{ background:'none', border:'none', padding:0, cursor:'pointer', fontFamily:UI, fontSize:12, fontWeight:700, color:C.indigo, textDecoration:'underline', textUnderlineOffset:2 }}
+                  >
+                    Terms of Use & Privacy Policy
+                  </button>
+                </div>
+              </div>
+            )}
+
             {error && (
               <div style={{ fontFamily: UI, fontSize: 12, color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.20)', borderRadius: 8, padding: '8px 12px', lineHeight: 1.5 }}>
                 {error}
@@ -220,21 +283,21 @@ export default function LoginScreen({ onComplete }) {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (isSignUp && !termsAccepted)}
               style={{
                 marginTop: 4,
                 width: '100%',
                 padding: '14px 0',
-                background: loading ? 'rgba(129,140,248,0.5)' : C.indigo,
+                background: loading || (isSignUp && !termsAccepted) ? 'rgba(129,140,248,0.4)' : C.indigo,
                 border: 'none',
                 borderRadius: 14,
-                cursor: loading ? 'default' : 'pointer',
+                cursor: loading || (isSignUp && !termsAccepted) ? 'default' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 fontFamily: UI,
                 fontSize: 14,
                 fontWeight: 700,
                 color: '#fff',
-                boxShadow: loading ? 'none' : '0 4px 20px rgba(129,140,248,0.32)',
+                boxShadow: loading || (isSignUp && !termsAccepted) ? 'none' : '0 4px 20px rgba(129,140,248,0.32)',
                 transition: 'all 0.2s ease',
               }}
             >
@@ -295,6 +358,70 @@ export default function LoginScreen({ onComplete }) {
         input::placeholder { color: ${C.t3}; opacity: 0.8; }
         input:focus { border-color: ${C.indigo} !important; outline: none; box-shadow: 0 0 0 3px rgba(129,140,248,0.12); }
       `}</style>
+
+      {/* ── Terms modal ───────────────────────────────── */}
+      {showTerms && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 200,
+          background: 'rgba(20,15,10,0.55)',
+          display: 'flex', alignItems: 'flex-end',
+        }}
+          onClick={e => { if (e.target === e.currentTarget) setShowTerms(false) }}
+        >
+          <div style={{
+            width: '100%', maxHeight: '90dvh',
+            background: '#faf7f2',
+            borderRadius: '24px 24px 0 0',
+            display: 'flex', flexDirection: 'column',
+            boxShadow: '0 -8px 40px rgba(28,21,16,0.18)',
+          }}>
+            {/* Modal header */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '18px 20px 14px',
+              borderBottom: '1px solid #e8e0d4',
+              flexShrink: 0,
+            }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <FileText size={18} color={C.indigo} strokeWidth={1.8} />
+                <span style={{ fontFamily:UI, fontSize:15, fontWeight:700, color:C.t1 }}>Terms of Use & Privacy Policy</span>
+              </div>
+              <button onClick={() => setShowTerms(false)} style={{ background:'none', border:'none', cursor:'pointer', padding:4, display:'flex', alignItems:'center' }}>
+                <X size={20} color={C.t3} strokeWidth={1.8} />
+              </button>
+            </div>
+
+            {/* Scrollable body */}
+            <div style={{ overflowY: 'auto', flex: 1, padding: '16px 20px 8px', WebkitOverflowScrolling: 'touch' }}>
+              <TermsContent />
+            </div>
+
+            {/* Accept button */}
+            <div style={{ padding: '14px 20px 28px', borderTop: '1px solid #e8e0d4', flexShrink: 0 }}>
+              <button
+                onClick={() => { setTerms(true); setShowTerms(false) }}
+                style={{
+                  width: '100%', padding: '14px 0',
+                  background: C.indigo, border: 'none', borderRadius: 14,
+                  fontFamily: UI, fontSize: 14, fontWeight: 700, color: '#fff',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 20px rgba(129,140,248,0.32)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                }}
+              >
+                <CheckSquare size={16} color="#fff" strokeWidth={2} />
+                I Accept These Terms
+              </button>
+              <button
+                onClick={() => setShowTerms(false)}
+                style={{ width:'100%', padding:'10px 0', marginTop:8, background:'none', border:'none', fontFamily:UI, fontSize:13, color:C.t3, cursor:'pointer' }}
+              >
+                Close Without Accepting
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -20,6 +20,19 @@ const STEPS = [
     ],
   },
   {
+    id: 'employment', q: "What's your current work situation?",
+    sub: 'Determines which accounts and strategies actually apply to you.',
+    type: 'single',
+    options: [
+      { v: 'full-time',    l: 'Full-time employee',    d: 'Salary or hourly with an employer' },
+      { v: 'part-time',    l: 'Part-time employee',    d: 'Less than 40 hours/week with an employer' },
+      { v: 'self-employed', l: 'Self-employed',        d: 'Business owner, freelancer, or contractor' },
+      { v: 'student',      l: 'Student',               d: 'Full-time or part-time student' },
+      { v: 'not-working',  l: 'Not currently working', d: 'Between jobs, caregiving, or stay-at-home' },
+      { v: 'retired',      l: 'Retired',               d: 'No longer in the workforce' },
+    ],
+  },
+  {
     id: 'income', q: 'Annual household income?',
     sub: 'Helps us calibrate savings targets and tax strategies.',
     type: 'single',
@@ -30,6 +43,19 @@ const STEPS = [
       { v: '100-150k',  l: '$100,000 – $150,000'   },
       { v: '150-300k',  l: '$150,000 – $300,000'   },
       { v: '300k+',     l: '$300,000+'             },
+    ],
+  },
+  {
+    id: 'dependents', q: 'Who depends on your income?',
+    sub: 'Shapes your insurance needs, life planning priorities, and estate urgency.',
+    type: 'single',
+    options: [
+      { v: 'none',         l: 'No dependents',      d: 'No one relies on my financial support' },
+      { v: 'partner',      l: 'Spouse or partner',  d: 'Partner who relies on my income' },
+      { v: 'children',     l: 'Children',           d: 'Minor or adult children I support' },
+      { v: 'partner-kids', l: 'Partner + children', d: 'Both partner and children depend on me' },
+      { v: 'parents',      l: 'Aging parents',      d: 'I provide financial support to parents' },
+      { v: 'multiple',     l: 'Multiple',           d: 'Multiple types of financial dependents' },
     ],
   },
   {
