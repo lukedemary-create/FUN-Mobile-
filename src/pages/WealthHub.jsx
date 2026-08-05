@@ -101,32 +101,11 @@ const SECTIONS = [
     concept: 'Expense Ratio',
   },
   {
-    icon: Search,
-    label: 'Stock & Ticker Lookup',
-    desc: 'Deep-dive fundamentals, price history, earnings, analyst ratings, and insider ownership for any ticker.',
-    href: '/TickerLookup',
-    concept: 'Price-to-Earnings Ratio',
-  },
-  {
-    icon: Eye,
-    label: 'Watchlist',
-    desc: 'Track securities you\'re monitoring — price alerts, momentum signals, and portfolio fit analysis.',
-    href: '/watchlist',
-    concept: 'Position Sizing',
-  },
-  {
     icon: BarChart2,
     label: 'Market Breadth',
     desc: 'Advance/decline ratios, new highs/lows, and market internals that reveal the true health beneath the surface.',
     href: '/market-breadth',
     concept: 'Breadth Divergence',
-  },
-  {
-    icon: Eye,
-    label: 'Insider Trading',
-    desc: 'SEC Form 4 filings — track when executives and insiders buy or sell their own company\'s stock.',
-    href: '/insider-trading',
-    concept: 'Form 4 Filing',
   },
 ]
 

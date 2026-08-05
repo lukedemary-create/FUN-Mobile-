@@ -5,14 +5,19 @@ import path from 'path'
 export default defineConfig({
   logLevel: 'info',
   server: {
-    port: 5174,
+    port: 5175,
     strictPort: false,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      }
+    }
   },
   plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'micromark-util-sanitize-uri': path.resolve(__dirname, 'node_modules/micromark-util-sanitize-uri/index.js'),
     },
   },
-});
+})

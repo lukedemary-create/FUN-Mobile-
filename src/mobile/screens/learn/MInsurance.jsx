@@ -197,25 +197,68 @@ function LearnLifeInsurance() {
           </ResponsiveContainer>
         </ExpandCard>
 
+        <ExpandCard title="Variable Life Insurance" badge="VARIABLE" badgeColor={PORANGE} summary="Permanent · Investment subaccounts · Highest risk/reward">
+          <p style={{ fontFamily:UI, fontSize:12, color:C.t2, lineHeight:1.65, margin:'10px 0 10px' }}>Variable life lets you invest your cash value in stock/bond subaccounts — similar to mutual funds. Your death benefit <em>and</em> cash value fluctuate with market performance, meaning you can lose money.</p>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:10 }}>
+            <div>
+              <div style={{ fontFamily:UI, fontSize:9, fontWeight:700, color:C.up, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Pros</div>
+              {['Highest potential cash value growth','Wide investment selection','Can outperform all other types in a bull market'].map((p,i) => (
+                <div key={i} style={{ display:'flex', gap:5, marginBottom:5 }}><CheckCircle2 size={11} color={C.up} style={{ flexShrink:0, marginTop:1 }} /><span style={{ fontFamily:UI, fontSize:10, color:C.t2 }}>{p}</span></div>
+              ))}
+            </div>
+            <div>
+              <div style={{ fontFamily:UI, fontSize:9, fontWeight:700, color:C.down, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:5 }}>Cons</div>
+              {['Death benefit can decrease with poor performance','Highest fees of all policy types','Requires active investment management','Securities license required to sell (registered rep)'].map((c,i) => (
+                <div key={i} style={{ display:'flex', gap:5, marginBottom:5 }}><XCircle size={11} color={C.down} style={{ flexShrink:0, marginTop:1 }} /><span style={{ fontFamily:UI, fontSize:10, color:C.t2 }}>{c}</span></div>
+              ))}
+            </div>
+          </div>
+          {/* Variable vs IUL vs S&P chart */}
+          <div style={{ fontFamily:UI, fontSize:9, fontWeight:700, color:C.t3, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:6 }}>Market Return Scenarios — Variable vs IUL</div>
+          <ResponsiveContainer width="100%" height={130}>
+            <BarChart data={[
+              { year:'2018', variable:26.5, iul:10 },
+              { year:'2019', variable:31.5, iul:10 },
+              { year:'2020', variable:18.4, iul:10 },
+              { year:'2021', variable:28.7, iul:10 },
+              { year:'2022', variable:-18.1, iul:0 },
+              { year:'2023', variable:26.3, iul:10 },
+            ]} margin={{ top:4, right:4, bottom:0, left:0 }}>
+              <XAxis dataKey="year" tick={{ fontFamily:MONO, fontSize:9, fill:C.t3 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontFamily:MONO, fontSize:9, fill:C.t3 }} axisLine={false} tickLine={false} tickFormatter={v => v+'%'} width={32} />
+              <Tooltip contentStyle={{ background:C.raise, border:`1px solid ${C.b2}`, borderRadius:8, fontFamily:UI, fontSize:11 }} />
+              <ReferenceLine y={0} stroke={C.t3} strokeDasharray="3 3" />
+              <Bar dataKey="variable" name="Variable" fill={PORANGE} radius={[2,2,0,0]} />
+              <Bar dataKey="iul" name="IUL (capped)" fill={PGREEN} opacity={0.6} radius={[2,2,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{ marginTop:10, padding:'8px 10px', background:`${PORANGE}14`, border:`1px solid ${PORANGE}30`, borderRadius:8 }}>
+            <div style={{ fontFamily:UI, fontSize:9, fontWeight:700, color:PORANGE, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:3 }}>Key Insight</div>
+            <p style={{ margin:0, fontFamily:UI, fontSize:11, color:C.t2, lineHeight:1.6 }}>Variable life wins big in up years (no cap) but also fully absorbs losses — like 2022's −18%. IUL floors at 0% in down years, capping both downside and upside. Variable is only appropriate for experienced investors with a long time horizon who understand market risk inside a life policy.</p>
+          </div>
+        </ExpandCard>
+
         {/* Comparison table */}
         <MCard style={{ marginBottom:0 }}>
           <div style={{ fontFamily:UI, fontSize:11, fontWeight:700, color:C.t1, marginBottom:10 }}>Quick Comparison</div>
           <div style={{ overflowX:'auto' }}>
-            <table style={{ width:'100%', minWidth:320, borderCollapse:'collapse', fontFamily:UI, fontSize:10 }}>
+            <table style={{ width:'100%', minWidth:420, borderCollapse:'collapse', fontFamily:UI, fontSize:10 }}>
               <thead>
                 <tr style={{ background:C.raise }}>
-                  {[['Feature',C.t3],['Term',PBLUE],['Whole',PGOLD],['UL',PPURPLE],['IUL',PGREEN]].map(([h,c]) => (
+                  {[['Feature',C.t3],['Term',PBLUE],['Whole',PGOLD],['UL',PPURPLE],['IUL',PGREEN],['Variable',PORANGE]].map(([h,c]) => (
                     <th key={h} style={{ padding:'6px 8px', textAlign:'left', fontWeight:700, color:c, letterSpacing:'0.04em', textTransform:'uppercase', fontSize:9 }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {[
-                  ['Monthly Cost','~$25','~$400','~$150','~$200'],
-                  ['Cash Value','None','Guaranteed','Interest','Index-linked'],
-                  ['Flexibility','Low','Low','High','Medium'],
-                  ['Complexity','Low','Low','Medium','High'],
-                  ['Best For','Most people','Estate plan','Flex needs','Growth+protect'],
+                  ['Monthly Cost','~$25','~$400','~$150','~$200','~$175'],
+                  ['Cash Value','None','Guaranteed','Interest','Index-linked','Market-based'],
+                  ['Investment','No','No','No','Yes (index)','Yes (subaccounts)'],
+                  ['Risk Level','None','None','Low-Med','Low (0% floor)','High'],
+                  ['Flexibility','Low','Low','High','Medium','Medium'],
+                  ['Complexity','Low','Low','Medium','High','High'],
+                  ['Best For','Most people','Estate plan','Flex needs','Growth+protect','Risk-tolerant'],
                 ].map((row, i) => (
                   <tr key={i} style={{ borderBottom:`1px solid ${C.b1}`, background: i%2===0 ? C.raise : 'transparent' }}>
                     <td style={{ padding:'6px 8px', color:C.t2, fontWeight:600 }}>{row[0]}</td>
@@ -223,6 +266,7 @@ function LearnLifeInsurance() {
                     <td style={{ padding:'6px 8px', color:PGOLD }}>{row[2]}</td>
                     <td style={{ padding:'6px 8px', color:PPURPLE }}>{row[3]}</td>
                     <td style={{ padding:'6px 8px', color:PGREEN }}>{row[4]}</td>
+                    <td style={{ padding:'6px 8px', color:PORANGE }}>{row[5]}</td>
                   </tr>
                 ))}
               </tbody>

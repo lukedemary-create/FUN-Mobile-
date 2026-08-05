@@ -1,47 +1,26 @@
 import { useState, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { C, UI, MONO, DISPLAY } from '../../tokens'
 import { Menu, X, Plus, Trash2, MessageSquare } from 'lucide-react'
 
-/* ── Groq API ────────────────────────────────────────────────────── */
-const GROQ_KEY   = import.meta.env.VITE_GROQ_API_KEY
-const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions'
-const GROQ_MODEL = 'llama-3.3-70b-versatile'
-
-const SYSTEM_PROMPT = `You are Planora AI, a knowledgeable and approachable financial education assistant built into the Planora financial platform. You help users understand financial concepts, planning strategies, investment basics, taxes, insurance, budgeting, retirement, and all other personal finance topics.
-
-Guidelines:
-- Answer any financial or general question clearly and thoroughly
-- Use plain language — explain jargon when you use it
-- Structure longer answers with bullet points or numbered lists for readability
-- When relevant, mention that users can connect with a fee-only fiduciary advisor through Wealth Counsel for personalized advice
-- Be warm, direct, and educational — never condescending
-- For non-financial questions, answer helpfully and naturally
-- Never refuse to answer a question unless it involves something illegal or harmful
-- Today's date is ${new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })}`
+/* ── AI proxy (server-side key, never exposed to client) ─────────── */
+const PROXY_URL = '/.netlify/functions/ai-proxy'
 
 async function callGroq(messages) {
-  const res = await fetch(GROQ_URL, {
+  const res = await fetch(PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: GROQ_MODEL,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages.map(m => ({ role: m.role, content: m.text })),
-      ],
-      temperature: 0.7,
-      max_tokens: 1500,
+      messages: messages.map(m => ({ role: m.role, content: m.text })),
     }),
   })
   if (!res.ok) {
     const err = await res.text().catch(() => '')
-    throw new Error(`Groq API error ${res.status}: ${err.slice(0, 200)}`)
+    throw new Error(`AI error ${res.status}: ${err.slice(0, 200)}`)
   }
   const data = await res.json()
-  return data.choices?.[0]?.message?.content || 'Sorry, I couldn\'t generate a response. Please try again.'
+  if (data.error) throw new Error(data.error)
+  return data.content || 'Sorry, I couldn\'t generate a response. Please try again.'
 }
 
 /* ── constants ───────────────────────────────────────────────────── */
@@ -190,6 +169,7 @@ function Sidebar({ open, onClose, chats, activeId, onSelect, onNew, onDelete }) 
 
 /* ── Main component ──────────────────────────────────────────────── */
 export default function MPlonoraAI() {
+  const { state: navState }       = useLocation()
   const [chats, setChats]         = useState(() => { const c = loadChats(); return c.length ? c : [newChat()] })
   const [activeId, setActiveId]   = useState(() => { const c = loadChats(); return c.length ? c[0].id : null })
   const [sidebarOpen, setSidebar] = useState(false)
@@ -197,6 +177,7 @@ export default function MPlonoraAI() {
   const [loading, setLoading]     = useState(false)
   const [error, setError]         = useState(null)
   const bottomRef                 = useRef(null)
+  const autoSentRef               = useRef(false)
 
   const activeChat = chats.find(c => c.id === activeId) || chats[0]
   const messages   = activeChat?.messages || []
@@ -208,6 +189,14 @@ export default function MPlonoraAI() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior:'smooth' })
   }, [messages, loading])
+
+  // Auto-send question passed from FUN Navigator
+  useEffect(() => {
+    if (navState?.question && !autoSentRef.current && activeChat && !loading) {
+      autoSentRef.current = true
+      send(navState.question)
+    }
+  }, [activeChat])
 
   function updateChat(id, updater) {
     setChats(prev => {
@@ -237,10 +226,7 @@ export default function MPlonoraAI() {
       const reply = await callGroq(snapshot)
       updateChat(activeChat.id, c => ({ ...c, messages: [...c.messages, { role:'assistant', text: reply }] }))
     } catch (err) {
-      const errMsg = GROQ_KEY
-        ? 'Something went wrong connecting to Planora AI. Please try again.'
-        : 'API key not configured. Add VITE_GROQ_API_KEY to your .env file.'
-      setError(errMsg)
+      setError('Something went wrong connecting to Planora AI. Please try again.')
     } finally {
       setLoading(false)
     }

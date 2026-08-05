@@ -108,7 +108,6 @@ function Projector() {
     { label:'Current Age',          key:'currentAge',      min:18,  max:80,      step:1 },
     { label:'Retirement Age',       key:'retireAge',       min:45,  max:85,      step:1 },
     { label:'Life Expectancy',      key:'lifeExpectancy',  min:60,  max:105,     step:1 },
-    { label:'Current Savings',      key:'currentSavings',  min:0,   max:5000000, step:5000 },
     { label:'Monthly Contribution', key:'monthlyContrib',  min:0,   max:20000,   step:100 },
     { label:'Expected Return (%)',  key:'growthRate',      min:0,   max:15,      step:0.5 },
     { label:'Desired Annual Income',key:'desiredIncome',   min:0,   max:300000,  step:2000 },
@@ -117,6 +116,38 @@ function Projector() {
 
   return (
     <div style={{ padding:'12px 16px 0' }}>
+
+      {/* Current Savings — prominent standalone card */}
+      <div style={{
+        background: `linear-gradient(135deg, ${C.raise} 0%, rgba(201,169,110,0.08) 100%)`,
+        border: `1.5px solid rgba(201,169,110,0.30)`,
+        borderRadius: 16,
+        padding: '16px',
+        marginBottom: 12,
+      }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
+          <div>
+            <div style={{ fontFamily:UI, fontSize:9, fontWeight:700, color:C.t3, textTransform:'uppercase', letterSpacing:'0.12em', marginBottom:3 }}>Already Saved</div>
+            <div style={{ fontFamily:DISPLAY, fontSize:28, fontWeight:700, color:C.gold, lineHeight:1 }}>{fmtK(p.currentSavings)}</div>
+          </div>
+          <div style={{ textAlign:'right' }}>
+            <div style={{ fontFamily:UI, fontSize:9, color:C.t3, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:3 }}>Grows to</div>
+            <div style={{ fontFamily:MONO, fontSize:14, fontWeight:700, color:C.gold }}>{fmtK(fvCurrent)}</div>
+            <div style={{ fontFamily:UI, fontSize:9, color:C.t3 }}>by retirement</div>
+          </div>
+        </div>
+        <input
+          type="range"
+          min={0} max={2000000} step={5000}
+          value={p.currentSavings}
+          onChange={set('currentSavings')}
+          style={{ width:'100%', accentColor:C.gold }}
+        />
+        <div style={{ display:'flex', justifyContent:'space-between', marginTop:4 }}>
+          <span style={{ fontFamily:UI, fontSize:10, color:C.t3 }}>$0</span>
+          <span style={{ fontFamily:UI, fontSize:10, color:C.t3 }}>$2M</span>
+        </div>
+      </div>
 
       {/* Hero result */}
       <MCard>

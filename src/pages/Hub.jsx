@@ -46,14 +46,15 @@ const SECTIONS = [
     insight: 'The difference between a $1M and $2M retirement isn\'t income — it\'s the compounded effect of consistent contributions, tax efficiency, and avoiding behavioral mistakes.',
     href: '/planning',
     items: [
-      { label: 'Budget Planner',      path: '/BudgetPlanner',       icon: Wallet,      desc: 'Income, expenses, and cash flow' },
-      { label: 'Retirement Planning', path: '/retirement-planning', icon: Activity,    desc: 'Monte Carlo retirement projections' },
-      { label: 'Tax Planning',        path: '/tax-planning',        icon: Receipt,     desc: 'Tax-efficiency strategies' },
-      { label: 'Life Insurance',      path: '/life-insurance',      icon: HeartPulse,  desc: 'Coverage needs analysis' },
-      { label: 'Estate Planning',     path: '/FuturePlanning',      icon: LineChart,   desc: 'Wills, trusts, and estate strategy' },
-      { label: 'Social Security',     path: '/social-security',     icon: ShieldCheck, desc: 'Benefits and claiming strategy' },
-      { label: 'Net Worth Tracker',   path: '/net-worth',           icon: Target,      desc: 'Assets, liabilities, and growth' },
-      { label: 'Calculators',         path: '/Calculators',         icon: Calculator,  desc: 'TVM, compound growth, more' },
+      { label: 'Investment Planning',        path: '/FuturePlanning',       icon: TrendingUp,  desc: 'Asset allocation and long-term growth strategy' },
+      { label: 'Retirement Planning',        path: '/retirement-planning',  icon: Activity,    desc: 'Income needs, withdrawal strategies, longevity' },
+      { label: 'Tax Planning',               path: '/tax-planning',         icon: Receipt,     desc: 'Tax-loss harvesting, Roth conversions, bracket mgmt' },
+      { label: 'Insurance Planning',         path: '/life-insurance',       icon: HeartPulse,  desc: 'Life, disability, and long-term care coverage' },
+      { label: 'Real Estate Planning',       path: '/real-estate-planning', icon: Home,        desc: 'Rent vs. buy, mortgage affordability, ownership costs' },
+      { label: 'Social Security Planning',   path: '/social-security',      icon: ShieldCheck, desc: 'Claiming strategy, spousal benefits, delayed credits' },
+      { label: 'Budget Planning',            path: '/BudgetPlanner',        icon: Wallet,      desc: 'Cash flow, savings rates, and debt management' },
+      { label: 'Estate Planning',            path: '/FuturePlanning',       icon: LineChart,   desc: 'Wills, trusts, beneficiary designations' },
+      { label: 'Children & Family Planning', path: '/family-planning',      icon: Users,       desc: 'College savings, 529 plans, and family milestones' },
     ],
   },
   {
@@ -66,13 +67,10 @@ const SECTIONS = [
     insight: 'Understanding what drives index moves — earnings, Fed policy, sentiment — is the foundation of intelligent investing.',
     href: '/markets',
     items: [
-      { label: 'Dashboard',             path: '/dashboard',      icon: LayoutDashboard, desc: 'Portfolio and market overview' },
-      { label: 'Terminal',              path: '/terminal',       icon: MonitorDot,      desc: 'Bloomberg-style data terminal' },
-      { label: 'Market History',        path: '/MarketHistory',  icon: History,         desc: 'Historical price and index data' },
-      { label: 'Sectors',               path: '/sectors',        icon: PieChart,        desc: 'Sector performance heatmaps' },
-      { label: 'Top Performers',        path: '/top-performers', icon: TrendingUp,      desc: 'Leaders and laggards daily' },
-      { label: 'Market News',           path: '/market-news',    icon: Newspaper,       desc: 'Real-time financial news feed' },
-      { label: 'Political Intelligence',path: '/PoliticsEconomy',icon: Landmark,        desc: 'Policy and geopolitical impact' },
+      { label: 'Market Overview',       path: '/dashboard',       icon: BarChart2,       desc: 'Live indices, major benchmarks, daily market pulse' },
+      { label: 'Market History',        path: '/MarketHistory',   icon: History,         desc: 'Long-term historical performance and cyclical patterns' },
+      { label: 'Terminal',              path: '/terminal',        icon: MonitorDot,      desc: 'Bloomberg-style institutional data terminal' },
+      { label: 'Political Intelligence',path: '/PoliticsEconomy', icon: Landmark,        desc: 'Policy analysis, geopolitical risk, and market nexus' },
     ],
   },
   {
@@ -85,13 +83,11 @@ const SECTIONS = [
     insight: 'Most retail investors manage return but not risk. Understanding beta, drawdown, and correlation is what separates disciplined investors from speculators.',
     href: '/wealth',
     items: [
-      { label: 'Risk Analysis',    path: '/RiskAnalysis',    icon: ShieldAlert, desc: 'Portfolio risk and stress testing' },
-      { label: 'AI Reports',       path: '/AIAdvisor',       icon: Sparkles,    desc: 'AI-generated investment briefs' },
-      { label: 'Brokerage Guide',  path: '/brokerage-guide', icon: BookOpen,    desc: 'Platform comparison and selection' },
-      { label: 'Watchlist',        path: '/watchlist',       icon: Star,        desc: 'Track your securities' },
-      { label: 'Market Breadth',   path: '/market-breadth',  icon: BarChart2,   desc: 'Advance/decline and internals' },
-      { label: 'Insider Trading',  path: '/insider-trading', icon: Eye,         desc: 'SEC Form 4 filings and flows' },
-      { label: 'Stock Lookup',     path: '/TickerLookup',    icon: Activity,    desc: 'Deep-dive ticker fundamentals' },
+      { label: 'Risk Analysis',        path: '/RiskAnalysis',   icon: ShieldAlert, desc: 'Portfolio stress-testing, risk profiling, drawdown scenarios' },
+      { label: 'Net Worth Tracker',    path: '/net-worth',      icon: Target,      desc: 'Consolidated view of all assets and liabilities' },
+      { label: 'Brokerage Guide',      path: '/brokerage-guide',icon: BookOpen,    desc: 'Side-by-side brokerage comparison and fee structures' },
+      { label: 'Market Breadth',       path: '/market-breadth', icon: BarChart2,   desc: 'Advance/decline ratios and market internals' },
+      { label: 'AI Reports',           path: '/AIAdvisor',      icon: Sparkles,    desc: 'AI-generated investment briefs' },
     ],
   },
   {
@@ -105,7 +101,6 @@ const SECTIONS = [
     href: '/macro',
     items: [
       { label: 'Economic Calendar', path: '/economic-calendar', icon: CalendarDays, desc: 'Fed meetings, CPI, jobs reports' },
-      { label: 'Energy Markets',    path: '/energy',            icon: Zap,          desc: 'Oil, gas, and commodity trends' },
       { label: 'Labor Markets',     path: '/labor',             icon: Users,        desc: 'Employment and wage data' },
       { label: 'The Consumer',      path: '/consumer',          icon: ShoppingCart, desc: 'Spending, sentiment, retail' },
       { label: 'Real Estate',       path: '/real-estate',       icon: Home,         desc: 'Housing market and mortgage data' },
@@ -122,33 +117,6 @@ const SECTIONS = [
     href: '/Calculators',
     items: [
       { label: 'Calculators', path: '/Calculators', icon: Calculator, desc: 'All planning calculators in one place' },
-    ],
-  },
-  {
-    id: 'counsel',
-    label: 'Wealth Counsel',
-    icon: BookUser,
-    description: 'Browse verified CFP professionals matched to your goals — transparent fees, real credentials, wealth counsel on your terms.',
-    concept: 'Fiduciary Standard',
-    definition: 'A fiduciary is legally required to act in your best interest — not their own. Fee-only fiduciary advisors have no incentive to sell you products. This standard is the baseline for objective advice.',
-    insight: 'The right advisor doesn\'t just manage investments — they coordinate your tax strategy, estate plan, insurance, and retirement into a single coherent picture.',
-    href: '/wealth-counsel',
-    items: [
-      { label: 'Find an Advisor', path: '/WealthCounsel', icon: BookUser, desc: 'Browse verified CFP professionals' },
-    ],
-  },
-  {
-    id: 'ai',
-    label: 'Planora AI',
-    icon: Brain,
-    description: 'AI-powered financial research and personalized analysis — ask anything, receive institutional-quality breakdowns tailored to your situation.',
-    concept: 'Intelligent Research',
-    definition: 'AI trained on financial data can synthesize earnings reports, macro trends, and portfolio data in seconds — work that would take an analyst hours. The key is knowing what to ask.',
-    insight: 'The most powerful use of Planora AI is not getting answers — it\'s having a thinking partner that challenges your assumptions before you act on them.',
-    href: '/planora-ai',
-    items: [
-      { label: 'Planora AI',    path: '/planora-ai', icon: Brain,    desc: 'AI financial research assistant' },
-      { label: 'AI Reports',    path: '/AIAdvisor',  icon: Sparkles, desc: 'AI-generated investment briefs' },
     ],
   },
 ];
@@ -218,23 +186,27 @@ function SectionCard({ section, index }) {
           </div>
 
           {/* Title */}
-          <h2 style={{
-            fontFamily: DISPLAY,
-            fontSize: 22, fontWeight: 700,
-            color: C.t1, letterSpacing: '-0.02em',
-            margin: '0 0 10px', lineHeight: 1.2,
-          }}>
-            {section.label}
-          </h2>
+          {section.id !== 'ai' && (
+            <h2 style={{
+              fontFamily: DISPLAY,
+              fontSize: 22, fontWeight: 700,
+              color: C.t1, letterSpacing: '-0.02em',
+              margin: '0 0 10px', lineHeight: 1.2,
+            }}>
+              {section.label}
+            </h2>
+          )}
 
           {/* Description */}
-          <p style={{
-            fontFamily: UI, fontSize: 13,
-            color: C.t2, lineHeight: 1.75,
-            margin: '0 0 20px',
-          }}>
-            {section.description}
-          </p>
+          {section.id !== 'ai' && (
+            <p style={{
+              fontFamily: UI, fontSize: 13,
+              color: C.t2, lineHeight: 1.75,
+              margin: '0 0 20px',
+            }}>
+              {section.description}
+            </p>
+          )}
 
           {/* Concept definition card */}
           <div style={{

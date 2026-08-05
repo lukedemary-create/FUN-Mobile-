@@ -17,77 +17,103 @@ const TABS = [
 
 /* ── Route knowledge base ────────────────────────────────────── */
 const ROUTES = [
+  // ── Equity Compensation (highest priority — very specific)
+  { keywords: ['rsu','rsus','restricted stock unit','restricted stock','rsu tax','rsu vesting','rsu sale','rsu withholding','espp','employee stock purchase','iso','nso','incentive stock option','non qualified option','equity compensation','stock vesting','vesting schedule','stock options','409a','83b election','sell to cover','supplemental withholding rate','equity income','company stock','grant date','vest date','how are rsus taxed','what is an rsu','what are rsus','sell my rsu','rsu sell','espp discount','exercising options','option exercise'], path: '/learn/tax', label: 'Equity Compensation — RSUs, ESPP & Options', state: { mainTab: 'learn', learnSub: 'equity' } },
+
   // ── Learn: Budgeting
-  { keywords: ['budget','budgeting','50/30/20','cash flow','expense','sinking fund','savings rate','emergency fund','zero based','envelope'], path: '/learn/budgeting', label: 'Budgeting & Foundations' },
+  { keywords: ['budget','budgeting','50/30/20','cash flow','track expenses','sinking fund','savings rate','zero based','envelope method','where does my money go','how do i budget','how to budget','monthly budget','spending categories','how to save money','overspending','how much should i spend','needs wants savings'], path: '/learn/budgeting', label: 'Budgeting & Foundations' },
+
+  // ── Learn: Emergency Fund
+  { keywords: ['emergency fund','rainy day fund','3 months expenses','6 months expenses','how much emergency fund','where to keep emergency fund','hysa','high yield savings','liquid savings'], path: '/learn/budgeting', label: 'Budgeting & Foundations' },
+
   // ── Learn: Debt & Credit
-  { keywords: ['debt','credit score','avalanche','snowball','credit card','pay off debt','utilization','fico','apr','interest rate debt','balance transfer'], path: '/learn/debt', label: 'Debt & Credit' },
+  { keywords: ['debt','credit score','credit card debt','avalanche method','snowball method','pay off debt','credit utilization','fico score','apr','interest rate','balance transfer','how to improve credit','how to pay off debt','student loan','personal loan','debt payoff','minimum payment','how does credit work','what is apr','what is a credit score'], path: '/learn/debt', label: 'Debt & Credit' },
+
   // ── Learn: Investing
-  { keywords: ['invest','investing','index fund','etf','s&p','sp500','brokerage account','vanguard','fidelity','schwab','dollar cost','dca','compound interest','stock market','shares','dividend','mutual fund'], path: '/learn/investing', label: 'Investing & Accounts' },
-  // ── Learn: Tax → Equity Compensation (RSU / ESPP / ISO)
-  { keywords: ['rsu','restricted stock','rsu tax','espp','employee stock purchase','iso','nso','incentive stock option','non qualified','equity compensation','stock vesting','vesting','stock options','409a','83b','sell to cover','supplemental withholding'], path: '/learn/tax', label: 'Equity Compensation (RSUs / ESPP)', state: { mainTab: 'learn', learnSub: 'equity' } },
+  { keywords: ['invest','investing','how to invest','start investing','index fund','etf','s&p 500','sp500','vti','vxus','bnd','brokerage account','vanguard','fidelity','schwab','dollar cost averaging','dca','compound interest','stock market','shares','dividend','mutual fund','what is an etf','what is an index fund','how do i start investing','robinhood','what should i invest in'], path: '/learn/investing', label: 'Investing & Accounts' },
+
   // ── Learn: Portfolio
-  { keywords: ['portfolio','allocation','rebalanc','asset class','bonds','equities','60/40','diversif','risk tolerance','growth portfolio','conservative portfolio'], path: '/learn/portfolio', label: 'Portfolio Structure' },
+  { keywords: ['portfolio','asset allocation','rebalance','asset class','bonds','equities','60/40','diversification','diversify','risk tolerance','growth portfolio','conservative portfolio','three fund','aggressive portfolio','how to build a portfolio','what should my portfolio look like'], path: '/learn/portfolio', label: 'Portfolio Structure' },
+
   // ── Learn: Insurance
-  { keywords: ['insurance','life insurance','health insurance','disability','coverage','premium','term life','whole life','universal life','human life value','ltdi','disability insurance'], path: '/learn/insurance', label: 'Insurance Basics' },
+  { keywords: ['insurance','life insurance','health insurance','disability insurance','long term disability','ltdi','coverage','insurance premium','term life','whole life','universal life','human life value','how much life insurance do i need','do i need life insurance','what type of insurance','umbrella policy','renters insurance','homeowners insurance'], path: '/learn/insurance', label: 'Insurance Basics' },
+
   // ── Learn: Estate
-  { keywords: ['estate','will','trust','beneficiary','probate','power of attorney','executor','living will','inheritance','revocable trust','irrevocable','estate basics','advance directive'], path: '/learn/estate', label: 'Estate & Wills' },
+  { keywords: ['estate','will','trust','beneficiary','probate','power of attorney','executor','living will','inheritance','revocable trust','irrevocable trust','advance directive','do i need a will','what is a trust','estate planning basics','how to set up a will','who gets my money','guardianship','minor children inheritance'], path: '/learn/estate', label: 'Estate & Wills' },
+
   // ── Learn: Retirement
-  { keywords: ['retirement basics','how retirement works','401k basics','ira basics','roth ira','roth 401k','traditional ira','pension','fire movement','retire early','compound interest retirement','why roth'], path: '/learn/retirement', label: 'Retirement Basics' },
+  { keywords: ['retirement','401k','401(k)','roth ira','roth 401k','traditional ira','ira','pension','fire','retire early','how to retire','what is a 401k','what is a roth ira','roth vs traditional','how much to retire','retirement savings','retirement account','compound interest retirement','when can i retire','how does retirement work','maxing out 401k','employer match'], path: '/learn/retirement', label: 'Retirement Basics' },
+
   // ── Learn: Major Purchases
-  { keywords: ['buying a car','car loan','auto loan','buying a home','first home','down payment','fha','va loan','pmi','closing cost','mortgage basics','house hunt','homebuyer'], path: '/learn/purchases', label: 'Major Purchases' },
+  { keywords: ['buying a car','car loan','auto loan','buying a home','buy a house','first home','first time home buyer','down payment','fha loan','va loan','pmi','closing costs','mortgage basics','house','how much car can i afford','new car','used car','how to buy a house'], path: '/learn/purchases', label: 'Major Purchases' },
+
   // ── Learn: Buy Rent Lease
-  { keywords: ['rent vs buy','buy or rent','lease','renting','own vs rent','should i buy','should i rent','rent or own'], path: '/learn/buy-rent-lease', label: 'Buy, Rent or Lease' },
+  { keywords: ['rent vs buy','buy or rent','lease vs buy','renting vs buying','should i rent or buy','rent or own','is it better to rent or buy','rent vs own'], path: '/learn/buy-rent-lease', label: 'Buy, Rent or Lease' },
+
   // ── Learn: Life Events
-  { keywords: ['life event','marriage','divorce','job loss','job change','windfall','new baby','inheritance event','layoff','career change','raise','promotion','financial trigger'], path: '/learn/life-events', label: 'Life Events' },
+  { keywords: ['getting married','marriage finances','divorce finances','job loss','lost my job','layoff','new job','got a raise','having a baby','new baby','inherited money','windfall','career change','financial life event','major life change','got promoted'], path: '/learn/life-events', label: 'Life Events' },
+
   // ── Learn: Tax
-  { keywords: ['tax basics','capital gains','tax loss harvesting','tax alpha','bracket','standard deduction','itemize','write off','w2','1099','k-1','roth vs traditional','tax deferred','tax free','tax learn','marginal rate','effective rate'], path: '/learn/tax', label: 'Tax Fundamentals' },
+  { keywords: ['tax','taxes','capital gains','tax loss harvesting','tax bracket','standard deduction','itemize deductions','write off','w2','w-2','1099','k-1','roth vs traditional tax','tax deferred','tax free growth','marginal tax rate','effective tax rate','how taxes work','how to lower taxes','federal income tax','state income tax','quarterly estimated tax','self employment tax'], path: '/learn/tax', label: 'Tax Fundamentals' },
+
   // ── Learn: Resources
-  { keywords: ['resource','books','reading list','tools','government site','irs','social security site','finra','cfpb','recommended reading'], path: '/learn/resources', label: 'Resource Directory' },
+  { keywords: ['resources','books about money','financial books','irs website','cfpb','finra','where to learn finance','recommended finance books','financial tools'], path: '/learn/resources', label: 'Resource Directory' },
 
   // ── Plan: Budget Planner
-  { keywords: ['budget planner','budget tool','track spending','income categories','monthly budget plan','spending plan','set budget'], path: '/plan/budget', label: 'Budget Planner' },
-  // ── Plan: Net Worth
-  { keywords: ['net worth','assets','liabilities','balance sheet','wealth snapshot','track assets','total wealth','net worth tracker'], path: '/plan/networth', label: 'Net Worth Tracker' },
-  // ── Plan: Retirement Planning
-  { keywords: ['retirement plan','retirement calculator','retire at','when can i retire','4% rule','safe withdrawal rate','nest egg','retirement projection','retirement tool','how much to retire','retirement number'], path: '/plan/retirement', label: 'Retirement Planning Tool' },
-  // ── Plan: Tax Planning
-  { keywords: ['tax plan','tax strategy','tax planning tool','tax optimization','withholding','estimated tax','quarterly tax','tax projection','reduce taxes'], path: '/plan/tax', label: 'Tax Planning Tool' },
-  // ── Plan: Life Insurance
-  { keywords: ['life insurance plan','how much life insurance','life insurance calculator','term vs whole','insurance need','dime method','income replacement'], path: '/plan/insurance', label: 'Life Insurance Planner' },
-  // ── Plan: Social Security
-  { keywords: ['social security','ssa','when to take social security','social security benefits','full retirement age','fra','ssa benefits','claiming strategy'], path: '/plan/social-security', label: 'Social Security Planner' },
-  // ── Plan: Real Estate
-  { keywords: ['real estate plan','home buying plan','mortgage calculator','house budget','property cost','home affordability','how much house'], path: '/plan/real-estate', label: 'Real Estate Planner' },
-  // ── Plan: Family
-  { keywords: ['family plan','529 plan','college savings','kids college','childcare cost','dependent care','child','having kids','baby planning'], path: '/plan/family', label: 'Family Planning Tool' },
-  // ── Plan: Estate Planning
-  { keywords: ['estate plan','will planner','trust planning','beneficiary planning','estate planning tool','succession plan'], path: '/plan/estate', label: 'Estate Planning Tool' },
-  // ── Plan: Calculators
-  { keywords: ['calculator','calculators','compound calculator','tvm','time value of money','amortize','loan calc','calculate','run numbers','math','future value','present value'], path: '/plan/calculators', label: 'Financial Calculators' },
-  // ── Plan: Buy Rent Lease (planning)
-  { keywords: ['buy rent lease plan','should i buy a house tool','rent vs buy calculator'], path: '/plan/buy-rent-lease', label: 'Buy, Rent or Lease Tool' },
+  { keywords: ['budget planner','budget tool','set up my budget','track my spending','income categories','monthly budget tool','make a budget','spending plan'], path: '/plan/budget', label: 'Budget Planner' },
 
-  // ── Special
-  { keywords: ['ai','planora ai','ai chat','gpt','ask ai','financial ai','ai advisor','chat with ai'], path: '/ai', label: 'Planora AI' },
-  { keywords: ['wealth counsel','find advisor','cfp','fiduciary','fee only','financial planner','financial advisor','adviser'], path: '/wealth-counsel', label: 'Wealth Counsel' },
-  { keywords: ['match me','find my advisor','advisor match','match advisor'], path: '/wealth-counsel/match', label: 'Advisor Match' },
-  { keywords: ['prep hub','meeting prep','advisor prep','prepare for advisor','questions for advisor'], path: '/wealth-counsel/prep', label: 'Meeting Prep Hub' },
-  { keywords: ['assessment','health check','financial health','health score','quiz','survey','financial checkup','take assessment'], path: '/assessment', label: 'Financial Health Assessment' },
-  { keywords: ['profile','settings','account','notifications','my account','you tab'], path: '/you', label: 'Your Profile' },
-  { keywords: ['learn hub','start learning','all topics','curriculum','education hub'], path: '/learn', label: 'Learn Hub' },
-  { keywords: ['plan hub','all tools','planning hub','planning tools'], path: '/plan', label: 'Planning Hub' },
-  { keywords: ['home','dashboard','start','overview','welcome'], path: '/', label: 'Home' },
+  // ── Plan: Net Worth
+  { keywords: ['net worth','my net worth','track net worth','assets and liabilities','balance sheet','how much am i worth','total wealth','wealth tracker','what is my net worth'], path: '/plan/networth', label: 'Net Worth Tracker' },
+
+  // ── Plan: Retirement Planning
+  { keywords: ['retirement plan','retirement calculator','retire at 55','retire at 60','retire at 65','when can i retire','4% rule','safe withdrawal','nest egg','retirement projection','how much do i need to retire','retirement number','am i on track for retirement'], path: '/plan/retirement', label: 'Retirement Planning Tool' },
+
+  // ── Plan: Tax Planning
+  { keywords: ['tax planning','tax strategy','reduce my taxes','tax optimization','withholding','estimated tax payments','quarterly taxes','minimize taxes','tax tool'], path: '/plan/tax', label: 'Tax Planning Tool' },
+
+  // ── Plan: Life Insurance
+  { keywords: ['how much life insurance do i need','life insurance calculator','term vs whole life','insurance calculator','dime method','income replacement insurance'], path: '/plan/insurance', label: 'Life Insurance Planner' },
+
+  // ── Plan: Social Security
+  { keywords: ['social security','ssa','when to take social security','social security calculator','full retirement age','fra','social security benefits','when to claim','social security strategy','spousal benefit'], path: '/plan/social-security', label: 'Social Security Planner' },
+
+  // ── Plan: Real Estate
+  { keywords: ['how much house can i afford','mortgage calculator','home affordability','real estate planning','home buying tool','house budget','property cost calculator'], path: '/plan/real-estate', label: 'Real Estate Planner' },
+
+  // ── Plan: Family
+  { keywords: ['529 plan','college savings','kids and money','childcare cost','family financial plan','having kids money','baby financial planning','dependent care','education savings'], path: '/plan/family', label: 'Family Planning Tool' },
+
+  // ── Plan: Estate Planning
+  { keywords: ['estate planning tool','will planning','trust setup','beneficiary planning','succession planning','who gets my assets'], path: '/plan/estate', label: 'Estate Planning Tool' },
+
+  // ── Plan: Calculators
+  { keywords: ['calculator','calculators','compound interest calculator','time value of money','loan amortization','calculate','run the numbers','future value calculator','present value','how much will i have','math'], path: '/plan/calculators', label: 'Financial Calculators' },
+
+  // ── Wealth Counsel
+  { keywords: ['find an advisor','find a financial advisor','wealth counsel','cfp','fiduciary','fee only advisor','financial planner','i need an advisor','talk to an advisor','connect with advisor'], path: '/wealth-counsel', label: 'Wealth Counsel' },
+  { keywords: ['match me with advisor','advisor match','find my advisor','match advisor'], path: '/wealth-counsel/match', label: 'Advisor Match' },
+  { keywords: ['prep hub','meeting prep','prepare for advisor meeting','questions for my advisor','advisor prep'], path: '/wealth-counsel/prep', label: 'Meeting Prep Hub' },
+
+  // ── Assessment
+  { keywords: ['assessment','financial health check','financial checkup','health score','take the quiz','financial quiz','how am i doing financially'], path: '/assessment', label: 'Financial Health Assessment' },
+
+  // ── Hubs
+  { keywords: ['planora ai','ai assistant','ask ai','chat ai','ai help'], path: '/ai', label: 'Planora AI' },
+  { keywords: ['profile','my settings','notifications','my account'], path: '/you', label: 'Your Profile' },
+  { keywords: ['learn hub','all topics','start learning','curriculum'], path: '/learn', label: 'Learn Hub' },
+  { keywords: ['plan hub','all planning tools','planning hub'], path: '/plan', label: 'Planning Hub' },
+  { keywords: ['home','go home','start over','main screen'], path: '/', label: 'Home' },
 ]
 
 function findRoute(query) {
-  const q = query.toLowerCase()
+  const q = query.toLowerCase().trim()
   let best = null
   let bestScore = 0
 
   for (const route of ROUTES) {
     let score = 0
     for (const kw of route.keywords) {
-      if (q.includes(kw)) score += kw.split(' ').length
+      if (q.includes(kw)) score += kw.split(' ').length * 2  // weight multi-word matches higher
     }
     if (score > bestScore) { bestScore = score; best = route }
   }
@@ -100,7 +126,7 @@ const SUGGESTIONS = [
   'What are RSUs?',
   'Build a budget',
   'Retirement planning',
-  'Tax strategies',
+  'How much life insurance?',
 ]
 
 /* ── FUN Navigator floating panel ────────────────────────────── */
@@ -137,8 +163,9 @@ function FUNNavigator({ onClose }) {
       } else {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          text: "I couldn't find an exact match. Try \"retirement\", \"RSU\", \"tax planning\", or \"net worth\".",
+          text: "I'm going to direct you to the AI where I will be able to help you with this question.",
         }])
+        setTimeout(() => { navigate('/ai', { state: { question: text } }); onClose() }, 1200)
       }
       setLoading(false)
     }, 350)

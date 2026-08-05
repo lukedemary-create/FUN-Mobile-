@@ -270,7 +270,7 @@ export default function TabEducation() {
         <P><strong style={{ color:GOLD }}>Alpha</strong> measures excess return above what Beta alone predicts. Positive alpha means the manager added value beyond market exposure. Most passive funds have alpha near zero.</P>
         <Formula>Alpha = Portfolio Return - (Risk-Free Rate + Beta × (Market Return - Risk-Free Rate))</Formula>
         <div style={{ marginTop:"0.5rem" }}>
-          <KeyPoint color={RED}>High beta (>1.2) = amplified market swings in both directions</KeyPoint>
+          <KeyPoint color={RED}>High beta (&gt;1.2) = amplified market swings in both directions</KeyPoint>
           <KeyPoint color={GREEN}>Low beta (0.3–0.6) = defensive portfolios (bonds, utilities, gold)</KeyPoint>
           <KeyPoint>Most retail investors should focus on beta management, not chasing alpha.</KeyPoint>
           <KeyPoint>R-Squared (0–100) measures how much of portfolio movement is explained by the market benchmark.</KeyPoint>

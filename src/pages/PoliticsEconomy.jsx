@@ -1475,7 +1475,6 @@ const TABS = [
   {key:"philosophy", label:"Economic Philosophy",  icon:BookOpen},
   {key:"debt",       label:"National Debt",        icon:TrendingUp},
   {key:"budget",     label:"Where Money Goes",     icon:DollarSign},
-  {key:"indicators", label:"Live Indicators",      icon:Activity},
   {key:"legislation",label:"Legislation Impact",   icon:FileText},
 ];
 
@@ -1490,7 +1489,6 @@ export default function PoliticsEconomy() {
       case "philosophy": return <TabPhilosophy/>;
       case "debt":       return <TabDebt/>;
       case "budget":     return <TabBudget/>;
-      case "indicators": return <TabIndicators/>;
       case "legislation":return <TabLegislation/>;
       default:           return <TabCommand/>;
     }

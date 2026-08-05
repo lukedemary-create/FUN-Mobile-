@@ -6,7 +6,7 @@ import {
   FileText, Bell, Link2, Shield, HelpCircle,
   RotateCcw, CheckCircle2, ChevronDown, ChevronUp,
 } from 'lucide-react'
-import { signOut, userKey } from '../../utils/auth'
+import { signOut, userKey, getCurrentUser } from '../../utils/auth'
 import { generateBriefing, SEV_STYLE } from '../../utils/briefing'
 import useUserLS from '../../hooks/useUserLS'
 
@@ -381,11 +381,10 @@ function HelpPanel({ onBack }) {
 export default function FunYou() {
   const [activePanel, setActivePanel] = useState(null)
 
-  const authRaw    = localStorage.getItem('planora_auth_v1')
-  const auth       = authRaw ? JSON.parse(authRaw) : {}
+  const auth        = getCurrentUser()
   const displayName = auth.name || 'Member'
-  const initial    = displayName[0]?.toUpperCase() || 'M'
-  const memberYear = new Date(auth.createdAt || Date.now()).getFullYear()
+  const initial     = displayName[0]?.toUpperCase() || 'M'
+  const memberYear  = new Date(auth.createdAt || Date.now()).getFullYear()
   const streak     = useMemo(getStreak, [])
 
   const hasBriefing = !!localStorage.getItem(userKey('fun-onboarding-v1'))
@@ -507,7 +506,7 @@ export default function FunYou() {
 
         {/* ── Sign Out ─────────────────────────────────────────── */}
         <button
-          onClick={() => { signOut(); window.location.href = '/' }}
+          onClick={() => signOut().then(() => { window.location.href = '/' })}
           style={{
             width: '100%',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
